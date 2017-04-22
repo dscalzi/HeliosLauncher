@@ -1,0 +1,14 @@
+@font-face {
+    font-family: ringbearer;
+    src: url('../fonts/ringbearer.ttf');
+}
+
+body, html {
+    margin: 0px;
+    padding: 0px;
+}
+
+html {
+    background: url(../images/BrownWithWignette.jpg) no-repeat center center fixed;
+    background-size: cover;
+}

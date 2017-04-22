@@ -1,0 +1,23 @@
+{
+  "name": "westeroscraftlauncher",
+  "version": "0.0.1",
+  "description": "Custom modded launcher for Westeroscraft",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/westeroscraft/Active-Electron-Launcher.git"
+  },
+  "author": "TheKraken7, Matan, Nightmare",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://gitlab.com/westeroscraft/Active-Electron-Launcher/issues"
+  },
+  "homepage": "https://gitlab.com/westeroscraft/Active-Electron-Launcher#README",
+  "devDependencies": {
+    "electron": "^1.6.5",
+    "mojang": "^0.4.0"
+  }
+}
