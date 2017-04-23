@@ -17,6 +17,9 @@ function createWindow() {
 
     win.setMenu(null)
 
+    //Code for testing, marked for removal one it's properly implemented.
+    //require('./app/assets/js/assetdownload.js').getMojangAssets('1.11', path.join(__dirname, 'mcfiles'))
+
     win.on('closed', () => {
         win = null
     })
