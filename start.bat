@@ -1,2 +1,0 @@
-npm start
-pause

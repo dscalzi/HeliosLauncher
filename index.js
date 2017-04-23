@@ -7,7 +7,7 @@ const url = require('url')
 let win
 
 function createWindow() {
-    win = new BrowserWindow({ width: 925, height: 500 })
+    win = new BrowserWindow({ width: 925, height: 500, icon: getPlatformIcon('WesterosSealSquare')})
 
     win.loadURL(url.format({
         pathname: path.join(__dirname, 'app', 'index.html'),
@@ -15,13 +15,23 @@ function createWindow() {
         slashes: true
     }))
 
-    //Open DevTools, this will be removed on release.
-    win.webContents.openDevTools()
     win.setMenu(null)
 
     win.on('closed', () => {
         win = null
     })
+}
+
+function getPlatformIcon(filename){
+    if (process.platform === 'darwin') {
+        filename = filename + '.icns'
+    } else if (process.platform === 'win32') {
+        filename = filename + '.ico'
+    } else {
+        filename = filename + '.png'
+    }
+
+    return path.join(__dirname, 'app', 'assets', 'images', filename)
 }
 
 app.on('ready', createWindow);
