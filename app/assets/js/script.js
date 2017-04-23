@@ -28,7 +28,6 @@ document.addEventListener('keydown', function (e) {
     if(at === 5) {
         var window = remote.getCurrentWindow()
         window.toggleDevTools()
-        console.log('I would open it now!')
         at = 0
     }
 })
