@@ -18,7 +18,15 @@ function createWindow() {
     win.setMenu(null)
 
     //Code for testing, marked for removal one it's properly implemented.
-    //require('./app/assets/js/assetdownload.js').getMojangAssets('1.11', path.join(__dirname, 'mcfiles'))
+    /*const assetdl = require('./app/assets/js/assetdownload.js')
+    const basePath = path.join(__dirname, 'mcfiles')
+    const dataPromise = assetdl.parseVersionData('1.11.2', basePath)
+    dataPromise.then(function(data){
+        assetdl.downloadAssets(data, basePath)
+        assetdl.downloadClient(data, basePath)
+        assetdl.downloadLogConfig(data, basePath)
+        assetdl.downloadLibraries(data, basePath)
+    })*/
 
     win.on('closed', () => {
         win = null
@@ -26,9 +34,10 @@ function createWindow() {
 }
 
 function getPlatformIcon(filename){
-    if (process.platform === 'darwin') {
+    const opSys = process.platform
+    if (opSys === 'darwin') {
         filename = filename + '.icns'
-    } else if (process.platform === 'win32') {
+    } else if (opSys === 'win32') {
         filename = filename + '.ico'
     } else {
         filename = filename + '.png'

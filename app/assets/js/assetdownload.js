@@ -10,29 +10,189 @@ function Asset(from, to, size){
     this.size = size
 }
 
-exports.getMojangAssets = function(version, basePath){
+function AssetIndex(id, sha1, size, url, totalSize){
+    this.id = id
+    this.sha1 = sha1
+    this.size = size
+    this.url = url
+    this.totalSize = totalSize
+}
+
+function ClientDownload(){
+
+}
+
+function ServerDownload(){
+
+}
+
+function Library(){
+
+}
+/**
+ * This function will download the version index data and read it into a Javascript
+ * Object. This object will then be returned.
+ */
+exports.parseVersionData = function(version, basePath){
     const name = version + '.json'
-    const indexURL = 'https://s3.amazonaws.com/Minecraft.Download/indexes/' + name
+    const baseURL = 'https://s3.amazonaws.com/Minecraft.Download/versions/' + version + '/' + name
+    const versionPath = path.join(basePath, 'versions', version)
+    
+    return new Promise(function(fulfill, reject){
+        request.head(baseURL, function(err, res, body){
+            console.log('Preparing download of ' + version + ' assets.')
+            mkpath.sync(versionPath)
+            const stream = request(baseURL).pipe(fs.createWriteStream(path.join(versionPath, name)))
+            stream.on('finish', function(){
+                fulfill(JSON.parse(fs.readFileSync(path.join(versionPath, name))))
+            })
+        })
+    })
+}
+
+/**
+ * Download the client for version. This file is 'client.jar' although
+ * it must be renamed to '{version}'.jar.
+ */
+exports.downloadClient = function(versionData, basePath){
+    const dls = versionData['downloads']
+    const clientData = dls['client']
+    const url = clientData['url']
+    const size = clientData['size']
+    const version = versionData['id']
+    const targetPath = path.join(basePath, 'versions', version)
+    const targetFile = version + '.jar'
+
+    request.head(url, function(err, res, body){
+        console.log('Downloading ' + version + ' client..')
+        mkpath.sync(targetPath)
+        const stream = request(url).pipe(fs.createWriteStream(path.join(targetPath, targetFile)))
+        stream.on('finish', function(){
+            console.log('Finished downloading ' + version + ' client.')
+        })
+    })
+}
+
+exports.downloadLogConfig = function(versionData, basePath){
+    const logging = versionData['logging']
+    const client = logging['client']
+    const file = client['file']
+    const version = versionData['id']
+    const targetPath = path.join(basePath, 'assets', 'log_configs')
+    const name = file['id']
+    const url = file['url']
+
+    request.head(url, function(err, res, body){
+        console.log('Downloading ' + version + ' log config..')
+        mkpath.sync(targetPath)
+        const stream = request(url).pipe(fs.createWriteStream(path.join(targetPath, name)))
+        stream.on('finish', function(){
+            console.log('Finished downloading ' + version + ' log config..')
+        })
+    })
+}
+
+exports.downloadLibraries = function(versionData, basePath){
+    const libArr = versionData['libraries']
+    const libPath = path.join(basePath, 'libraries')
+    async.eachLimit(libArr, 1, function(lib, cb){
+        if(validateRules(lib['rules'])){
+            if(lib['natives'] == null){
+                const dlInfo = lib['downloads']
+                const artifact = dlInfo['artifact']
+                const libSize = artifact['size']
+                const to = path.join(libPath, artifact['path'])
+                const from = artifact['url']
+
+                mkpath.sync(path.join(to, ".."))
+                let req = request(from)
+                let writeStream = fs.createWriteStream(to)
+                req.pipe(writeStream)
+                let acc = 0;
+                req.on('data', function(chunk){
+                    acc += chunk.length
+                    console.log('Progress', acc/libSize)
+                })
+                writeStream.on('close', function(){
+                    cb()
+                })
+            } else {
+                //TODO Perform native extraction.
+            }
+        }
+    }, function(err){
+        if(err){
+            console.log('A file failed to process');
+        } else {
+            console.log('All files have been processed successfully');
+        }
+    })
+}
+
+validateRules = function(rules){
+    if(rules == null) return true;
+
+    rules.forEach(function(rule){
+        const action = rule['action']
+        if(action != null){
+            if(action === 'disallow'){
+                osName = action['os']
+                if(osName != null){
+                    if(osName === mojangFriendlyOS()){
+                        return false;
+                    }
+                }
+            }
+        }
+    })
+    return true;
+}
+
+mojangFriendlyOS = function(){
+    const opSys = process.platform
+    if (opSys === 'darwin') {
+        return 'osx'
+    } else if (opSys === 'win32'){
+        return 'windows'
+    } else if (opSys === 'linux'){
+        return 'linux'
+    } else {
+        return 'unknown_os'
+    }
+}
+
+/**
+ * Given an index url, this function will asynchonously download the
+ * assets associated with that version.
+ */
+exports.downloadAssets = function(versionData, basePath){
+    //Asset index constants.
+    const assetIndex = versionData['assetIndex']
+    const indexURL = assetIndex['url']
+    const datasize = assetIndex['totalSize']
+    const gameVersion = versionData['id']
+    const assetVersion = assetIndex['id']
+    const name = assetVersion + '.json'
+
+    //Asset constants
     const resourceURL = 'http://resources.download.minecraft.net/'
     const localPath = path.join(basePath, 'assets')
     const indexPath = path.join(localPath, 'indexes')
     const objectPath = path.join(localPath, 'objects')
 
     request.head(indexURL, function (err, res, body) {
-        console.log('Downloading ' + version + ' asset index.')
+        console.log('Downloading ' + gameVersion + ' asset index.')
         mkpath.sync(indexPath)
         const stream = request(indexURL).pipe(fs.createWriteStream(path.join(indexPath, name)))
         stream.on('finish', function() {
             const data = JSON.parse(fs.readFileSync(path.join(indexPath, name), 'utf-8'))
             const assetArr = []
-            let datasize = 0;
             Object.keys(data['objects']).forEach(function(key, index){
                 const ob = data['objects'][key]
                 const hash = String(ob['hash'])
                 const assetName = path.join(hash.substring(0, 2), hash)
                 const urlName = hash.substring(0, 2) + "/" + hash
                 const ast = new Asset(resourceURL + urlName, path.join(objectPath, assetName), ob['size'])
-                datasize += ob['size']
                 assetArr.push(ast)
             })
             let acc = 0;
