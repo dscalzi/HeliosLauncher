@@ -1,7 +1,8 @@
 const fs = require('fs')
 const request = require('request')
 const path = require('path')
-var mkpath = require('mkdirp');
+const mkpath = require('mkdirp');
+const async = require('async')
 
 function Asset(from, to, size){
     this.from = from
@@ -20,23 +21,39 @@ exports.getMojangAssets = function(version, basePath){
     request.head(indexURL, function (err, res, body) {
         console.log('Downloading ' + version + ' asset index.')
         mkpath.sync(indexPath)
-        let stream = request(indexURL).pipe(fs.createWriteStream(path.join(indexPath, name)))
+        const stream = request(indexURL).pipe(fs.createWriteStream(path.join(indexPath, name)))
         stream.on('finish', function() {
-            let data = JSON.parse(fs.readFileSync(path.join(indexPath, name), 'utf-8'))
-            let assetArr = []
+            const data = JSON.parse(fs.readFileSync(path.join(indexPath, name), 'utf-8'))
+            const assetArr = []
+            let datasize = 0;
             Object.keys(data['objects']).forEach(function(key, index){
-                let ob = data['objects'][key]
-                let hash = String(ob['hash'])
-                let assetName = path.join(hash.substring(0, 2), hash)
-                let urlName = hash.substring(0, 2) + "/" + hash
-                let ast = new Asset(resourceURL + urlName, path.join(objectPath, assetName), ob['size'])
+                const ob = data['objects'][key]
+                const hash = String(ob['hash'])
+                const assetName = path.join(hash.substring(0, 2), hash)
+                const urlName = hash.substring(0, 2) + "/" + hash
+                const ast = new Asset(resourceURL + urlName, path.join(objectPath, assetName), ob['size'])
+                datasize += ob['size']
                 assetArr.push(ast)
             })
-            assetArr.forEach(function(item, index){
-                mkpath.sync(path.join(item.to, ".."))
-                console.log("downloading asset from " + item.from + " to " + item.to)
-                request(item.from).pipe(fs.createWriteStream(item.to))
-
+            let acc = 0;
+            async.eachLimit(assetArr, 5, function(asset, cb){
+                mkpath.sync(path.join(asset.to, ".."))
+                let req = request(asset.from)
+                let writeStream = fs.createWriteStream(asset.to)
+                req.pipe(writeStream)
+                req.on('data', function(chunk){
+                    acc += chunk.length
+                    console.log('Progress', acc/datasize)
+                })
+                writeStream.on('close', function(){
+                    cb()
+                })
+            }, function(err){
+                if(err){
+                    console.log('A file failed to process');
+                } else {
+                    console.log('All files have been processed successfully');
+                }
             })
         })
     })

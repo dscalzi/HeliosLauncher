@@ -17,7 +17,8 @@
   },
   "homepage": "http://www.westeroscraft.com/",
   "devDependencies": {
+    "async": "^2.3.0",
     "electron": "^1.6.5",
-    "mojang": "^0.4.0"
+    "mojang": "^0.4.0",
   }
 }
