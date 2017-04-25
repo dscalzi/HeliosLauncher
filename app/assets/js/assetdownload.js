@@ -18,17 +18,6 @@ function AssetIndex(id, sha1, size, url, totalSize){
     this.totalSize = totalSize
 }
 
-function ClientDownload(){
-
-}
-
-function ServerDownload(){
-
-}
-
-function Library(){
-
-}
 /**
  * This function will download the version index data and read it into a Javascript
  * Object. This object will then be returned.
@@ -95,6 +84,7 @@ exports.downloadLogConfig = function(versionData, basePath){
 exports.downloadLibraries = function(versionData, basePath){
     const libArr = versionData['libraries']
     const libPath = path.join(basePath, 'libraries')
+    console.log(libArr)
     async.eachLimit(libArr, 1, function(lib, cb){
         if(validateRules(lib['rules'])){
             if(lib['natives'] == null){
@@ -111,53 +101,84 @@ exports.downloadLibraries = function(versionData, basePath){
                 let acc = 0;
                 req.on('data', function(chunk){
                     acc += chunk.length
-                    console.log('Progress', acc/libSize)
+                    //console.log('Progress', acc/libSize)
                 })
                 writeStream.on('close', function(){
                     cb()
                 })
             } else {
-                //TODO Perform native extraction.
+                const natives = lib['natives']
+                const opSys = mojangFriendlyOS()
+                const indexId = natives[opSys]
+                const dlInfo = lib['downloads']
+                const classifiers = dlInfo['classifiers']
+                const artifact = classifiers[indexId]
+
+                const libSize = artifact['size']
+                const to = path.join(libPath, artifact['path'])
+                const from = artifact['url']
+
+                console.log(to)
+
+                mkpath.sync(path.join(to, ".."))
+                let req = request(from)
+                let writeStream = fs.createWriteStream(to)
+                req.pipe(writeStream)
+                let acc = 0;
+                req.on('data', function(chunk){
+                    acc += chunk.length
+                    console.log('Progress', acc/libSize)
+                })
+                writeStream.on('close', function(){
+                    cb()
+                })
             }
+        } else {
+            cb()
         }
     }, function(err){
         if(err){
-            console.log('A file failed to process');
+            console.log('A library failed to process');
         } else {
-            console.log('All files have been processed successfully');
+            console.log('All libraries have been processed successfully');
         }
     })
 }
 
 validateRules = function(rules){
-    if(rules == null) return true;
+    if(rules == null) return true
 
+    let result = true
     rules.forEach(function(rule){
         const action = rule['action']
+        const osProp = rule['os']
         if(action != null){
-            if(action === 'disallow'){
-                osName = action['os']
-                if(osName != null){
-                    if(osName === mojangFriendlyOS()){
-                        return false;
-                    }
-                }
+            if(osProp != null){
+                 const osName = osProp['name']
+                 const osMoj = mojangFriendlyOS()
+                 if(action === 'allow'){
+                     result = osName === osMoj
+                     return
+                 } else if(action === 'disallow'){
+                     result = osName !== osMoj
+                     return
+                 }
             }
         }
     })
-    return true;
+    return result
 }
 
 mojangFriendlyOS = function(){
     const opSys = process.platform
     if (opSys === 'darwin') {
-        return 'osx'
+        return 'osx';
     } else if (opSys === 'win32'){
-        return 'windows'
+        return 'windows';
     } else if (opSys === 'linux'){
-        return 'linux'
+        return 'linux';
     } else {
-        return 'unknown_os'
+        return 'unknown_os';
     }
 }
 
@@ -203,16 +224,16 @@ exports.downloadAssets = function(versionData, basePath){
                 req.pipe(writeStream)
                 req.on('data', function(chunk){
                     acc += chunk.length
-                    console.log('Progress', acc/datasize)
+                    //console.log('Progress', acc/datasize)
                 })
                 writeStream.on('close', function(){
                     cb()
                 })
             }, function(err){
                 if(err){
-                    console.log('A file failed to process');
+                    console.log('An asset failed to process');
                 } else {
-                    console.log('All files have been processed successfully');
+                    console.log('All assets have been processed successfully');
                 }
             })
         })
