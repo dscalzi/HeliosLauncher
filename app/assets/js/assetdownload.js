@@ -3,11 +3,13 @@ const request = require('request')
 const path = require('path')
 const mkpath = require('mkdirp');
 const async = require('async')
+const crypto = require('crypto')
 
-function Asset(from, to, size){
+function Asset(from, to, size, hash){
     this.from = from
     this.to = to
     this.size = size
+    this.hash = hash
 }
 
 function AssetIndex(id, sha1, size, url, totalSize){
@@ -213,22 +215,26 @@ exports.downloadAssets = function(versionData, basePath){
                 const hash = String(ob['hash'])
                 const assetName = path.join(hash.substring(0, 2), hash)
                 const urlName = hash.substring(0, 2) + "/" + hash
-                const ast = new Asset(resourceURL + urlName, path.join(objectPath, assetName), ob['size'])
+                const ast = new Asset(resourceURL + urlName, path.join(objectPath, assetName), ob['size'], hash)
                 assetArr.push(ast)
             })
             let acc = 0;
             async.eachLimit(assetArr, 5, function(asset, cb){
                 mkpath.sync(path.join(asset.to, ".."))
-                let req = request(asset.from)
-                let writeStream = fs.createWriteStream(asset.to)
-                req.pipe(writeStream)
-                req.on('data', function(chunk){
-                    acc += chunk.length
-                    //console.log('Progress', acc/datasize)
-                })
-                writeStream.on('close', function(){
+                if(!validateLocalIntegrity(asset.to, 'sha1', asset.hash)){
+                    let req = request(asset.from)
+                    let writeStream = fs.createWriteStream(asset.to)
+                    req.pipe(writeStream)
+                    req.on('data', function(chunk){
+                        acc += chunk.length
+                        //console.log('Progress', acc/datasize)
+                    })
+                    writeStream.on('close', function(){
+                        cb()
+                    })
+                } else {
                     cb()
-                })
+                }
             }, function(err){
                 if(err){
                     console.log('An asset failed to process');
@@ -238,4 +244,23 @@ exports.downloadAssets = function(versionData, basePath){
             })
         })
     })
+}
+
+validateLocalIntegrity = function(filePath, algo, hash){
+    if(fs.existsSync(filePath)){
+        let fileName = path.basename(filePath)
+        console.log('Validating integrity of local file', fileName)
+        let shasum = crypto.createHash(algo)
+        let content = fs.readFileSync(filePath)
+        shasum.update(content)
+        let localhash = shasum.digest('hex')
+        if(localhash === hash){
+            console.log('Hash value of ' + fileName + ' matches the index hash, woo!')
+            return true
+        } else {
+            console.log('Hash value of ' + fileName + ' (' + localhash + ')' + ' does not match the index hash. Redownloading..')
+            return false
+        }
+    }
+    return false;
 }
