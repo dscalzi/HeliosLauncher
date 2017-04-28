@@ -51,17 +51,20 @@ exports.downloadClient = function(versionData, basePath){
     const url = clientData['url']
     const size = clientData['size']
     const version = versionData['id']
+    const sha1 = clientData['sha1']
     const targetPath = path.join(basePath, 'versions', version)
     const targetFile = version + '.jar'
 
-    request.head(url, function(err, res, body){
-        console.log('Downloading ' + version + ' client..')
-        mkpath.sync(targetPath)
-        const stream = request(url).pipe(fs.createWriteStream(path.join(targetPath, targetFile)))
-        stream.on('finish', function(){
-            console.log('Finished downloading ' + version + ' client.')
+    if(!validateLocalIntegrity(path.join(targetPath, targetFile), 'sha1', sha1)){
+        request.head(url, function(err, res, body){
+            console.log('Downloading ' + version + ' client..')
+            mkpath.sync(targetPath)
+            const stream = request(url).pipe(fs.createWriteStream(path.join(targetPath, targetFile)))
+            stream.on('finish', function(){
+                console.log('Finished downloading ' + version + ' client.')
+            })
         })
-    })
+    }
 }
 
 exports.downloadLogConfig = function(versionData, basePath){
@@ -69,45 +72,51 @@ exports.downloadLogConfig = function(versionData, basePath){
     const client = logging['client']
     const file = client['file']
     const version = versionData['id']
+    const sha1 = file['sha1']
     const targetPath = path.join(basePath, 'assets', 'log_configs')
     const name = file['id']
     const url = file['url']
 
-    request.head(url, function(err, res, body){
-        console.log('Downloading ' + version + ' log config..')
-        mkpath.sync(targetPath)
-        const stream = request(url).pipe(fs.createWriteStream(path.join(targetPath, name)))
-        stream.on('finish', function(){
-            console.log('Finished downloading ' + version + ' log config..')
+    if(!validateLocalIntegrity(path.join(targetPath, name), 'sha1', sha1)){
+        request.head(url, function(err, res, body){
+            console.log('Downloading ' + version + ' log config..')
+            mkpath.sync(targetPath)
+            const stream = request(url).pipe(fs.createWriteStream(path.join(targetPath, name)))
+            stream.on('finish', function(){
+                console.log('Finished downloading ' + version + ' log config..')
+            })
         })
-    })
+    }
 }
 
 exports.downloadLibraries = function(versionData, basePath){
     const libArr = versionData['libraries']
     const libPath = path.join(basePath, 'libraries')
-    console.log(libArr)
     async.eachLimit(libArr, 1, function(lib, cb){
         if(validateRules(lib['rules'])){
             if(lib['natives'] == null){
                 const dlInfo = lib['downloads']
                 const artifact = dlInfo['artifact']
+                const sha1 = artifact['sha1']
                 const libSize = artifact['size']
                 const to = path.join(libPath, artifact['path'])
                 const from = artifact['url']
-
-                mkpath.sync(path.join(to, ".."))
-                let req = request(from)
-                let writeStream = fs.createWriteStream(to)
-                req.pipe(writeStream)
-                let acc = 0;
-                req.on('data', function(chunk){
-                    acc += chunk.length
-                    //console.log('Progress', acc/libSize)
-                })
-                writeStream.on('close', function(){
+                if(!validateLocalIntegrity(to, 'sha1', sha1)){
+                    mkpath.sync(path.join(to, ".."))
+                    let req = request(from)
+                    let writeStream = fs.createWriteStream(to)
+                    req.pipe(writeStream)
+                    let acc = 0;
+                    req.on('data', function(chunk){
+                        acc += chunk.length
+                        //console.log('Progress', acc/libSize)
+                    })
+                    writeStream.on('close', function(){
+                        cb()
+                    })
+                } else {
                     cb()
-                })
+                }
             } else {
                 const natives = lib['natives']
                 const opSys = mojangFriendlyOS()
@@ -119,21 +128,24 @@ exports.downloadLibraries = function(versionData, basePath){
                 const libSize = artifact['size']
                 const to = path.join(libPath, artifact['path'])
                 const from = artifact['url']
+                const sha1 = artifact['sha1']
 
-                console.log(to)
-
-                mkpath.sync(path.join(to, ".."))
-                let req = request(from)
-                let writeStream = fs.createWriteStream(to)
-                req.pipe(writeStream)
-                let acc = 0;
-                req.on('data', function(chunk){
-                    acc += chunk.length
-                    console.log('Progress', acc/libSize)
-                })
-                writeStream.on('close', function(){
+                if(!validateLocalIntegrity(to, 'sha1', sha1)){
+                    mkpath.sync(path.join(to, ".."))
+                    let req = request(from)
+                    let writeStream = fs.createWriteStream(to)
+                    req.pipe(writeStream)
+                    let acc = 0;
+                    req.on('data', function(chunk){
+                        acc += chunk.length
+                        console.log('Progress', acc/libSize)
+                    })
+                    writeStream.on('close', function(){
+                        cb()
+                    })
+                } else {
                     cb()
-                })
+                }
             }
         } else {
             cb()
@@ -145,43 +157,6 @@ exports.downloadLibraries = function(versionData, basePath){
             console.log('All libraries have been processed successfully');
         }
     })
-}
-
-validateRules = function(rules){
-    if(rules == null) return true
-
-    let result = true
-    rules.forEach(function(rule){
-        const action = rule['action']
-        const osProp = rule['os']
-        if(action != null){
-            if(osProp != null){
-                 const osName = osProp['name']
-                 const osMoj = mojangFriendlyOS()
-                 if(action === 'allow'){
-                     result = osName === osMoj
-                     return
-                 } else if(action === 'disallow'){
-                     result = osName !== osMoj
-                     return
-                 }
-            }
-        }
-    })
-    return result
-}
-
-mojangFriendlyOS = function(){
-    const opSys = process.platform
-    if (opSys === 'darwin') {
-        return 'osx';
-    } else if (opSys === 'win32'){
-        return 'windows';
-    } else if (opSys === 'linux'){
-        return 'linux';
-    } else {
-        return 'unknown_os';
-    }
 }
 
 /**
@@ -263,4 +238,41 @@ validateLocalIntegrity = function(filePath, algo, hash){
         }
     }
     return false;
+}
+
+validateRules = function(rules){
+    if(rules == null) return true
+
+    let result = true
+    rules.forEach(function(rule){
+        const action = rule['action']
+        const osProp = rule['os']
+        if(action != null){
+            if(osProp != null){
+                 const osName = osProp['name']
+                 const osMoj = mojangFriendlyOS()
+                 if(action === 'allow'){
+                     result = osName === osMoj
+                     return
+                 } else if(action === 'disallow'){
+                     result = osName !== osMoj
+                     return
+                 }
+            }
+        }
+    })
+    return result
+}
+
+mojangFriendlyOS = function(){
+    const opSys = process.platform
+    if (opSys === 'darwin') {
+        return 'osx';
+    } else if (opSys === 'win32'){
+        return 'windows';
+    } else if (opSys === 'linux'){
+        return 'linux';
+    } else {
+        return 'unknown_os';
+    }
 }
