@@ -8,13 +8,14 @@ const unzip = require('unzip')
 const mkpath = require('mkdirp');
 
 exports.launchMinecraft = function(versionData, basePath){
-    const authPromise = mojang.auth('EMAIL', 'PASS', uuidV4(), {
+    const authPromise = mojang.auth('nytrocraft@live.com', 'applesrgood123', uuidV4(), {
         name: 'Minecraft',
         version: 1
     })
     authPromise.then(function(data){
         const hardcodedargs = ''
         const args = finalizeArguments(versionData, data, basePath)
+        //console.log(data)
         //console.log(args)
         //TODO make this dynamic
         const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', args)
@@ -23,6 +24,8 @@ exports.launchMinecraft = function(versionData, basePath){
 
 finalizeArguments = function(versionData, authData, basePath){
     const mcArgs = versionData['minecraftArguments']
+    console.log(authData)
+    const gameProfile = authData['selectedProfile']
     const regex = new RegExp('\\${*(.*)}')
     const argArr = mcArgs.split(' ')
     argArr.unshift('net.minecraft.client.main.Main')
@@ -37,12 +40,10 @@ finalizeArguments = function(versionData, authData, basePath){
     for(let i=0; i<argArr.length; i++){
         if(regex.test(argArr[i])){
             const identifier = argArr[i].match(regex)[1]
-            //console.log(argArr[i].match(regex)[1])
             let newVal = argArr[i]
             switch(identifier){
                 case 'auth_player_name':
-                    //TODO make this DYNAMIC
-                    newVal = 'iPepsiHD'
+                    newVal = gameProfile['name']
                     break
                 case 'version_name':
                     newVal = versionData['id']
@@ -57,14 +58,12 @@ finalizeArguments = function(versionData, authData, basePath){
                     newVal = versionData['assets']
                     break
                 case 'auth_uuid':
-                    //TODO make this DYNAMIC
-                    newVal = '48f0a3d02ae14ca4aa0011bb8bc4f39e'
+                    newVal = gameProfile['id']
                     break
                 case 'auth_access_token':
                     newVal = authData['accessToken']
                     break
                 case 'user_type':
-                    //TODO make this DYNAMIC
                     newVal = 'MOJANG'
                     break
                 case 'version_type':
@@ -82,8 +81,8 @@ classpathArg = function(versionData, basePath){
     const libArr = versionData['libraries']
     const libPath = path.join(basePath, 'libraries')
     const nativePath = path.join(basePath, 'natives')
-    //TODO make this dynamic
-    const cpArgs = ['C:\\Users\\Asus\\Desktop\\LauncherElectron\\mcfiles\\versions\\1.11.2\\1.11.2.jar']
+    const version = versionData['id']
+    const cpArgs = [path.join(basePath, 'versions', version, version + '.jar')]
     libArr.forEach(function(lib){
         if(library.validateRules(lib['rules'])){
             if(lib['natives'] == null){

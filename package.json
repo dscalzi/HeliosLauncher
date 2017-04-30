@@ -19,7 +19,8 @@
   "devDependencies": {
     "async": "^2.3.0",
     "electron": "^1.6.5",
-    "mojang": "^0.4.0",
+    "extract-zip": "=1.6.0",
+    "mojang": "^0.4.1",
     "promise": "^7.1.1",
     "unzip": "^0.1.11",
     "uuid": "^3.0.1"
