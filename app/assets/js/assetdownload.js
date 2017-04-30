@@ -4,6 +4,7 @@ const path = require('path')
 const mkpath = require('mkdirp');
 const async = require('async')
 const crypto = require('crypto')
+const libary = require('./library.js')
 
 function Asset(from, to, size, hash){
     this.from = from
@@ -93,7 +94,7 @@ exports.downloadLibraries = function(versionData, basePath){
     const libArr = versionData['libraries']
     const libPath = path.join(basePath, 'libraries')
     async.eachLimit(libArr, 1, function(lib, cb){
-        if(validateRules(lib['rules'])){
+        if(library.validateRules(lib['rules'])){
             if(lib['natives'] == null){
                 const dlInfo = lib['downloads']
                 const artifact = dlInfo['artifact']
@@ -119,7 +120,7 @@ exports.downloadLibraries = function(versionData, basePath){
                 }
             } else {
                 const natives = lib['natives']
-                const opSys = mojangFriendlyOS()
+                const opSys = library.mojangFriendlyOS()
                 const indexId = natives[opSys]
                 const dlInfo = lib['downloads']
                 const classifiers = dlInfo['classifiers']
@@ -238,41 +239,4 @@ validateLocalIntegrity = function(filePath, algo, hash){
         }
     }
     return false;
-}
-
-validateRules = function(rules){
-    if(rules == null) return true
-
-    let result = true
-    rules.forEach(function(rule){
-        const action = rule['action']
-        const osProp = rule['os']
-        if(action != null){
-            if(osProp != null){
-                 const osName = osProp['name']
-                 const osMoj = mojangFriendlyOS()
-                 if(action === 'allow'){
-                     result = osName === osMoj
-                     return
-                 } else if(action === 'disallow'){
-                     result = osName !== osMoj
-                     return
-                 }
-            }
-        }
-    })
-    return result
-}
-
-mojangFriendlyOS = function(){
-    const opSys = process.platform
-    if (opSys === 'darwin') {
-        return 'osx';
-    } else if (opSys === 'win32'){
-        return 'windows';
-    } else if (opSys === 'linux'){
-        return 'linux';
-    } else {
-        return 'unknown_os';
-    }
 }
