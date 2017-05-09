@@ -16,10 +16,11 @@
     "url": "https://gitlab.com/westeroscraft/electronlauncher/issues"
   },
   "homepage": "http://www.westeroscraft.com/",
-  "devDependencies": {
+  "dependencies": {
     "async": "^2.3.0",
     "electron": "^1.6.5",
     "extract-zip": "=1.6.0",
+    "jQuery": "^1.7.4",
     "mojang": "^0.4.1",
     "promise": "^7.1.1",
     "unzip": "^0.1.11",

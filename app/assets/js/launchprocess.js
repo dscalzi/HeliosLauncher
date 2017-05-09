@@ -8,15 +8,13 @@ const unzip = require('unzip')
 const mkpath = require('mkdirp');
 
 exports.launchMinecraft = function(versionData, basePath){
-    const authPromise = mojang.auth('nytrocraft@live.com', 'applesrgood123', uuidV4(), {
+    const authPromise = mojang.auth('EMAIL', 'PASS', uuidV4(), {
         name: 'Minecraft',
         version: 1
     })
     authPromise.then(function(data){
         const hardcodedargs = ''
         const args = finalizeArguments(versionData, data, basePath)
-        //console.log(data)
-        //console.log(args)
         //TODO make this dynamic
         const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', args)
     })

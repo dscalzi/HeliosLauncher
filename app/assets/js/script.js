@@ -1,8 +1,16 @@
+var $ = require('jQuery');
 const remote = require('electron').remote
+const shell = require('electron').shell
 
-//Opens DevTools window if you type "wcdev" in sequence.
-//This will crash the program if you are using multiple
-//DevTools, for example the chrome debugger in VS Code.
+/* Open web links in the user's default browser. */
+$(document).on('click', 'a[href^="http"]', function(event) {
+    event.preventDefault();
+    shell.openExternal(this.href);
+});
+
+/*Opens DevTools window if you type "wcdev" in sequence.
+  This will crash the program if you are using multiple
+  DevTools, for example the chrome debugger in VS Code. */
 const match = [87, 67, 68, 69, 86]
 let at = 0;
 
@@ -31,5 +39,3 @@ document.addEventListener('keydown', function (e) {
         at = 0
     }
 })
-
-console.log('Can you see me? ( ͡° ͜ʖ ͡°) Then it\'s working!')
