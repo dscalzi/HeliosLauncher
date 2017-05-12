@@ -22,6 +22,7 @@
  *                                                                             *
  ******************************************************************************/
 
+/* Reset body, html, and div presets. */
 body, html, div {
     margin: 0px;
     padding: 0px;
@@ -38,7 +39,7 @@ html {
  *                                                                             *
  ******************************************************************************/
 
-/* Main div header container/ */
+/* Main div header container. */
 #header_container {
     background-color: black;
     padding: 5px;
@@ -68,19 +69,53 @@ html {
    display: block;
 }
 
-/* Div container for the social buttons */
+/* Div container for the social buttons. */
 #header_social_container {
-   font-size: 16px;
    position: absolute;
    bottom: 0px;
    right: 0px;
-   margin-right: 5px;
+   margin-bottom: 5px;
 }
 
-/* Social buttons */
+/* Social buttons. */
 .header_social_img {
     height: 25px;
     width: auto;
     display: inline-block;
     cursor: pointer;
+    margin-right: 5px;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Left Body Container                                                         *
+ *                                                                             *
+ ******************************************************************************/
+
+#body_left_container {
+    width: 25%;
+    display: inline-block;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Right Body Container                                                        *
+ *                                                                             *
+ ******************************************************************************/
+
+#body_right_container {
+    width: 75%;
+    display: inline-block;
+}
+
+.mtoggle_button {
+    text-align:centre; 
+    margin:5px 2px;
+    padding:0.4em 3em; 
+    color:#000; 
+    background-color:#FFF; 
+    border-radius:10px; 
+    display:inline-block; 
+    border:solid 1px #CCC; 
+    cursor:pointer;
 }

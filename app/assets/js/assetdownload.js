@@ -4,7 +4,8 @@ const path = require('path')
 const mkpath = require('mkdirp');
 const async = require('async')
 const crypto = require('crypto')
-const libary = require('./library.js')
+const library = require('./library.js')
+const {BrowserWindow} = require('electron')
 
 function Asset(from, to, size, hash){
     this.from = from
@@ -21,11 +22,19 @@ function AssetIndex(id, sha1, size, url, totalSize){
     this.totalSize = totalSize
 }
 
+function Library(id, sha1, size, from, to){
+    this.id = id
+    this.sha1 = sha1
+    this.size = size
+    this.from = from
+    this.to = to
+}
+
 /**
  * This function will download the version index data and read it into a Javascript
  * Object. This object will then be returned.
  */
-exports.parseVersionData = function(version, basePath){
+parseVersionData = function(version, basePath){
     const name = version + '.json'
     const baseURL = 'https://s3.amazonaws.com/Minecraft.Download/versions/' + version + '/' + name
     const versionPath = path.join(basePath, 'versions', version)
@@ -46,7 +55,7 @@ exports.parseVersionData = function(version, basePath){
  * Download the client for version. This file is 'client.jar' although
  * it must be renamed to '{version}'.jar.
  */
-exports.downloadClient = function(versionData, basePath){
+downloadClient = function(versionData, basePath){
     const dls = versionData['downloads']
     const clientData = dls['client']
     const url = clientData['url']
@@ -68,7 +77,7 @@ exports.downloadClient = function(versionData, basePath){
     }
 }
 
-exports.downloadLogConfig = function(versionData, basePath){
+downloadLogConfig = function(versionData, basePath){
     const logging = versionData['logging']
     const client = logging['client']
     const file = client['file']
@@ -90,73 +99,53 @@ exports.downloadLogConfig = function(versionData, basePath){
     }
 }
 
-exports.downloadLibraries = function(versionData, basePath){
+downloadLibraries = function(versionData, basePath){
     const libArr = versionData['libraries']
     const libPath = path.join(basePath, 'libraries')
-    async.eachLimit(libArr, 1, function(lib, cb){
-        if(library.validateRules(lib['rules'])){
-            if(lib['natives'] == null){
-                const dlInfo = lib['downloads']
-                const artifact = dlInfo['artifact']
-                const sha1 = artifact['sha1']
-                const libSize = artifact['size']
-                const to = path.join(libPath, artifact['path'])
-                const from = artifact['url']
-                if(!validateLocalIntegrity(to, 'sha1', sha1)){
-                    mkpath.sync(path.join(to, ".."))
-                    let req = request(from)
-                    let writeStream = fs.createWriteStream(to)
-                    req.pipe(writeStream)
-                    let acc = 0;
-                    req.on('data', function(chunk){
-                        acc += chunk.length
-                        //console.log('Progress', acc/libSize)
-                    })
-                    writeStream.on('close', function(){
-                        cb()
-                    })
-                } else {
-                    cb()
-                }
+
+    let win = BrowserWindow.getFocusedWindow()
+    const libDlQueue = []
+    let dlSize = 0
+
+    //Check validity of each library. If the hashs don't match, download the library.
+    libArr.forEach(function(lib, index){
+        if(library.validateRules(lib.rules)){
+            let artifact = null
+            if(lib.natives == null){
+                artifact = lib.downloads.artifact
             } else {
-                const natives = lib['natives']
-                const opSys = library.mojangFriendlyOS()
-                const indexId = natives[opSys]
-                const dlInfo = lib['downloads']
-                const classifiers = dlInfo['classifiers']
-                const artifact = classifiers[indexId]
-
-                const libSize = artifact['size']
-                const to = path.join(libPath, artifact['path'])
-                const from = artifact['url']
-                const sha1 = artifact['sha1']
-
-                if(!validateLocalIntegrity(to, 'sha1', sha1)){
-                    mkpath.sync(path.join(to, ".."))
-                    let req = request(from)
-                    let writeStream = fs.createWriteStream(to)
-                    req.pipe(writeStream)
-                    let acc = 0;
-                    req.on('data', function(chunk){
-                        acc += chunk.length
-                        console.log('Progress', acc/libSize)
-                    })
-                    writeStream.on('close', function(){
-                        cb()
-                    })
-                } else {
-                    cb()
-                }
+                artifact = lib.downloads.classifiers[lib.natives[library.mojangFriendlyOS()]]
             }
-        } else {
-            cb()
+            const libItm = new Library(lib.name, artifact.sha1, artifact.size, artifact.url, path.join(libPath, artifact.path))
+            if(!validateLocalIntegrity(libItm.to, 'sha1', libItm.sha1)){
+                dlSize += libItm.size
+                libDlQueue.push(libItm)
+            }
         }
+    })
+
+    let acc = 0;
+
+    //Download all libraries that failed validation.
+    async.eachLimit(libDlQueue, 1, function(lib, cb){
+        mkpath.sync(path.join(lib.to, '..'))
+        let req = request(lib.from)
+        let writeStream = fs.createWriteStream(lib.to)
+        req.pipe(writeStream)
+
+        req.on('data', function(chunk){
+            acc += chunk.length
+            //console.log('Progress', acc/dlSize)
+            win.setProgressBar(acc/dlSize)
+        })
+        writeStream.on('close', cb)
     }, function(err){
         if(err){
             console.log('A library failed to process');
         } else {
             console.log('All libraries have been processed successfully');
         }
+        win.setProgressBar(-1)
     })
 }
 
@@ -164,13 +153,12 @@ exports.downloadLibraries = function(versionData, basePath){
  * Given an index url, this function will asynchonously download the
  * assets associated with that version.
  */
-exports.downloadAssets = function(versionData, basePath){
+downloadAssets = function(versionData, basePath){
     //Asset index constants.
-    const assetIndex = versionData['assetIndex']
-    const indexURL = assetIndex['url']
-    const datasize = assetIndex['totalSize']
-    const gameVersion = versionData['id']
-    const assetVersion = assetIndex['id']
+    const assetIndex = versionData.assetIndex
+    const indexURL = assetIndex.url
+    const gameVersion = versionData.id
+    const assetVersion = assetIndex.id
     const name = assetVersion + '.json'
 
     //Asset constants
@@ -178,46 +166,51 @@ exports.downloadAssets = function(versionData, basePath){
     const localPath = path.join(basePath, 'assets')
     const indexPath = path.join(localPath, 'indexes')
     const objectPath = path.join(localPath, 'objects')
+    
+    let win = BrowserWindow.getFocusedWindow()
 
-    request.head(indexURL, function (err, res, body) {
-        console.log('Downloading ' + gameVersion + ' asset index.')
-        mkpath.sync(indexPath)
-        const stream = request(indexURL).pipe(fs.createWriteStream(path.join(indexPath, name)))
-        stream.on('finish', function() {
-            const data = JSON.parse(fs.readFileSync(path.join(indexPath, name), 'utf-8'))
-            const assetArr = []
-            Object.keys(data['objects']).forEach(function(key, index){
-                const ob = data['objects'][key]
-                const hash = String(ob['hash'])
-                const assetName = path.join(hash.substring(0, 2), hash)
-                const urlName = hash.substring(0, 2) + "/" + hash
-                const ast = new Asset(resourceURL + urlName, path.join(objectPath, assetName), ob['size'], hash)
-                assetArr.push(ast)
+    const assetIndexLoc = path.join(indexPath, name)
+    /*if(!fs.existsSync(assetIndexLoc)){
+
+    }*/
+    console.log('Downloading ' + gameVersion + ' asset index.')
+    mkpath.sync(indexPath)
+    const stream = request(indexURL).pipe(fs.createWriteStream(assetIndexLoc))
+    stream.on('finish', function() {
+        const data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
+        const assetDlQueue = []
+        let dlSize = 0;
+        Object.keys(data.objects).forEach(function(key, index){
+            const ob = data.objects[key]
+            const hash = ob.hash
+            const assetName = path.join(hash.substring(0, 2), hash)
+            const urlName = hash.substring(0, 2) + "/" + hash
+            const ast = new Asset(resourceURL + urlName, path.join(objectPath, assetName), ob.size, String(ob.hash))
+            if(!validateLocalIntegrity(ast.to, 'sha1', ast.hash)){
+                dlSize += ast.size
+                assetDlQueue.push(ast)
+            }
+        })
+
+        let acc = 0;
+        async.eachLimit(assetDlQueue, 5, function(asset, cb){
+            mkpath.sync(path.join(asset.to, ".."))
+            let req = request(asset.from)
+            let writeStream = fs.createWriteStream(asset.to)
+            req.pipe(writeStream)
+            req.on('data', function(chunk){
+                acc += chunk.length
+                console.log('Progress', acc/dlSize)
+                win.setProgressBar(acc/dlSize)
             })
-            let acc = 0;
-            async.eachLimit(assetArr, 5, function(asset, cb){
-                mkpath.sync(path.join(asset.to, ".."))
-                if(!validateLocalIntegrity(asset.to, 'sha1', asset.hash)){
-                    let req = request(asset.from)
-                    let writeStream = fs.createWriteStream(asset.to)
-                    req.pipe(writeStream)
-                    req.on('data', function(chunk){
-                        acc += chunk.length
-                        //console.log('Progress', acc/datasize)
-                    })
-                    writeStream.on('close', function(){
-                        cb()
-                    })
-                } else {
-                    cb()
-                }
-            }, function(err){
-                if(err){
-                    console.log('An asset failed to process');
-                } else {
-                    console.log('All assets have been processed successfully');
-                }
-            })
+            writeStream.on('close', cb)
+        }, function(err){
+            if(err){
+                console.log('An asset failed to process');
+            } else {
+                console.log('All assets have been processed successfully');
+            }
+            win.setProgressBar(-1)
         })
     })
 }
@@ -239,4 +232,12 @@ validateLocalIntegrity = function(filePath, algo, hash){
         }
     }
     return false;
+}
+
+module.exports = {
+    parseVersionData,
+    downloadClient,
+    downloadLogConfig,
+    downloadLibraries,
+    downloadAssets
 }

@@ -22,11 +22,12 @@ function createWindow() {
     const basePath = path.join(__dirname, 'mcfiles')
     const dataPromise = assetdl.parseVersionData('1.11.2', basePath)
     dataPromise.then(function(data){
+        assetdl.downloadAssets(data, basePath)
         //assetdl.downloadAssets(data, basePath)
         //assetdl.downloadClient(data, basePath)
         //assetdl.downloadLogConfig(data, basePath)
         //assetdl.downloadLibraries(data, basePath)
-        require('./app/assets/js/launchprocess.js').launchMinecraft(data, basePath)
+        //require('./app/assets/js/launchprocess.js').launchMinecraft(data, basePath)
     })*/
 
     win.on('closed', () => {
