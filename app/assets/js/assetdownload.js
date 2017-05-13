@@ -4,8 +4,12 @@ const path = require('path')
 const mkpath = require('mkdirp');
 const async = require('async')
 const crypto = require('crypto')
-const library = require('./library.js')
+const Library = require('./library.js')
 const {BrowserWindow} = require('electron')
+
+/**
+ * PHASING THIS OUT, WILL BE REMOVED WHEN ASSET GUARD MODULE IS COMPLETE!
+ */
 
 function Asset(from, to, size, hash){
     this.from = from
@@ -20,14 +24,6 @@ function AssetIndex(id, sha1, size, url, totalSize){
     this.size = size
     this.url = url
     this.totalSize = totalSize
-}
-
-function Library(id, sha1, size, from, to){
-    this.id = id
-    this.sha1 = sha1
-    this.size = size
-    this.from = from
-    this.to = to
 }
 
 /**
@@ -109,12 +105,12 @@ downloadLibraries = function(versionData, basePath){
 
     //Check validity of each library. If the hashs don't match, download the library.
     libArr.forEach(function(lib, index){
-        if(library.validateRules(lib.rules)){
+        if(Library.validateRules(lib.rules)){
             let artifact = null
             if(lib.natives == null){
                 artifact = lib.downloads.artifact
             } else {
-                artifact = lib.downloads.classifiers[lib.natives[library.mojangFriendlyOS()]]
+                artifact = lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()]]
             }
             const libItm = new Library(lib.name, artifact.sha1, artifact.size, artifact.url, path.join(libPath, artifact.path))
             if(!validateLocalIntegrity(libItm.to, 'sha1', libItm.sha1)){

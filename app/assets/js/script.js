@@ -1,12 +1,25 @@
 var $ = require('jQuery');
 const remote = require('electron').remote
 const shell = require('electron').shell
+const path = require('path')
 
 /* Open web links in the user's default browser. */
 $(document).on('click', 'a[href^="http"]', function(event) {
     event.preventDefault();
-    shell.openExternal(this.href);
+    //testdownloads()
+    shell.openExternal(this.href)
 });
+
+testdownloads = async function(){
+    const ag = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
+    const basePath = path.join(__dirname, '..', 'mcfiles')
+    let versionData = await ag.loadVersionData('1.11.2', basePath)
+    await ag.validateAssets(versionData, basePath)
+    console.log('assets done')
+    await ag.validateLibraries(versionData, basePath)
+    console.log('libs done')
+    ag.runQueue()
+}
 
 /*Opens DevTools window if you type "wcdev" in sequence.
   This will crash the program if you are using multiple
