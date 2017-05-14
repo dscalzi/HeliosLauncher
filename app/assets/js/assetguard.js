@@ -21,7 +21,7 @@
  * 
  * @module assetguard
  */
-//Requirements
+// Requirements
 const fs = require('fs')
 const request = require('request')
 const path = require('path')
@@ -31,7 +31,7 @@ const crypto = require('crypto')
 const EventEmitter = require('events');
 const {remote} = require('electron')
 
-/* Classes */
+// Classes
 
 /** Class representing a base asset. */
 class Asset{
@@ -148,7 +148,9 @@ class AssetGuard extends EventEmitter{
     }
 }
 
-//Instance of AssetGuard
+/**
+ * Global static final instance of AssetGuard
+ */
 const instance = new AssetGuard()
 
 // Utility Functions
@@ -161,7 +163,7 @@ const instance = new AssetGuard()
  * @param {String} hash - the existing hash to check against.
  * @returns {Boolean} - true if the file exists and calculated hash matches the given hash, otherwise false.
  */
-validateLocal = function(filePath, algo, hash){
+function validateLocal(filePath, algo, hash){
     if(fs.existsSync(filePath)){
         let fileName = path.basename(filePath)
         let shasum = crypto.createHash(algo)
@@ -220,7 +222,7 @@ function startAsyncProcess(identifier, limit = 5){
     }
 }
 
-/* Validation Functions */
+// Validation Functions
 
 /**
  * Loads the version data for a given minecraft version.
@@ -296,7 +298,7 @@ function _assetChainIndexData(versionData, basePath, force = false){
     })
 }
 
-_assetChainValidateAssets = function(versionData, basePath, indexData){
+function _assetChainValidateAssets(versionData, basePath, indexData){
     return new Promise(function(fulfill, reject){
 
         //Asset constants
@@ -329,7 +331,7 @@ _assetChainValidateAssets = function(versionData, basePath, indexData){
 /**
  * Public library validation method.
  */
-validateLibraries = function(versionData, basePath){
+function validateLibraries(versionData, basePath){
     return new Promise(function(fulfill, reject){
 
         const libArr = versionData.libraries
@@ -360,7 +362,7 @@ validateLibraries = function(versionData, basePath){
 /**
  * Public miscellaneous mojang file validation function.
  */
-validateMiscellaneous = function(versionData, basePath){
+function validateMiscellaneous(versionData, basePath){
     return new Promise(async function(fulfill, reject){
         await validateClient(versionData, basePath)
         await validateLogConfig(versionData, basePath)
@@ -369,7 +371,7 @@ validateMiscellaneous = function(versionData, basePath){
 }
 
 //Validate client - artifact renamed from client.jar to '{version}'.jar.
-validateClient = function(versionData, basePath, force = false){
+function validateClient(versionData, basePath, force = false){
     return new Promise(function(fulfill, reject){
         const clientData = versionData.downloads.client
         const version = versionData.id
@@ -389,7 +391,7 @@ validateClient = function(versionData, basePath, force = false){
 }
 
 //Validate log config.
-validateLogConfig = function(versionData, basePath){
+function validateLogConfig(versionData, basePath){
     return new Promise(function(fulfill, reject){
         const client = versionData.logging.client
         const file = client.file
@@ -407,7 +409,7 @@ validateLogConfig = function(versionData, basePath){
     })
 }
 
-processDlQueues = function(identifiers = [{id:'assets', limit:20}, {id:'libraries', limit:5}, {id:'files', limit:5}]){
+function processDlQueues(identifiers = [{id:'assets', limit:20}, {id:'libraries', limit:5}, {id:'files', limit:5}]){
     this.progress = 0;
     let win = remote.getCurrentWindow()
 
