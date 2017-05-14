@@ -257,8 +257,13 @@ function loadVersionData(version, basePath, force = false){
 /**
  * Public asset validation function. This function will handle the validation of assets.
  * It will parse the asset index specified in the version data, analyzing each
- * asset entry. In this analysis it will check {todo finish later i'm tired ZZzzzz}
+ * asset entry. In this analysis it will check to see if the local file exists and is valid.
+ * If not, it will be added to the download queue for the 'assets' identifier.
  * 
+ * @param {Object} versionData - the version data for the assets.
+ * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+ * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
+ * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
  */
 function validateAssets(versionData, basePath, force = false){
     return new Promise(function(fulfill, reject){
@@ -269,7 +274,14 @@ function validateAssets(versionData, basePath, force = false){
 }
 
 //Chain the asset tasks to provide full async. The below functions are private.
-
+/**
+ * Private function used to chain the asset validation process. This function retrieves
+ * the index data.
+ * @param {Object} versionData
+ * @param {String} basePath
+ * @param {Boolean} force
+ * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+ */
 function _assetChainIndexData(versionData, basePath, force = false){
     return new Promise(function(fulfill, reject){
         //Asset index constants.
@@ -298,6 +310,14 @@ function _assetChainIndexData(versionData, basePath, force = false){
     })
 }
 
+/**
+ * Private function used to chain the asset validation process. This function processes
+ * the assets and enqueues missing or invalid files.
+ * @param {Object} versionData
+ * @param {String} basePath
+ * @param {Boolean} force
+ * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+ */
 function _assetChainValidateAssets(versionData, basePath, indexData){
     return new Promise(function(fulfill, reject){
 
@@ -329,7 +349,14 @@ function _assetChainValidateAssets(versionData, basePath, indexData){
 }
 
 /**
- * Public library validation method.
+ * Public library validation function. This function will handle the validation of libraries.
+ * It will parse the version data, analyzing each library entry. In this analysis, it will
+ * check to see if the local file exists and is valid. If not, it will be added to the download
+ * queue for the 'libraries' identifier.
+ * 
+ * @param {Object} versionData - the version data for the assets.
+ * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+ * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
  */
 function validateLibraries(versionData, basePath){
     return new Promise(function(fulfill, reject){
@@ -360,7 +387,12 @@ function validateLibraries(versionData, basePath){
 }
 
 /**
- * Public miscellaneous mojang file validation function.
+ * Public miscellaneous mojang file validation function. These files will be enqueued under
+ * the 'files' identifier.
+ * 
+ * @param {Object} versionData - the version data for the assets.
+ * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+ * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
  */
 function validateMiscellaneous(versionData, basePath){
     return new Promise(async function(fulfill, reject){
@@ -370,7 +402,14 @@ function validateMiscellaneous(versionData, basePath){
     })
 }
 
-//Validate client - artifact renamed from client.jar to '{version}'.jar.
+/**
+ * Validate client file - artifact renamed from client.jar to '{version}'.jar.
+ * 
+ * @param {Object} versionData - the version data for the assets.
+ * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+ * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
+ * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+ */
 function validateClient(versionData, basePath, force = false){
     return new Promise(function(fulfill, reject){
         const clientData = versionData.downloads.client
@@ -390,7 +429,14 @@ function validateClient(versionData, basePath, force = false){
     })
 }
 
-//Validate log config.
+/**
+ * Validate log config.
+ * 
+ * @param {Object} versionData - the version data for the assets.
+ * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+ * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
+ * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+ */
 function validateLogConfig(versionData, basePath){
     return new Promise(function(fulfill, reject){
         const client = versionData.logging.client
@@ -409,6 +455,16 @@ function validateLogConfig(versionData, basePath){
     })
 }
 
+/**
+ * This function will initiate the download processed for the specified identifiers. If no argument is
+ * given, all identifiers will be initiated. Note that in order for files to be processed you need to run
+ * the processing function corresponding to that identifier. If you run this function without processing
+ * the files, it is likely nothing will be enqueued in the global object and processing will complete
+ * immediately. Once all downloads are complete, this function will fire the 'dlcomplete' event on the
+ * global object instance.
+ * 
+ * @param {Array.<{id: string, limit: number}>} identifiers - optional. The identifiers to process and corresponding parallel async task limit.
+ */
 function processDlQueues(identifiers = [{id:'assets', limit:20}, {id:'libraries', limit:5}, {id:'files', limit:5}]){
     this.progress = 0;
     let win = remote.getCurrentWindow()
