@@ -2,18 +2,17 @@ const mojang = require('mojang')
 const uuidV4 = require('uuid/v4')
 const path = require('path')
 const child_process = require('child_process')
-const library = require('./library.js')
+const ag = require('./assetguard.js')
 const fs = require('fs')
 const unzip = require('unzip')
 const mkpath = require('mkdirp');
 
-exports.launchMinecraft = function(versionData, basePath){
+launchMinecraft = function(versionData, basePath){
     const authPromise = mojang.auth('EMAIL', 'PASS', uuidV4(), {
         name: 'Minecraft',
         version: 1
     })
     authPromise.then(function(data){
-        const hardcodedargs = ''
         const args = finalizeArguments(versionData, data, basePath)
         //TODO make this dynamic
         const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', args)
@@ -22,7 +21,6 @@ exports.launchMinecraft = function(versionData, basePath){
 
 finalizeArguments = function(versionData, authData, basePath){
     const mcArgs = versionData['minecraftArguments']
-    console.log(authData)
     const gameProfile = authData['selectedProfile']
     const regex = new RegExp('\\${*(.*)}')
     const argArr = mcArgs.split(' ')
@@ -82,7 +80,7 @@ classpathArg = function(versionData, basePath){
     const version = versionData['id']
     const cpArgs = [path.join(basePath, 'versions', version, version + '.jar')]
     libArr.forEach(function(lib){
-        if(library.validateRules(lib['rules'])){
+        if(ag.Library.validateRules(lib['rules'])){
             if(lib['natives'] == null){
                 const dlInfo = lib['downloads']
                 const artifact = dlInfo['artifact']
@@ -93,7 +91,7 @@ classpathArg = function(versionData, basePath){
                 const natives = lib['natives']
                 const extractInst = lib['extract']
                 const exclusionArr = extractInst['exclude']
-                const opSys = library.mojangFriendlyOS()
+                const opSys = ag.Library.mojangFriendlyOS()
                 const indexId = natives[opSys]
                 const dlInfo = lib['downloads']
                 const classifiers = dlInfo['classifiers']
@@ -131,4 +129,8 @@ classpathArg = function(versionData, basePath){
     })
 
     return cpArgs.join(';')
+}
+
+module.exports = {
+    launchMinecraft
 }

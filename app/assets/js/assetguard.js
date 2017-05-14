@@ -1,4 +1,27 @@
-/* Requirements */
+/**
+ * AssetGuard
+ * 
+ * This module aims to provide a comprehensive and stable method for processing
+ * and downloading game assets for the WesterosCraft server. A central object
+ * stores download meta for several identifiers (categories). This meta data
+ * is initially empty until one of the module's processing functions are called.
+ * That function will process the corresponding asset index and validate any exisitng
+ * local files. If a file is missing or fails validation, it will be placed into an
+ * array which acts as a queue. This queue is wrapped in a download tracker object
+ * so that essential information can be cached. The download tracker object is then
+ * assigned as the value of the identifier in the central object. These download
+ * trackers will remain idle until an async process is started to process them.
+ * 
+ * Once the async process is started, any enqueued assets will be downloaded. The central
+ * object will emit events throughout the download whose name correspond to the identifier
+ * being processed. For example, if the 'assets' identifier was being processed, whenever
+ * the download stream recieves data, the event 'assetsdlprogress' will be emitted off of
+ * the central object instance. This can be listened to by external modules allowing for
+ * categorical tracking of the downloading process.
+ * 
+ * @module assetguard
+ */
+//Requirements
 const fs = require('fs')
 const request = require('request')
 const path = require('path')
@@ -10,7 +33,17 @@ const {remote} = require('electron')
 
 /* Classes */
 
+/** Class representing a base asset. */
 class Asset{
+    /**
+     * Create an asset.
+     * 
+     * @param {any} id - id of the asset.
+     * @param {String} hash - hash value of the asset.
+     * @param {Number} size - size in bytes of the asset.
+     * @param {String} from - url where the asset can be found.
+     * @param {String} to - absolute local file path of the asset.
+     */
     constructor(id, hash, size, from, to){
         this.id = id
         this.hash = hash
@@ -20,8 +53,12 @@ class Asset{
     }
 }
 
+/** Class representing a mojang library. */
 class Library extends Asset{
 
+    /**
+     * Converts the process.platform OS names to match mojang's OS names.
+     */
     static mojangFriendlyOS(){
         const opSys = process.platform
         if (opSys === 'darwin') {
@@ -35,6 +72,16 @@ class Library extends Asset{
         }
     }
 
+    /**
+     * Checks whether or not a library is valid for download on a particular OS, following
+     * the rule format specified in the mojang version data index. If the allow property has
+     * an OS specified, then the library can ONLY be downloaded on that OS. If the disallow
+     * property has instead specified an OS, the library can be downloaded on any OS EXCLUDING
+     * the one specified.
+     * 
+     * @param {Object} rules - the Library's download rules.
+     * @returns {Boolean} - true if the Library follows the specified rules, otherwise false.
+     */
     static validateRules(rules){
         if(rules == null) return true
 
@@ -60,14 +107,37 @@ class Library extends Asset{
     }
 }
 
+/**
+ * Class representing a download tracker. This is used to store meta data
+ * about a download queue, including the queue itself.
+ */
 class DLTracker {
+    /**
+     * Create a DLTracker
+     * 
+     * @param {Array.<Asset>} dlqueue - an array containing assets queued for download.
+     * @param {Number} dlsize - the combined size of each asset in the download queue array.
+     */
     constructor(dlqueue, dlsize){
         this.dlqueue = dlqueue
         this.dlsize = dlsize
     }
 }
 
+/**
+ * Central object class used for control flow. This object stores data about
+ * categories of downloads. Each category is assigned an identifier with a 
+ * DLTracker object as its value. Combined information is also stored, such as
+ * the total size of all the queued files in each category. This event is used
+ * to emit events so that external modules can listen into processing done in
+ * this module.
+ */
 class AssetGuard extends EventEmitter{
+    /**
+     * AssetGuard class should only ever have one instance which is defined in
+     * this module. On creation the object's properties are never-null default
+     * values. Each identifier is resolved to an empty DLTracker.
+     */
     constructor(){
         super()
         this.totaldlsize = 0;
@@ -79,11 +149,18 @@ class AssetGuard extends EventEmitter{
 }
 
 //Instance of AssetGuard
-
 const instance = new AssetGuard()
 
-/* Utility Functions */
+// Utility Functions
 
+/**
+ * Validate that a file exists and matches a given hash value.
+ * 
+ * @param {String} filePath - the path of the file to validate.
+ * @param {String} algo - the hash algorithm to check against.
+ * @param {String} hash - the existing hash to check against.
+ * @returns {Boolean} - true if the file exists and calculated hash matches the given hash, otherwise false.
+ */
 validateLocal = function(filePath, algo, hash){
     if(fs.existsSync(filePath)){
         let fileName = path.basename(filePath)
@@ -96,12 +173,64 @@ validateLocal = function(filePath, algo, hash){
     return false;
 }
 
+/**
+ * Initiate an async download process for an AssetGuard DLTracker.
+ * 
+ * @param {String} identifier - the identifier of the AssetGuard DLTracker.
+ * @param {Number} limit - optional. The number of async processes to run in parallel.
+ * @returns {Boolean} - true if the process began, otherwise false.
+ */
+function startAsyncProcess(identifier, limit = 5){
+    let win = remote.getCurrentWindow()
+
+    let acc = 0
+    const concurrentDlQueue = instance[identifier].dlqueue.slice(0)
+    if(concurrentDlQueue.length === 0){
+        return false
+    } else {
+        async.eachLimit(concurrentDlQueue, limit, function(asset, cb){
+            mkpath.sync(path.join(asset.to, ".."))
+            let req = request(asset.from)
+            let writeStream = fs.createWriteStream(asset.to)
+            req.pipe(writeStream)
+            req.on('data', function(chunk){
+                instance.progress += chunk.length
+                acc += chunk.length
+                instance.emit(identifier + 'dlprogress', acc)
+                //console.log(identifier + ' Progress', acc/instance[identifier].dlsize)
+                win.setProgressBar(instance.progress/instance.totaldlsize)
+            })
+            writeStream.on('close', cb)
+        }, function(err){
+            if(err){
+                instance.emit(identifier + 'dlerror')
+                console.log('An item in ' + identifier + ' failed to process');
+            } else {
+                instance.emit(identifier + 'dlcomplete')
+                console.log('All ' + identifier + ' have been processed successfully')
+            }
+            instance.totaldlsize -= instance[identifier].dlsize
+            instance[identifier] = new DLTracker([], 0)
+            if(instance.totaldlsize === 0) {
+                win.setProgressBar(-1)
+                instance.emit('dlcomplete')
+            }
+        })
+        return true
+    }
+}
+
 /* Validation Functions */
 
 /**
- * Load version asset index.
+ * Loads the version data for a given minecraft version.
+ * 
+ * @param {String} version - the game version for which to load the index data.
+ * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+ * @param {Boolean} force - optional. If true, the version index will be downloaded even if it exists locally. Defaults to false.
+ * @returns {Promise.<Object>} - Promise which resolves to the version data object.
  */
-loadVersionData = function(version, basePath, force = false){
+function loadVersionData(version, basePath, force = false){
     return new Promise(function(fulfill, reject){
         const name = version + '.json'
         const url = 'https://s3.amazonaws.com/Minecraft.Download/versions/' + version + '/' + name
@@ -124,11 +253,14 @@ loadVersionData = function(version, basePath, force = false){
 }
 
 /**
- * Public asset validation method.
+ * Public asset validation function. This function will handle the validation of assets.
+ * It will parse the asset index specified in the version data, analyzing each
+ * asset entry. In this analysis it will check {todo finish later i'm tired ZZzzzz}
+ * 
  */
-validateAssets = function(versionData, basePath, force = false){
+function validateAssets(versionData, basePath, force = false){
     return new Promise(function(fulfill, reject){
-        assetChainIndexData(versionData, basePath, force).then(() => {
+        _assetChainIndexData(versionData, basePath, force).then(() => {
             fulfill()
         })
     })
@@ -136,7 +268,7 @@ validateAssets = function(versionData, basePath, force = false){
 
 //Chain the asset tasks to provide full async. The below functions are private.
 
-assetChainIndexData = function(versionData, basePath, force = false){
+function _assetChainIndexData(versionData, basePath, force = false){
     return new Promise(function(fulfill, reject){
         //Asset index constants.
         const assetIndex = versionData.assetIndex
@@ -151,20 +283,20 @@ assetChainIndexData = function(versionData, basePath, force = false){
             const stream = request(assetIndex.url).pipe(fs.createWriteStream(assetIndexLoc))
             stream.on('finish', function() {
                 data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
-                assetChainValidateAssets(versionData, basePath, data).then(() => {
+                _assetChainValidateAssets(versionData, basePath, data).then(() => {
                     fulfill()
                 })
             })
         } else {
             data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
-            assetChainValidateAssets(versionData, basePath, data).then(() => {
+            _assetChainValidateAssets(versionData, basePath, data).then(() => {
                 fulfill()
             })
         }
     })
 }
 
-assetChainValidateAssets = function(versionData, basePath, indexData){
+_assetChainValidateAssets = function(versionData, basePath, indexData){
     return new Promise(function(fulfill, reject){
 
         //Asset constants
@@ -225,75 +357,80 @@ validateLibraries = function(versionData, basePath){
     })
 }
 
-runQueue = function(){
+/**
+ * Public miscellaneous mojang file validation function.
+ */
+validateMiscellaneous = function(versionData, basePath){
+    return new Promise(async function(fulfill, reject){
+        await validateClient(versionData, basePath)
+        await validateLogConfig(versionData, basePath)
+        fulfill()
+    })
+}
+
+//Validate client - artifact renamed from client.jar to '{version}'.jar.
+validateClient = function(versionData, basePath, force = false){
+    return new Promise(function(fulfill, reject){
+        const clientData = versionData.downloads.client
+        const version = versionData.id
+        const targetPath = path.join(basePath, 'versions', version)
+        const targetFile = version + '.jar'
+
+        let client = new Asset(version + ' client', clientData.sha1, clientData.size, clientData.url, path.join(targetPath, targetFile))
+
+        if(!validateLocal(client.to, 'sha1', client.hash) || force){
+            instance.files.dlqueue.push(client)
+            instance.files.dlsize += client.size*1
+            fulfill()
+        } else {
+            fulfill()
+        }
+    })
+}
+
+//Validate log config.
+validateLogConfig = function(versionData, basePath){
+    return new Promise(function(fulfill, reject){
+        const client = versionData.logging.client
+        const file = client.file
+        const targetPath = path.join(basePath, 'assets', 'log_configs')
+
+        let logConfig = new Asset(file.id, file.sha1, file.size, file.url, path.join(targetPath, file.id))
+
+        if(!validateLocal(logConfig.to, 'sha1', logConfig.hash)){
+            instance.files.dlqueue.push(logConfig)
+            instance.files.dlsize += client.size*1
+            fulfill()
+        } else {
+            fulfill()
+        }
+    })
+}
+
+processDlQueues = function(identifiers = [{id:'assets', limit:20}, {id:'libraries', limit:5}, {id:'files', limit:5}]){
     this.progress = 0;
     let win = remote.getCurrentWindow()
 
-    //Start asset download
-    let assetacc = 0;
-    const concurrentAssetDlQueue = instance.assets.dlqueue.slice(0)
-    async.eachLimit(concurrentAssetDlQueue, 20, function(asset, cb){
-        mkpath.sync(path.join(asset.to, ".."))
-        let req = request(asset.from)
-        let writeStream = fs.createWriteStream(asset.to)
-        req.pipe(writeStream)
-        req.on('data', function(chunk){
-            instance.progress += chunk.length
-            assetacc += chunk.length
-            instance.emit('assetdata', assetacc)
-            console.log('Asset Progress', assetacc/instance.assets.dlsize)
-            win.setProgressBar(instance.progress/instance.totaldlsize)
-            //console.log('Total Progress', instance.progress/instance.totaldlsize)
-        })
-        writeStream.on('close', cb)
-    }, function(err){
-        if(err){
-            instance.emit('asseterr')
-            console.log('An asset failed to process');
-        } else {
-            instance.emit('assetdone')
-            console.log('All assets have been processed successfully')
-        }
-        instance.totaldlsize -= instance.assets.dlsize
-        instance.assets = new DLTracker([], 0)
-        win.setProgressBar(-1)
-    })
+    let shouldFire = true
 
-    //Start library download
-    let libacc = 0
-    const concurrentLibraryDlQueue = instance.libraries.dlqueue.slice(0)
-    async.eachLimit(concurrentLibraryDlQueue, 1, function(lib, cb){
-        mkpath.sync(path.join(lib.to, '..'))
-        let req = request(lib.from)
-        let writeStream = fs.createWriteStream(lib.to)
-        req.pipe(writeStream)
+    for(let i=0; i<identifiers.length; i++){
+        let iden = identifiers[i]
+        let r = startAsyncProcess(iden.id, iden.limit)
+        if(r) shouldFire = false
+    }
 
-        req.on('data', function(chunk){
-            instance.progress += chunk.length
-            libacc += chunk.length
-            instance.emit('librarydata', libacc)
-            console.log('Library Progress', libacc/instance.libraries.dlsize)
-            win.setProgressBar(instance.progress/instance.totaldlsize)
-        })
-        writeStream.on('close', cb)
-    }, function(err){
-        if(err){
-            instance.emit('libraryerr')
-            console.log('A library failed to process');
-        } else {
-            instance.emit('librarydone')
-            console.log('All libraries have been processed successfully');
-        }
-        instance.totaldlsize -= instance.libraries.dlsize
-        instance.libraries = new DLTracker([], 0)
-        win.setProgressBar(-1)
-    })
+    if(shouldFire){
+        instance.emit('dlcomplete')
+    }
 }
 
 module.exports = {
     loadVersionData,
     validateAssets,
     validateLibraries,
-    runQueue,
-    instance
+    validateMiscellaneous,
+    processDlQueues,
+    instance,
+    Asset,
+    Library
 }

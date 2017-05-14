@@ -12,13 +12,19 @@ $(document).on('click', 'a[href^="http"]', function(event) {
 
 testdownloads = async function(){
     const ag = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
+    const lp = require(path.join(__dirname, 'assets', 'js', 'launchprocess.js'))
     const basePath = path.join(__dirname, '..', 'mcfiles')
     let versionData = await ag.loadVersionData('1.11.2', basePath)
     await ag.validateAssets(versionData, basePath)
     console.log('assets done')
     await ag.validateLibraries(versionData, basePath)
     console.log('libs done')
-    ag.runQueue()
+    await ag.validateMiscellaneous(versionData, basePath)
+    console.log('files done')
+    ag.instance.on('dlcomplete', function(){
+        lp.launchMinecraft(versionData, basePath)
+    })
+    ag.processDlQueues()
 }
 
 /*Opens DevTools window if you type "wcdev" in sequence.
