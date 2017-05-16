@@ -4,9 +4,9 @@ const path = require('path')
 const child_process = require('child_process')
 const ag = require('./assetguard.js')
 const fs = require('fs')
-const unzip = require('unzip')
 const mkpath = require('mkdirp');
 
+/* TODO - convert native extraction to use adm-zip. Currently not functional due to removal of unzip module (it was bad) */
 launchMinecraft = function(versionData, basePath){
     const authPromise = mojang.auth('EMAIL', 'PASS', uuidV4(), {
         name: 'Minecraft',

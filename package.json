@@ -17,13 +17,13 @@
   },
   "homepage": "http://www.westeroscraft.com/",
   "dependencies": {
+    "adm-zip": "^0.4.7",
     "async": "^2.3.0",
     "electron": "^1.6.5",
     "extract-zip": "=1.6.0",
     "jQuery": "^1.7.4",
     "mojang": "^0.4.1",
     "promise": "^7.1.1",
-    "unzip": "^0.1.11",
     "uuid": "^3.0.1"
   }
 }

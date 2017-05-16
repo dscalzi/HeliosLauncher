@@ -28,6 +28,7 @@ const path = require('path')
 const mkpath = require('mkdirp');
 const async = require('async')
 const crypto = require('crypto')
+const AdmZip = require('adm-zip')
 const EventEmitter = require('events');
 const {remote} = require('electron')
 
@@ -156,6 +157,37 @@ const instance = new AssetGuard()
 // Utility Functions
 
 /**
+ * Calculates the hash for a file using the specified algorithm.
+ * 
+ * @param {Buffer} buf - the buffer containing file data.
+ * @param {String} algo - the hash algorithm.
+ * @returns {String} - the calculated hash in hex.
+ */
+function _calculateHash(buf, algo){
+    return crypto.createHash(algo).update(buf).digest('hex')
+}
+
+/**
+ * Used to parse a checksums file. This is specifically designed for
+ * the checksums.sha1 files found inside the forge scala dependencies.
+ * 
+ * @param {String} content - the string content of the checksums file.
+ * @returns {Object} - an object with keys being the file names, and values being the hashes.
+ */
+function _parseChecksumsFile(content){
+    let finalContent = {}
+    let lines = content.split('\n')
+    for(let i=0; i<lines.length; i++){
+        let bits = lines[i].split(' ')
+        if(bits[1] == null) {
+            continue
+        }
+        finalContent[bits[1]] = bits[0]
+    }
+    return finalContent
+}
+
+/**
  * Validate that a file exists and matches a given hash value.
  * 
  * @param {String} filePath - the path of the file to validate.
@@ -163,16 +195,77 @@ const instance = new AssetGuard()
  * @param {String} hash - the existing hash to check against.
  * @returns {Boolean} - true if the file exists and calculated hash matches the given hash, otherwise false.
  */
-function validateLocal(filePath, algo, hash){
+function _validateLocal(filePath, algo, hash){
     if(fs.existsSync(filePath)){
         let fileName = path.basename(filePath)
-        let shasum = crypto.createHash(algo)
-        let content = fs.readFileSync(filePath)
-        shasum.update(content)
-        let calcdhash = shasum.digest('hex')
+        let buf = fs.readFileSync(filePath)
+        let calcdhash = _calculateHash(buf, algo)
         return calcdhash === hash
     }
     return false;
+}
+
+/**
+ * Validates a file in the style used by forge's version index.
+ * 
+ * @param {String} filePath - the path of the file to validate.
+ * @param {Array.<String>} checksums - the checksums listed in the forge version index.
+ * @returns {Boolean} - true if the file exists and the hashes match, otherwise false.
+ */
+function _validateForgeChecksum(filePath, checksums){
+    if(fs.existsSync(filePath)){
+        if(checksums == null || checksums.length === 0){
+            return true
+        }
+        let buf = fs.readFileSync(filePath)
+        let calcdhash = _calculateHash(buf, 'sha1')
+        let valid = checksums.includes(calcdhash)
+        if(!valid && filePath.endsWith('.jar')){
+            valid = _validateForgeJar(filePath, checksums)
+        }
+        return valid
+    }
+    return false
+}
+
+/**
+ * Validates a forge jar file dependency who declares a checksums.sha1 file.
+ * This can be an expensive task as it usually requires that we calculate thousands
+ * of hashes.
+ * 
+ * @param {Buffer} buf - the buffer of the jar file.
+ * @param {Array.<String>} checksums - the checksums listed in the forge version index.
+ * @returns {Boolean} - true if all hashes declared in the checksums.sha1 file match the actual hashes.
+ */
+function _validateForgeJar(buf, checksums){
+    
+    const hashes = {}
+    let expected = {}
+
+    const zip = new AdmZip(buf)
+    const zipEntries = zip.getEntries()
+
+    //First pass
+    for(let i=0; i<zipEntries.length; i++){
+        let entry = zipEntries[i]
+        if(entry.entryName === 'checksums.sha1'){
+            expected = _parseChecksumsFile(zip.readAsText(entry))
+        }
+        hashes[entry.entryName] = _calculateHash(entry.getData(), 'sha1')
+    }
+
+    if(!checksums.includes(hashes['checksums.sha1'])){
+        return false
+    }
+
+    //Check against expected
+    const expectedEntries = Object.keys(expected)
+    for(let i=0; i<expectedEntries.length; i++){
+        if(expected[expectedEntries[i]] !== hashes[expectedEntries[i]]){
+            return false
+        }
+    }
+    return true
 }
 
 /**
@@ -335,7 +428,7 @@ function _assetChainValidateAssets(versionData, basePath, indexData){
             const assetName = path.join(hash.substring(0, 2), hash)
             const urlName = hash.substring(0, 2) + "/" + hash
             const ast = new Asset(key, hash, String(value.size), resourceURL + urlName, path.join(objectPath, assetName))
-            if(!validateLocal(ast.to, 'sha1', ast.hash)){
+            if(!_validateLocal(ast.to, 'sha1', ast.hash)){
                 dlSize += (ast.size*1)
                 assetDlQueue.push(ast)
             }
@@ -372,7 +465,7 @@ function validateLibraries(versionData, basePath){
             if(Library.validateRules(lib.rules)){
                 let artifact = (lib.natives == null) ? lib.downloads.artifact : lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()]]
                 const libItm = new Library(lib.name, artifact.sha1, artifact.size, artifact.url, path.join(libPath, artifact.path))
-                if(!validateLocal(libItm.to, 'sha1', libItm.hash)){
+                if(!_validateLocal(libItm.to, 'sha1', libItm.hash)){
                     dlSize += (libItm.size*1)
                     libDlQueue.push(libItm)
                 }
@@ -419,7 +512,7 @@ function validateClient(versionData, basePath, force = false){
 
         let client = new Asset(version + ' client', clientData.sha1, clientData.size, clientData.url, path.join(targetPath, targetFile))
 
-        if(!validateLocal(client.to, 'sha1', client.hash) || force){
+        if(!_validateLocal(client.to, 'sha1', client.hash) || force){
             instance.files.dlqueue.push(client)
             instance.files.dlsize += client.size*1
             fulfill()
@@ -445,7 +538,7 @@ function validateLogConfig(versionData, basePath){
 
         let logConfig = new Asset(file.id, file.sha1, file.size, file.url, path.join(targetPath, file.id))
 
-        if(!validateLocal(logConfig.to, 'sha1', logConfig.hash)){
+        if(!_validateLocal(logConfig.to, 'sha1', logConfig.hash)){
             instance.files.dlqueue.push(logConfig)
             instance.files.dlsize += client.size*1
             fulfill()
