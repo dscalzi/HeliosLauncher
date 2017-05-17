@@ -33,6 +33,20 @@ html {
     background-size: cover;
 }
 
+button {
+    background-color: #a02d2a;
+    color: #ffffff;
+    border: none;
+    padding: 7px 10px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+button:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
 /*******************************************************************************
  *                                                                             *
  * Header                                                                      *
@@ -149,6 +163,52 @@ html {
 #left_pane {
     float: left;
     width: 30%;
+}
+
+#welcome_text {
+    font-family: 'ringbearer';
+    font-size: 16px;
+    display: block;
+    text-align: center;
+    padding-top: 10px;
+}
+
+#login_container {
+    display: inline-flex;
+    width: 100%;
+}
+
+#login_image {
+    height: 85px;
+    width: auto;
+    display: block;
+    border: 3px solid #000000;
+}
+
+#login_container_right input,
+#login_container_right label {
+    display: flex;
+    width: 100%;
+}
+
+#login_container_left {
+    padding: 10px 0 10px 10px;
+}
+
+#login_container_right {
+    padding: 10px;
+    width: 100%;
+}
+
+.login_field {
+    font-size: 12px;
+    font-family: 'Segoe UI';
+    font-weight: 500;
+}
+
+#button_login {
+    float: right;
+    margin-right: 10px;
 }
 
 /*******************************************************************************
