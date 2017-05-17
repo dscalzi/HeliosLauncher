@@ -12,13 +12,23 @@ $(document).on('ready', function(){
             $(this).parent().toggleClass("success")
         }
     })
+    process.stdout.on('data', (data) => {
+        $('#launcher-log').append(data.toString('utf8'))
+        //console.log('minecraft:', data.toString('utf8'))
+    })
+    process.stderr.on('data', (data) => {
+        $('#launcher-log').append(data.toString('utf8'))
+        //console.log('minecraft:', data.toString('utf8'))
+    })
+    console.log('test')
+    console.debug('test')
 })
 
 /* Open web links in the user's default browser. */
 $(document).on('click', 'a[href^="http"]', function(event) {
     event.preventDefault();
-    //testdownloads()
-    shell.openExternal(this.href)
+    testdownloads()
+    //shell.openExternal(this.href)
 });
 
 testdownloads = async function(){

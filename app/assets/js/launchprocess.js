@@ -3,10 +3,10 @@ const uuidV4 = require('uuid/v4')
 const path = require('path')
 const child_process = require('child_process')
 const ag = require('./assetguard.js')
+const AdmZip = require('adm-zip')
 const fs = require('fs')
 const mkpath = require('mkdirp');
 
-/* TODO - convert native extraction to use adm-zip. Currently not functional due to removal of unzip module (it was bad) */
 launchMinecraft = function(versionData, basePath){
     const authPromise = mojang.auth('EMAIL', 'PASS', uuidV4(), {
         name: 'Minecraft',
@@ -16,6 +16,15 @@ launchMinecraft = function(versionData, basePath){
         const args = finalizeArguments(versionData, data, basePath)
         //TODO make this dynamic
         const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', args)
+        child.stdout.on('data', (data) => {
+            console.log('minecraft:', data.toString('utf8'))
+        })
+        child.stderr.on('data', (data) => {
+            console.log('minecraft:', data.toString('utf8'))
+        })
+        child.on('close', (code, signal) => {
+            console.log('exited with code', code)
+        })
     })
 }
 
@@ -99,12 +108,11 @@ classpathArg = function(versionData, basePath){
 
                 const to = path.join(libPath, artifact['path'])
 
-                fs.createReadStream(to).pipe(unzip.Parse()).on('entry', function(entry){
-                    const fileName = entry.path
-                    const type = entry.type
-                    const size = entry.size
+                let zip = new AdmZip(to)
+                let zipEntries = zip.getEntries()
 
-                    console.log(fileName)
+                for(let i=0; i<zipEntries.length; i++){
+                    const fileName = zipEntries[i].entryName
 
                     let shouldExclude = false
 
@@ -114,14 +122,12 @@ classpathArg = function(versionData, basePath){
                         }
                     })
 
-                    if(shouldExclude){
-                        entry.autodrain()
-                    }
-                    else {
+                    if(!shouldExclude){
                         mkpath.sync(path.join(nativePath, fileName, '..'))
-                        entry.pipe(fs.createWriteStream(path.join(nativePath, fileName)))
+                        fs.writeFile(path.join(nativePath, fileName), zipEntries[i].getData())
                     }
-                })
+
+                }
 
                 cpArgs.push(to)
             }

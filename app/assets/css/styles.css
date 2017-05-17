@@ -13,7 +13,7 @@
 /* Logger font, found on https://fonts.google.com/specimen/Inconsolata?selection.family=Inconsolata */
 @font-face {
     font-family: inconsolata;
-    src: url('../fonts/Inconsolata-Bold.ttf');
+    src: url('../fonts/Inconsolata-Regular.ttf');
 }
 
 /*******************************************************************************
@@ -28,9 +28,19 @@ body, html, div {
     padding: 0px;
 }
 
+html, body {
+    height: 100%;
+}
+
 html {
     background: url('../images/BrownWithWignette.jpg') no-repeat center center fixed;
     background-size: cover;
+}
+
+#main_content {
+    height: auto;
+    height: calc(100% - 90px);
+    display: flex;
 }
 
 button {
@@ -45,6 +55,11 @@ button {
 
 button:hover {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+::selection {
+    background-color: #a02d2a;
+    color: #ffffff;
 }
 
 /*******************************************************************************
@@ -224,7 +239,38 @@ button:hover {
 
 #content_container {
     border: 3px solid #a02d2a;
-    height: 98%;
+    height: calc(98% - 41.33px);
     width: 98%;
-    min-height: 325px;
+    display: flex;
+}
+
+#launcher-log {
+    font-family: 'inconsolata';
+    font-size: 12px;
+    color: #ffffff;
+    background-color: #1a1b1c;
+    border: none;
+    outline: none;
+    overflow-y: scroll;
+    display: block;
+    align-items: stretch;
+    width: 100%;
+    resize: none;
+    padding: 5px 10px;
+    text-shadow: 0.01px 0.01px 0.01px #ffffff;
+    line-height: 1.2em;
+}
+
+#launcher-log::selection {
+    background: rgba(160, 45, 42, .9);
+    color: #ffffff;
+}
+
+#launcher-log::-webkit-scrollbar {     
+        background-color: #a02d2a;
+}
+
+#launcher-log::-webkit-scrollbar-thumb:window-inactive,
+#launcher-log::-webkit-scrollbar-thumb {
+        background:  black
 }
