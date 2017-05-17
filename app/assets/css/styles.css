@@ -88,13 +88,67 @@ html {
 
 /*******************************************************************************
  *                                                                             *
+ * Toggle Buttons                                                              *
+ *                                                                             *
+ ******************************************************************************/
+
+.toggle-btn { 
+    color: #000000;
+    font-size: 15px;
+    font-family: 'ringbearer';
+    user-select: none;
+    background-color: transparent; 
+    display: inline-flex; 
+    cursor: pointer;
+    width: 90px;
+    height: 35px;
+}
+
+.toggle-btn-grp .toggle-btn { 
+    border-radius: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-btn:not(.success):hover { 
+    box-shadow: inset 0 -4.5px 0 0 #000000;
+}
+
+.toggle-btn.success { 
+    background: #a02d2a;
+    color: #ffffff;
+    cursor: default;
+}
+
+.visuallyhidden { 
+    border: 0; 
+    clip: rect(0 0 0 0); 
+    height: 1px; 
+    margin: -1px; 
+    overflow: hidden; 
+    padding: 0; 
+    position: absolute; 
+    width: 1px; 
+}
+
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus { 
+    clip: auto; 
+    height: auto; 
+    margin: 0; 
+    overflow: visible; 
+    position: static; 
+    width: auto; 
+}
+
+/*******************************************************************************
+ *                                                                             *
  * Left Body Container                                                         *
  *                                                                             *
  ******************************************************************************/
 
-#body_left_container {
-    width: 25%;
-    display: inline-block;
+#left_pane {
+    float: left;
+    width: 30%;
 }
 
 /*******************************************************************************
@@ -103,19 +157,14 @@ html {
  *                                                                             *
  ******************************************************************************/
 
-#body_right_container {
-    width: 75%;
-    display: inline-block;
+#right_pane {
+    float: right;
+    width: 70%;
 }
 
-.mtoggle_button {
-    text-align:centre; 
-    margin:5px 2px;
-    padding:0.4em 3em; 
-    color:#000; 
-    background-color:#FFF; 
-    border-radius:10px; 
-    display:inline-block; 
-    border:solid 1px #CCC; 
-    cursor:pointer;
+#content_container {
+    border: 3px solid #a02d2a;
+    height: 98%;
+    width: 98%;
+    min-height: 325px;
 }

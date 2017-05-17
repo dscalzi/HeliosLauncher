@@ -3,6 +3,17 @@ const remote = require('electron').remote
 const shell = require('electron').shell
 const path = require('path')
 
+$(document).on('ready', function(){
+    $(".toggle-btn input[type=radio]").addClass("visuallyhidden");
+    $(".toggle-btn input[type=radio]").change(function() {
+        if($(this).attr("name")) {
+            $(this).parent().addClass("success").siblings().removeClass("success")
+        } else {
+            $(this).parent().toggleClass("success")
+        }
+    })
+})
+
 /* Open web links in the user's default browser. */
 $(document).on('click', 'a[href^="http"]', function(event) {
     event.preventDefault();

@@ -146,6 +146,7 @@ class AssetGuard extends EventEmitter{
         this.assets = new DLTracker([], 0)
         this.libraries = new DLTracker([], 0)
         this.files = new DLTracker([], 0)
+        this.forge = new DLTracker([], 0)
     }
 }
 
@@ -547,6 +548,16 @@ function validateLogConfig(versionData, basePath){
         }
     })
 }
+
+function validateForge(){
+
+}
+
+function _validateForgeAssets(forgePath){
+
+}
+
+
 
 /**
  * This function will initiate the download processed for the specified identifiers. If no argument is
