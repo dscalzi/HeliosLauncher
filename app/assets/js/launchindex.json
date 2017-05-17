@@ -1,0 +1,75 @@
+{
+    "version": "1.0",
+    "servers": [
+        {
+            "id": "WesterosCraft-1.11.2",
+            "name": "WesterosCraft Production Client",
+            "news-feed": "http://www.westeroscraft.com/api/rss.php?preset_id=12700544",
+            "icon-url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-prod.png",
+            "revision": "0.0.1",
+            "server-ip": "mc.westeroscraft.com",
+            "mc-version": "1.11.2",
+            "main-class": "TBD",
+            "libraries": [
+                {
+                    "name": "net.minecraftforge.forge.forge-universal:1.11.2-13.20.0.2228",
+                    "required": true,
+                    "artifact": {
+                        "size": 4123353,
+                        "MD5": "5b9105f1a8552beac0c8228203d994ae",
+                        "path": "net/minecraftforge/forge/1.11.2-13.20.0.2228/forge-1.11.2-13.20.0.2228-universal.jar",
+                        "url": "http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.11.2-13.20.0.2228/forge-1.11.2-13.20.0.2228-universal.jar"
+                    },
+                    "launch-args": ["--tweakClass cpw.mods.fml.common.launcher.FMLTweaker"]
+                },
+                {
+                    "name": "net.optifine.optifine:1.11.2_HD_U_B8",
+                    "required": true,
+                    "artifact": {
+                        "size": 2050307,
+                        "MD5": "c18c80f8bfa2a440cc5af4ab8816bc4b",
+                        "path": "optifine/OptiFine/1.11.2_HD_U_B8/OptiFine-1.11.2_HD_U_B8.jar",
+                        "url": "http://optifine.net/download.php?f=OptiFine_1.11.2_HD_U_B8.jar"
+                    },
+                    "launch-args": []
+                }
+            ],
+            "forgemods": [
+                {
+                    "name": "MODNAME",
+                    "required": true,
+                    "artifact": {
+                        "size": 1234,
+                         "MD5": "e71e88c744588fdad48d3b3beb4935fc",
+                        "path": "/path/to/lib/modname.jar",
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.7.10/launchwrapper-1.11.jar"
+                    }
+                }
+            ],
+            "litemods": [
+                {
+                    "name": "MODNAME",
+                    "required": true,
+                    "artifact": {
+                        "size": 1234,
+                        "MD5": "e71e88c744588fdad48d3b3beb4935fc",
+                        "path": "/path/to/lib/modname.jar",
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.7.10/launchwrapper-1.11.jar"
+                    }
+                }
+            ],
+            "files": [
+                {
+                    "name": "FILENAME",
+                    "required": true,
+                    "artifact": {
+                        "size": 1234,
+                        "MD5": "e71e88c744588fdad48d3b3beb4935fc",
+                        "path": "/path/to/lib/filename.jar",
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.7.10/launchwrapper-1.11.jar"
+                    }
+                }
+            ]
+        }
+    ]
+}

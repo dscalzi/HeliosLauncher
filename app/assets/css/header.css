@@ -1,0 +1,46 @@
+#header_container {
+    background-color: black;
+    padding: 5px;
+    font-size: 0px;
+    text-align: center;
+    border-bottom: thick solid #a02d2a;
+    border-bottom-width: 5px;
+    position: relative;
+}
+
+/* Div container for the seal image. */
+#header_seal_container {
+    position: absolute;
+}
+
+/* Div container for the header image. */
+#header_img_container {
+   display: inline-block;
+   margin: 0 auto;
+}
+
+/* Seal and header images. */
+#header_seal,
+#header_img {
+   height: 75px;
+   width: auto;
+   display: block;
+}
+
+/* Div container for the social buttons. */
+#header_social_container {
+   position: absolute;
+   bottom: 0px;
+   right: 0px;
+   margin-bottom: 5px;
+}
+
+/* Social buttons. */
+.header_social_img {
+    height: 25px;
+    width: auto;
+    display: inline-block;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
