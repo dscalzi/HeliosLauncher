@@ -1,140 +1,96 @@
-﻿<<<<<<< HEAD
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Westeroscraft Launcher</title>
+    <script src="./assets/js/script.js"></script>
+    <link type="text/css" rel="stylesheet" href="./assets/css/styles.css">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-
-        <link rel="stylesheet" type="text/css" href="assets/css/global.css">
-        <link rel="stylesheet" type="text/css" href="assets/css/header.css">
-        <link rel="stylesheet" type="text/css" href="assets/css/nav.css">
-
-    </head>
-
+    <link rel="stylesheet" type="text/css" href="assets/css/global.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/header.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/nav.css"> 
 
     <style>
-
-
         .inner_div{
             width:100%; 
             background-color: black;
             border: 5px solid #a02d2a;
 
         }
-
-       
-
     </style>
 
-
-    <body>
-
-
-
-        <div id="header_container">
-            <div id="header_seal_container">
-                <img id="header_seal" src="./assets/images/WesterosSealSquare.png"/>
-            </div>
-            <div id="header_img_container">
-                <img id="header_img" src="./assets/images/WCTextCrop.png" />
-            </div>
-            <div id="header_social_container">
-                <a href="http://facebook.com/westeroscraft" class="header_social_link">
-                    <img src="./assets/images/facebook.png" class="header_social_img" />
-                </a>
-                <a href="http://reddit.com/r/westeroscraft" class="header_social_link">
-                    <img src="./assets/images/reddit.png" class="header_social_img" />
-                </a>
-                <a href="http://twitter.com/westeroscraft" class="header_social_link">
-                    <img src="./assets/images/twitter.png" class="header_social_img" />
-                </a>
-            </div>
+</head>
+<body>
+    <div id="header_container">
+        <div id="header_seal_container">
+            <img id="header_seal" src="./assets/images/WesterosSealSquare.png"/>
         </div>
+        <div id="header_img_container">
+            <img id="header_img" src="./assets/images/WCTextCrop.png" />
+        </div>
+        <div id="header_social_container">
+            <a href="http://facebook.com/westeroscraft" class="header_social_link">
+                <img src="./assets/images/facebook.png" class="header_social_img" />
+            </a>
+            <a href="http://reddit.com/r/westeroscraft" class="header_social_link">
+                <img src="./assets/images/reddit.png" class="header_social_img" />
+            </a>
+            <a href="http://twitter.com/westeroscraft" class="header_social_link">
+                <img src="./assets/images/twitter.png" class="header_social_img" />
+            </a>
+        </div>
+    </div>
 
-
-        <div class="container">
-            <div class="row">
-
-                <div class="col-md-2 col-sm-2">
-
-                    <div class="row">
-
-                        <div class="col-md-3 col-sm-3">
-
-                            <img class="player_icon" src="https://minotar.net/helm/pufferboss.png">
-
-                        </div>
-
-                        <div class="col-md-9 col-sm-9">
-
-                            <p class="input_text">Email</p>
-                            <input class="input" id="EMAIL">
-
-                            <p class="input_text">Password</p>
-                            <input type="password" id="PASSWORD" class="input" />
-
-                        </div>
-
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2 col-sm-2">
+                <div class="row">
+                    <div class="col-md-3 col-sm-3">
+                        <img class="player_icon" src="https://minotar.net/helm/pufferboss.png">
                     </div>
-
-                </div>
-
-                <div class="col-md-10 col-sm-10">
-
-                    <ul>
-                        <li><a href="">NEWS</a></li>
-                        <li><a href="">MAP</a></li>
-                        <li><a href="">MODS</a></li>
-                        <li><a href="">FAQ</a></li>
-                        <li><a href="">LOG</a></li>
-                        <li><a href="">SETTINGS</a></li>
-
-
-                    </ul>
-
-                    <br>
-                    <br>
-
-                    <div class="inner_div">
-
-                        <p class="title"> Post title </p>
-
-                        <p class="subtite">Posted by: PERSON 23.4.17</p>
-
-                        <pre style="text-align: left; word-break: break-all; overflow-wrap: break-word;">    Hello WesterosCraft Builders and Honored Guests! As you know, 
-                            progress on Kingslanding had stalled, but no longer -- we want to finish this big, beautiful, city in style and 
-                            are calling all builders to the capital! 
-                            There has been a lot of progress with Kingslanding planning and we are happy to...
-                            </pre>
-
+                    <div class="col-md-9 col-sm-9">
+                        <p class="input_text">Email</p>
+                        <input class="input" id="EMAIL">
+                        <p class="input_text">Password</p>
+                        <input type="password" id="PASSWORD" class="input" />
                     </div>
-
                 </div>
             </div>
-
+            <div class="col-md-10 col-sm-10">
+                <ul>
+                    <li><a href="" class="">NEWS</a></li>
+                    <li><a href="">MAP</a></li>
+                    <li><a href="">MODS</a></li>
+                    <li><a href="">FAQ</a></li>
+                    <li><a href="">LOG</a></li>
+                    <li><a href="">SETTINGS</a></li>
+                </ul>
+                <br>
+                <br>
+                <div class="inner_div">
+                    <p class="title"> Post title </p>
+                    <p class="subtite">Posted by: PERSON 23.4.17</p>
+                    <pre style="text-align: left; word-break: break-all; overflow-wrap: break-word;">    Hello WesterosCraft Builders and Honored Guests! As you know, 
+                        progress on Kingslanding had stalled, but no longer -- we want to finish this big, beautiful, city in style and 
+                        are calling all builders to the capital! 
+                        There has been a lot of progress with Kingslanding planning and we are happy to...
+                    </pre>
+                </div>
+            </div>
         </div>
+    </div>
+</body> 
 
 
 
-
-
-
-
-    </body>
-
-
-
-
+<!--
 </html>
-=======
-﻿<!DOCTYPE html>
-
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
@@ -176,5 +132,4 @@
         </div>
     </div>
 </body>
-</html>
->>>>>>> refs/remotes/origin/master
+</html>-->

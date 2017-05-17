@@ -21,6 +21,7 @@
     "async": "^2.3.0",
     "electron": "^1.6.5",
     "extract-zip": "=1.6.0",
+    "find-java-home": "^0.1.4",
     "jQuery": "^1.7.4",
     "mojang": "^0.4.1",
     "promise": "^7.1.1",
