@@ -29,7 +29,8 @@ const mkpath = require('mkdirp');
 const async = require('async')
 const crypto = require('crypto')
 const AdmZip = require('adm-zip')
-const EventEmitter = require('events');
+const child_process = require('child_process')
+const EventEmitter = require('events')
 const {remote} = require('electron')
 
 // Classes
@@ -267,6 +268,21 @@ function _validateForgeJar(buf, checksums){
         }
     }
     return true
+}
+
+function _extractPackXZ(filePath){
+    const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
+    console.log(libPath)
+    const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', ['-jar', libPath, '-packxz', filePath])
+    child.stdout.on('data', (data) => {
+        console.log('minecraft:', data.toString('utf8'))
+    })
+    child.stderr.on('data', (data) => {
+        console.log('minecraft:', data.toString('utf8'))
+    })
+    child.on('close', (code, signal) => {
+        console.log('exited with code', code)
+    })
 }
 
 /**
@@ -594,5 +610,6 @@ module.exports = {
     processDlQueues,
     instance,
     Asset,
-    Library
+    Library,
+    _extractPackXZ
 }

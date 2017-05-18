@@ -2,6 +2,20 @@ var $ = require('jQuery');
 const remote = require('electron').remote
 const shell = require('electron').shell
 const path = require('path')
+const os = require('os');
+const ag = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
+
+function timestamp(){
+    let date = new Date();
+    const month = date.getMonth() < 9 ? '0'.concat((date.getMonth()+1)) : date.getMonth()
+    const day = date.getDate() < 10 ? '0'.concat(date.getDate()) : date.getDate();
+    let hour = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
+    hour = hour < 10 ? '0'.concat(hour) : hour
+    const min = date.getMinutes() < 10 ? '0'.concat(date.getMinutes()) : date.getMinutes();
+    const sec = date.getSeconds() < 10 ? '0'.concat(date.getSeconds()) : date.getSeconds();
+
+    return os.EOL + '[' + month + '/' + day + '/' + date.getFullYear() + ' ' + hour  + ':' + min + ':' + sec + ']'
+}
 
 $(document).on('ready', function(){
     $(".toggle-btn input[type=radio]").addClass("visuallyhidden");
@@ -12,27 +26,25 @@ $(document).on('ready', function(){
             $(this).parent().toggleClass("success")
         }
     })
-    process.stdout.on('data', (data) => {
-        $('#launcher-log').append(data.toString('utf8'))
-        //console.log('minecraft:', data.toString('utf8'))
-    })
-    process.stderr.on('data', (data) => {
-        $('#launcher-log').append(data.toString('utf8'))
-        //console.log('minecraft:', data.toString('utf8'))
-    })
+    /*console.log = function(){
+        $('#launcher-log').append(timestamp() + ' [Log] - ' + Array.prototype.slice.call(arguments).join(' '))
+    }
+    console.error = function(){
+        $('#launcher-log').append(timestamp() + ' [Error] - ' + Array.prototype.slice.call(arguments).join(' '))
+    }
     console.log('test')
-    console.debug('test')
+    //console.debug('test')*/
 })
 
 /* Open web links in the user's default browser. */
 $(document).on('click', 'a[href^="http"]', function(event) {
     event.preventDefault();
-    testdownloads()
-    //shell.openExternal(this.href)
+    //ag._extractPackXZ(path.join(__dirname, '..', 'mcfiles', 'scala-continuations-library_2.11-1.0.2.jar.pack.xz'))
+    //testdownloads()
+    shell.openExternal(this.href)
 });
 
 testdownloads = async function(){
-    const ag = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
     const lp = require(path.join(__dirname, 'assets', 'js', 'launchprocess.js'))
     const basePath = path.join(__dirname, '..', 'mcfiles')
     let versionData = await ag.loadVersionData('1.11.2', basePath)
