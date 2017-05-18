@@ -159,6 +159,27 @@ const instance = new AssetGuard()
 // Utility Functions
 
 /**
+ * Resolve an artifact id into a path. For example, on windows
+ * net.minecraftforge:forge:1.11.2-13.20.0.2282
+ * becomes
+ * net\minecraftforge\forge\1.11.2-13.20.0.2282\forge-1.11.2-13.20.0.2282.jar
+ * 
+ * @param {String} artifact - the artifact id string.
+ * @param {String} extension - the extension of the file at the resolved path.
+ * @returns {String} - the resolved relative path from the artifact id.
+ */
+function _resolvePath(artifact, extension){
+    let ps = artifact.split(':')
+    let cs = ps[0].split('.')
+
+    cs.push(ps[1])
+    cs.push(ps[2])
+    cs.push(ps[1].concat('-').concat(ps[2]).concat(extension))
+
+    return path.join.apply(path, cs)
+}
+
+/**
  * Calculates the hash for a file using the specified algorithm.
  * 
  * @param {Buffer} buf - the buffer containing file data.
@@ -271,17 +292,20 @@ function _validateForgeJar(buf, checksums){
 }
 
 function _extractPackXZ(filePath){
-    const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
-    console.log(libPath)
-    const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', ['-jar', libPath, '-packxz', filePath])
-    child.stdout.on('data', (data) => {
-        console.log('minecraft:', data.toString('utf8'))
-    })
-    child.stderr.on('data', (data) => {
-        console.log('minecraft:', data.toString('utf8'))
-    })
-    child.on('close', (code, signal) => {
-        console.log('exited with code', code)
+    return new Promise(function(fulfill, reject){
+        const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
+        console.log(libPath)
+        const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', ['-jar', libPath, '-packxz', filePath])
+        child.stdout.on('data', (data) => {
+            console.log('minecraft:', data.toString('utf8'))
+        })
+        child.stderr.on('data', (data) => {
+            console.log('minecraft:', data.toString('utf8'))
+        })
+        child.on('close', (code, signal) => {
+            console.log('exited with code', code)
+            fulfill()
+        })
     })
 }
 
@@ -610,6 +634,5 @@ module.exports = {
     processDlQueues,
     instance,
     Asset,
-    Library,
-    _extractPackXZ
+    Library
 }

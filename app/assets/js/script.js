@@ -39,7 +39,6 @@ $(document).on('ready', function(){
 /* Open web links in the user's default browser. */
 $(document).on('click', 'a[href^="http"]', function(event) {
     event.preventDefault();
-    //ag._extractPackXZ(path.join(__dirname, '..', 'mcfiles', 'scala-continuations-library_2.11-1.0.2.jar.pack.xz'))
     //testdownloads()
     shell.openExternal(this.href)
 });
