@@ -39,9 +39,12 @@ $(document).on('ready', function(){
 /* Open web links in the user's default browser. */
 $(document).on('click', 'a[href^="http"]', function(event) {
     event.preventDefault();
-    //testdownloads()
-    shell.openExternal(this.href)
+    testdownloads()
+    //console.log(os.homedir())
+    //shell.openExternal(this.href)
 });
+
+
 
 testdownloads = async function(){
     const lp = require(path.join(__dirname, 'assets', 'js', 'launchprocess.js'))
@@ -53,8 +56,10 @@ testdownloads = async function(){
     console.log('libs done')
     await ag.validateMiscellaneous(versionData, basePath)
     console.log('files done')
+    await ag.validateDistribution('WesterosCraft-1.11.2', basePath)
+    console.log('forge stuff done')
     ag.instance.on('dlcomplete', function(){
-        lp.launchMinecraft(versionData, basePath)
+        //lp.launchMinecraft(versionData, basePath)
     })
     ag.processDlQueues()
 }
@@ -78,6 +83,7 @@ document.addEventListener('keydown', function (e) {
             break
         case match[3]:
             if(at === 3) ++at
+            break
         case match[4]:
             if(at === 4) ++at
             break

@@ -160,16 +160,15 @@ const instance = new AssetGuard()
 
 /**
  * Resolve an artifact id into a path. For example, on windows
- * net.minecraftforge:forge:1.11.2-13.20.0.2282
- * becomes
+ * 'net.minecraftforge:forge:1.11.2-13.20.0.2282', '.jar' becomes
  * net\minecraftforge\forge\1.11.2-13.20.0.2282\forge-1.11.2-13.20.0.2282.jar
  * 
  * @param {String} artifact - the artifact id string.
  * @param {String} extension - the extension of the file at the resolved path.
  * @returns {String} - the resolved relative path from the artifact id.
  */
-function _resolvePath(artifact, extension){
-    let ps = artifact.split(':')
+function _resolvePath(artifactid, extension){
+    let ps = artifactid.split(':')
     let cs = ps[0].split('.')
 
     cs.push(ps[1])
@@ -294,7 +293,6 @@ function _validateForgeJar(buf, checksums){
 function _extractPackXZ(filePath){
     return new Promise(function(fulfill, reject){
         const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
-        console.log(libPath)
         const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', ['-jar', libPath, '-packxz', filePath])
         child.stdout.on('data', (data) => {
             console.log('minecraft:', data.toString('utf8'))
@@ -589,15 +587,74 @@ function validateLogConfig(versionData, basePath){
     })
 }
 
-function validateForge(){
+function validateDistribution(serverpackid, basePath){
+    return new Promise(function(fulfill, reject){
+        let distroindex = _chainValidateDistributionIndex(basePath).then((value) => {
+            let servers = value.servers
+            let serv = null
+            for(let i=0; i<servers.length; i++){
+                if(servers[i].id === serverpackid){
+                    serv = servers[i]
+                    break
+                }
+            }
 
+            instance.forge = _parseDistroModules(serv.modules, basePath, serv.mc_version)
+            instance.totaldlsize += instance.forge.dlsize*1
+            fulfill()
+        })
+    })
 }
 
-function _validateForgeAssets(forgePath){
+//TODO The distro index should be downloaded in the 'pre-loader'. This is because
+//we will eventually NEED the index to generate the server list on the ui. 
+function _chainValidateDistributionIndex(basePath){
+    return new Promise(function(fulfill, reject){
+        //const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
+        const targetFile = path.join(basePath, 'westeroscraft.json')
 
+        //TEMP WORKAROUND TO TEST WHILE THIS IS NOT HOSTED
+        fs.readFile(path.join(basePath, '..', 'app', 'assets', 'westeroscraft.json'), 'utf-8', (err, data) => {
+            fulfill(JSON.parse(data))
+        })
+    })
 }
 
-
+function _parseDistroModules(modules, basePath, version){
+    let alist = []
+    let asize = 0;
+    for(let i=0; i<modules.length; i++){
+        let ob = modules[i]
+        let obType = ob.type
+        let obArtifact = ob.artifact
+        let obPath = obArtifact.path == null ? _resolvePath(ob.id, obArtifact.extension) : obArtifact.path
+        switch(obType){
+            case 'forge-hosted':
+                obPath = path.join(basePath, 'libraries', obPath)
+                break;
+            case 'library':
+                obPath = path.join(basePath, 'libraries', obPath)
+                break;
+            case 'forgemod':
+                obPath = path.join(basePath, 'mods', obPath)
+                break;
+            case 'litemod':
+                obPath = path.join(basePath, 'mods', version, obPath)
+                break;
+            default: 
+                obPath = path.join(basePath, obPath)
+        }
+        let artifact = new Asset(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath)
+        asize += artifact.size*1
+        alist.push(artifact)
+        if(ob.sub_modules != null){
+            let dltrack = _parseDistroModules(ob.sub_modules, basePath, version)
+            asize += dltrack.dlsize
+            alist = alist.concat(dltrack.dlqueue)
+        }
+    }
+    return new DLTracker(alist, asize)
+}
 
 /**
  * This function will initiate the download processed for the specified identifiers. If no argument is
@@ -609,7 +666,7 @@ function _validateForgeAssets(forgePath){
  * 
  * @param {Array.<{id: string, limit: number}>} identifiers - optional. The identifiers to process and corresponding parallel async task limit.
  */
-function processDlQueues(identifiers = [{id:'assets', limit:20}, {id:'libraries', limit:5}, {id:'files', limit:5}]){
+function processDlQueues(identifiers = [{id:'assets', limit:20}, {id:'libraries', limit:5}, {id:'files', limit:5}, {id:'forge', limit:5}]){
     this.progress = 0;
     let win = remote.getCurrentWindow()
 
@@ -634,5 +691,6 @@ module.exports = {
     processDlQueues,
     instance,
     Asset,
-    Library
+    Library,
+    validateDistribution
 }

@@ -4,11 +4,11 @@
         {
             "id": "WesterosCraft-1.11.2",
             "name": "WesterosCraft Production Client",
-            "news-feed": "http://www.westeroscraft.com/api/rss.php?preset_id=12700544",
-            "icon-url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-prod.png",
+            "news_feed": "http://www.westeroscraft.com/api/rss.php?preset_id=12700544",
+            "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-prod.png",
             "revision": "0.0.1",
-            "server-ip": "mc.westeroscraft.com:4444",
-            "mc-version": "1.11.2",
+            "server_ip": "mc.westeroscraft.com:4444",
+            "mc_version": "1.11.2",
             "autoconnect": true,
             "modules": [
                 {
@@ -21,7 +21,7 @@
                         "extension": ".jar",
                         "url": "http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.11.2-13.20.0.2282/forge-1.11.2-13.20.0.2282-universal.jar"
                     },
-                    "sub-modules": [
+                    "sub_modules": [
                         {
                             "id": "net.minecraft:launchwrapper:1.12",
                             "name": "Mojang (LaunchWrapper)",
@@ -210,7 +210,7 @@
                             }
                         },
                         {
-                            "id": "net.minecraftforge.MercuriusUpdater:1.11.2",
+                            "id": "net.minecraftforge:MercuriusUpdater:1.11.2",
                             "name": "MercuriusUpdater 1.11.2",
                             "type": "library",
                             "artifact": {
@@ -289,7 +289,7 @@
                         "path": "mod_chatBubbles-1.0.1_for_1.11.2.litemod",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/mod_chatBubbles-1.0.1_for_1.11.2.litemod"
                     },
-                    "sub-modules": [
+                    "sub_modules": [
                         {
                             "id": "customRegexes",
                             "name": "Custom Regexes for Chat Bubbles",
