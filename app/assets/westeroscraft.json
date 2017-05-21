@@ -50,7 +50,7 @@
                             "type": "library",
                             "artifact": {
                                 "size": 1474672,
-                                "MD5": "f2d0c1ce6ab76531bbd48acbcd3d4ff1",
+                                "MD5": "379c15c4f724421c6d5d7aecedaf87a6",
                                 "extension": ".jar.pack.xz",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-library-2.11.1.jar.pack.xz"
                             }
@@ -61,7 +61,7 @@
                             "type": "library",
                             "artifact": {
                                 "size": 3076920,
-                                "MD5": "9c88616e35796955e0ff1235b11f1475",
+                                "MD5": "7d89e952f2d5c74577310cd2c28e3f20",
                                 "extension": ".jar.pack.xz",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-compiler-2.11.1.jar.pack.xz"
                             }
@@ -72,7 +72,7 @@
                             "type": "library",
                             "artifact": {
                                 "size": 21324,
-                                "MD5": "55e0dc48a2a122353628a463b9499cf0",
+                                "MD5": "04e3428b2600ace33c7ae2bf1f6c0a4c",
                                 "extension": ".jar.pack.xz",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-actors-migration_2.11-1.1.0.jar.pack.xz"
                             }
@@ -83,7 +83,7 @@
                             "type": "library",
                             "artifact": {
                                 "size": 7956,
-                                "MD5": "820008ee6df308dafa0a6c478270aa19",
+                                "MD5": "ed9b1d27aba8ac4090a3749c4dfc895a",
                                 "extension": ".jar.pack.xz",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-continuations-library_2.11-1.0.2.jar.pack.xz"
                             }
@@ -94,7 +94,7 @@
                             "type": "library",
                             "artifact": {
                                 "size": 46140,
-                                "MD5": "657a7ad23928bf4bee68202c7d7e1d56",
+                                "MD5": "a8232db22a72a981de6b1399eb86dff7",
                                 "extension": ".jar.pack.xz",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-continuations-plugin_2.11.1-1.0.2.jar.pack.xz"
                             }
@@ -105,7 +105,7 @@
                             "type": "library",
                             "artifact": {
                                 "size": 85568,
-                                "MD5": "de496467c91610e55e6e711b6bdbf10c",
+                                "MD5": "2e50a7df17680daadacca69f07f8a16d",
                                 "extension": ".jar.pack.xz",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-parser-combinators_2.11-1.0.1.jar.pack.xz"
                             }
@@ -116,7 +116,7 @@
                             "type": "library",
                             "artifact": {
                                 "size": 1070312,
-                                "MD5": "abbdaf710e856f6e65376706c9505952",
+                                "MD5": "84e5dc81c10e2bd74c579c9d0332fdd9",
                                 "extension": ".jar.pack.xz",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-reflect-2.11.1.jar.pack.xz"
                             }
@@ -138,7 +138,7 @@
                             "type": "library",
                             "artifact": {
                                 "size": 217812,
-                                "MD5": "1c5a20efca1474626e0e0123f9cdd8ce",
+                                "MD5": "cc891b094a4c32dedc56bfefe9b072ff",
                                 "extension": ".jar.pack.xz",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-xml_2.11-1.0.2.jar.pack.xz"
                             }
@@ -149,7 +149,7 @@
                             "type": "library",
                             "artifact": {
                                 "size": 746612,
-                                "MD5": "469367f3308e571b1bdf2192d7779807",
+                                "MD5": "25cb22c3078e9fb3f7a861c912924862",
                                 "extension": ".jar.pack.xz",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/akka-actor_2.11-2.3.3.jar.pack.xz"
                             }
@@ -160,7 +160,7 @@
                             "type": "library",
                             "artifact": {
                                 "size": 56636,
-                                "MD5": "f24b281c40daef1280d5ef26b11caa63",
+                                "MD5": "10ec4ccabc4e68aac9cf87165ead5d7d",
                                 "extension": ".jar.pack.xz",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/config-1.2.1.jar.pack.xz"
                             }
@@ -215,7 +215,7 @@
                             "type": "library",
                             "artifact": {
                                 "size": 15146,
-                                "MD5": "13560a58a79b46b82057686543e8d727",
+                                "MD5": "7556d06064ebbfa3b334a15092d725d0",
                                 "extension": ".jar",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/MercuriusUpdater-1.11.2.jar"
                             }
@@ -228,7 +228,7 @@
                     "type": "forgemod",
                     "artifact": {
                         "size": 2050500,
-                        "MD5": "c18c80f8bfa2a440cc5af4ab8816bc4b",
+                        "MD5": "cf4da33e1014b1b77fea17d64668aff6",
                         "path": "OptiFine-1.11.2_HD_U_B8.jar",
                         "url": "http://optifine.net/download.php?f=OptiFine_1.11.2_HD_U_B8.jar"
                     }
@@ -239,18 +239,18 @@
                     "type": "forgemod",
                     "artifact": {
                         "size": 16230253,
-                         "MD5": "2a71c13afd289d15c9f95a23712b095d",
+                         "MD5": "2e3ea10730720b8abbf408262d922249",
                         "path": "WesterosBlocks.jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/WesterosBlocks.jar"
                     }
                 },
                 {
-                    "id": "com.westeroscraft:westeroscraftrp:2017-03-21",
-                    "name": "WesterosCraft Resource Pack (2017-03-21)",
+                    "id": "com.westeroscraft:westeroscraftrp:2017-05-20",
+                    "name": "WesterosCraft Resource Pack (2017-05-20)",
                     "type": "file",
                     "artifact": {
                         "size": 44704858,
-                        "MD5": "1b5dd219a21bda8cd0fb8f7ee986515a",
+                        "MD5": "a2e552df2d5f7f6d6d34f3afe5674670",
                         "path": "resourcepacks/WesterosCraft.zip",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/resourcepacks/WesterosCraft.zip"
                     }

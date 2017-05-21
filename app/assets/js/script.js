@@ -39,9 +39,9 @@ $(document).on('ready', function(){
 /* Open web links in the user's default browser. */
 $(document).on('click', 'a[href^="http"]', function(event) {
     event.preventDefault();
-    //testdownloads()
+    testdownloads()
     //console.log(os.homedir())
-    shell.openExternal(this.href)
+    //shell.openExternal(this.href)
 });
 
 
@@ -59,7 +59,7 @@ testdownloads = async function(){
     await ag.validateDistribution('WesterosCraft-1.11.2', basePath)
     console.log('forge stuff done')
     ag.instance.on('dlcomplete', function(){
-        lp.launchMinecraft(versionData, basePath)
+        //lp.launchMinecraft(versionData, basePath)
     })
     ag.processDlQueues()
 }

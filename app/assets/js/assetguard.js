@@ -115,15 +115,11 @@ class Library extends Asset{
  */
 class DLTracker {
     /**
-     * @typedef {function(Asset)} assetComplete
-     */
-
-    /**
      * Create a DLTracker
      * 
      * @param {Array.<Asset>} dlqueue - an array containing assets queued for download.
      * @param {Number} dlsize - the combined size of each asset in the download queue array.
-     * @param {assetComplete} callback - optional callback which is called when an asset finishes downloading.
+     * @param {function(Asset)} callback - optional callback which is called when an asset finishes downloading.
      */
     constructor(dlqueue, dlsize, callback = null){
         this.dlqueue = dlqueue
@@ -224,6 +220,10 @@ function _parseChecksumsFile(content){
  * @returns {Boolean} - true if the file exists and calculated hash matches the given hash, otherwise false.
  */
 function _validateLocal(filePath, algo, hash){
+    //No hash provided, have to assume it's good.
+    if(hash == null){
+        return true
+    }
     if(fs.existsSync(filePath)){
         let fileName = path.basename(filePath)
         let buf = fs.readFileSync(filePath)
@@ -356,7 +356,7 @@ function startAsyncProcess(identifier, limit = 5){
                     req.resume()
                 } else {
                     req.abort()
-                    console.log('Failed to download ' + asset.from + '. Response code ', resp.statusCode)
+                    console.log('Failed to download ' + asset.from + '. Response code', resp.statusCode)
                     instance.progress += asset.size*1
                     win.setProgressBar(instance.progress/instance.totaldlsize)
                     cb()
@@ -638,11 +638,12 @@ function validateDistribution(serverpackid, basePath){
             instance.forge = _parseDistroModules(serv.modules, basePath, serv.mc_version)
             //Correct our workaround here.
             let decompressqueue = instance.forge.callback
-            instance.forge.callback = async function(asset){
+            instance.forge.callback = function(asset){
                 if(asset.to.toLowerCase().endsWith('.pack.xz')){
                     _extractPackXZ([asset.to])
                 }
             }
+            console.log(instance.forge)
             instance.totaldlsize += instance.forge.dlsize*1
             fulfill()
         })
@@ -690,10 +691,15 @@ function _parseDistroModules(modules, basePath, version){
                 obPath = path.join(basePath, obPath)
         }
         let artifact = new Asset(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath)
-        asize += artifact.size*1
-        alist.push(artifact)
         if(obPath.toLowerCase().endsWith('.pack.xz')){
-            decompressqueue.push(obPath)
+            if(!_validateLocal(obPath.substring(0, obPath.toLowerCase().lastIndexOf('.pack.xz')), 'MD5', artifact.hash)){
+                asize += artifact.size*1
+                alist.push(artifact)
+                decompressqueue.push(obPath)
+            }
+        } else if(!_validateLocal(obPath, 'MD5', artifact.hash)){
+            asize += artifact.size*1
+            alist.push(artifact)
         }
         if(ob.sub_modules != null){
             let dltrack = _parseDistroModules(ob.sub_modules, basePath, version)
