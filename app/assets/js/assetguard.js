@@ -115,14 +115,20 @@ class Library extends Asset{
  */
 class DLTracker {
     /**
+     * @typedef {function(Asset)} assetComplete
+     */
+
+    /**
      * Create a DLTracker
      * 
      * @param {Array.<Asset>} dlqueue - an array containing assets queued for download.
      * @param {Number} dlsize - the combined size of each asset in the download queue array.
+     * @param {assetComplete} callback - optional callback which is called when an asset finishes downloading.
      */
-    constructor(dlqueue, dlsize){
+    constructor(dlqueue, dlsize, callback = null){
         this.dlqueue = dlqueue
         this.dlsize = dlsize
+        this.callback = callback
     }
 }
 
@@ -290,18 +296,25 @@ function _validateForgeJar(buf, checksums){
     return true
 }
 
-function _extractPackXZ(filePath){
+/**
+ * Extracts and unpacks a file from .pack.xz format.
+ * 
+ * @param {Array.<String>} filePaths - The paths of the files to be extracted and unpacked.
+ * @returns {Promise.<Void>} - An empty promise to indicate the extraction has completed.
+ */
+function _extractPackXZ(filePaths){
     return new Promise(function(fulfill, reject){
         const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
+        const filePath = filePaths.join(',')
         const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', ['-jar', libPath, '-packxz', filePath])
         child.stdout.on('data', (data) => {
-            console.log('minecraft:', data.toString('utf8'))
+            //console.log('PackXZExtract:', data.toString('utf8'))
         })
         child.stderr.on('data', (data) => {
-            console.log('minecraft:', data.toString('utf8'))
+            //console.log('PackXZExtract:', data.toString('utf8'))
         })
         child.on('close', (code, signal) => {
-            console.log('exited with code', code)
+            //console.log('PackXZExtract: Exited with code', code)
             fulfill()
         })
     })
@@ -318,23 +331,45 @@ function startAsyncProcess(identifier, limit = 5){
     let win = remote.getCurrentWindow()
 
     let acc = 0
-    const concurrentDlQueue = instance[identifier].dlqueue.slice(0)
+    const concurrentDlTracker = instance[identifier]
+    const concurrentDlQueue = concurrentDlTracker.dlqueue.slice(0)
     if(concurrentDlQueue.length === 0){
         return false
     } else {
+        console.log(instance.progress)
         async.eachLimit(concurrentDlQueue, limit, function(asset, cb){
+            let count = 0;
             mkpath.sync(path.join(asset.to, ".."))
             let req = request(asset.from)
-            let writeStream = fs.createWriteStream(asset.to)
-            req.pipe(writeStream)
+            req.pause()
+            req.on('response', (resp) => {
+                if(resp.statusCode === 200){
+                    let writeStream = fs.createWriteStream(asset.to)
+                    writeStream.on('close', () => {
+                        //console.log('DLResults ' + asset.size + ' ' + count + ' ', asset.size === count)
+                        if(concurrentDlTracker.callback != null){
+                            concurrentDlTracker.callback.apply(concurrentDlTracker, [asset])
+                        }
+                        cb()
+                    })
+                    req.pipe(writeStream)
+                    req.resume()
+                } else {
+                    req.abort()
+                    console.log('Failed to download ' + asset.from + '. Response code ', resp.statusCode)
+                    instance.progress += asset.size*1
+                    win.setProgressBar(instance.progress/instance.totaldlsize)
+                    cb()
+                }
+            })
             req.on('data', function(chunk){
+                count += chunk.length
                 instance.progress += chunk.length
                 acc += chunk.length
                 instance.emit(identifier + 'dlprogress', acc)
                 //console.log(identifier + ' Progress', acc/instance[identifier].dlsize)
                 win.setProgressBar(instance.progress/instance.totaldlsize)
             })
-            writeStream.on('close', cb)
         }, function(err){
             if(err){
                 instance.emit(identifier + 'dlerror')
@@ -344,6 +379,7 @@ function startAsyncProcess(identifier, limit = 5){
                 console.log('All ' + identifier + ' have been processed successfully')
             }
             instance.totaldlsize -= instance[identifier].dlsize
+            instance.progress -= instance[identifier].dlsize
             instance[identifier] = new DLTracker([], 0)
             if(instance.totaldlsize === 0) {
                 win.setProgressBar(-1)
@@ -474,7 +510,7 @@ function _assetChainValidateAssets(versionData, basePath, indexData){
             cb()
         }, function(err){
             instance.assets = new DLTracker(assetDlQueue, dlSize)
-            instance.totaldlsize += dlSize
+            instance.totaldlsize += dlSize*1
             fulfill()
         })
     })
@@ -512,7 +548,7 @@ function validateLibraries(versionData, basePath){
             cb()
         }, function(err){
             instance.libraries = new DLTracker(libDlQueue, dlSize)
-            instance.totaldlsize += dlSize
+            instance.totaldlsize += dlSize*1
             fulfill()
         })
     })
@@ -600,6 +636,13 @@ function validateDistribution(serverpackid, basePath){
             }
 
             instance.forge = _parseDistroModules(serv.modules, basePath, serv.mc_version)
+            //Correct our workaround here.
+            let decompressqueue = instance.forge.callback
+            instance.forge.callback = async function(asset){
+                if(asset.to.toLowerCase().endsWith('.pack.xz')){
+                    _extractPackXZ([asset.to])
+                }
+            }
             instance.totaldlsize += instance.forge.dlsize*1
             fulfill()
         })
@@ -623,6 +666,8 @@ function _chainValidateDistributionIndex(basePath){
 function _parseDistroModules(modules, basePath, version){
     let alist = []
     let asize = 0;
+    //This may be removed soon, considering the most efficient way to extract.
+    let decompressqueue = []
     for(let i=0; i<modules.length; i++){
         let ob = modules[i]
         let obType = ob.type
@@ -647,13 +692,17 @@ function _parseDistroModules(modules, basePath, version){
         let artifact = new Asset(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath)
         asize += artifact.size*1
         alist.push(artifact)
+        if(obPath.toLowerCase().endsWith('.pack.xz')){
+            decompressqueue.push(obPath)
+        }
         if(ob.sub_modules != null){
             let dltrack = _parseDistroModules(ob.sub_modules, basePath, version)
-            asize += dltrack.dlsize
+            asize += dltrack.dlsize*1
             alist = alist.concat(dltrack.dlqueue)
+            decompressqueue = decompressqueue.concat(dltrack.callback)
         }
     }
-    return new DLTracker(alist, asize)
+    return new DLTracker(alist, asize, decompressqueue)
 }
 
 /**
@@ -688,9 +737,9 @@ module.exports = {
     validateAssets,
     validateLibraries,
     validateMiscellaneous,
+    validateDistribution,
     processDlQueues,
     instance,
     Asset,
-    Library,
-    validateDistribution
+    Library
 }

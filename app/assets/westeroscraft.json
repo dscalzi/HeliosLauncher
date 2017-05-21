@@ -16,7 +16,7 @@
                     "name": "Minecraft Forge 1.11.2-13.20.0.2282",
                     "type": "forge-hosted",
                     "artifact": {
-                        "size": 4123353,
+                        "size": 4396371,
                         "MD5": "1d0f1b383ec122a993e374771c954be2",
                         "extension": ".jar",
                         "url": "http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.11.2-13.20.0.2282/forge-1.11.2-13.20.0.2282-universal.jar"
@@ -227,7 +227,7 @@
                     "name": "Optifine (1.11.2_HD_U_B8)",
                     "type": "forgemod",
                     "artifact": {
-                        "size": 2050307,
+                        "size": 2050500,
                         "MD5": "c18c80f8bfa2a440cc5af4ab8816bc4b",
                         "path": "OptiFine-1.11.2_HD_U_B8.jar",
                         "url": "http://optifine.net/download.php?f=OptiFine_1.11.2_HD_U_B8.jar"
@@ -238,7 +238,7 @@
                     "name": "WesterosBlocks (3.0.0-beta-1)",
                     "type": "forgemod",
                     "artifact": {
-                        "size": 16222133,
+                        "size": 16230253,
                          "MD5": "2a71c13afd289d15c9f95a23712b095d",
                         "path": "WesterosBlocks.jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/WesterosBlocks.jar"
@@ -249,7 +249,7 @@
                     "name": "WesterosCraft Resource Pack (2017-03-21)",
                     "type": "file",
                     "artifact": {
-                        "size": 58816622,
+                        "size": 44704858,
                         "MD5": "1b5dd219a21bda8cd0fb8f7ee986515a",
                         "path": "resourcepacks/WesterosCraft.zip",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/resourcepacks/WesterosCraft.zip"
