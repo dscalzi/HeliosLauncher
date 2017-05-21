@@ -58,7 +58,9 @@ testdownloads = async function(){
     console.log('files done')
     await ag.validateDistribution('WesterosCraft-1.11.2', basePath)
     console.log('forge stuff done')
-    ag.instance.on('dlcomplete', function(){
+    ag.instance.on('dlcomplete', async function(){
+        let forgeData = await ag.loadForgeData('WesterosCraft-1.11.2', basePath)
+        lp.launchMinecraft(versionData, forgeData, basePath)
         //lp.launchMinecraft(versionData, basePath)
     })
     ag.processDlQueues()

@@ -7,41 +7,41 @@ const AdmZip = require('adm-zip')
 const fs = require('fs')
 const mkpath = require('mkdirp');
 
-launchMinecraft = function(versionData, basePath){
+function launchMinecraft(versionData, forgeData, basePath){
     const authPromise = mojang.auth('EMAIL', 'PASS', uuidV4(), {
         name: 'Minecraft',
         version: 1
     })
     authPromise.then(function(data){
-        const args = finalizeArguments(versionData, data, basePath)
+        const args = finalizeArgumentsForge(versionData, forgeData, data, basePath)
         //TODO make this dynamic
         const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', args)
         child.stdout.on('data', (data) => {
-            console.log('minecraft:', data.toString('utf8'))
+            console.log('Minecraft:', data.toString('utf8'))
         })
         child.stderr.on('data', (data) => {
-            console.log('minecraft:', data.toString('utf8'))
+            console.log('Minecraft:', data.toString('utf8'))
         })
         child.on('close', (code, signal) => {
-            console.log('exited with code', code)
+            console.log('Exited with code', code)
         })
     })
 }
 
-finalizeArguments = function(versionData, authData, basePath){
-    const mcArgs = versionData['minecraftArguments']
+function finalizeArgumentsForge(versionData, forgeData, authData, basePath){
+    const mcArgs = forgeData['minecraftArguments']
     const gameProfile = authData['selectedProfile']
     const regex = new RegExp('\\${*(.*)}')
     const argArr = mcArgs.split(' ')
-    argArr.unshift('net.minecraft.client.main.Main')
-    argArr.unshift(classpathArg(versionData, basePath))
-    argArr.unshift('-cp')
-    argArr.unshift('-Djava.library.path=' + path.join(basePath, 'natives'))
-    argArr.unshift('-Xmn128M')
-    argArr.unshift('-XX:-UseAdaptiveSizePolicy')
-    argArr.unshift('-XX:+CMSIncrementalMode')
-    argArr.unshift('-XX:+UseConcMarkSweepGC')
-    argArr.unshift('-Xmx1G')
+    const staticArgs = ['-Xmx4G',
+                        '-XX:+UseConcMarkSweepGC',
+                        '-XX:+CMSIncrementalMode',
+                        '-XX:-UseAdaptiveSizePolicy',
+                        '-Xmn128M',
+                        '-Djava.library.path=' + path.join(basePath, 'natives'),
+                        '-cp',
+                        classpathArg(versionData, basePath).concat(forgeClasspathArg(forgeData, basePath)).join(';'),
+                        forgeData.mainClass]
     for(let i=0; i<argArr.length; i++){
         if(regex.test(argArr[i])){
             const identifier = argArr[i].match(regex)[1]
@@ -79,10 +79,76 @@ finalizeArguments = function(versionData, authData, basePath){
         }
     }
 
-    return argArr
+    return staticArgs.concat(argArr)
 }
 
-classpathArg = function(versionData, basePath){
+function finalizeArguments(versionData, authData, basePath){
+    const mcArgs = versionData['minecraftArguments']
+    const gameProfile = authData['selectedProfile']
+    const regex = new RegExp('\\${*(.*)}')
+    const argArr = mcArgs.split(' ')
+    const staticArgs = ['-Xmx1G',
+                        '-XX:+UseConcMarkSweepGC',
+                        '-XX:+CMSIncrementalMode',
+                        '-XX:-UseAdaptiveSizePolicy',
+                        '-Xmn128M',
+                        '-Djava.library.path=' + path.join(basePath, 'natives'),
+                        '-cp',
+                        classpathArg(versionData, basePath).join(';'),
+                        versionData.mainClass]
+    for(let i=0; i<argArr.length; i++){
+        if(regex.test(argArr[i])){
+            const identifier = argArr[i].match(regex)[1]
+            let newVal = argArr[i]
+            switch(identifier){
+                case 'auth_player_name':
+                    newVal = gameProfile['name']
+                    break
+                case 'version_name':
+                    newVal = versionData['id']
+                    break
+                case 'game_directory':
+                    newVal = basePath
+                    break
+                case 'assets_root':
+                    newVal = path.join(basePath, 'assets')
+                    break
+                case 'assets_index_name':
+                    newVal = versionData['assets']
+                    break
+                case 'auth_uuid':
+                    newVal = gameProfile['id']
+                    break
+                case 'auth_access_token':
+                    newVal = authData['accessToken']
+                    break
+                case 'user_type':
+                    newVal = 'MOJANG'
+                    break
+                case 'version_type':
+                    newVal = versionData['type']
+                    break
+            }
+            argArr[i] = newVal
+        }
+    }
+
+    return staticArgs.concat(argArr)
+}
+
+function forgeClasspathArg(forgeData, basePath){
+    const libArr = forgeData['libraries']
+    const libPath = path.join(basePath, 'libraries')
+    const cpArgs = []
+    for(let i=0; i<libArr.length; i++){
+        const lib = libArr[i]
+        const to = path.join(libPath, ag._resolvePath(lib.name, '.jar'))
+        cpArgs.push(to)
+    }
+    return cpArgs
+}
+
+function classpathArg(versionData, basePath){
     const libArr = versionData['libraries']
     const libPath = path.join(basePath, 'libraries')
     const nativePath = path.join(basePath, 'natives')
@@ -134,7 +200,7 @@ classpathArg = function(versionData, basePath){
         }
     })
 
-    return cpArgs.join(';')
+    return cpArgs
 }
 
 module.exports = {

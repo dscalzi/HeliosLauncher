@@ -109,6 +109,27 @@ class Library extends Asset{
     }
 }
 
+class DistroModule extends Asset {
+
+    /**
+     * Create a DistroModule. This is for processing,
+     * not equivalent to the module objects in the
+     * distro index.
+     * 
+     * @param {any} id - id of the asset.
+     * @param {String} hash - hash value of the asset.
+     * @param {Number} size - size in bytes of the asset.
+     * @param {String} from - url where the asset can be found.
+     * @param {String} to - absolute local file path of the asset.
+     * @param {String} type - the module type.
+     */
+    constructor(id, hash, size, from, to, type){
+        super(id, hash, size, from, to)
+        this.type = type
+    }
+
+}
+
 /**
  * Class representing a download tracker. This is used to store meta data
  * about a download queue, including the queue itself.
@@ -316,6 +337,31 @@ function _extractPackXZ(filePaths){
         child.on('close', (code, signal) => {
             //console.log('PackXZExtract: Exited with code', code)
             fulfill()
+        })
+    })
+}
+
+function _finalizeForgeAsset(asset, basePath){
+    return new Promise(function(fulfill, reject){
+        fs.readFile(asset.to, (err, data) => {
+            const zip = new AdmZip(data)
+            const zipEntries = zip.getEntries()
+
+            for(let i=0; i<zipEntries.length; i++){
+                if(zipEntries[i].entryName === 'version.json'){
+                    const forgeVersion = JSON.parse(zip.readAsText(zipEntries[i]))
+                    const versionPath = path.join(basePath, 'versions', forgeVersion.id)
+                    const versionFile = path.join(versionPath, forgeVersion.id + '.json')
+                    if(!fs.existsSync(versionFile)){
+                        mkpath.sync(versionPath)
+                        fs.writeFileSync(path.join(versionPath, forgeVersion.id + '.json'), zipEntries[i].getData())
+                        fulfill(forgeVersion)
+                    } else {
+                        fulfill(JSON.parse(fs.readFileSync(versionFile, 'utf-8')))
+                    }
+                    return
+                }
+            }
         })
     })
 }
@@ -625,7 +671,7 @@ function validateLogConfig(versionData, basePath){
 
 function validateDistribution(serverpackid, basePath){
     return new Promise(function(fulfill, reject){
-        let distroindex = _chainValidateDistributionIndex(basePath).then((value) => {
+        _chainValidateDistributionIndex(basePath).then((value) => {
             let servers = value.servers
             let serv = null
             for(let i=0; i<servers.length; i++){
@@ -642,8 +688,10 @@ function validateDistribution(serverpackid, basePath){
                 if(asset.to.toLowerCase().endsWith('.pack.xz')){
                     _extractPackXZ([asset.to])
                 }
+                if(asset.type === 'forge-hosted' || asset.type === 'forge'){
+                    _finalizeForgeAsset(asset, basePath)
+                }
             }
-            console.log(instance.forge)
             instance.totaldlsize += instance.forge.dlsize*1
             fulfill()
         })
@@ -690,7 +738,7 @@ function _parseDistroModules(modules, basePath, version){
             default: 
                 obPath = path.join(basePath, obPath)
         }
-        let artifact = new Asset(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath)
+        let artifact = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, obType)
         if(obPath.toLowerCase().endsWith('.pack.xz')){
             if(!_validateLocal(obPath.substring(0, obPath.toLowerCase().lastIndexOf('.pack.xz')), 'MD5', artifact.hash)){
                 asize += artifact.size*1
@@ -709,6 +757,35 @@ function _parseDistroModules(modules, basePath, version){
         }
     }
     return new DLTracker(alist, asize, decompressqueue)
+}
+
+function loadForgeData(serverpack, basePath){
+    return new Promise(async function(fulfill, reject){
+        let distro = await _chainValidateDistributionIndex(basePath)
+        
+        const servers = distro.servers
+        let serv = null
+        for(let i=0; i<servers.length; i++){
+            if(servers[i].id === serverpack){
+                serv = servers[i]
+                break
+            }
+        }
+
+        const modules = serv.modules
+        for(let i=0; i<modules.length; i++){
+            const ob = modules[i]
+            if(ob.type === 'forge-hosted' || ob.type === 'forge'){
+                let obArtifact = ob.artifact
+                let obPath = obArtifact.path == null ? path.join(basePath, 'libraries', _resolvePath(ob.id, obArtifact.extension)) : obArtifact.path
+                let asset = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, ob.type)
+                let forgeData = await _finalizeForgeAsset(asset, basePath)
+                fulfill(forgeData)
+                return
+            }
+        }
+        reject('No forge module found!')
+    })
 }
 
 /**
@@ -740,6 +817,7 @@ function processDlQueues(identifiers = [{id:'assets', limit:20}, {id:'libraries'
 
 module.exports = {
     loadVersionData,
+    loadForgeData,
     validateAssets,
     validateLibraries,
     validateMiscellaneous,
@@ -747,5 +825,6 @@ module.exports = {
     processDlQueues,
     instance,
     Asset,
-    Library
+    Library,
+    _resolvePath
 }
