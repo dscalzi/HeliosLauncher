@@ -38,7 +38,6 @@ html {
 }
 
 #main_content {
-    height: auto;
     height: calc(100% - 90px);
     display: flex;
 }
@@ -180,12 +179,38 @@ button:hover {
     width: 30%;
 }
 
+#welcome_text_container {
+    display: table;
+    margin: 0 auto;
+}
+
 #welcome_text {
     font-family: 'ringbearer';
     font-size: 16px;
-    display: block;
+    display: table-cell;
     text-align: center;
-    padding-top: 10px;
+    vertical-align: middle;
+    height: 35px;
+}
+
+#login_pane {
+    background: linear-gradient(141deg, #000000 -5%, #a02d2a 120%, #000000 150%);
+    padding-top: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.28);
+    width: 97%;
+    margin: 0 auto;
+}
+
+#login_pane_header_container {
+    margin-left: 10px;
+}
+
+.login_pane_header {
+    font-size: 14px;
+    font-family: 'Segoe UI';
+    font-weight: 500;
+    color: white;
 }
 
 #login_container {
@@ -219,11 +244,14 @@ button:hover {
     font-size: 12px;
     font-family: 'Segoe UI';
     font-weight: 500;
+    color: white;
+    /* new */
+    display: table;
 }
 
 #button_login {
     float: right;
-    margin-right: 10px;
+    margin-top: 10px;
 }
 
 /*******************************************************************************
@@ -274,3 +302,50 @@ button:hover {
 #launcher-log::-webkit-scrollbar-thumb {
         background:  black
 }
+
+.log_debug {
+    color: blue;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Login View                                                                  *
+ *                                                                             *
+ ******************************************************************************/
+
+#login_view {
+    background: rgba(0, 0, 0, 0.76);
+    height: calc(100% - 90px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#login_content {
+    width: 50%;
+    height: 75%;
+    display: flex;
+    justify-content: center;
+}
+
+#login_view #content_main {
+    display: flex;
+}
+
+#login_view #login_content_image {
+    height: 125px;
+    width: auto;
+}
+
+#login_view #content_main #right {
+    margin-left: 10px;
+}
+
+.login_input {
+    background-color: #a02d2a;
+}
+
+.login_input::-webkit-input-placeholder {
+    color: white;
+}
+

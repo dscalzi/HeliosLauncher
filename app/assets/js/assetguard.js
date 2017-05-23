@@ -186,7 +186,7 @@ const instance = new AssetGuard()
  * 'net.minecraftforge:forge:1.11.2-13.20.0.2282', '.jar' becomes
  * net\minecraftforge\forge\1.11.2-13.20.0.2282\forge-1.11.2-13.20.0.2282.jar
  * 
- * @param {String} artifact - the artifact id string.
+ * @param {String} artifactid - the artifact id string.
  * @param {String} extension - the extension of the file at the resolved path.
  * @returns {String} - the resolved relative path from the artifact id.
  */
@@ -199,6 +199,26 @@ function _resolvePath(artifactid, extension){
     cs.push(ps[1].concat('-').concat(ps[2]).concat(extension))
 
     return path.join.apply(path, cs)
+}
+
+/**
+ * Resolve an artifact id into a URL. For example,
+ * 'net.minecraftforge:forge:1.11.2-13.20.0.2282', '.jar' becomes
+ * net/minecraftforge/forge/1.11.2-13.20.0.2282/forge-1.11.2-13.20.0.2282.jar
+ * 
+ * @param {String} artifactid - the artifact id string.
+ * @param {String} extension - the extension of the file at the resolved url.
+ * @returns {String} - the resolved relative URL from the artifact id.
+ */
+function _resolveURL(artifactid, extension){
+    let ps = artifactid.split(':')
+    let cs = ps[0].split('.')
+
+    cs.push(ps[1])
+    cs.push(ps[2])
+    cs.push(ps[1].concat('-').concat(ps[2]).concat(extension))
+
+    return cs.join('/')
 }
 
 /**
@@ -724,17 +744,19 @@ function _parseDistroModules(modules, basePath, version){
         let obPath = obArtifact.path == null ? _resolvePath(ob.id, obArtifact.extension) : obArtifact.path
         switch(obType){
             case 'forge-hosted':
+            case 'forge':
                 obPath = path.join(basePath, 'libraries', obPath)
-                break;
+                break
             case 'library':
                 obPath = path.join(basePath, 'libraries', obPath)
-                break;
+                break
             case 'forgemod':
                 obPath = path.join(basePath, 'mods', obPath)
-                break;
+                break
             case 'litemod':
                 obPath = path.join(basePath, 'mods', version, obPath)
-                break;
+                break
+            case 'file':
             default: 
                 obPath = path.join(basePath, obPath)
         }
@@ -786,6 +808,10 @@ function loadForgeData(serverpack, basePath){
         }
         reject('No forge module found!')
     })
+}
+
+function _parseForgeLibraries(){
+
 }
 
 /**

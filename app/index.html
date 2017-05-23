@@ -6,14 +6,6 @@
     <title>Westeroscraft Launcher</title>
     <script src="./assets/js/script.js"></script>
     <link type="text/css" rel="stylesheet" href="./assets/css/styles.css">
-
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="assets/css/global.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/header.css"> -->
-
 </head>
 <body>
     <div id="header_container">
@@ -36,45 +28,75 @@
         </div>
     </div>
 
-    <div id="main_content">
-        <div id="left_pane">
-            <span id="welcome_text">Welcome to WesterosCraft!</span>
-            <div id="login_container">
-                <div id="login_container_left">
-                    <img src="https://minotar.net/avatar/TheAventine.png" id="login_image" />
+    <div id="login_view">
+        <div id="login_content">
+            <div id="content_main">
+                <div id="left">
+                    <img id="login_content_image" src="./assets/images/WesterosSealSquare.png" />
                 </div>
-                <div id="login_container_right">
+                <div id="right">
                     <label class="login_field">Username</label>
-                    <input type="text" name="username"></input>
+                    <input type="text" name="username" placeholder="Username" class="login_input"></input>
                     <label class="login_field">Password</label>
-                    <input type="password" name="password"></input>
+                    <input type="password" name="password" placeholder="Password" class="login_input"></input>
+                    <div id="login_button_dock">
+                        <button id="button_login">Login</button>
+                    </div>
                 </div>
             </div>
-            <div id="login_button_dock">
-                <button id="button_login">Login</button>
+        </div>
+    </div>
+
+    <div id="main_content" style="display: none;">
+        <div id="left_pane">
+            <div id="welcome_text_container">
+                <span id="welcome_text">Welcome to WesterosCraft!</span>
             </div>
+            <div id="login_pane">
+                <div id="login_pane_header_container">
+                    <label class="login_pane_header">Login to New Account</label>
+                </div>
+                <div id="login_container">
+                    <div id="login_container_left">
+                        <img src="https://minotar.net/avatar/TheAventine.png" id="login_image" />
+                    </div>
+                    <div id="login_container_right">
+                        <label class="login_field">Username</label>
+                        <input type="text" name="username"></input>
+                        <label class="login_field">Password</label>
+                        <input type="password" name="password"></input>
+                        <div id="login_button_dock">
+                            <button id="button_login">Login</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Experimental 
+            <br>
+            <div id="login_pane">
+                <div id="login_pane_header_container">
+                    <label class="login_pane_header">Logged in as TheKraken7</label>
+                </div>
+                <div id="login_container">
+                    <div id="login_container_left">
+                        <img src="https://minotar.net/avatar/TheKraken7.png" id="login_image" />
+                    </div>
+                    <div id="login_container_right">
+                        <label class="login_field">Switch Account</label>
+                        <select>
+                            <option value="iPepsiHD">iPepsiHD</option>
+                            <option value="$addNew">Add New..</option>
+                        </select>
+                    </div>
+                </div>
+            </div>-->
         </div>
         <div id="right_pane">
             <div class="toggle-btn-grp">
                 <label onclick="" class="toggle-btn success"><input type="radio" name="main_group"/>news</label><label onclick="" class="toggle-btn"><input type="radio" name="main_group"/>map</label><label onclick="" class="toggle-btn"><input type="radio" name="main_group"/>mods</label><label onclick="" class="toggle-btn"><input type="radio" name="main_group"/>faq</label><label onclick="" class="toggle-btn"><input type="radio" name="main_group"/>log</label><label onclick="" class="toggle-btn"><input type="radio" name="main_group"/>settings</label>
             </div>
             <div id="content_container">
-                <textarea id="launcher-log">[05/17/2017 04:59:13] [INFO] - Loading..
-[05/17/2017 04:59:13] [SEVERE] - This is a test exception
-java.lang.Exception: This is a test exception
-	at com.westeroscraft.LauncherExecutor.start(LauncherExecutor.java:40)
-	at com.sun.javafx.application.LauncherImpl.lambda$launchApplication1$162(LauncherImpl.java:863)
-	at com.sun.javafx.application.PlatformImpl.lambda$runAndWait$175(PlatformImpl.java:326)
-	at com.sun.javafx.application.PlatformImpl.lambda$null$173(PlatformImpl.java:295)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at com.sun.javafx.application.PlatformImpl.lambda$runLater$174(PlatformImpl.java:294)
-	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
-	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
-	at com.sun.glass.ui.win.WinApplication.lambda$null$148(WinApplication.java:191)
-	at java.lang.Thread.run(Unknown Source)
-[05/17/2017 04:59:28] [INFO] - Hastebin result:
-Response code: 200.
-Hastebin URL: https://hastebin.com/kefezabiwa</textarea>
+                <textarea id="launcher-log"></textarea>
             </div>
         </div>
     </div>

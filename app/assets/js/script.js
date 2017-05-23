@@ -14,7 +14,7 @@ function timestamp(){
     const min = date.getMinutes() < 10 ? '0'.concat(date.getMinutes()) : date.getMinutes();
     const sec = date.getSeconds() < 10 ? '0'.concat(date.getSeconds()) : date.getSeconds();
 
-    return os.EOL + '[' + month + '/' + day + '/' + date.getFullYear() + ' ' + hour  + ':' + min + ':' + sec + ']'
+    return '[' + month + '/' + day + '/' + date.getFullYear() + ' ' + hour  + ':' + min + ':' + sec + ']'
 }
 
 $(document).on('ready', function(){
@@ -26,14 +26,17 @@ $(document).on('ready', function(){
             $(this).parent().toggleClass("success")
         }
     })
-    /*console.log = function(){
-        $('#launcher-log').append(timestamp() + ' [Log] - ' + Array.prototype.slice.call(arguments).join(' '))
+    console.log = function(){
+        $('#launcher-log').append(timestamp() + ' [Log] - ' + Array.prototype.slice.call(arguments).join(' ') + os.EOL)
     }
     console.error = function(){
-        $('#launcher-log').append(timestamp() + ' [Error] - ' + Array.prototype.slice.call(arguments).join(' '))
+        $('#launcher-log').append('<span class="log_debug">' + timestamp() + ' [Debug] - ' + Array.prototype.slice.call(arguments).join(' ') + "</span>" + os.EOL)
+    }
+    console.debug = function(){
+        $('#launcher-log').append('<span class="log_debug">' + timestamp() + ' [Error] - ' + Array.prototype.slice.call(arguments).join(' ') + "</span>" + os.EOL)
     }
     console.log('test')
-    //console.debug('test')*/
+    console.debug('test')
 })
 
 /* Open web links in the user's default browser. */

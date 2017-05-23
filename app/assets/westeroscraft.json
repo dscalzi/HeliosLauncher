@@ -223,19 +223,30 @@
                     ]
                 },
                 {
-                    "id": "net.optifine:optifine:1.11.2_HD_U_B8",
-                    "name": "Optifine (1.11.2_HD_U_B8)",
+                    "id": "net.optifine:optifine:1.11.2_HD_U_B9",
+                    "name": "Optifine (1.11.2_HD_U_B9)",
                     "type": "forgemod",
                     "artifact": {
-                        "size": 2050500,
-                        "MD5": "cf4da33e1014b1b77fea17d64668aff6",
-                        "path": "OptiFine-1.11.2_HD_U_B8.jar",
-                        "url": "http://optifine.net/download.php?f=OptiFine_1.11.2_HD_U_B8.jar"
+                        "size": 2056699,
+                        "MD5": "38b4c51b9c6ebc09e7a9784accea974e",
+                        "path": "OptiFine-1.11.2_HD_U_B9.jar",
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/OptiFine.jar"
                     }
                 },
                 {
-                    "id": "com.westeroscraft:westerosblocks:3.0.0-beta-1",
-                    "name": "WesterosBlocks (3.0.0-beta-1)",
+                    "id": "jei",
+                    "name": "JustEnoughItems (1.11.2-4.3.5.277)",
+                    "type": "forgemod",
+                    "artifact": {
+                        "size": 509450,
+                        "MD5": "ea56276646ce405bb4beeaf9064de611",
+                        "path": "jei.jar",
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/jei.jar"
+                    }
+                },
+                {
+                    "id": "com.westeroscraft:westerosblocks:3.0.0-beta-71",
+                    "name": "WesterosBlocks (3.0.0-beta-71)",
                     "type": "forgemod",
                     "artifact": {
                         "size": 16230253,
