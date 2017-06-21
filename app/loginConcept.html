@@ -1,0 +1,150 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="assets/css/global.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/header.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/nav.css">
+
+</head>
+
+
+<style>
+    @font-face {
+        font-family: inconsolata;
+        src: url('assets/fonts/Inconsolata-Bold.ttf');
+    }
+
+    .login-window {
+        margin-left: 40%;
+        width: 20%;
+        height: 100%;
+        opacity: 0.7;
+        background-color: black;
+        text-align: center;
+    }
+
+
+    .logo {
+        margin-top: 40px;
+        margin-bottom: 40px;
+        width: 150px;
+        align: center;
+    }
+
+    .title {
+        font-family: inconsolata;
+        font-size: 20px;
+        color: white;
+    }
+
+    .sub-title {
+        font-family: inconsolata;
+        font-size: 15px;
+        color: #bdc3c7;
+        font-weight: bold;
+    }
+
+
+    input {
+        width: 80%;
+        border: none;
+        border-bottom: 2px solid white;
+        font-size: 20px;
+        outline: none;
+        color: #95a5a6;
+        background: none;
+        margin-bottom: 5px;
+        margin-top: 7px;
+    }
+
+
+    html,
+    body {
+        background: url('assets/images/loginBackground.jpg') no-repeat center center fixed;
+        background-size: cover;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .addon {
+        position: relative;
+    }
+
+
+    .addon .glyphicon {
+        position: absolute;
+        padding-top: 4.9%;
+        color: white;
+        pointer-events: none;
+        font-size: 20px;
+        text-align: center;
+        left: 47%;
+    }
+
+    .inline-title-div {
+        width: 80%;
+        text-align: center;
+         margin: 0 auto;
+    }
+
+    .title-inline {
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+    }
+
+    .title-inline:before,
+    .title-inline:after {
+        position: absolute;
+        top: 51%;
+        overflow: hidden;
+        width: 50%;
+        height: 2px;
+        content: '\a0';
+        background-color: white;
+    }
+
+    .title-inline:before {
+        margin-left: -50%;
+        text-align: right;
+    }
+</style>
+
+
+<body>
+
+    <div class="login-window" style="text-align: center;">
+
+        <img class="logo" src="assets/images/WesterosSealCircle.png">
+        <p class="title"> MEMBER LOGIN </p>
+
+        <div class="addon">
+            <i class="glyphicon glyphicon-user"></i>
+            <input>
+        </div>
+        <p class="sub-title"> USERNAME </p>
+
+
+        <div class="addon">
+            <i class="glyphicon glyphicon-lock"></i>
+            <input>
+        </div>
+        <p class="sub-title"> PASSWORD </p>
+
+        <div class="inline-title-div">
+            <pre class="title title-inline">  REGISTER  </pre>
+        </div>
+    </div>
+
+</body>
+
+
+</html>
