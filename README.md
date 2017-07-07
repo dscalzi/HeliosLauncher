@@ -86,6 +86,4 @@ Please note that if you are debugging the application with VS Code and have laun
 
 If you run into any issue which cannot be resolved via a quick google search, create an issue using the tab above.
 
-Much of the discussion regarding this launcher is done on Discord, feel free to join us there. Click the image below to connect to our server.
-
-[![Discord](http://i.imgur.com/wlSvq9y.png)](https://discord.gg/UACCjTK)
+Much of the discussion regarding this launcher is done on Discord, feel free to join us there [![Discord](https://discordapp.com/api/guilds/98469309352775680/widget.png)](https://discord.gg/hqdjs3m)
