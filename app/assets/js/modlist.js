@@ -45,7 +45,7 @@ export class ModList {
      * @param {Object} distro - the distribution index. 
      */
     static generateModList(distro){
-
+        
     }
 
 }

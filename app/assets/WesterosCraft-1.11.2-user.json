@@ -1,0 +1,8 @@
+{
+  "repositoryRoot": "/modstore",
+  "modRef": [
+    "my.custom:mod:1.11.2",
+    "another.custom:mod:1.11.2"
+  ],
+  "parentList": "/mods/WesterosCraft-1.11.2.json"
+}

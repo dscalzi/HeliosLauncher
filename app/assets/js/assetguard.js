@@ -307,7 +307,9 @@ function _validateForgeChecksum(filePath, checksums){
  * @returns {Boolean} - true if all hashes declared in the checksums.sha1 file match the actual hashes.
  */
 function _validateForgeJar(buf, checksums){
-    
+    // Double pass method was the quickest I found. I tried a version where we store data
+    // to only require a single pass, plus some quick cleanup but that seemed to take slightly more time.
+
     const hashes = {}
     let expected = {}
 
@@ -361,6 +363,16 @@ function _extractPackXZ(filePaths){
     })
 }
 
+/**
+ * Function which finalizes the forge installation process. This creates a 'version'
+ * instance for forge and saves its version.json file into that instance. If that
+ * instance already exists, the contents of the version.json file are read and returned
+ * in a promise.
+ * 
+ * @param {Asset} asset - The Asset object representing Forge.
+ * @param {String} basePath
+ * @returns {Promise.<Object>} - A promise which resolves to the contents of forge's version.json.
+ */
 function _finalizeForgeAsset(asset, basePath){
     return new Promise(function(fulfill, reject){
         fs.readFile(asset.to, (err, data) => {
@@ -377,11 +389,14 @@ function _finalizeForgeAsset(asset, basePath){
                         fs.writeFileSync(path.join(versionPath, forgeVersion.id + '.json'), zipEntries[i].getData())
                         fulfill(forgeVersion)
                     } else {
+                        //Read the saved file to allow for user modifications.
                         fulfill(JSON.parse(fs.readFileSync(versionFile, 'utf-8')))
                     }
                     return
                 }
             }
+            //We didn't find forge's version.json.
+            reject('Unable to finalize Forge processing, version.json not found! Has forge changed their format?')
         })
     })
 }
@@ -402,7 +417,7 @@ function startAsyncProcess(identifier, limit = 5){
     if(concurrentDlQueue.length === 0){
         return false
     } else {
-        console.log(instance.progress)
+        console.log(concurrentDlQueue)
         async.eachLimit(concurrentDlQueue, limit, function(asset, cb){
             let count = 0;
             mkpath.sync(path.join(asset.to, ".."))
@@ -745,32 +760,29 @@ function _parseDistroModules(modules, basePath, version){
         switch(obType){
             case 'forge-hosted':
             case 'forge':
-                obPath = path.join(basePath, 'libraries', obPath)
-                break
             case 'library':
                 obPath = path.join(basePath, 'libraries', obPath)
                 break
             case 'forgemod':
-                obPath = path.join(basePath, 'mods', obPath)
+                //obPath = path.join(basePath, 'mods', obPath)
+                obPath = path.join(basePath, 'modstore', obPath)
                 break
             case 'litemod':
-                obPath = path.join(basePath, 'mods', version, obPath)
+                //obPath = path.join(basePath, 'mods', version, obPath)
+                obPath = path.join(basePath, 'modstore', obPath)
                 break
             case 'file':
             default: 
                 obPath = path.join(basePath, obPath)
         }
         let artifact = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, obType)
-        if(obPath.toLowerCase().endsWith('.pack.xz')){
-            if(!_validateLocal(obPath.substring(0, obPath.toLowerCase().lastIndexOf('.pack.xz')), 'MD5', artifact.hash)){
-                asize += artifact.size*1
-                alist.push(artifact)
-                decompressqueue.push(obPath)
-            }
-        } else if(!_validateLocal(obPath, 'MD5', artifact.hash)){
+        const validationPath = obPath.toLowerCase().endsWith('.pack.xz') ? obPath.substring(0, obPath.toLowerCase().lastIndexOf('.pack.xz')) : obPath
+        if(!_validateLocal(validationPath, 'MD5', artifact.hash)){
             asize += artifact.size*1
             alist.push(artifact)
+            if(validationPath !== obPath) decompressqueue.push(obPath)
         }
+        //Recursively process the submodules then combine the results.
         if(ob.sub_modules != null){
             let dltrack = _parseDistroModules(ob.sub_modules, basePath, version)
             asize += dltrack.dlsize*1
@@ -778,9 +790,18 @@ function _parseDistroModules(modules, basePath, version){
             decompressqueue = decompressqueue.concat(dltrack.callback)
         }
     }
+
+    //Since we have no callback at this point, we use this value to store the decompressqueue.
     return new DLTracker(alist, asize, decompressqueue)
 }
 
+/**
+ * Loads Forge's version.json data into memory for the specified server id.
+ * 
+ * @param {String} serverpack - The id of the server to load Forge data for.
+ * @param {String} basePath
+ * @returns {Promise.<Object>} - A promise which resolves to Forge's version.json data.
+ */
 function loadForgeData(serverpack, basePath){
     return new Promise(async function(fulfill, reject){
         let distro = await _chainValidateDistributionIndex(basePath)
@@ -811,7 +832,11 @@ function loadForgeData(serverpack, basePath){
 }
 
 function _parseForgeLibraries(){
-
+    /* TODO
+     * Forge asset validations are already implemented. When there's nothing much
+     * to work on, implement forge downloads using forge's version.json. This is to
+     * have the code on standby if we ever need it (since it's half implemented already).
+     */
 }
 
 /**

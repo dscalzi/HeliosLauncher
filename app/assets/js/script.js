@@ -26,7 +26,7 @@ $(document).on('ready', function(){
             $(this).parent().toggleClass("success")
         }
     })
-    console.log = function(){
+    /*console.log = function(){
         $('#launcher-log').append(timestamp() + ' [Log] - ' + Array.prototype.slice.call(arguments).join(' ') + os.EOL)
     }
     console.error = function(){
@@ -36,7 +36,7 @@ $(document).on('ready', function(){
         $('#launcher-log').append('<span class="log_debug">' + timestamp() + ' [Error] - ' + Array.prototype.slice.call(arguments).join(' ') + "</span>" + os.EOL)
     }
     console.log('test')
-    console.debug('test')
+    console.debug('test')*/
 })
 
 /* Open web links in the user's default browser. */

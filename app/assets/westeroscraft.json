@@ -229,18 +229,20 @@
                     "artifact": {
                         "size": 2056699,
                         "MD5": "38b4c51b9c6ebc09e7a9784accea974e",
-                        "path": "OptiFine-1.11.2_HD_U_B9.jar",
+                        "----path": "OptiFine-1.11.2_HD_U_B9.jar",
+                        "extension": ".jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/OptiFine.jar"
                     }
                 },
                 {
-                    "id": "jei",
+                    "id": "mezz:jei:1.11.2-4.3.5.277",
                     "name": "JustEnoughItems (1.11.2-4.3.5.277)",
                     "type": "forgemod",
                     "artifact": {
                         "size": 509450,
                         "MD5": "ea56276646ce405bb4beeaf9064de611",
-                        "path": "jei.jar",
+                        "----path": "jei.jar",
+                        "extension": ".jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/jei.jar"
                     }
                 },
@@ -249,9 +251,10 @@
                     "name": "WesterosBlocks (3.0.0-beta-71)",
                     "type": "forgemod",
                     "artifact": {
-                        "size": 16230253,
-                         "MD5": "2e3ea10730720b8abbf408262d922249",
-                        "path": "WesterosBlocks.jar",
+                        "size": 16252437,
+                         "MD5": "d868f0c0b0cabf3cee2b585503873380",
+                        "----path": "WesterosBlocks.jar",
+                        "extension": ".jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/WesterosBlocks.jar"
                     }
                 },
@@ -260,8 +263,8 @@
                     "name": "WesterosCraft Resource Pack (2017-05-20)",
                     "type": "file",
                     "artifact": {
-                        "size": 44704858,
-                        "MD5": "a2e552df2d5f7f6d6d34f3afe5674670",
+                        "size": 44573660,
+                        "MD5": "b982a65e3fc6971b809f8c60ad4507af",
                         "path": "resourcepacks/WesterosCraft.zip",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/resourcepacks/WesterosCraft.zip"
                     }
@@ -288,7 +291,7 @@
                     }
                 },
                 {
-                    "id": "chatbubbles",
+                    "id": "chatbubbles:chatbubbles:1.0.1_for_1.11.2",
                     "name": "Chat Bubbles 1.11.2",
                     "type": "litemod",
                     "required": {
@@ -296,8 +299,9 @@
                     },
                     "artifact": {
                         "size": 37838,
-                         "MD5": "0497a93e5429b43082282e9d9119fcba",
-                        "path": "mod_chatBubbles-1.0.1_for_1.11.2.litemod",
+                        "MD5": "0497a93e5429b43082282e9d9119fcba",
+                        "---path": "mod_chatBubbles-1.0.1_for_1.11.2.litemod",
+                        "extension": ".litemod",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/mod_chatBubbles-1.0.1_for_1.11.2.litemod"
                     },
                     "sub_modules": [
