@@ -1,0 +1,42 @@
+/* Reset body, html, and div presets. */
+body, html, div {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    background: url('./../images/backgrounds/0.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+#frame_bar {
+    -webkit-app-region: drag;
+    background: rgba(1, 2, 1, 0.5);
+    min-height: 22px;
+    display: flex;
+    align-items: center;
+}
+
+#button_dock {
+    margin-left: 2px;
+}
+
+.frame_button {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    border: 0px;
+    margin-left: 5px;
+}
+
+#frame_button_close {
+    background-color: #e74c32;
+}
+
+#frame_button_restoredown {
+    background-color: #fed045;
+}
+
+#frame_button_minimize {
+    background-color: #96e734;
+}

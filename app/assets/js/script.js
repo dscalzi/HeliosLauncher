@@ -51,7 +51,7 @@ $(document).on('click', 'a[href^="http"]', function(event) {
 
 testdownloads = async function(){
     const lp = require(path.join(__dirname, 'assets', 'js', 'launchprocess.js'))
-    const basePath = path.join(__dirname, '..', 'mcfiles')
+    const basePath = path.join(__dirname, '..', 'target', 'test', 'mcfiles')
     let versionData = await ag.loadVersionData('1.11.2', basePath)
     await ag.validateAssets(versionData, basePath)
     console.log('assets done')

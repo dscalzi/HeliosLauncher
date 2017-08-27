@@ -8,7 +8,7 @@ const fs = require('fs')
 const mkpath = require('mkdirp');
 
 function launchMinecraft(versionData, forgeData, basePath){
-    const authPromise = mojang.auth('nytrocraft@live.com', 'applesrsogood123', uuidV4(), {
+    const authPromise = mojang.auth('email', 'pass', uuidV4(), {
         name: 'Minecraft',
         version: 1
     })

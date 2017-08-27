@@ -1,5 +1,4 @@
 /node_modules/
 /.vs/
 /.vscode/
-/mcfiles/
-/logs/
+/target/
