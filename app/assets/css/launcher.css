@@ -17,26 +17,44 @@ body {
     align-items: center;
 }
 
-#button_dock {
+#frame_btn_dock {
     margin-left: 2px;
 }
 
-.frame_button {
+.frame_btn {
     height: 12px;
     width: 12px;
     border-radius: 50%;
     border: 0px;
     margin-left: 5px;
+    -webkit-app-region: no-drag !important;
+    cursor: pointer;
 }
 
-#frame_button_close {
+.frame_btn:focus {
+    outline: 0px;
+}
+
+#frame_btn_close {
     background-color: #e74c32;
 }
 
-#frame_button_restoredown {
+#frame_btn_close:hover {
+    background-color: #FF9A8A;
+}
+
+#frame_btn_restoredown {
     background-color: #fed045;
 }
 
-#frame_button_minimize {
+#frame_btn_restoredown:hover {
+    background-color: #FFE9A9;
+}
+
+#frame_btn_minimize {
     background-color: #96e734;
+}
+
+#frame_btn_minimize:hover {
+    background-color: #D6FFA6;
 }

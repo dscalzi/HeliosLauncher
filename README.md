@@ -1,7 +1,7 @@
 # Getting Started #
 
 System Requirements:
-* [Node.js](https://nodejs.org/en/) v7.9.0+
+* [Node.js](https://nodejs.org/en/) v8.4.0+
 
 This repository is dedicated to the development of the new custom launcher for the [WesterosCraft](http://www.westeroscraft.com/) server. This project is developed primarily with [Node.js](https://nodejs.org/en/) and the [Electron](https://electron.atom.io/) framework. For further reference you may view [the repository of the new launcher written in JavaFX/Java](https://gitlab.com/westeroscraft/WesteroscraftNewLauncher) which was discontinued. You may also view the repository of the [current launcher](https://gitlab.com/westeroscraft/westeroscraftlaunchercore), a modified fork of MCUpdater.
 
@@ -48,7 +48,7 @@ If you use VS Code, you can run this directly from the IDE. Copy the following c
       },
       "program": "${workspaceRoot}\\index.js",
       "console": "integratedTerminal",
-      "protocol": "legacy"
+      "protocol": "inspector"
     },
     {
       "name": "Debug Renderer Process",

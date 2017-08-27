@@ -1,43 +1,40 @@
-var $ = require('jQuery');
+const $ = require('jquery');
 const remote = require('electron').remote
 const shell = require('electron').shell
 const path = require('path')
 const os = require('os');
 const ag = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
 
-function timestamp(){
-    let date = new Date();
-    const month = date.getMonth() < 9 ? '0'.concat((date.getMonth()+1)) : date.getMonth()
-    const day = date.getDate() < 10 ? '0'.concat(date.getDate()) : date.getDate();
-    let hour = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
-    hour = hour < 10 ? '0'.concat(hour) : hour
-    const min = date.getMinutes() < 10 ? '0'.concat(date.getMinutes()) : date.getMinutes();
-    const sec = date.getSeconds() < 10 ? '0'.concat(date.getSeconds()) : date.getSeconds();
-
-    return '[' + month + '/' + day + '/' + date.getFullYear() + ' ' + hour  + ':' + min + ':' + sec + ']'
-}
+console.log($);
 
 $(document).on('ready', function(){
-    $(".toggle-btn input[type=radio]").addClass("visuallyhidden");
-    $(".toggle-btn input[type=radio]").change(function() {
-        if($(this).attr("name")) {
-            $(this).parent().addClass("success").siblings().removeClass("success")
-        } else {
-            $(this).parent().toggleClass("success")
-        }
-    })
-    /*console.log = function(){
-        $('#launcher-log').append(timestamp() + ' [Log] - ' + Array.prototype.slice.call(arguments).join(' ') + os.EOL)
-    }
-    console.error = function(){
-        $('#launcher-log').append('<span class="log_debug">' + timestamp() + ' [Debug] - ' + Array.prototype.slice.call(arguments).join(' ') + "</span>" + os.EOL)
-    }
-    console.debug = function(){
-        $('#launcher-log').append('<span class="log_debug">' + timestamp() + ' [Error] - ' + Array.prototype.slice.call(arguments).join(' ') + "</span>" + os.EOL)
-    }
-    console.log('test')
-    console.debug('test')*/
+    console.log('okay');
 })
+
+document.onreadystatechange = function () {
+    if (document.readyState == "complete") {
+
+        document.getElementById("frame_btn_close").addEventListener("click", function (e) {
+            const window = remote.getCurrentWindow()
+            window.close()
+        })
+
+        document.getElementById("frame_btn_restoredown").addEventListener("click", function (e) {
+            const window = remote.getCurrentWindow()
+            if(window.isMaximized()){
+                window.unmaximize();
+            } else {
+                window.maximize()
+            }
+        })
+
+        document.getElementById("frame_btn_minimize").addEventListener("click", function (e) {
+            const window = remote.getCurrentWindow()
+            window.minimize()
+        })
+
+    }
+}
 
 /* Open web links in the user's default browser. */
 $(document).on('click', 'a[href^="http"]', function(event) {
@@ -45,9 +42,7 @@ $(document).on('click', 'a[href^="http"]', function(event) {
     testdownloads()
     //console.log(os.homedir())
     //shell.openExternal(this.href)
-});
-
-
+})
 
 testdownloads = async function(){
     const lp = require(path.join(__dirname, 'assets', 'js', 'launchprocess.js'))
