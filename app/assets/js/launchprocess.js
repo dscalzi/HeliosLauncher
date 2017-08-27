@@ -19,7 +19,7 @@ function launchMinecraft(versionData, forgeData, basePath){
         //args.push('-mods modstore\\chatbubbles\\chatbubbles\\1.0.1_for_1.11.2\\mod_chatBubbles-1.0.1_for_1.11.2.litemod,modstore\\com\\westeroscraft\\westerosblocks\\3.0.0-beta-71\\westerosblocks-3.0.0-beta-71.jar,modstore\\mezz\\jei\\1.11.2-4.3.5.277\\jei-1.11.2-4.3.5.277.jar,modstore\\net\\optifine\\optifine\\1.11.2_HD_U_B9\\optifine-1.11.2_HD_U_B9.jar')
         //args.push('--modListFile absolute:C:\\Users\\Asus\\Desktop\\LauncherElectron\\app\\assets\\WesterosCraft-1.11.2.json')
         //TODO make this dynamic
-        const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', args)
+        const child = child_process.spawn('C:\\Program Files\\Java\\jdk1.8.0_144\\bin\\javaw.exe', args)
         child.stdout.on('data', (data) => {
             console.log('Minecraft:', data.toString('utf8'))
         })

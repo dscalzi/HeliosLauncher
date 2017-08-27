@@ -349,7 +349,7 @@ function _extractPackXZ(filePaths){
     return new Promise(function(fulfill, reject){
         const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
         const filePath = filePaths.join(',')
-        const child = child_process.spawn('C:\\Program Files\\Java\\jre1.8.0_131\\bin\\javaw.exe', ['-jar', libPath, '-packxz', filePath])
+        const child = child_process.spawn('C:\\Program Files\\Java\\jdk1.8.0_144\\bin\\javaw.exe', ['-jar', libPath, '-packxz', filePath])
         child.stdout.on('data', (data) => {
             //console.log('PackXZExtract:', data.toString('utf8'))
         })
@@ -414,6 +414,7 @@ function startAsyncProcess(identifier, limit = 5){
     let acc = 0
     const concurrentDlTracker = instance[identifier]
     const concurrentDlQueue = concurrentDlTracker.dlqueue.slice(0)
+    console.log(concurrentDlQueue);
     if(concurrentDlQueue.length === 0){
         return false
     } else {
@@ -741,7 +742,7 @@ function _chainValidateDistributionIndex(basePath){
         const targetFile = path.join(basePath, 'westeroscraft.json')
 
         //TEMP WORKAROUND TO TEST WHILE THIS IS NOT HOSTED
-        fs.readFile(path.join(basePath, '..', 'app', 'assets', 'westeroscraft.json'), 'utf-8', (err, data) => {
+        fs.readFile(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8', (err, data) => {
             fulfill(JSON.parse(data))
         })
     })

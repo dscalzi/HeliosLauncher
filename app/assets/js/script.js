@@ -5,8 +5,6 @@ const path = require('path')
 const os = require('os');
 const ag = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
 
-console.log($);
-
 $(document).on('ready', function(){
     console.log('okay');
 })
@@ -31,6 +29,11 @@ document.onreadystatechange = function () {
         document.getElementById("frame_btn_minimize").addEventListener("click", function (e) {
             const window = remote.getCurrentWindow()
             window.minimize()
+        })
+
+        document.getElementById("test_btn").addEventListener('click', function(e){
+            console.log('testing')
+            testdownloads()
         })
 
     }

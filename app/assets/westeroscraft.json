@@ -12,14 +12,14 @@
             "autoconnect": true,
             "modules": [
                 {
-                    "id": "net.minecraftforge:forge:1.11.2-13.20.0.2282",
-                    "name": "Minecraft Forge 1.11.2-13.20.0.2282",
+                    "id": "net.minecraftforge:forge:1.11.2-13.20.1.2429",
+                    "name": "Minecraft Forge 1.11.2-13.20.1.2429",
                     "type": "forge-hosted",
                     "artifact": {
-                        "size": 4396371,
-                        "MD5": "1d0f1b383ec122a993e374771c954be2",
+                        "size": 4450992,
+                        "MD5": "3fcc9b0104f0261397d3cc897e55a1c5",
                         "extension": ".jar",
-                        "url": "http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.11.2-13.20.0.2282/forge-1.11.2-13.20.0.2282-universal.jar"
+                        "url": "http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.11.2-13.20.1.2429/forge-1.11.2-13.20.1.2429-universal.jar"
                     },
                     "sub_modules": [
                         {
@@ -223,50 +223,50 @@
                     ]
                 },
                 {
-                    "id": "net.optifine:optifine:1.11.2_HD_U_B9",
-                    "name": "Optifine (1.11.2_HD_U_B9)",
+                    "id": "net.optifine:optifine:1.11.2_HD_U_C3",
+                    "name": "Optifine (1.11.2_HD_U_C3)",
                     "type": "forgemod",
                     "artifact": {
-                        "size": 2056699,
-                        "MD5": "38b4c51b9c6ebc09e7a9784accea974e",
-                        "----path": "OptiFine-1.11.2_HD_U_B9.jar",
+                        "size": 2106193,
+                        "MD5": "82f495594cd50e1fda7a8aa0246239fc",
+                        "------path": "OptiFine-1.11.2_HD_U_C3.jar",
                         "extension": ".jar",
-                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/OptiFine.jar"
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/OptiFine.jar"
                     }
                 },
                 {
-                    "id": "mezz:jei:1.11.2-4.3.5.277",
-                    "name": "JustEnoughItems (1.11.2-4.3.5.277)",
+                    "id": "mezz:jei:1.11.2-4.5.0.290",
+                    "name": "JustEnoughItems (1.11.2-4.5.0.290)",
                     "type": "forgemod",
                     "artifact": {
-                        "size": 509450,
-                        "MD5": "ea56276646ce405bb4beeaf9064de611",
-                        "----path": "jei.jar",
+                        "size": 538740,
+                        "MD5": "f4d931f6db6210621a86fa1e7eae8016",
+                        "------path": "jei.jar",
                         "extension": ".jar",
-                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/jei.jar"
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/jei.jar"
                     }
                 },
                 {
-                    "id": "com.westeroscraft:westerosblocks:3.0.0-beta-71",
-                    "name": "WesterosBlocks (3.0.0-beta-71)",
+                    "id": "com.westeroscraft:westerosblocks:3.0.0-beta-6-133",
+                    "name": "WesterosBlocks (3.0.0-beta-6-133)",
                     "type": "forgemod",
                     "artifact": {
-                        "size": 16252437,
-                         "MD5": "d868f0c0b0cabf3cee2b585503873380",
+                        "size": 16321712,
+                         "MD5": "5a89e2ab18916c18965fc93a0766cc6e",
                         "----path": "WesterosBlocks.jar",
                         "extension": ".jar",
-                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/WesterosBlocks.jar"
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/WesterosBlocks.jar"
                     }
                 },
                 {
-                    "id": "com.westeroscraft:westeroscraftrp:2017-05-20",
-                    "name": "WesterosCraft Resource Pack (2017-05-20)",
+                    "id": "com.westeroscraft:westeroscraftrp:2017-08-16",
+                    "name": "WesterosCraft Resource Pack (2017-08-16)",
                     "type": "file",
                     "artifact": {
-                        "size": 44573660,
-                        "MD5": "b982a65e3fc6971b809f8c60ad4507af",
+                        "size": 45241339,
+                        "MD5": "ec2d9fdb14d5c2eafe5975a240202f1a",
                         "path": "resourcepacks/WesterosCraft.zip",
-                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/resourcepacks/WesterosCraft.zip"
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/resourcepacks/WesterosCraft.zip"
                     }
                 },
                 {
@@ -284,10 +284,10 @@
                     "name": "Saved Client Servers",
                     "type": "file",
                     "artifact": {
-                        "size": 87,
-                        "MD5": "594de6063df993b5fde31c7290226ee4",
+                        "size": 84,
+                        "MD5": "71d99e229d7d2b8d2a6423e46832a4b8",
                         "path": "servers.dat",
-                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/servers.dat" 
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/servers.dat" 
                     }
                 },
                 {
