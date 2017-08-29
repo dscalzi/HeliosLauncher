@@ -59,6 +59,18 @@ A module is a generic representation of a file required to run the minecraft cli
 
 As shown above, modules objects are allowed to declare submodules under the option `sub_modules`. This parameter is completely optional and can be omitted for modules which do not require submodules. Typically, files which require other files are declared as submodules. A quick example would be a mod, and the configuration file for that mod. Submodules can also declare submodules of their own. The file is parsed recursively, so there is no limit.
 
+Modules may also declare a `required` object.
+
+```JSON
+"required": {
+    "value": false, (if the module is required)
+    "def": false (if it's enabled by default, has no effect if value is true)
+}
+```
+
+If a module does not declare this object, both `value` and `def` default to true. Similarly, if a parameter is not included in the `required` object it will default to true. This will be used in the mod selection process down the line.
+
+
 The format of the module's artifact depends on several things. The most important factor is where the file will be stored. If you are providing a simple file to be placed in the root directory of the client files, you may decided to format the module as the `examplefile` module declared above. This module provides a `path` option, allowing you to directly set where the file will be saved to. Only the `path` will affect the final downloaded file.
 
 Other times, you may want to store the files maven-style, such as with libraries and mods. In this case you must declare the module as the example artifact above. The `id` becomes more important as it will be used to resolve the final path. The `id` must be provided in maven format, that is `group.id.maybemore:artifact:version`. From there, you need to declare the `extension` of the file in the artifact object. This effectively replaces the `path` option we used above.
@@ -173,7 +185,7 @@ This module type is being actively considered and changed, until finalized there
 
 ---
 
-# file
+### file
 
 The module type `file` represents a generic file required by the client, another module, etc.
 
