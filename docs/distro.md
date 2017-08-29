@@ -2,7 +2,7 @@
 
 The distribution index is written in JSON. The general format of the index is as posted below.
 
-```JSON
+```json
 {
     "version": "1.0",
     "servers": [
@@ -29,7 +29,7 @@ You can declare an unlimited number of servers, however you must provide valid v
 
 A module is a generic representation of a file required to run the minecraft client. It takes the general form:
 
-```JSON
+```json
 {
     "id": "group.id:artifact:version",
     "name": "Artifact {version}",
@@ -61,7 +61,7 @@ As shown above, modules objects are allowed to declare submodules under the opti
 
 Modules may also declare a `required` object.
 
-```JSON
+```json
 "required": {
     "value": false, (if the module is required)
     "def": false (if it's enabled by default, has no effect if value is true)
@@ -102,7 +102,7 @@ The module type `forge-hosted` represents forge itself. Currently, the launcher 
 
 Ex.
 
-```JSON
+```json
 {
     "id": "net.minecraftforge:forge:1.11.2-13.20.1.2429",
     "name": "Minecraft Forge 1.11.2-13.20.1.2429",
@@ -142,7 +142,7 @@ The module type `library` represents a library file which will be required to st
 
 Ex.
 
-```JSON
+```json
 {
     "id": "net.sf.jopt-simple:jopt-simple:4.6",
     "name": "Jopt-simple 4.6",
@@ -163,7 +163,7 @@ Ex.
 The module type `forgemod` represents a mod loaded by the Forge Mod Loader (FML). These files are stored maven-style and passed to FML using forge's [Modlist format](https://github.com/MinecraftForge/FML/wiki/New-JSON-Modlist-format).
 
 Ex.
-```JSON
+```json
 {
     "id": "com.westeroscraft:westerosblocks:3.0.0-beta-6-133",
     "name": "WesterosBlocks (3.0.0-beta-6-133)",
@@ -191,7 +191,7 @@ The module type `file` represents a generic file required by the client, another
 
 Ex.
 
-```JSON
+```json
 {
     "id": "com.westeroscraft:westeroscraftrp:2017-08-16",
     "name": "WesterosCraft Resource Pack (2017-08-16)",
