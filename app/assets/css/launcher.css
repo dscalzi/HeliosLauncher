@@ -11,6 +11,7 @@ body {
 
 #frame_bar {
     -webkit-app-region: drag;
+    -webkit-user-select: none;
     background: rgba(1, 2, 1, 0.5);
     min-height: 22px;
     display: flex;
