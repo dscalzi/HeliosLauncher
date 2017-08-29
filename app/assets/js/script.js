@@ -31,10 +31,10 @@ document.onreadystatechange = function () {
             window.minimize()
         })
 
-        document.getElementById("test_btn").addEventListener('click', function(e){
+        /*document.getElementById("test_btn").addEventListener('click', function(e){
             console.log('testing')
             testdownloads()
-        })
+        })*/
 
     }
 }

@@ -229,7 +229,6 @@
                     "artifact": {
                         "size": 2106193,
                         "MD5": "82f495594cd50e1fda7a8aa0246239fc",
-                        "------path": "OptiFine-1.11.2_HD_U_C3.jar",
                         "extension": ".jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/OptiFine.jar"
                     }
@@ -241,7 +240,6 @@
                     "artifact": {
                         "size": 538740,
                         "MD5": "f4d931f6db6210621a86fa1e7eae8016",
-                        "------path": "jei.jar",
                         "extension": ".jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/jei.jar"
                     }
@@ -253,7 +251,6 @@
                     "artifact": {
                         "size": 16321712,
                          "MD5": "5a89e2ab18916c18965fc93a0766cc6e",
-                        "----path": "WesterosBlocks.jar",
                         "extension": ".jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/WesterosBlocks.jar"
                     }
@@ -300,7 +297,6 @@
                     "artifact": {
                         "size": 37838,
                         "MD5": "0497a93e5429b43082282e9d9119fcba",
-                        "---path": "mod_chatBubbles-1.0.1_for_1.11.2.litemod",
                         "extension": ".litemod",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/mod_chatBubbles-1.0.1_for_1.11.2.litemod"
                     },

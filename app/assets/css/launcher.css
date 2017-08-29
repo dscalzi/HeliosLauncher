@@ -59,3 +59,55 @@ body {
 #frame_btn_minimize:hover {
     background-color: #D6FFA6;
 }
+
+#main {
+    height: calc(100% - 22px);
+}
+
+#main > #upper {
+    height: 75%;
+    display: flex;
+}
+
+#main > #lower {
+    height: 25%;
+}
+
+#main > #upper > #left {
+    display: inline-flex;
+    width: 25%;
+    height: 100%;
+}
+
+#main > #upper > #content {
+    display: inline-flex;
+    width: 50%;
+    height: 100%;
+}
+
+#main > #upper > #right {
+    display: inline-flex;
+    width: 25%;
+    height: 100%;
+}
+
+#main > #lower > #top {
+    height: 50%;
+}
+
+#main > #lower > #bottom {
+    height: 50%;
+    display: flex;
+}
+
+#main > #lower > #bottom > #left {
+    height: 100%;
+    width: 50%;
+    display: inline-flex;
+}
+
+#main > #lower > #bottom > #right {
+    height: 100%;
+    width: 50%;
+    display: inline-flex;
+}
