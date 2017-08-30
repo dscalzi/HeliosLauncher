@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'Avenir Book';
+    src: url('../fonts/Avenir.ttc');
+}
+
 /* Reset body, html, and div presets. */
 body, html, div {
     margin: 0px;
@@ -75,24 +80,26 @@ body {
 
 #main > #upper > #left {
     display: inline-flex;
-    width: 25%;
+    width: 18%;
     height: 100%;
+    justify-content: center;
 }
 
 #main > #upper > #content {
     display: inline-flex;
-    width: 50%;
+    width: 62%;
     height: 100%;
 }
 
 #main > #upper > #right {
     display: inline-flex;
-    width: 25%;
+    width: 20%;
     height: 100%;
 }
 
 #main > #lower > #top {
     height: 50%;
+    position: relative;
 }
 
 #main > #lower > #bottom {
@@ -104,10 +111,141 @@ body {
     height: 100%;
     width: 50%;
     display: inline-flex;
+    position: relative;
+    align-items: center;
 }
 
 #main > #lower > #bottom > #right {
     height: 100%;
     width: 50%;
     display: inline-flex;
+}
+
+#image_seal {
+    height: 100px;
+    width: auto;
+    margin-top: 12px;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+#user_content > #top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#user_avatar {
+    border-radius: 50%;
+    border: 2px solid #cad7e1;
+    background: rgba(1, 2, 1, 0.5);
+    height: 70px;
+    width: auto;
+}
+
+#user_text {
+    margin-right: 15px;
+    font-family: 'Avenir Book';
+    font-size: 15px;
+    color: white;
+}
+
+.menu_container {
+    display: inline-block;
+    cursor: pointer;
+    float: right;
+    margin-right: 22px;
+    margin-top: 10px;
+}
+
+.bar1, .bar2, .bar3 {
+    width: 30px;
+    height: 4px;
+    background-color: #d5d7df;
+    margin: 6px auto;
+    transition: 0.4s;
+    border-radius: 20px;
+}
+
+.bar2 {
+    width: 25px !important;
+}
+
+#launch_btn {
+    background-color: #4f771d;
+    color: white;
+    border: none;
+    height: 32px;
+    line-height: 32px;
+    padding-left: 26px;
+    padding-right: 20px;
+    font-family: 'Avenir Book';
+    font-size: 16px;
+    border-radius: 0px 20px 20px 0px;
+}
+
+#launch_btn:focus {
+    outline: 0px;
+}
+
+#main_progress[value] {
+    height: 32px;
+    width: 245px;
+    -webkit-appearance: none;
+}
+
+#main_progress[value]:before {
+    position: absolute;
+    content: attr(data-label);
+    color: white;
+    font-family: 'Avenir Book';
+    font-size: 15px;
+    line-height: 32px;
+    margin-left: 8px;
+}
+
+#main_progress[value]::-webkit-progress-bar {
+    border-radius: 20px 0px 0px 20px;
+    background-color: black;
+}
+
+#main_progress[value]::-webkit-progress-value {
+    background-color: black;
+    border-radius: 20px 0px 0px 20px;
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+#launch_area_container {
+    display: flex;
+    position: absolute;
+    left: 40px;
+    top: 32px;
+}
+
+.home_btn {
+    background-color: black;
+    color: white;
+    font-family: 'Avenir Book';
+    border: none;
+    border-radius: 20px;
+    font-size: 11px;
+    height: 20px;
+    padding: 0px 17px 0px 12px;
+    line-height: 20px;
+}
+
+.home_btn:focus {
+    outline: 0px;
+}
+
+#mojang_btn {
+    position: absolute;
+    left: 150px;
+}
+
+#mojang_btn:before {
+    color: #93b253;
+    content: '\2022  ';
+    line-height: 20px;
 }
