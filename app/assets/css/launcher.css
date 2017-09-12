@@ -77,7 +77,7 @@ body {
 #main > #lower {
     height: 23%;
     display: flex;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
 }
 
 #main > #upper > #left {
@@ -247,11 +247,11 @@ body {
 }
 
 #player_count {
-    color: #635f5b;
+    color: #949494;
     font-family: 'Avenir Book';
     font-size: 8px;
     font-weight: 900;
-    text-shadow: 0px 0px 0px #635f5b;
+    text-shadow: 0px 0px 20px #949494;
     margin-left: 10px;
 }
 
@@ -279,4 +279,9 @@ body {
     text-shadow: 0px 0px 0px #bebcbb;
     font-size: 11px;
     line-height: 24px;
+}
+
+#menu_img {
+    width: 20px;
+    height: auto;
 }
