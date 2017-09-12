@@ -70,61 +70,73 @@ body {
 }
 
 #main > #upper {
-    height: 75%;
+    height: 77%;
     display: flex;
 }
 
 #main > #lower {
-    height: 25%;
+    height: 23%;
+    display: flex;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
 }
 
 #main > #upper > #left {
     display: inline-flex;
-    width: 18%;
+    width: 15%;
     height: 100%;
-    justify-content: center;
+    justify-content: flex-end;
 }
 
 #main > #upper > #content {
     display: inline-flex;
-    width: 62%;
+    width: 59%;
     height: 100%;
 }
 
 #main > #upper > #right {
     display: inline-flex;
-    width: 20%;
+    width: 26%;
     height: 100%;
 }
 
-#main > #lower > #top {
-    height: 50%;
-    position: relative;
-}
-
-#main > #lower > #bottom {
-    height: 50%;
-    display: flex;
-}
-
-#main > #lower > #bottom > #left {
+#main > #lower > #left {
     height: 100%;
-    width: 50%;
+    width: 33%;
     display: inline-flex;
-    position: relative;
-    align-items: center;
+    justify-content: center;
 }
 
-#main > #lower > #bottom > #right {
+#main > #lower > #left #content {
+    position: relative;
+    top: 25px;
+    display: inline-flex;
+    line-height: 24px;
+    left: 50px;
+}
+
+#main > #lower > #center {
     height: 100%;
-    width: 50%;
+    width: 33%;
+    display: inline-flex;
+    justify-content: center;
+}
+
+#main > #lower > #center #content {
+    position: relative;
+    top: 25px;
+}
+
+#main > #lower > #right {
+    height: 100%;
+    width: 33%;
     display: inline-flex;
 }
 
 #image_seal {
-    height: 100px;
+    height: 70px;
     width: auto;
-    margin-top: 12px;
+    position: relative;
+    margin-top: 50px;
     border: 2px solid white;
     border-radius: 50%;
 }
@@ -133,7 +145,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 20px;
+    position: relative;
+    top: 50px;
 }
 
 #user_avatar {
@@ -145,50 +158,18 @@ body {
 }
 
 #user_text {
-    margin-right: 15px;
     font-family: 'Avenir Book';
-    font-size: 15px;
+    font-size: 12px;
+    min-width: 112px;
+    font-weight: 900;
+    letter-spacing: 1px;
     color: white;
+    text-shadow: 0px 0px 20px black;
+    position: relative;
+    right: 25px;
+    text-align: right;
 }
-
-.menu_container {
-    display: inline-block;
-    cursor: pointer;
-    float: right;
-    margin-right: 22px;
-    margin-top: 10px;
-}
-
-.bar1, .bar2, .bar3 {
-    width: 30px;
-    height: 4px;
-    background-color: #d5d7df;
-    margin: 6px auto;
-    transition: 0.4s;
-    border-radius: 20px;
-}
-
-.bar2 {
-    width: 25px !important;
-}
-
-#launch_btn {
-    background-color: #4f771d;
-    color: white;
-    border: none;
-    height: 32px;
-    line-height: 32px;
-    padding-left: 26px;
-    padding-right: 20px;
-    font-family: 'Avenir Book';
-    font-size: 16px;
-    border-radius: 0px 20px 20px 0px;
-}
-
-#launch_btn:focus {
-    outline: 0px;
-}
-
+/*
 #main_progress[value] {
     height: 32px;
     width: 245px;
@@ -212,6 +193,13 @@ body {
 
 #main_progress[value]::-webkit-progress-value {
     background-color: black;
+    background-image: -webkit-linear-gradient(-45deg, 
+    transparent 33%, rgba(0, 0, 0, .1) 33%, 
+    rgba(0,0, 0, .1) 66%, transparent 66%),
+-webkit-linear-gradient(top, 
+    rgba(255, 255, 255, .25), 
+    rgba(0, 0, 0, .25)),
+-webkit-linear-gradient(left, #09c, #f44);
     border-radius: 20px 0px 0px 20px;
     background-size: 35px 20px, 100% 100%, 100% 100%;
 }
@@ -248,4 +236,47 @@ body {
     color: #93b253;
     content: '\2022  ';
     line-height: 20px;
+} */
+
+.bot_label {
+    color: white;
+    font-family: 'Avenir Book';
+    font-size: 9px;
+    font-weight: bold;
+    text-shadow: 0px 0px 0px #bebcbb;
+}
+
+#player_count {
+    color: #635f5b;
+    font-family: 'Avenir Book';
+    font-size: 8px;
+    font-weight: 900;
+    text-shadow: 0px 0px 0px #635f5b;
+    margin-left: 10px;
+}
+
+.bot_divider {
+    height: 25px;
+    width: 2px;
+    background: rgba(107, 105, 105, 0.7);
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#mojang_status_icon {
+    font-size: 30px;
+    color: #a5c325;
+    margin-left: 15px;
+}
+
+#menu_button {
+    font-family: 'Avenir Book';
+    background: none;
+    border: none;
+    color: white;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-shadow: 0px 0px 0px #bebcbb;
+    font-size: 11px;
+    line-height: 24px;
 }
