@@ -7,11 +7,14 @@
   "scripts": {
     "start": "electron index.js"
   },
+  "engines": {
+    "node": "8.6.x"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/westeroscraft/electronlauncher.git"
   },
-  "author": "TheKraken7, Matan, Nightmare",
+  "author": "Daniel Scalzi",
   "license": "AGPL-3.0",
   "bugs": {
     "url": "https://gitlab.com/westeroscraft/electronlauncher/issues"
