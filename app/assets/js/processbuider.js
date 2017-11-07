@@ -28,7 +28,7 @@ class ProcessBuilder {
     
         for(let i=0; i<mdles.length; ++i){
             if(mdles[i].type != null && mdles[i].type === options.type){
-                if(_shouldInclude(mdles[i])){
+                if(ProcessBuiler._shouldInclude(mdles[i])){
                     mods.push(mdles[i])
                 }
             }

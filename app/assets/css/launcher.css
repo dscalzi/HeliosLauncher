@@ -285,3 +285,16 @@ body {
     width: 20px;
     height: auto;
 }
+
+@keyframes test {
+    0% {
+        color: #FFF;
+    }
+    100% {
+        color: #000;
+    }
+}
+
+.cls-1 {
+    animation: test 30s ease infinite;
+}
