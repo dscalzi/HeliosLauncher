@@ -1,6 +1,7 @@
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')
+const fs = require('fs')
 const ejse = require('ejs-electron')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -9,6 +10,8 @@ let win
 
 function createWindow() {
     win = new BrowserWindow({ width: 980, height: 552, icon: getPlatformIcon('WesterosSealSquare'), frame: false})
+
+    ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync('app/assets/images/backgrounds').length)))
 
     win.loadURL(url.format({
         pathname: path.join(__dirname, 'app', 'index.ejs'),
