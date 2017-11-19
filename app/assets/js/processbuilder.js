@@ -269,16 +269,17 @@ class ProcessBuilder {
         const mdles = this.server.modules
         let libs = []
 
-        // Locate Forge Libraries
+        // Locate Forge/Libraries
         for(let i=0; i<mdles.length; i++){
-            if(mdles[i].type != null && mdles[i].type === 'forge-hosted'){
-                let forge = mdles[i]
-                libs.push(path.join(this.libPath, forge.artifact.path == null ? ag._resolvePath(forge.id, forge.artifact.extension) : forge.artifact.path))
-                const res = this._resolveModuleLibraries(forge)
-                if(res.length > 0){
-                    libs = libs.concat(res)
+            if(mdles[i].type != null && (mdles[i].type === 'forge-hosted' || mdles[i].type === 'library')){
+                let lib = mdles[i]
+                libs.push(path.join(this.libPath, lib.artifact.path == null ? ag._resolvePath(lib.id, lib.artifact.extension) : lib.artifact.path))
+                if(lib.sub_modules != null){
+                    const res = this._resolveModuleLibraries(lib)
+                    if(res.length > 0){
+                        libs = libs.concat(res)
+                    }
                 }
-                break
             }
         }
 
