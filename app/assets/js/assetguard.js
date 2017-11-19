@@ -705,6 +705,13 @@ function validateLogConfig(versionData, basePath){
     })
 }
 
+/**
+ * Validate the distribution.
+ * 
+ * @param {String} serverpackid - The id of the server to validate.
+ * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+ * @returns {Promise.<Object>} - A promise which resolves to the server distribution object.
+ */
 function validateDistribution(serverpackid, basePath){
     return new Promise(function(fulfill, reject){
         _chainValidateDistributionIndex(basePath).then((value) => {
@@ -729,7 +736,7 @@ function validateDistribution(serverpackid, basePath){
                 }
             }
             instance.totaldlsize += instance.forge.dlsize*1
-            fulfill()
+            fulfill(serv)
         })
     })
 }

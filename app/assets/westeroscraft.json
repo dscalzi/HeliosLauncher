@@ -314,6 +314,44 @@
                     ]
                 },
                 {
+                    "id": "org.blockartistry:dynsurround:1.11.2-3.4.6.2",
+                    "name": "DynamicSurroundings (1.11.2-3.4.6.2)",
+                    "type": "forgemod",
+                    "required": {
+                        "value": false
+                    },
+                    "artifact": {
+                        "size": 21853035,
+                        "MD5": "82a6aac5420151960b8dd709deee5423",
+                        "extension": ".jar",
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/DynamicSurroundings.jar"
+                    },
+                    "sub_modules": [
+                        {
+                            "id": "dsurround.cfg",
+                            "name": "DynamicSurroundings General Configuration File",
+                            "type": "file",
+                            "artifact": {
+                                "size": 19736,
+                                "MD5": "4c64fc6cbbb83b18012ed4820b0b496e",
+                                "path": "/config/dsurround/dsurround.cfg",
+                                "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/config/dsurround/dsurround.cfg"
+                            }
+                        },
+                        {
+                            "id": "westeros.json",
+                            "name": "DynamicSurroundings WesterosCraft Configuration File",
+                            "type": "file",
+                            "artifact": {
+                                "size": 608,
+                                "MD5": "44eab112ff24d0bd29974c270de868ba",
+                                "path": "/config/dsurround/westeros.json",
+                                "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/config/dsurround/westeros.json"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id": "com.westeroscraft:westerosblocks:3.0.0-beta-6-133",
                     "name": "WesterosBlocks (3.0.0-beta-6-133)",
                     "type": "forgemod",

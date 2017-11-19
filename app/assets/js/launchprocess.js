@@ -1,3 +1,8 @@
+/**
+ * File is officially deprecated in favor of processbuilder.js,
+ * will be removed once the new module is 100% complete and this
+ * is no longer needed for reference.
+ */
 const mojang = require('mojang')
 const uuidV4 = require('uuid/v4')
 const path = require('path')

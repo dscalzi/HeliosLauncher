@@ -4,6 +4,9 @@ const shell = require('electron').shell
 const path = require('path')
 const os = require('os');
 const ag = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
+const ProcessBuilder = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
+const mojang = require('mojang')
+const uuidV4 = require('uuid/v4')
 
 $(document).on('ready', function(){
     console.log('okay');
@@ -48,7 +51,7 @@ $(document).on('click', 'a[href^="http"]', function(event) {
 })
 
 testdownloads = async function(){
-    const lp = require(path.join(__dirname, 'assets', 'js', 'launchprocess.js'))
+    //const lp = require(path.join(__dirname, 'assets', 'js', 'launchprocess.js'))
     const basePath = path.join(__dirname, '..', 'target', 'test', 'mcfiles')
     let versionData = await ag.loadVersionData('1.11.2', basePath)
     await ag.validateAssets(versionData, basePath)
@@ -57,12 +60,18 @@ testdownloads = async function(){
     console.log('libs done')
     await ag.validateMiscellaneous(versionData, basePath)
     console.log('files done')
-    await ag.validateDistribution('WesterosCraft-1.11.2', basePath)
+    const serv = await ag.validateDistribution('WesterosCraft-1.11.2', basePath)
     console.log('forge stuff done')
     ag.instance.on('dlcomplete', async function(){
-        let forgeData = await ag.loadForgeData('WesterosCraft-1.11.2', basePath)
-        lp.launchMinecraft(versionData, forgeData, basePath)
+        const forgeData = await ag.loadForgeData('WesterosCraft-1.11.2', basePath)
+        const authUser = await mojang.auth('EMAIL', 'PASS', uuidV4(), {
+            name: 'Minecraft',
+            version: 1
+        })
+        //lp.launchMinecraft(versionData, forgeData, basePath)
         //lp.launchMinecraft(versionData, basePath)
+        let pb = new ProcessBuilder(basePath, serv, versionData, forgeData, authUser)
+        const proc = pb.build()
     })
     ag.processDlQueues()
 }
