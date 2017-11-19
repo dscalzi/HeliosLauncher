@@ -245,6 +245,75 @@
                     }
                 },
                 {
+                    "id": "mcp.mobius:waila:1.7.1_1.11.2",
+                    "name": "Waila (1.7.1_1.11.2)",
+                    "type": "forgemod",
+                    "required": {
+                        "value": false
+                    },
+                    "artifact": {
+                        "size": 542744,
+                        "MD5": "26258a3557bf333e8f4ce8b1e9481031",
+                        "extension": ".jar",
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/Waila.jar"
+                    }
+                },
+                {
+                    "id": "com.github.hexomod:worldeditcuife2:2.1.1-mf-1.11.2-13.20.0.2228",
+                    "name": "WorldEditCUI (v2.1.1-mf-1.11.2-13.20.0.2228)",
+                    "type": "forgemod",
+                    "required": {
+                        "value": false
+                    },
+                    "artifact": {
+                        "size": 461691,
+                        "MD5": "439f82b69f3464969163c188818c677b",
+                        "extension": ".jar",
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/worldeditcuife.jar"
+                    }
+                },
+                {
+                    "id": "techbrew:journeymap:1.11.2-5.4.7",
+                    "name": "JourneyMap (1.11.2-5.4.7)",
+                    "type": "forgemod",
+                    "required": {
+                        "value": false
+                    },
+                    "artifact": {
+                        "size": 1735525,
+                        "MD5": "1c3380502eb7b9a495581b2402d144df",
+                        "extension": ".jar",
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/journeymap.jar"
+                    }
+                },
+                {
+                    "id": "octarine-noise:betterfoliage:1.11.2-2.1.8",
+                    "name": "BetterFoliage (1.11.2-2.1.8)",
+                    "type": "forgemod",
+                    "required": {
+                        "value": false
+                    },
+                    "artifact": {
+                        "size": 4676029,
+                        "MD5": "b2dd47e42da56fb49a07a0d38df91bc4",
+                        "extension": ".jar",
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/BetterFoliage.jar"
+                    },
+                    "sub_modules": [
+                        {
+                            "id": "betterfoliage.cfg",
+                            "name": "BetterFoliage Configuration File",
+                            "type": "file",
+                            "artifact": {
+                                "size": 7878,
+                                "MD5": "6dd38f873c4129af05a2d6c500cbe954",
+                                "path": "/config/betterfoliage.cfg",
+                                "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/config/betterfoliage.cfg"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id": "com.westeroscraft:westerosblocks:3.0.0-beta-6-133",
                     "name": "WesterosBlocks (3.0.0-beta-6-133)",
                     "type": "forgemod",
@@ -286,33 +355,6 @@
                         "path": "servers.dat",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/servers.dat" 
                     }
-                },
-                {
-                    "id": "chatbubbles:chatbubbles:1.0.1_for_1.11.2",
-                    "name": "Chat Bubbles 1.11.2",
-                    "type": "litemod",
-                    "required": {
-                        "value": false
-                    },
-                    "artifact": {
-                        "size": 37838,
-                        "MD5": "0497a93e5429b43082282e9d9119fcba",
-                        "extension": ".litemod",
-                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/mod_chatBubbles-1.0.1_for_1.11.2.litemod"
-                    },
-                    "sub_modules": [
-                        {
-                            "id": "customRegexes",
-                            "name": "Custom Regexes for Chat Bubbles",
-                            "type": "file",
-                            "artifact": {
-                                "size": 331,
-                                "MD5": "f21b4b325f09238a3d6b2103d54351ef",
-                                "path": "mods/chatbubbles/customRegexes.txt",
-                                "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/customRegexes.txt"
-                            }
-                        }
-                    ]
                 }
             ]
         }

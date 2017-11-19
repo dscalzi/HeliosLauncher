@@ -261,11 +261,11 @@ function _parseChecksumsFile(content){
  * @returns {Boolean} - true if the file exists and calculated hash matches the given hash, otherwise false.
  */
 function _validateLocal(filePath, algo, hash){
-    //No hash provided, have to assume it's good.
-    if(hash == null){
-        return true
-    }
     if(fs.existsSync(filePath)){
+        //No hash provided, have to assume it's good.
+        if(hash == null){
+            return true
+        }
         let fileName = path.basename(filePath)
         let buf = fs.readFileSync(filePath)
         let calcdhash = _calculateHash(buf, algo)
@@ -349,7 +349,7 @@ function _extractPackXZ(filePaths){
     return new Promise(function(fulfill, reject){
         const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
         const filePath = filePaths.join(',')
-        const child = child_process.spawn('C:\\Program Files\\Java\\jdk1.8.0_144\\bin\\javaw.exe', ['-jar', libPath, '-packxz', filePath])
+        const child = child_process.spawn('C:\\Program Files\\Java\\jdk1.8.0_152\\bin\\javaw.exe', ['-jar', libPath, '-packxz', filePath])
         child.stdout.on('data', (data) => {
             //console.log('PackXZExtract:', data.toString('utf8'))
         })
