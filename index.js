@@ -11,7 +11,7 @@ let win
 function createWindow() {
     win = new BrowserWindow({ width: 980, height: 552, icon: getPlatformIcon('WesterosSealSquare'), frame: false})
 
-    ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync('app/assets/images/backgrounds').length)))
+    ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))
 
     win.loadURL(url.format({
         pathname: path.join(__dirname, 'app', 'index.ejs'),

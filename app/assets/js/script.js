@@ -6,7 +6,7 @@ const os = require('os');
 const ag = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
 const ProcessBuilder = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
 const mojang = require('mojang')
-const uuidV4 = require('uuid/v4')
+const {GAME_DIRECTORY, DEFAULT_CONFIG} = require(path.join(__dirname, 'assets', 'js', 'constants.js'))
 
 $(document).on('ready', function(){
     console.log('okay');
@@ -15,11 +15,13 @@ $(document).on('ready', function(){
 document.onreadystatechange = function () {
     if (document.readyState == "complete") {
 
+        // Bind close button.
         document.getElementById("frame_btn_close").addEventListener("click", function (e) {
             const window = remote.getCurrentWindow()
             window.close()
         })
 
+        // Bind restore down button.
         document.getElementById("frame_btn_restoredown").addEventListener("click", function (e) {
             const window = remote.getCurrentWindow()
             if(window.isMaximized()){
@@ -29,6 +31,7 @@ document.onreadystatechange = function () {
             }
         })
 
+        // Bind minimize button.
         document.getElementById("frame_btn_minimize").addEventListener("click", function (e) {
             const window = remote.getCurrentWindow()
             window.minimize()
@@ -42,43 +45,43 @@ document.onreadystatechange = function () {
     }
 }
 
-/* Open web links in the user's default browser. */
+// Open web links in the user's default browser.
 $(document).on('click', 'a[href^="http"]', function(event) {
     event.preventDefault();
-    testdownloads()
     //console.log(os.homedir())
-    //shell.openExternal(this.href)
+    shell.openExternal(this.href)
 })
 
 testdownloads = async function(){
     //const lp = require(path.join(__dirname, 'assets', 'js', 'launchprocess.js'))
-    const basePath = path.join(__dirname, '..', 'target', 'test', 'mcfiles')
-    let versionData = await ag.loadVersionData('1.11.2', basePath)
-    await ag.validateAssets(versionData, basePath)
+    let versionData = await ag.loadVersionData('1.11.2', GAME_DIRECTORY)
+    await ag.validateAssets(versionData, GAME_DIRECTORY)
     console.log('assets done')
-    await ag.validateLibraries(versionData, basePath)
+    await ag.validateLibraries(versionData, GAME_DIRECTORY)
     console.log('libs done')
-    await ag.validateMiscellaneous(versionData, basePath)
+    await ag.validateMiscellaneous(versionData, GAME_DIRECTORY)
     console.log('files done')
-    const serv = await ag.validateDistribution('WesterosCraft-1.11.2', basePath)
+    const serv = await ag.validateDistribution('WesterosCraft-1.11.2', GAME_DIRECTORY)
     console.log('forge stuff done')
     ag.instance.on('dlcomplete', async function(){
-        const forgeData = await ag.loadForgeData('WesterosCraft-1.11.2', basePath)
-        const authUser = await mojang.auth('EMAIL', 'PASS', uuidV4(), {
+        const forgeData = await ag.loadForgeData('WesterosCraft-1.11.2', GAME_DIRECTORY)
+        const authUser = await mojang.auth('EMAIL', 'PASS', DEFAULT_CONFIG.getClientToken(), {
             name: 'Minecraft',
             version: 1
         })
-        //lp.launchMinecraft(versionData, forgeData, basePath)
-        //lp.launchMinecraft(versionData, basePath)
-        let pb = new ProcessBuilder(basePath, serv, versionData, forgeData, authUser)
+        //lp.launchMinecraft(versionData, forgeData, GAME_DIRECTORY)
+        //lp.launchMinecraft(versionData, GAME_DIRECTORY)
+        let pb = new ProcessBuilder(GAME_DIRECTORY, serv, versionData, forgeData, authUser)
         const proc = pb.build()
     })
     ag.processDlQueues()
 }
 
-/*Opens DevTools window if you type "wcdev" in sequence.
-  This will crash the program if you are using multiple
-  DevTools, for example the chrome debugger in VS Code. */
+/**
+ * Opens DevTools window if you type "wcdev" in sequence.
+ * This will crash the program if you are using multiple
+ * DevTools, for example the chrome debugger in VS Code. 
+ */
 const match = [87, 67, 68, 69, 86]
 let at = 0;
 
