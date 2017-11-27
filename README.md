@@ -82,6 +82,19 @@ wcdev
 
 Please note that if you are debugging the application with VS Code and have launched the program using the **Debug Renderer Process** configuration you cannot open the DevTools window. If you attempt to do so, the program will crash. Remote debugging cannot be  done with multiple DevTools clients.
 
+# Building
+
+Run either of the build scrips noted below. On some operating systems you may need to run these commands through a terminal with administrator privileges.
+
+### Supported Platforms
+
+* Windows x64 (win32 x64)
+  * `npm run buildwin`
+* MacOS (darwin x64)
+  * `npm run builddarwin`
+* Linux (linux x64)
+  * `npm run buildlinux`
+
 # Issues / Further Support #
 
 If you run into any issue which cannot be resolved via a quick google search, create an issue using the tab above.

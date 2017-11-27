@@ -5,7 +5,11 @@
   "productName": "WesterosCraft Launcher",
   "main": "index.js",
   "scripts": {
-    "start": "electron index.js"
+    "start": "electron index.js",
+    "buildwin": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=win32 --arch=x64 --ignore=\"\\.git(ignore|modules)|package\\.bat|node_modules|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
+    "builddarwin": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=darwin --ignore=\"\\.git(ignore|modules)|package\\.bat|node_modules|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
+    "buildlinux": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=linux --arch=x64 --ignore=\"\\.git(ignore|modules)|package\\.bat|node_modules|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
+    "buildlinuxarm": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=linux --arch=arm64 --ignore=\"\\.git(ignore|modules)|package\\.bat|node_modules|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\""
   },
   "engines": {
     "node": "8.9.x"
@@ -28,6 +32,7 @@
     "find-java-home": "^0.2.0",
     "jquery": "^3.2.1",
     "mojang": "^0.4.1",
+    "request-promise-native": "^1.0.5",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
