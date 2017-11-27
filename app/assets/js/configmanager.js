@@ -1,4 +1,5 @@
 const fs = require('fs')
+const mkpath = require('mkdirp')
 const path = require('path')
 const uuidV4 = require('uuid/v4')
 
@@ -28,6 +29,7 @@ class ConfigManager {
 
     load(){
         if(!fs.existsSync(this.path)){
+            mkpath.sync(path.join(this.path, '..'))
             this._generateDefault()
         } else {
             this.config = JSON.parse(fs.readFileSync(this.path, 'UTF-8'))

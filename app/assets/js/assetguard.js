@@ -410,15 +410,12 @@ function _finalizeForgeAsset(asset, basePath){
  */
 function startAsyncProcess(identifier, limit = 5){
     let win = remote.getCurrentWindow()
-
     let acc = 0
     const concurrentDlTracker = instance[identifier]
     const concurrentDlQueue = concurrentDlTracker.dlqueue.slice(0)
-    console.log(concurrentDlQueue);
     if(concurrentDlQueue.length === 0){
         return false
     } else {
-        console.log(concurrentDlQueue)
         async.eachLimit(concurrentDlQueue, limit, function(asset, cb){
             let count = 0;
             mkpath.sync(path.join(asset.to, ".."))
@@ -441,6 +438,7 @@ function startAsyncProcess(identifier, limit = 5){
                     console.log('Failed to download ' + asset.from + '. Response code', resp.statusCode)
                     instance.progress += asset.size*1
                     win.setProgressBar(instance.progress/instance.totaldlsize)
+                    instance.emit('totaldlprogress', {acc: instance.progress, total: instance.totaldlsize})
                     cb()
                 }
             })
@@ -451,6 +449,7 @@ function startAsyncProcess(identifier, limit = 5){
                 instance.emit(identifier + 'dlprogress', acc)
                 //console.log(identifier + ' Progress', acc/instance[identifier].dlsize)
                 win.setProgressBar(instance.progress/instance.totaldlsize)
+                instance.emit('totaldlprogress', {acc: instance.progress, total: instance.totaldlsize})
             })
         }, function(err){
             if(err){
@@ -592,7 +591,6 @@ function _assetChainValidateAssets(versionData, basePath, indexData){
             cb()
         }, function(err){
             instance.assets = new DLTracker(assetDlQueue, dlSize)
-            instance.totaldlsize += dlSize*1
             fulfill()
         })
     })
@@ -630,7 +628,6 @@ function validateLibraries(versionData, basePath){
             cb()
         }, function(err){
             instance.libraries = new DLTracker(libDlQueue, dlSize)
-            instance.totaldlsize += dlSize*1
             fulfill()
         })
     })
@@ -697,7 +694,7 @@ function validateLogConfig(versionData, basePath){
 
         if(!_validateLocal(logConfig.to, 'sha1', logConfig.hash)){
             instance.files.dlqueue.push(logConfig)
-            instance.files.dlsize += client.size*1
+            instance.files.dlsize += logConfig.size*1
             fulfill()
         } else {
             fulfill()
@@ -735,7 +732,6 @@ function validateDistribution(serverpackid, basePath){
                     _finalizeForgeAsset(asset, basePath)
                 }
             }
-            instance.totaldlsize += instance.forge.dlsize*1
             fulfill(serv)
         })
     })
@@ -862,6 +858,13 @@ function processDlQueues(identifiers = [{id:'assets', limit:20}, {id:'libraries'
     let win = remote.getCurrentWindow()
 
     let shouldFire = true
+
+    // Assign global dltracking variables.
+    instance.totaldlsize = 0
+    instance.progress = 0
+    for(let i=0; i<identifiers.length; i++){
+        instance.totaldlsize += instance[identifiers[i].id].dlsize
+    }
 
     for(let i=0; i<identifiers.length; i++){
         let iden = identifiers[i]

@@ -9,10 +9,23 @@ body, html, div {
     padding: 0px;
 }
 
+/* Reset p presets. */
+p {
+    -webkit-margin-before: 0em;
+    -webkit-margin-after: 0em;
+}
+
+
 /*body {
     background: url('./../images/backgrounds/0.jpg') no-repeat center center fixed;
     background-size: cover;
 }*/
+
+/*******************************************************************************
+ *                                                                             *
+ * frame.ejs                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 #frame_bar {
     -webkit-app-region: drag;
@@ -21,6 +34,8 @@ body, html, div {
     min-height: 22px;
     display: flex;
     align-items: center;
+    position: relative;
+    z-index: 10000;
 }
 
 #frame_btn_dock {
@@ -64,6 +79,93 @@ body, html, div {
 #frame_btn_minimize:hover {
     background-color: #D6FFA6;
 }
+
+/*******************************************************************************
+ *                                                                             *
+ * login.ejs                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+#login_main {
+    position: relative;
+    height: calc(100% - 22px);
+    width: 100%;
+    overflow: hidden;
+}
+
+#login_filter {
+    height: calc(100% - 22px);
+    width: 100%;
+    z-index: 9000;
+    position: absolute;
+    filter: blur(8px) contrast(0.9) brightness(1.0);
+    background: url('./../images/backgrounds/0.jpg') no-repeat center center fixed;
+    transform: scale(1.2);
+    background-size: cover;
+}
+
+#login_container {
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    z-index: 9001;
+}
+
+#login_content {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#login_image_seal {
+    height: 150px;
+    width: auto;
+}
+
+.login_section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+}
+
+/* Adds padding between flex children */
+.login_section > * {
+    margin-bottom: 10px;
+}
+.login_section > *:last-child {
+    margin-bottom: 0px !important;
+}
+
+#login_header_text {
+    font-family: 'Avenir Book';
+    color: #ded8cb;
+}
+
+#login_links a {
+    color: #5a534b;
+    font-family: 'Avenir Book';
+    font-size: 10px;
+    text-decoration: none;
+}
+
+#login_information input {
+    background: none;
+    border: none;
+    border-top: 2px solid #fff;
+}
+
+/*#login_information input[type='password'] {
+    letter-spacing: 0.3em;
+}*/
+
+/*******************************************************************************
+ *                                                                             *
+ * index.ejs                                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
 #main {
     height: calc(100% - 22px);
@@ -130,6 +232,13 @@ body, html, div {
     height: 100%;
     width: 33%;
     display: inline-flex;
+}
+
+#main > #lower > #right #launch_content {
+    position: relative;
+    top: 25px;
+    display: inline-flex;
+    line-height: 24px;
 }
 
 #image_seal {
@@ -242,6 +351,7 @@ body, html, div {
     color: white;
     font-family: 'Avenir Book';
     font-size: 9px;
+    letter-spacing: 1px;
     font-weight: bold;
     text-shadow: 0px 0px 0px #bebcbb;
 }
@@ -289,4 +399,43 @@ body, html, div {
     font-size: 11px;
     line-height: 30px;
     display: flex;
+}
+
+#launch_button {
+    font-family: 'Avenir Book';
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-shadow: 0px 0px 0px #bebcbb;
+    font-size: 20px;
+    padding: 0px;
+}
+
+#launch_details {
+    position: relative;
+    top: 25px;
+    /*display: flex;*/
+    display: none;
+    flex-direction: column;
+}
+
+#launch_progress[value] {
+    height: 2px;
+    width: 265px;
+    -webkit-appearance: none;
+}
+
+#launch_progress[value]::-webkit-progress-bar {
+    background-color: transparent;
+}
+
+#launch_progress[value]::-webkit-progress-value {
+    background-color: #fff;
+}
+
+#launch_details_text {
+    font-size: 5px;
 }

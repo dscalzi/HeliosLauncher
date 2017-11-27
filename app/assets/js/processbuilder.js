@@ -236,7 +236,7 @@ class ProcessBuilder {
 
                         // Exclude noted files.
                         exclusionArr.forEach(function(exclusion){
-                            if(exclusion.indexOf(fileName) > -1){
+                            if(fileName.indexOf(exclusion) > -1){
                                 shouldExclude = true
                             }
                         })

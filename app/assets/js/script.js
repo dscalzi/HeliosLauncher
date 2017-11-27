@@ -37,11 +37,14 @@ document.onreadystatechange = function () {
             window.minimize()
         })
 
-        document.getElementById("menu_button").addEventListener('click', function(e){
-            console.log('testing')
+        // Bind launch button
+        document.getElementById("launch_button").addEventListener('click', function(e){
+            console.log('Launching game..')
             testdownloads()
         })
 
+        // Bind progress bar length to length of bot wrapper
+        document.getElementById("launch_progress").style.width = document.getElementById("launch_content").getBoundingClientRect().width
     }
 }
 
@@ -53,26 +56,63 @@ $(document).on('click', 'a[href^="http"]', function(event) {
 })
 
 testdownloads = async function(){
-    //const lp = require(path.join(__dirname, 'assets', 'js', 'launchprocess.js'))
-    let versionData = await ag.loadVersionData('1.11.2', GAME_DIRECTORY)
+    const details = document.getElementById("launch_details")
+    const progress = document.getElementById("launch_progress")
+    const det_text = document.getElementById("launch_details_text")
+
+    det_text.innerHTML = 'Please wait..'
+    progress.setAttribute('max', '100')
+    details.style.display = 'flex'
+
+    det_text.innerHTML = 'Loading version information..'
+    const versionData = await ag.loadVersionData('1.11.2', GAME_DIRECTORY)
+    progress.setAttribute('value', 20)
+
+    det_text.innerHTML = 'Validating asset integrity..'
     await ag.validateAssets(versionData, GAME_DIRECTORY)
+    progress.setAttribute('value', 40)
     console.log('assets done')
+
+    det_text.innerHTML = 'Validating library integrity..'
     await ag.validateLibraries(versionData, GAME_DIRECTORY)
+    progress.setAttribute('value', 60)
     console.log('libs done')
+
+    det_text.innerHTML = 'Validating miscellaneous file integrity..'
     await ag.validateMiscellaneous(versionData, GAME_DIRECTORY)
+    progress.setAttribute('value', 80)
     console.log('files done')
+
+    det_text.innerHTML = 'Validating server distribution files..'
     const serv = await ag.validateDistribution('WesterosCraft-1.11.2', GAME_DIRECTORY)
+    progress.setAttribute('value', 100)
     console.log('forge stuff done')
+
+    det_text.innerHTML = 'Downloading files..'
+    ag.instance.on('totaldlprogress', function(data){
+        progress.setAttribute('max', data.total)
+        progress.setAttribute('value', data.acc)
+    })
+
     ag.instance.on('dlcomplete', async function(){
+        det_text.innerHTML = 'Preparing to launch..'
         const forgeData = await ag.loadForgeData('WesterosCraft-1.11.2', GAME_DIRECTORY)
         const authUser = await mojang.auth('EMAIL', 'PASS', DEFAULT_CONFIG.getClientToken(), {
             name: 'Minecraft',
             version: 1
         })
-        //lp.launchMinecraft(versionData, forgeData, GAME_DIRECTORY)
-        //lp.launchMinecraft(versionData, GAME_DIRECTORY)
         let pb = new ProcessBuilder(GAME_DIRECTORY, serv, versionData, forgeData, authUser)
-        const proc = pb.build()
+        det_text.innerHTML = 'Launching game..'
+        let proc;
+        try{
+            proc = pb.build()
+            det_text.innerHTML = 'Done. Enjoy the server!'
+        } catch(err) {
+            det_text.innerHTML = 'Error while launching: ' + err.message;
+        }
+        setTimeout(function(){
+            details.style.display = 'none'
+        }, 5000)
     })
     ag.processDlQueues()
 }
