@@ -419,11 +419,20 @@ p {
     top: 25px;
     /*display: flex;*/
     display: none;
+}
+
+#launch_details_left {
+    display: flex;
+}
+
+#launch_details_right {
+    display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 #launch_progress[value] {
-    height: 2px;
+    height: 3px;
     width: 265px;
     -webkit-appearance: none;
 }
@@ -437,5 +446,20 @@ p {
 }
 
 #launch_details_text {
-    font-size: 5px;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#launch_progress_label {
+    color: white;
+    font-family: 'Avenir Book';
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-shadow: 0px 0px 0px #bebcbb;
+    font-size: 20px;
+    min-width: 53.21px;
+    max-width: 53.21px;
+    text-align: right;
 }
