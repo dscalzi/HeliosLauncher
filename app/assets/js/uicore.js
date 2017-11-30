@@ -10,9 +10,8 @@ $(function(){
     console.log('UICore Initialized');
 })*/
 
-document.onreadystatechange = function () {
-    if (document.readyState === "interactive") {
-
+document.addEventListener('readystatechange', function () {
+    if (document.readyState === 'interactive'){
         console.log('UICore Initializing..');
 
         // Bind close button.
@@ -37,6 +36,8 @@ document.onreadystatechange = function () {
             window.minimize()
         })
 
+    } else if(document.readyState === 'complete'){
+
         // Bind progress bar length to length of bot wrapper
         const targetWidth = document.getElementById("launch_content").getBoundingClientRect().width
         const targetWidth2 = document.getElementById("server_selection").getBoundingClientRect().width
@@ -45,8 +46,10 @@ document.onreadystatechange = function () {
         document.getElementById("launch_progress").style.width = targetWidth2
         document.getElementById("launch_details_right").style.maxWidth = targetWidth2
         document.getElementById("launch_progress_label").style.width = targetWidth3
+        
     }
-}
+
+}, false)
 
 /**
  * Open web links in the user's default browser.

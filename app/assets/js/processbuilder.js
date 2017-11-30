@@ -6,7 +6,7 @@
  * TODO why are logs not working??????
  */
 const AdmZip = require('adm-zip')
-const ag = require('./assetguard.js')
+const {AssetGuard, Library} = require('./assetguard.js')
 const child_process = require('child_process')
 const {DEFAULT_CONFIG} = require('./constants')
 const fs = require('fs')
@@ -232,7 +232,7 @@ class ProcessBuilder {
         const nativePath = path.join(this.dir, 'natives')
         for(let i=0; i<libArr.length; i++){
             const lib = libArr[i]
-            if(ag.Library.validateRules(lib.rules)){
+            if(Library.validateRules(lib.rules)){
                 if(lib.natives == null){
                     const dlInfo = lib.downloads
                     const artifact = dlInfo.artifact
@@ -243,7 +243,7 @@ class ProcessBuilder {
                     const natives = lib.natives
                     const extractInst = lib.extract
                     const exclusionArr = extractInst.exclude
-                    const opSys = ag.Library.mojangFriendlyOS()
+                    const opSys = Library.mojangFriendlyOS()
                     const indexId = natives[opSys]
                     const dlInfo = lib.downloads
                     const classifiers = dlInfo.classifiers
@@ -304,7 +304,7 @@ class ProcessBuilder {
         for(let i=0; i<mdles.length; i++){
             if(mdles[i].type != null && (mdles[i].type === 'forge-hosted' || mdles[i].type === 'library')){
                 let lib = mdles[i]
-                libs.push(path.join(this.libPath, lib.artifact.path == null ? ag._resolvePath(lib.id, lib.artifact.extension) : lib.artifact.path))
+                libs.push(path.join(this.libPath, lib.artifact.path == null ? AssetGuard._resolvePath(lib.id, lib.artifact.extension) : lib.artifact.path))
                 if(lib.sub_modules != null){
                     const res = this._resolveModuleLibraries(lib)
                     if(res.length > 0){
@@ -341,7 +341,7 @@ class ProcessBuilder {
         for(let i=0; i<mdle.sub_modules.length; i++){
             const sm = mdle.sub_modules[i]
             if(sm.type != null && sm.type == 'library'){
-                libs.push(path.join(this.libPath, sm.artifact.path == null ? ag._resolvePath(sm.id, sm.artifact.extension) : sm.artifact.path))
+                libs.push(path.join(this.libPath, sm.artifact.path == null ? AssetGuard._resolvePath(sm.id, sm.artifact.extension) : sm.artifact.path))
             }
             // If this module has submodules, we need to resolve the libraries for those.
             // To avoid unnecessary recursive calls, base case is checked here.

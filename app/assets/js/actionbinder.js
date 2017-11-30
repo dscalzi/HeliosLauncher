@@ -1,10 +1,10 @@
 const mojang = require('mojang')
 const path = require('path')
-const AssetGuard = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
+const {AssetGuard} = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
 const ProcessBuilder = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
 const {GAME_DIRECTORY, DEFAULT_CONFIG} = require(path.join(__dirname, 'assets', 'js', 'constants.js'))
 
-document.onreadystatechange = function(){
+document.addEventListener('readystatechange', function(){
     if (document.readyState === 'interactive'){
 
         // Bind launch button
@@ -14,7 +14,10 @@ document.onreadystatechange = function(){
         })
 
     }
-}
+}, false)
+
+// Keep reference to AssetGuard object temporarily
+let tracker;
 
 testdownloads = async function(){
     const content = document.getElementById("launch_content")
@@ -28,45 +31,48 @@ testdownloads = async function(){
     details.style.display = 'flex'
     content.style.display = 'none'
 
+    tracker = new AssetGuard()
+
     det_text.innerHTML = 'Loading version information..'
-    const versionData = await AssetGuard.loadVersionData('1.11.2', GAME_DIRECTORY)
+    const versionData = await tracker.loadVersionData('1.11.2', GAME_DIRECTORY)
     progress.setAttribute('value', 20)
     progress_text.innerHTML = '20%'
 
     det_text.innerHTML = 'Validating asset integrity..'
-    await AssetGuard.validateAssets(versionData, GAME_DIRECTORY)
+    await tracker.validateAssets(versionData, GAME_DIRECTORY)
     progress.setAttribute('value', 40)
     progress_text.innerHTML = '40%'
     console.log('assets done')
 
     det_text.innerHTML = 'Validating library integrity..'
-    await AssetGuard.validateLibraries(versionData, GAME_DIRECTORY)
+    await tracker.validateLibraries(versionData, GAME_DIRECTORY)
     progress.setAttribute('value', 60)
     progress_text.innerHTML = '60%'
     console.log('libs done')
 
     det_text.innerHTML = 'Validating miscellaneous file integrity..'
-    await AssetGuard.validateMiscellaneous(versionData, GAME_DIRECTORY)
+    await tracker.validateMiscellaneous(versionData, GAME_DIRECTORY)
     progress.setAttribute('value', 80)
     progress_text.innerHTML = '80%'
     console.log('files done')
 
     det_text.innerHTML = 'Validating server distribution files..'
-    const serv = await AssetGuard.validateDistribution('WesterosCraft-1.11.2', GAME_DIRECTORY)
+    const serv = await tracker.validateDistribution('WesterosCraft-1.11.2', GAME_DIRECTORY)
     progress.setAttribute('value', 100)
     progress_text.innerHTML = '100%'
     console.log('forge stuff done')
 
     det_text.innerHTML = 'Downloading files..'
-    AssetGuard.instance.on('totaldlprogress', function(data){
+    tracker.on('totaldlprogress', function(data){
         progress.setAttribute('max', data.total)
         progress.setAttribute('value', data.acc)
         progress_text.innerHTML = parseInt((data.acc/data.total)*100) + '%'
     })
 
-    AssetGuard.instance.on('dlcomplete', async function(){
+    tracker.on('dlcomplete', async function(){
+
         det_text.innerHTML = 'Preparing to launch..'
-        const forgeData = await AssetGuard.loadForgeData('WesterosCraft-1.11.2', GAME_DIRECTORY)
+        const forgeData = await tracker.loadForgeData('WesterosCraft-1.11.2', GAME_DIRECTORY)
         const authUser = await mojang.auth('EMAIL', 'PASS', DEFAULT_CONFIG.getClientToken(), {
             name: 'Minecraft',
             version: 1
@@ -94,6 +100,8 @@ testdownloads = async function(){
                 content.style.display = 'inline-flex'
             }, 5000)
         }
+        // Remove reference to tracker.
+        tracker = null
     })
-    AssetGuard.processDlQueues()
+    tracker.processDlQueues()
 }

@@ -2,21 +2,21 @@
  * AssetGuard
  * 
  * This module aims to provide a comprehensive and stable method for processing
- * and downloading game assets for the WesterosCraft server. A central object
- * stores download meta for several identifiers (categories). This meta data
- * is initially empty until one of the module's processing functions are called.
- * That function will process the corresponding asset index and validate any exisitng
- * local files. If a file is missing or fails validation, it will be placed into an
- * array which acts as a queue. This queue is wrapped in a download tracker object
+ * and downloading game assets for the WesterosCraft server. Download meta is
+ * for several identifiers (categories) is stored inside of an AssetGuard object.
+ * This meta data is initially empty until one of the module's processing functions 
+ * are called. That function will process the corresponding asset index and validate 
+ * any exisitng local files. If a file is missing or fails validation, it will be 
+ * placed into a download queue (array). This queue is wrapped in a download tracker object
  * so that essential information can be cached. The download tracker object is then
- * assigned as the value of the identifier in the central object. These download
+ * assigned as the value of the identifier in the AssetGuard object. These download
  * trackers will remain idle until an async process is started to process them.
  * 
- * Once the async process is started, any enqueued assets will be downloaded. The central
+ * Once the async process is started, any enqueued assets will be downloaded. The AssetGuard
  * object will emit events throughout the download whose name correspond to the identifier
  * being processed. For example, if the 'assets' identifier was being processed, whenever
  * the download stream recieves data, the event 'assetsdlprogress' will be emitted off of
- * the central object instance. This can be listened to by external modules allowing for
+ * the AssetGuard instance. This can be listened to by external modules allowing for
  * categorical tracking of the downloading process.
  * 
  * @module assetguard
@@ -136,6 +136,7 @@ class DistroModule extends Asset {
  * about a download queue, including the queue itself.
  */
 class DLTracker {
+
     /**
      * Create a DLTracker
      * 
@@ -148,6 +149,7 @@ class DLTracker {
         this.dlsize = dlsize
         this.callback = callback
     }
+
 }
 
 /**
@@ -158,7 +160,8 @@ class DLTracker {
  * to emit events so that external modules can listen into processing done in
  * this module.
  */
-class AssetGuard extends EventEmitter{
+class AssetGuard extends EventEmitter {
+
     /**
      * AssetGuard class should only ever have one instance which is defined in
      * this module. On creation the object's properties are never-null default
@@ -173,721 +176,719 @@ class AssetGuard extends EventEmitter{
         this.files = new DLTracker([], 0)
         this.forge = new DLTracker([], 0)
     }
-}
 
-/**
- * Global static final instance of AssetGuard
- */
-const instance = new AssetGuard()
+    // Static Utility Functions
 
-// Utility Functions
+    /**
+     * Resolve an artifact id into a path. For example, on windows
+     * 'net.minecraftforge:forge:1.11.2-13.20.0.2282', '.jar' becomes
+     * net\minecraftforge\forge\1.11.2-13.20.0.2282\forge-1.11.2-13.20.0.2282.jar
+     * 
+     * @param {String} artifactid - the artifact id string.
+     * @param {String} extension - the extension of the file at the resolved path.
+     * @returns {String} - the resolved relative path from the artifact id.
+     */
+    static _resolvePath(artifactid, extension){
+        let ps = artifactid.split(':')
+        let cs = ps[0].split('.')
 
-/**
- * Resolve an artifact id into a path. For example, on windows
- * 'net.minecraftforge:forge:1.11.2-13.20.0.2282', '.jar' becomes
- * net\minecraftforge\forge\1.11.2-13.20.0.2282\forge-1.11.2-13.20.0.2282.jar
- * 
- * @param {String} artifactid - the artifact id string.
- * @param {String} extension - the extension of the file at the resolved path.
- * @returns {String} - the resolved relative path from the artifact id.
- */
-function _resolvePath(artifactid, extension){
-    let ps = artifactid.split(':')
-    let cs = ps[0].split('.')
+        cs.push(ps[1])
+        cs.push(ps[2])
+        cs.push(ps[1].concat('-').concat(ps[2]).concat(extension))
 
-    cs.push(ps[1])
-    cs.push(ps[2])
-    cs.push(ps[1].concat('-').concat(ps[2]).concat(extension))
-
-    return path.join.apply(path, cs)
-}
-
-/**
- * Resolve an artifact id into a URL. For example,
- * 'net.minecraftforge:forge:1.11.2-13.20.0.2282', '.jar' becomes
- * net/minecraftforge/forge/1.11.2-13.20.0.2282/forge-1.11.2-13.20.0.2282.jar
- * 
- * @param {String} artifactid - the artifact id string.
- * @param {String} extension - the extension of the file at the resolved url.
- * @returns {String} - the resolved relative URL from the artifact id.
- */
-function _resolveURL(artifactid, extension){
-    let ps = artifactid.split(':')
-    let cs = ps[0].split('.')
-
-    cs.push(ps[1])
-    cs.push(ps[2])
-    cs.push(ps[1].concat('-').concat(ps[2]).concat(extension))
-
-    return cs.join('/')
-}
-
-/**
- * Calculates the hash for a file using the specified algorithm.
- * 
- * @param {Buffer} buf - the buffer containing file data.
- * @param {String} algo - the hash algorithm.
- * @returns {String} - the calculated hash in hex.
- */
-function _calculateHash(buf, algo){
-    return crypto.createHash(algo).update(buf).digest('hex')
-}
-
-/**
- * Used to parse a checksums file. This is specifically designed for
- * the checksums.sha1 files found inside the forge scala dependencies.
- * 
- * @param {String} content - the string content of the checksums file.
- * @returns {Object} - an object with keys being the file names, and values being the hashes.
- */
-function _parseChecksumsFile(content){
-    let finalContent = {}
-    let lines = content.split('\n')
-    for(let i=0; i<lines.length; i++){
-        let bits = lines[i].split(' ')
-        if(bits[1] == null) {
-            continue
-        }
-        finalContent[bits[1]] = bits[0]
-    }
-    return finalContent
-}
-
-/**
- * Validate that a file exists and matches a given hash value.
- * 
- * @param {String} filePath - the path of the file to validate.
- * @param {String} algo - the hash algorithm to check against.
- * @param {String} hash - the existing hash to check against.
- * @returns {Boolean} - true if the file exists and calculated hash matches the given hash, otherwise false.
- */
-function _validateLocal(filePath, algo, hash){
-    if(fs.existsSync(filePath)){
-        //No hash provided, have to assume it's good.
-        if(hash == null){
-            return true
-        }
-        let fileName = path.basename(filePath)
-        let buf = fs.readFileSync(filePath)
-        let calcdhash = _calculateHash(buf, algo)
-        return calcdhash === hash
-    }
-    return false;
-}
-
-/**
- * Validates a file in the style used by forge's version index.
- * 
- * @param {String} filePath - the path of the file to validate.
- * @param {Array.<String>} checksums - the checksums listed in the forge version index.
- * @returns {Boolean} - true if the file exists and the hashes match, otherwise false.
- */
-function _validateForgeChecksum(filePath, checksums){
-    if(fs.existsSync(filePath)){
-        if(checksums == null || checksums.length === 0){
-            return true
-        }
-        let buf = fs.readFileSync(filePath)
-        let calcdhash = _calculateHash(buf, 'sha1')
-        let valid = checksums.includes(calcdhash)
-        if(!valid && filePath.endsWith('.jar')){
-            valid = _validateForgeJar(filePath, checksums)
-        }
-        return valid
-    }
-    return false
-}
-
-/**
- * Validates a forge jar file dependency who declares a checksums.sha1 file.
- * This can be an expensive task as it usually requires that we calculate thousands
- * of hashes.
- * 
- * @param {Buffer} buf - the buffer of the jar file.
- * @param {Array.<String>} checksums - the checksums listed in the forge version index.
- * @returns {Boolean} - true if all hashes declared in the checksums.sha1 file match the actual hashes.
- */
-function _validateForgeJar(buf, checksums){
-    // Double pass method was the quickest I found. I tried a version where we store data
-    // to only require a single pass, plus some quick cleanup but that seemed to take slightly more time.
-
-    const hashes = {}
-    let expected = {}
-
-    const zip = new AdmZip(buf)
-    const zipEntries = zip.getEntries()
-
-    //First pass
-    for(let i=0; i<zipEntries.length; i++){
-        let entry = zipEntries[i]
-        if(entry.entryName === 'checksums.sha1'){
-            expected = _parseChecksumsFile(zip.readAsText(entry))
-        }
-        hashes[entry.entryName] = _calculateHash(entry.getData(), 'sha1')
+        return path.join.apply(path, cs)
     }
 
-    if(!checksums.includes(hashes['checksums.sha1'])){
+    /**
+     * Resolve an artifact id into a URL. For example,
+     * 'net.minecraftforge:forge:1.11.2-13.20.0.2282', '.jar' becomes
+     * net/minecraftforge/forge/1.11.2-13.20.0.2282/forge-1.11.2-13.20.0.2282.jar
+     * 
+     * @param {String} artifactid - the artifact id string.
+     * @param {String} extension - the extension of the file at the resolved url.
+     * @returns {String} - the resolved relative URL from the artifact id.
+     */
+    static _resolveURL(artifactid, extension){
+        let ps = artifactid.split(':')
+        let cs = ps[0].split('.')
+
+        cs.push(ps[1])
+        cs.push(ps[2])
+        cs.push(ps[1].concat('-').concat(ps[2]).concat(extension))
+
+        return cs.join('/')
+    }
+
+    /**
+     * Calculates the hash for a file using the specified algorithm.
+     * 
+     * @param {Buffer} buf - the buffer containing file data.
+     * @param {String} algo - the hash algorithm.
+     * @returns {String} - the calculated hash in hex.
+     */
+    static _calculateHash(buf, algo){
+        return crypto.createHash(algo).update(buf).digest('hex')
+    }
+
+    /**
+     * Used to parse a checksums file. This is specifically designed for
+     * the checksums.sha1 files found inside the forge scala dependencies.
+     * 
+     * @param {String} content - the string content of the checksums file.
+     * @returns {Object} - an object with keys being the file names, and values being the hashes.
+     */
+    static _parseChecksumsFile(content){
+        let finalContent = {}
+        let lines = content.split('\n')
+        for(let i=0; i<lines.length; i++){
+            let bits = lines[i].split(' ')
+            if(bits[1] == null) {
+                continue
+            }
+            finalContent[bits[1]] = bits[0]
+        }
+        return finalContent
+    }
+
+    /**
+     * Validate that a file exists and matches a given hash value.
+     * 
+     * @param {String} filePath - the path of the file to validate.
+     * @param {String} algo - the hash algorithm to check against.
+     * @param {String} hash - the existing hash to check against.
+     * @returns {Boolean} - true if the file exists and calculated hash matches the given hash, otherwise false.
+     */
+    static _validateLocal(filePath, algo, hash){
+        if(fs.existsSync(filePath)){
+            //No hash provided, have to assume it's good.
+            if(hash == null){
+                return true
+            }
+            let fileName = path.basename(filePath)
+            let buf = fs.readFileSync(filePath)
+            let calcdhash = AssetGuard._calculateHash(buf, algo)
+            return calcdhash === hash
+        }
+        return false;
+    }
+
+    /**
+     * Validates a file in the style used by forge's version index.
+     * 
+     * @param {String} filePath - the path of the file to validate.
+     * @param {Array.<String>} checksums - the checksums listed in the forge version index.
+     * @returns {Boolean} - true if the file exists and the hashes match, otherwise false.
+     */
+    static _validateForgeChecksum(filePath, checksums){
+        if(fs.existsSync(filePath)){
+            if(checksums == null || checksums.length === 0){
+                return true
+            }
+            let buf = fs.readFileSync(filePath)
+            let calcdhash = AssetGuard._calculateHash(buf, 'sha1')
+            let valid = checksums.includes(calcdhash)
+            if(!valid && filePath.endsWith('.jar')){
+                valid = AssetGuard._validateForgeJar(filePath, checksums)
+            }
+            return valid
+        }
         return false
     }
 
-    //Check against expected
-    const expectedEntries = Object.keys(expected)
-    for(let i=0; i<expectedEntries.length; i++){
-        if(expected[expectedEntries[i]] !== hashes[expectedEntries[i]]){
+    /**
+     * Validates a forge jar file dependency who declares a checksums.sha1 file.
+     * This can be an expensive task as it usually requires that we calculate thousands
+     * of hashes.
+     * 
+     * @param {Buffer} buf - the buffer of the jar file.
+     * @param {Array.<String>} checksums - the checksums listed in the forge version index.
+     * @returns {Boolean} - true if all hashes declared in the checksums.sha1 file match the actual hashes.
+     */
+    static _validateForgeJar(buf, checksums){
+        // Double pass method was the quickest I found. I tried a version where we store data
+        // to only require a single pass, plus some quick cleanup but that seemed to take slightly more time.
+
+        const hashes = {}
+        let expected = {}
+
+        const zip = new AdmZip(buf)
+        const zipEntries = zip.getEntries()
+
+        //First pass
+        for(let i=0; i<zipEntries.length; i++){
+            let entry = zipEntries[i]
+            if(entry.entryName === 'checksums.sha1'){
+                expected = AssetGuard._parseChecksumsFile(zip.readAsText(entry))
+            }
+            hashes[entry.entryName] = AssetGuard._calculateHash(entry.getData(), 'sha1')
+        }
+
+        if(!checksums.includes(hashes['checksums.sha1'])){
             return false
         }
-    }
-    return true
-}
 
-/**
- * Extracts and unpacks a file from .pack.xz format.
- * 
- * @param {Array.<String>} filePaths - The paths of the files to be extracted and unpacked.
- * @returns {Promise.<Void>} - An empty promise to indicate the extraction has completed.
- */
-function _extractPackXZ(filePaths){
-    return new Promise(function(fulfill, reject){
-        const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
-        const filePath = filePaths.join(',')
-        const child = child_process.spawn(DEFAULT_CONFIG.getJavaExecutable(), ['-jar', libPath, '-packxz', filePath])
-        child.stdout.on('data', (data) => {
-            //console.log('PackXZExtract:', data.toString('utf8'))
-        })
-        child.stderr.on('data', (data) => {
-            //console.log('PackXZExtract:', data.toString('utf8'))
-        })
-        child.on('close', (code, signal) => {
-            //console.log('PackXZExtract: Exited with code', code)
-            fulfill()
-        })
-    })
-}
-
-/**
- * Function which finalizes the forge installation process. This creates a 'version'
- * instance for forge and saves its version.json file into that instance. If that
- * instance already exists, the contents of the version.json file are read and returned
- * in a promise.
- * 
- * @param {Asset} asset - The Asset object representing Forge.
- * @param {String} basePath
- * @returns {Promise.<Object>} - A promise which resolves to the contents of forge's version.json.
- */
-function _finalizeForgeAsset(asset, basePath){
-    return new Promise(function(fulfill, reject){
-        fs.readFile(asset.to, (err, data) => {
-            const zip = new AdmZip(data)
-            const zipEntries = zip.getEntries()
-
-            for(let i=0; i<zipEntries.length; i++){
-                if(zipEntries[i].entryName === 'version.json'){
-                    const forgeVersion = JSON.parse(zip.readAsText(zipEntries[i]))
-                    const versionPath = path.join(basePath, 'versions', forgeVersion.id)
-                    const versionFile = path.join(versionPath, forgeVersion.id + '.json')
-                    if(!fs.existsSync(versionFile)){
-                        mkpath.sync(versionPath)
-                        fs.writeFileSync(path.join(versionPath, forgeVersion.id + '.json'), zipEntries[i].getData())
-                        fulfill(forgeVersion)
-                    } else {
-                        //Read the saved file to allow for user modifications.
-                        fulfill(JSON.parse(fs.readFileSync(versionFile, 'utf-8')))
-                    }
-                    return
-                }
+        //Check against expected
+        const expectedEntries = Object.keys(expected)
+        for(let i=0; i<expectedEntries.length; i++){
+            if(expected[expectedEntries[i]] !== hashes[expectedEntries[i]]){
+                return false
             }
-            //We didn't find forge's version.json.
-            reject('Unable to finalize Forge processing, version.json not found! Has forge changed their format?')
-        })
-    })
-}
-
-/**
- * Initiate an async download process for an AssetGuard DLTracker.
- * 
- * @param {String} identifier - the identifier of the AssetGuard DLTracker.
- * @param {Number} limit - optional. The number of async processes to run in parallel.
- * @returns {Boolean} - true if the process began, otherwise false.
- */
-function startAsyncProcess(identifier, limit = 5){
-    let win = remote.getCurrentWindow()
-    let acc = 0
-    const concurrentDlTracker = instance[identifier]
-    const concurrentDlQueue = concurrentDlTracker.dlqueue.slice(0)
-    if(concurrentDlQueue.length === 0){
-        return false
-    } else {
-        async.eachLimit(concurrentDlQueue, limit, function(asset, cb){
-            let count = 0;
-            mkpath.sync(path.join(asset.to, ".."))
-            let req = request(asset.from)
-            req.pause()
-            req.on('response', (resp) => {
-                if(resp.statusCode === 200){
-                    let writeStream = fs.createWriteStream(asset.to)
-                    writeStream.on('close', () => {
-                        //console.log('DLResults ' + asset.size + ' ' + count + ' ', asset.size === count)
-                        if(concurrentDlTracker.callback != null){
-                            concurrentDlTracker.callback.apply(concurrentDlTracker, [asset])
-                        }
-                        cb()
-                    })
-                    req.pipe(writeStream)
-                    req.resume()
-                } else {
-                    req.abort()
-                    console.log('Failed to download ' + asset.from + '. Response code', resp.statusCode)
-                    instance.progress += asset.size*1
-                    win.setProgressBar(instance.progress/instance.totaldlsize)
-                    instance.emit('totaldlprogress', {acc: instance.progress, total: instance.totaldlsize})
-                    cb()
-                }
-            })
-            req.on('data', function(chunk){
-                count += chunk.length
-                instance.progress += chunk.length
-                acc += chunk.length
-                instance.emit(identifier + 'dlprogress', acc)
-                //console.log(identifier + ' Progress', acc/instance[identifier].dlsize)
-                win.setProgressBar(instance.progress/instance.totaldlsize)
-                instance.emit('totaldlprogress', {acc: instance.progress, total: instance.totaldlsize})
-            })
-        }, function(err){
-            if(err){
-                instance.emit(identifier + 'dlerror')
-                console.log('An item in ' + identifier + ' failed to process');
-            } else {
-                instance.emit(identifier + 'dlcomplete')
-                console.log('All ' + identifier + ' have been processed successfully')
-            }
-            instance.totaldlsize -= instance[identifier].dlsize
-            instance.progress -= instance[identifier].dlsize
-            instance[identifier] = new DLTracker([], 0)
-            if(instance.totaldlsize === 0) {
-                win.setProgressBar(-1)
-                instance.emit('dlcomplete')
-            }
-        })
+        }
         return true
     }
-}
 
-// Validation Functions
-
-/**
- * Loads the version data for a given minecraft version.
- * 
- * @param {String} version - the game version for which to load the index data.
- * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
- * @param {Boolean} force - optional. If true, the version index will be downloaded even if it exists locally. Defaults to false.
- * @returns {Promise.<Object>} - Promise which resolves to the version data object.
- */
-function loadVersionData(version, basePath, force = false){
-    return new Promise(function(fulfill, reject){
-        const name = version + '.json'
-        const url = 'https://s3.amazonaws.com/Minecraft.Download/versions/' + version + '/' + name
-        const versionPath = path.join(basePath, 'versions', version)
-        const versionFile = path.join(versionPath, name)
-        if(!fs.existsSync(versionFile) || force){
-            //This download will never be tracked as it's essential and trivial.
-            request.head(url, function(err, res, body){
-                console.log('Preparing download of ' + version + ' assets.')
-                mkpath.sync(versionPath)
-                const stream = request(url).pipe(fs.createWriteStream(versionFile))
-                stream.on('finish', function(){
-                    fulfill(JSON.parse(fs.readFileSync(versionFile)))
-                })
+    /**
+     * Extracts and unpacks a file from .pack.xz format.
+     * 
+     * @param {Array.<String>} filePaths - The paths of the files to be extracted and unpacked.
+     * @returns {Promise.<Void>} - An empty promise to indicate the extraction has completed.
+     */
+    static _extractPackXZ(filePaths){
+        return new Promise(function(fulfill, reject){
+            const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
+            const filePath = filePaths.join(',')
+            const child = child_process.spawn(DEFAULT_CONFIG.getJavaExecutable(), ['-jar', libPath, '-packxz', filePath])
+            child.stdout.on('data', (data) => {
+                //console.log('PackXZExtract:', data.toString('utf8'))
             })
-        } else {
-            fulfill(JSON.parse(fs.readFileSync(versionFile)))
-        }
-    })
-}
-
-/**
- * Public asset validation function. This function will handle the validation of assets.
- * It will parse the asset index specified in the version data, analyzing each
- * asset entry. In this analysis it will check to see if the local file exists and is valid.
- * If not, it will be added to the download queue for the 'assets' identifier.
- * 
- * @param {Object} versionData - the version data for the assets.
- * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
- * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
- * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
- */
-function validateAssets(versionData, basePath, force = false){
-    return new Promise(function(fulfill, reject){
-        _assetChainIndexData(versionData, basePath, force).then(() => {
-            fulfill()
-        })
-    })
-}
-
-//Chain the asset tasks to provide full async. The below functions are private.
-/**
- * Private function used to chain the asset validation process. This function retrieves
- * the index data.
- * @param {Object} versionData
- * @param {String} basePath
- * @param {Boolean} force
- * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
- */
-function _assetChainIndexData(versionData, basePath, force = false){
-    return new Promise(function(fulfill, reject){
-        //Asset index constants.
-        const assetIndex = versionData.assetIndex
-        const name = assetIndex.id + '.json'
-        const indexPath = path.join(basePath, 'assets', 'indexes')
-        const assetIndexLoc = path.join(indexPath, name)
-
-        let data = null
-        if(!fs.existsSync(assetIndexLoc) || force){
-            console.log('Downloading ' + versionData.id + ' asset index.')
-            mkpath.sync(indexPath)
-            const stream = request(assetIndex.url).pipe(fs.createWriteStream(assetIndexLoc))
-            stream.on('finish', function() {
-                data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
-                _assetChainValidateAssets(versionData, basePath, data).then(() => {
-                    fulfill()
-                })
+            child.stderr.on('data', (data) => {
+                //console.log('PackXZExtract:', data.toString('utf8'))
             })
-        } else {
-            data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
-            _assetChainValidateAssets(versionData, basePath, data).then(() => {
+            child.on('close', (code, signal) => {
+                //console.log('PackXZExtract: Exited with code', code)
                 fulfill()
             })
-        }
-    })
-}
-
-/**
- * Private function used to chain the asset validation process. This function processes
- * the assets and enqueues missing or invalid files.
- * @param {Object} versionData
- * @param {String} basePath
- * @param {Boolean} force
- * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
- */
-function _assetChainValidateAssets(versionData, basePath, indexData){
-    return new Promise(function(fulfill, reject){
-
-        //Asset constants
-        const resourceURL = 'http://resources.download.minecraft.net/'
-        const localPath = path.join(basePath, 'assets')
-        const indexPath = path.join(localPath, 'indexes')
-        const objectPath = path.join(localPath, 'objects')
-
-        const assetDlQueue = []
-        let dlSize = 0;
-        //const objKeys = Object.keys(data.objects)
-        async.forEachOfLimit(indexData.objects, 10, function(value, key, cb){
-            const hash = value.hash
-            const assetName = path.join(hash.substring(0, 2), hash)
-            const urlName = hash.substring(0, 2) + "/" + hash
-            const ast = new Asset(key, hash, String(value.size), resourceURL + urlName, path.join(objectPath, assetName))
-            if(!_validateLocal(ast.to, 'sha1', ast.hash)){
-                dlSize += (ast.size*1)
-                assetDlQueue.push(ast)
-            }
-            cb()
-        }, function(err){
-            instance.assets = new DLTracker(assetDlQueue, dlSize)
-            fulfill()
         })
-    })
-}
+    }
 
-/**
- * Public library validation function. This function will handle the validation of libraries.
- * It will parse the version data, analyzing each library entry. In this analysis, it will
- * check to see if the local file exists and is valid. If not, it will be added to the download
- * queue for the 'libraries' identifier.
- * 
- * @param {Object} versionData - the version data for the assets.
- * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
- * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
- */
-function validateLibraries(versionData, basePath){
-    return new Promise(function(fulfill, reject){
+    /**
+     * Function which finalizes the forge installation process. This creates a 'version'
+     * instance for forge and saves its version.json file into that instance. If that
+     * instance already exists, the contents of the version.json file are read and returned
+     * in a promise.
+     * 
+     * @param {Asset} asset - The Asset object representing Forge.
+     * @param {String} basePath
+     * @returns {Promise.<Object>} - A promise which resolves to the contents of forge's version.json.
+     */
+    static _finalizeForgeAsset(asset, basePath){
+        return new Promise(function(fulfill, reject){
+            fs.readFile(asset.to, (err, data) => {
+                const zip = new AdmZip(data)
+                const zipEntries = zip.getEntries()
 
-        const libArr = versionData.libraries
-        const libPath = path.join(basePath, 'libraries')
-
-        const libDlQueue = []
-        let dlSize = 0
-
-        //Check validity of each library. If the hashs don't match, download the library.
-        async.eachLimit(libArr, 5, function(lib, cb){
-            if(Library.validateRules(lib.rules)){
-                let artifact = (lib.natives == null) ? lib.downloads.artifact : lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()]]
-                const libItm = new Library(lib.name, artifact.sha1, artifact.size, artifact.url, path.join(libPath, artifact.path))
-                if(!_validateLocal(libItm.to, 'sha1', libItm.hash)){
-                    dlSize += (libItm.size*1)
-                    libDlQueue.push(libItm)
+                for(let i=0; i<zipEntries.length; i++){
+                    if(zipEntries[i].entryName === 'version.json'){
+                        const forgeVersion = JSON.parse(zip.readAsText(zipEntries[i]))
+                        const versionPath = path.join(basePath, 'versions', forgeVersion.id)
+                        const versionFile = path.join(versionPath, forgeVersion.id + '.json')
+                        if(!fs.existsSync(versionFile)){
+                            mkpath.sync(versionPath)
+                            fs.writeFileSync(path.join(versionPath, forgeVersion.id + '.json'), zipEntries[i].getData())
+                            fulfill(forgeVersion)
+                        } else {
+                            //Read the saved file to allow for user modifications.
+                            fulfill(JSON.parse(fs.readFileSync(versionFile, 'utf-8')))
+                        }
+                        return
+                    }
                 }
+                //We didn't find forge's version.json.
+                reject('Unable to finalize Forge processing, version.json not found! Has forge changed their format?')
+            })
+        })
+    }
+
+    /**
+     * Initiate an async download process for an AssetGuard DLTracker.
+     * 
+     * @param {String} identifier - the identifier of the AssetGuard DLTracker.
+     * @param {Number} limit - optional. The number of async processes to run in parallel.
+     * @returns {Boolean} - true if the process began, otherwise false.
+     */
+    startAsyncProcess(identifier, limit = 5){
+        const self = this
+        let win = remote.getCurrentWindow()
+        let acc = 0
+        const concurrentDlTracker = this[identifier]
+        const concurrentDlQueue = concurrentDlTracker.dlqueue.slice(0)
+        if(concurrentDlQueue.length === 0){
+            return false
+        } else {
+            async.eachLimit(concurrentDlQueue, limit, function(asset, cb){
+                let count = 0;
+                mkpath.sync(path.join(asset.to, ".."))
+                let req = request(asset.from)
+                req.pause()
+                req.on('response', (resp) => {
+                    if(resp.statusCode === 200){
+                        let writeStream = fs.createWriteStream(asset.to)
+                        writeStream.on('close', () => {
+                            //console.log('DLResults ' + asset.size + ' ' + count + ' ', asset.size === count)
+                            if(concurrentDlTracker.callback != null){
+                                concurrentDlTracker.callback.apply(concurrentDlTracker, [asset])
+                            }
+                            cb()
+                        })
+                        req.pipe(writeStream)
+                        req.resume()
+                    } else {
+                        req.abort()
+                        console.log('Failed to download ' + asset.from + '. Response code', resp.statusCode)
+                        self.progress += asset.size*1
+                        win.setProgressBar(self.progress/self.totaldlsize)
+                        self.emit('totaldlprogress', {acc: self.progress, total: self.totaldlsize})
+                        cb()
+                    }
+                })
+                req.on('data', function(chunk){
+                    count += chunk.length
+                    self.progress += chunk.length
+                    acc += chunk.length
+                    self.emit(identifier + 'dlprogress', acc)
+                    //console.log(identifier + ' Progress', acc/this[identifier].dlsize)
+                    win.setProgressBar(self.progress/self.totaldlsize)
+                    self.emit('totaldlprogress', {acc: self.progress, total: self.totaldlsize})
+                })
+            }, function(err){
+                if(err){
+                    self.emit(identifier + 'dlerror')
+                    console.log('An item in ' + identifier + ' failed to process');
+                } else {
+                    self.emit(identifier + 'dlcomplete')
+                    console.log('All ' + identifier + ' have been processed successfully')
+                }
+                self.totaldlsize -= self[identifier].dlsize
+                self.progress -= self[identifier].dlsize
+                self[identifier] = new DLTracker([], 0)
+                if(self.totaldlsize === 0) {
+                    win.setProgressBar(-1)
+                    self.emit('dlcomplete')
+                }
+            })
+            return true
+        }
+    }
+
+    // Validation Functions
+
+    /**
+     * Loads the version data for a given minecraft version.
+     * 
+     * @param {String} version - the game version for which to load the index data.
+     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+     * @param {Boolean} force - optional. If true, the version index will be downloaded even if it exists locally. Defaults to false.
+     * @returns {Promise.<Object>} - Promise which resolves to the version data object.
+     */
+    loadVersionData(version, basePath, force = false){
+        return new Promise(function(fulfill, reject){
+            const name = version + '.json'
+            const url = 'https://s3.amazonaws.com/Minecraft.Download/versions/' + version + '/' + name
+            const versionPath = path.join(basePath, 'versions', version)
+            const versionFile = path.join(versionPath, name)
+            if(!fs.existsSync(versionFile) || force){
+                //This download will never be tracked as it's essential and trivial.
+                request.head(url, function(err, res, body){
+                    console.log('Preparing download of ' + version + ' assets.')
+                    mkpath.sync(versionPath)
+                    const stream = request(url).pipe(fs.createWriteStream(versionFile))
+                    stream.on('finish', function(){
+                        fulfill(JSON.parse(fs.readFileSync(versionFile)))
+                    })
+                })
+            } else {
+                fulfill(JSON.parse(fs.readFileSync(versionFile)))
             }
-            cb()
-        }, function(err){
-            instance.libraries = new DLTracker(libDlQueue, dlSize)
+        })
+    }
+
+    /**
+     * Public asset validation function. This function will handle the validation of assets.
+     * It will parse the asset index specified in the version data, analyzing each
+     * asset entry. In this analysis it will check to see if the local file exists and is valid.
+     * If not, it will be added to the download queue for the 'assets' identifier.
+     * 
+     * @param {Object} versionData - the version data for the assets.
+     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+     * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
+     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     */
+    validateAssets(versionData, basePath, force = false){
+        const self = this
+        return new Promise(function(fulfill, reject){
+            self._assetChainIndexData(versionData, basePath, force).then(() => {
+                fulfill()
+            })
+        })
+    }
+
+    //Chain the asset tasks to provide full async. The below functions are private.
+    /**
+     * Private function used to chain the asset validation process. This function retrieves
+     * the index data.
+     * @param {Object} versionData
+     * @param {String} basePath
+     * @param {Boolean} force
+     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     */
+    _assetChainIndexData(versionData, basePath, force = false){
+        const self = this
+        return new Promise(function(fulfill, reject){
+            //Asset index constants.
+            const assetIndex = versionData.assetIndex
+            const name = assetIndex.id + '.json'
+            const indexPath = path.join(basePath, 'assets', 'indexes')
+            const assetIndexLoc = path.join(indexPath, name)
+
+            let data = null
+            if(!fs.existsSync(assetIndexLoc) || force){
+                console.log('Downloading ' + versionData.id + ' asset index.')
+                mkpath.sync(indexPath)
+                const stream = request(assetIndex.url).pipe(fs.createWriteStream(assetIndexLoc))
+                stream.on('finish', function() {
+                    data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
+                    self._assetChainValidateAssets(versionData, basePath, data).then(() => {
+                        fulfill()
+                    })
+                })
+            } else {
+                data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
+                self._assetChainValidateAssets(versionData, basePath, data).then(() => {
+                    fulfill()
+                })
+            }
+        })
+    }
+
+    /**
+     * Private function used to chain the asset validation process. This function processes
+     * the assets and enqueues missing or invalid files.
+     * @param {Object} versionData
+     * @param {String} basePath
+     * @param {Boolean} force
+     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     */
+    _assetChainValidateAssets(versionData, basePath, indexData){
+        const self = this
+        return new Promise(function(fulfill, reject){
+
+            //Asset constants
+            const resourceURL = 'http://resources.download.minecraft.net/'
+            const localPath = path.join(basePath, 'assets')
+            const indexPath = path.join(localPath, 'indexes')
+            const objectPath = path.join(localPath, 'objects')
+
+            const assetDlQueue = []
+            let dlSize = 0;
+            //const objKeys = Object.keys(data.objects)
+            async.forEachOfLimit(indexData.objects, 10, function(value, key, cb){
+                const hash = value.hash
+                const assetName = path.join(hash.substring(0, 2), hash)
+                const urlName = hash.substring(0, 2) + "/" + hash
+                const ast = new Asset(key, hash, String(value.size), resourceURL + urlName, path.join(objectPath, assetName))
+                if(!AssetGuard._validateLocal(ast.to, 'sha1', ast.hash)){
+                    dlSize += (ast.size*1)
+                    assetDlQueue.push(ast)
+                }
+                cb()
+            }, function(err){
+                self.assets = new DLTracker(assetDlQueue, dlSize)
+                fulfill()
+            })
+        })
+    }
+
+    /**
+     * Public library validation function. This function will handle the validation of libraries.
+     * It will parse the version data, analyzing each library entry. In this analysis, it will
+     * check to see if the local file exists and is valid. If not, it will be added to the download
+     * queue for the 'libraries' identifier.
+     * 
+     * @param {Object} versionData - the version data for the assets.
+     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     */
+    validateLibraries(versionData, basePath){
+        const self = this
+        return new Promise(function(fulfill, reject){
+
+            const libArr = versionData.libraries
+            const libPath = path.join(basePath, 'libraries')
+
+            const libDlQueue = []
+            let dlSize = 0
+
+            //Check validity of each library. If the hashs don't match, download the library.
+            async.eachLimit(libArr, 5, function(lib, cb){
+                if(Library.validateRules(lib.rules)){
+                    let artifact = (lib.natives == null) ? lib.downloads.artifact : lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()]]
+                    const libItm = new Library(lib.name, artifact.sha1, artifact.size, artifact.url, path.join(libPath, artifact.path))
+                    if(!AssetGuard._validateLocal(libItm.to, 'sha1', libItm.hash)){
+                        dlSize += (libItm.size*1)
+                        libDlQueue.push(libItm)
+                    }
+                }
+                cb()
+            }, function(err){
+                self.libraries = new DLTracker(libDlQueue, dlSize)
+                fulfill()
+            })
+        })
+    }
+
+    /**
+     * Public miscellaneous mojang file validation function. These files will be enqueued under
+     * the 'files' identifier.
+     * 
+     * @param {Object} versionData - the version data for the assets.
+     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     */
+    validateMiscellaneous(versionData, basePath){
+        const self = this
+        return new Promise(async function(fulfill, reject){
+            await self.validateClient(versionData, basePath)
+            await self.validateLogConfig(versionData, basePath)
             fulfill()
         })
-    })
-}
+    }
 
-/**
- * Public miscellaneous mojang file validation function. These files will be enqueued under
- * the 'files' identifier.
- * 
- * @param {Object} versionData - the version data for the assets.
- * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
- * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
- */
-function validateMiscellaneous(versionData, basePath){
-    return new Promise(async function(fulfill, reject){
-        await validateClient(versionData, basePath)
-        await validateLogConfig(versionData, basePath)
-        fulfill()
-    })
-}
+    /**
+     * Validate client file - artifact renamed from client.jar to '{version}'.jar.
+     * 
+     * @param {Object} versionData - the version data for the assets.
+     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+     * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
+     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     */
+    validateClient(versionData, basePath, force = false){
+        const self = this
+        return new Promise(function(fulfill, reject){
+            const clientData = versionData.downloads.client
+            const version = versionData.id
+            const targetPath = path.join(basePath, 'versions', version)
+            const targetFile = version + '.jar'
 
-/**
- * Validate client file - artifact renamed from client.jar to '{version}'.jar.
- * 
- * @param {Object} versionData - the version data for the assets.
- * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
- * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
- * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
- */
-function validateClient(versionData, basePath, force = false){
-    return new Promise(function(fulfill, reject){
-        const clientData = versionData.downloads.client
-        const version = versionData.id
-        const targetPath = path.join(basePath, 'versions', version)
-        const targetFile = version + '.jar'
+            let client = new Asset(version + ' client', clientData.sha1, clientData.size, clientData.url, path.join(targetPath, targetFile))
 
-        let client = new Asset(version + ' client', clientData.sha1, clientData.size, clientData.url, path.join(targetPath, targetFile))
+            if(!AssetGuard._validateLocal(client.to, 'sha1', client.hash) || force){
+                self.files.dlqueue.push(client)
+                self.files.dlsize += client.size*1
+                fulfill()
+            } else {
+                fulfill()
+            }
+        })
+    }
 
-        if(!_validateLocal(client.to, 'sha1', client.hash) || force){
-            instance.files.dlqueue.push(client)
-            instance.files.dlsize += client.size*1
-            fulfill()
-        } else {
-            fulfill()
+    /**
+     * Validate log config.
+     * 
+     * @param {Object} versionData - the version data for the assets.
+     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+     * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
+     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     */
+    validateLogConfig(versionData, basePath){
+        const self = this
+        return new Promise(function(fulfill, reject){
+            const client = versionData.logging.client
+            const file = client.file
+            const targetPath = path.join(basePath, 'assets', 'log_configs')
+
+            let logConfig = new Asset(file.id, file.sha1, file.size, file.url, path.join(targetPath, file.id))
+
+            if(!AssetGuard._validateLocal(logConfig.to, 'sha1', logConfig.hash)){
+                self.files.dlqueue.push(logConfig)
+                self.files.dlsize += logConfig.size*1
+                fulfill()
+            } else {
+                fulfill()
+            }
+        })
+    }
+
+    /**
+     * Validate the distribution.
+     * 
+     * @param {String} serverpackid - The id of the server to validate.
+     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
+     * @returns {Promise.<Object>} - A promise which resolves to the server distribution object.
+     */
+    validateDistribution(serverpackid, basePath){
+        const self = this
+        return new Promise(function(fulfill, reject){
+            self._chainValidateDistributionIndex(basePath).then((value) => {
+                let servers = value.servers
+                let serv = null
+                for(let i=0; i<servers.length; i++){
+                    if(servers[i].id === serverpackid){
+                        serv = servers[i]
+                        break
+                    }
+                }
+
+                self.forge = self._parseDistroModules(serv.modules, basePath, serv.mc_version)
+                //Correct our workaround here.
+                let decompressqueue = self.forge.callback
+                self.forge.callback = function(asset){
+                    if(asset.to.toLowerCase().endsWith('.pack.xz')){
+                        AssetGuard._extractPackXZ([asset.to])
+                    }
+                    if(asset.type === 'forge-hosted' || asset.type === 'forge'){
+                        AssetGuard._finalizeForgeAsset(asset, basePath)
+                    }
+                }
+                fulfill(serv)
+            })
+        })
+    }
+
+    //TODO The distro index should be downloaded in the 'pre-loader'. This is because
+    //we will eventually NEED the index to generate the server list on the ui. 
+    _chainValidateDistributionIndex(basePath){
+        return new Promise(function(fulfill, reject){
+            //const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
+            const targetFile = path.join(basePath, 'westeroscraft.json')
+
+            //TEMP WORKAROUND TO TEST WHILE THIS IS NOT HOSTED
+            fs.readFile(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8', (err, data) => {
+                fulfill(JSON.parse(data))
+            })
+        })
+    }
+
+    _parseDistroModules(modules, basePath, version){
+        let alist = []
+        let asize = 0;
+        //This may be removed soon, considering the most efficient way to extract.
+        let decompressqueue = []
+        for(let i=0; i<modules.length; i++){
+            let ob = modules[i]
+            let obType = ob.type
+            let obArtifact = ob.artifact
+            let obPath = obArtifact.path == null ? AssetGuard._resolvePath(ob.id, obArtifact.extension) : obArtifact.path
+            switch(obType){
+                case 'forge-hosted':
+                case 'forge':
+                case 'library':
+                    obPath = path.join(basePath, 'libraries', obPath)
+                    break
+                case 'forgemod':
+                    //obPath = path.join(basePath, 'mods', obPath)
+                    obPath = path.join(basePath, 'modstore', obPath)
+                    break
+                case 'litemod':
+                    //obPath = path.join(basePath, 'mods', version, obPath)
+                    obPath = path.join(basePath, 'modstore', obPath)
+                    break
+                case 'file':
+                default: 
+                    obPath = path.join(basePath, obPath)
+            }
+            let artifact = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, obType)
+            const validationPath = obPath.toLowerCase().endsWith('.pack.xz') ? obPath.substring(0, obPath.toLowerCase().lastIndexOf('.pack.xz')) : obPath
+            if(!AssetGuard._validateLocal(validationPath, 'MD5', artifact.hash)){
+                asize += artifact.size*1
+                alist.push(artifact)
+                if(validationPath !== obPath) decompressqueue.push(obPath)
+            }
+            //Recursively process the submodules then combine the results.
+            if(ob.sub_modules != null){
+                let dltrack = this._parseDistroModules(ob.sub_modules, basePath, version)
+                asize += dltrack.dlsize*1
+                alist = alist.concat(dltrack.dlqueue)
+                decompressqueue = decompressqueue.concat(dltrack.callback)
+            }
         }
-    })
-}
 
-/**
- * Validate log config.
- * 
- * @param {Object} versionData - the version data for the assets.
- * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
- * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
- * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
- */
-function validateLogConfig(versionData, basePath){
-    return new Promise(function(fulfill, reject){
-        const client = versionData.logging.client
-        const file = client.file
-        const targetPath = path.join(basePath, 'assets', 'log_configs')
+        //Since we have no callback at this point, we use this value to store the decompressqueue.
+        return new DLTracker(alist, asize, decompressqueue)
+    }
 
-        let logConfig = new Asset(file.id, file.sha1, file.size, file.url, path.join(targetPath, file.id))
-
-        if(!_validateLocal(logConfig.to, 'sha1', logConfig.hash)){
-            instance.files.dlqueue.push(logConfig)
-            instance.files.dlsize += logConfig.size*1
-            fulfill()
-        } else {
-            fulfill()
-        }
-    })
-}
-
-/**
- * Validate the distribution.
- * 
- * @param {String} serverpackid - The id of the server to validate.
- * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
- * @returns {Promise.<Object>} - A promise which resolves to the server distribution object.
- */
-function validateDistribution(serverpackid, basePath){
-    return new Promise(function(fulfill, reject){
-        _chainValidateDistributionIndex(basePath).then((value) => {
-            let servers = value.servers
+    /**
+     * Loads Forge's version.json data into memory for the specified server id.
+     * 
+     * @param {String} serverpack - The id of the server to load Forge data for.
+     * @param {String} basePath
+     * @returns {Promise.<Object>} - A promise which resolves to Forge's version.json data.
+     */
+    loadForgeData(serverpack, basePath){
+        const self = this
+        return new Promise(async function(fulfill, reject){
+            let distro = await self._chainValidateDistributionIndex(basePath)
+            
+            const servers = distro.servers
             let serv = null
             for(let i=0; i<servers.length; i++){
-                if(servers[i].id === serverpackid){
+                if(servers[i].id === serverpack){
                     serv = servers[i]
                     break
                 }
             }
 
-            instance.forge = _parseDistroModules(serv.modules, basePath, serv.mc_version)
-            //Correct our workaround here.
-            let decompressqueue = instance.forge.callback
-            instance.forge.callback = function(asset){
-                if(asset.to.toLowerCase().endsWith('.pack.xz')){
-                    _extractPackXZ([asset.to])
-                }
-                if(asset.type === 'forge-hosted' || asset.type === 'forge'){
-                    _finalizeForgeAsset(asset, basePath)
+            const modules = serv.modules
+            for(let i=0; i<modules.length; i++){
+                const ob = modules[i]
+                if(ob.type === 'forge-hosted' || ob.type === 'forge'){
+                    let obArtifact = ob.artifact
+                    let obPath = obArtifact.path == null ? path.join(basePath, 'libraries', AssetGuard._resolvePath(ob.id, obArtifact.extension)) : obArtifact.path
+                    let asset = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, ob.type)
+                    let forgeData = await AssetGuard._finalizeForgeAsset(asset, basePath)
+                    fulfill(forgeData)
+                    return
                 }
             }
-            fulfill(serv)
+            reject('No forge module found!')
         })
-    })
-}
-
-//TODO The distro index should be downloaded in the 'pre-loader'. This is because
-//we will eventually NEED the index to generate the server list on the ui. 
-function _chainValidateDistributionIndex(basePath){
-    return new Promise(function(fulfill, reject){
-        //const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
-        const targetFile = path.join(basePath, 'westeroscraft.json')
-
-        //TEMP WORKAROUND TO TEST WHILE THIS IS NOT HOSTED
-        fs.readFile(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8', (err, data) => {
-            fulfill(JSON.parse(data))
-        })
-    })
-}
-
-function _parseDistroModules(modules, basePath, version){
-    let alist = []
-    let asize = 0;
-    //This may be removed soon, considering the most efficient way to extract.
-    let decompressqueue = []
-    for(let i=0; i<modules.length; i++){
-        let ob = modules[i]
-        let obType = ob.type
-        let obArtifact = ob.artifact
-        let obPath = obArtifact.path == null ? _resolvePath(ob.id, obArtifact.extension) : obArtifact.path
-        switch(obType){
-            case 'forge-hosted':
-            case 'forge':
-            case 'library':
-                obPath = path.join(basePath, 'libraries', obPath)
-                break
-            case 'forgemod':
-                //obPath = path.join(basePath, 'mods', obPath)
-                obPath = path.join(basePath, 'modstore', obPath)
-                break
-            case 'litemod':
-                //obPath = path.join(basePath, 'mods', version, obPath)
-                obPath = path.join(basePath, 'modstore', obPath)
-                break
-            case 'file':
-            default: 
-                obPath = path.join(basePath, obPath)
-        }
-        let artifact = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, obType)
-        const validationPath = obPath.toLowerCase().endsWith('.pack.xz') ? obPath.substring(0, obPath.toLowerCase().lastIndexOf('.pack.xz')) : obPath
-        if(!_validateLocal(validationPath, 'MD5', artifact.hash)){
-            asize += artifact.size*1
-            alist.push(artifact)
-            if(validationPath !== obPath) decompressqueue.push(obPath)
-        }
-        //Recursively process the submodules then combine the results.
-        if(ob.sub_modules != null){
-            let dltrack = _parseDistroModules(ob.sub_modules, basePath, version)
-            asize += dltrack.dlsize*1
-            alist = alist.concat(dltrack.dlqueue)
-            decompressqueue = decompressqueue.concat(dltrack.callback)
-        }
     }
 
-    //Since we have no callback at this point, we use this value to store the decompressqueue.
-    return new DLTracker(alist, asize, decompressqueue)
-}
+    _parseForgeLibraries(){
+        /* TODO
+        * Forge asset validations are already implemented. When there's nothing much
+        * to work on, implement forge downloads using forge's version.json. This is to
+        * have the code on standby if we ever need it (since it's half implemented already).
+        */
+    }
 
-/**
- * Loads Forge's version.json data into memory for the specified server id.
- * 
- * @param {String} serverpack - The id of the server to load Forge data for.
- * @param {String} basePath
- * @returns {Promise.<Object>} - A promise which resolves to Forge's version.json data.
- */
-function loadForgeData(serverpack, basePath){
-    return new Promise(async function(fulfill, reject){
-        let distro = await _chainValidateDistributionIndex(basePath)
-        
-        const servers = distro.servers
-        let serv = null
-        for(let i=0; i<servers.length; i++){
-            if(servers[i].id === serverpack){
-                serv = servers[i]
-                break
-            }
-        }
-
-        const modules = serv.modules
-        for(let i=0; i<modules.length; i++){
-            const ob = modules[i]
-            if(ob.type === 'forge-hosted' || ob.type === 'forge'){
-                let obArtifact = ob.artifact
-                let obPath = obArtifact.path == null ? path.join(basePath, 'libraries', _resolvePath(ob.id, obArtifact.extension)) : obArtifact.path
-                let asset = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, ob.type)
-                let forgeData = await _finalizeForgeAsset(asset, basePath)
-                fulfill(forgeData)
-                return
-            }
-        }
-        reject('No forge module found!')
-    })
-}
-
-function _parseForgeLibraries(){
-    /* TODO
-     * Forge asset validations are already implemented. When there's nothing much
-     * to work on, implement forge downloads using forge's version.json. This is to
-     * have the code on standby if we ever need it (since it's half implemented already).
+    /**
+     * This function will initiate the download processed for the specified identifiers. If no argument is
+     * given, all identifiers will be initiated. Note that in order for files to be processed you need to run
+     * the processing function corresponding to that identifier. If you run this function without processing
+     * the files, it is likely nothing will be enqueued in the object and processing will complete
+     * immediately. Once all downloads are complete, this function will fire the 'dlcomplete' event on the
+     * global object instance.
+     * 
+     * @param {Array.<{id: string, limit: number}>} identifiers - optional. The identifiers to process and corresponding parallel async task limit.
      */
-}
+    processDlQueues(identifiers = [{id:'assets', limit:20}, {id:'libraries', limit:5}, {id:'files', limit:5}, {id:'forge', limit:5}]){
+        this.progress = 0;
+        let win = remote.getCurrentWindow()
 
-/**
- * This function will initiate the download processed for the specified identifiers. If no argument is
- * given, all identifiers will be initiated. Note that in order for files to be processed you need to run
- * the processing function corresponding to that identifier. If you run this function without processing
- * the files, it is likely nothing will be enqueued in the global object and processing will complete
- * immediately. Once all downloads are complete, this function will fire the 'dlcomplete' event on the
- * global object instance.
- * 
- * @param {Array.<{id: string, limit: number}>} identifiers - optional. The identifiers to process and corresponding parallel async task limit.
- */
-function processDlQueues(identifiers = [{id:'assets', limit:20}, {id:'libraries', limit:5}, {id:'files', limit:5}, {id:'forge', limit:5}]){
-    this.progress = 0;
-    let win = remote.getCurrentWindow()
+        let shouldFire = true
 
-    let shouldFire = true
+        // Assign dltracking variables.
+        this.totaldlsize = 0
+        this.progress = 0
+        for(let i=0; i<identifiers.length; i++){
+            this.totaldlsize += this[identifiers[i].id].dlsize
+        }
 
-    // Assign global dltracking variables.
-    instance.totaldlsize = 0
-    instance.progress = 0
-    for(let i=0; i<identifiers.length; i++){
-        instance.totaldlsize += instance[identifiers[i].id].dlsize
+        for(let i=0; i<identifiers.length; i++){
+            let iden = identifiers[i]
+            let r = this.startAsyncProcess(iden.id, iden.limit)
+            if(r) shouldFire = false
+        }
+
+        if(shouldFire){
+            this.emit('dlcomplete')
+        }
     }
 
-    for(let i=0; i<identifiers.length; i++){
-        let iden = identifiers[i]
-        let r = startAsyncProcess(iden.id, iden.limit)
-        if(r) shouldFire = false
-    }
-
-    if(shouldFire){
-        instance.emit('dlcomplete')
-    }
 }
 
 module.exports = {
-    loadVersionData,
-    loadForgeData,
-    validateAssets,
-    validateLibraries,
-    validateMiscellaneous,
-    validateDistribution,
-    processDlQueues,
-    instance,
+    AssetGuard,
     Asset,
-    Library,
-    _resolvePath
+    Library
 }
