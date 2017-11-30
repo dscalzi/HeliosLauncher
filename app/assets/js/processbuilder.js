@@ -8,9 +8,11 @@
 const AdmZip = require('adm-zip')
 const ag = require('./assetguard.js')
 const child_process = require('child_process')
+const {DEFAULT_CONFIG} = require('./constants')
 const fs = require('fs')
 const mkpath = require('mkdirp')
 const path = require('path')
+const {URL} = require('url')
 
 class ProcessBuilder {
 
@@ -33,13 +35,14 @@ class ProcessBuilder {
      * Convienence method to run the functions typically used to build a process.
      */
     build(){
+        process.throwDeprecation = true
         const mods = this.resolveDefaultMods()
         this.constructFMLModList(mods, true)
         const args = this.constructJVMArguments(mods)
 
-        //console.log(args)
+        console.log(args)
 
-        const child = child_process.spawn('C:\\Program Files\\Java\\jdk1.8.0_152\\bin\\javaw.exe', args)
+        const child = child_process.spawn(DEFAULT_CONFIG.getJavaExecutable(), args)
 
         child.stdout.on('data', (data) => {
             console.log('Minecraft:', data.toString('utf8'))
@@ -95,15 +98,17 @@ class ProcessBuilder {
      */
     constructJVMArguments(mods){
         
-        let args = ['-Xmx4G',
-        '-XX:+UseConcMarkSweepGC',
-        '-XX:+CMSIncrementalMode',
-        '-XX:-UseAdaptiveSizePolicy',
-        '-Xmn128M',
+        let args = ['-Xmx' + DEFAULT_CONFIG.getMaxRAM(),
+        '-Xms' + DEFAULT_CONFIG.getMinRAM(),,
         '-Djava.library.path=' + path.join(this.dir, 'natives'),
         '-cp',
         this.classpathArg(mods).join(';'),
         this.forgeData.mainClass]
+
+        // For some reason this will add an undefined value unless
+        // the delete count is 1. I suspect this is unintended behavior
+        // by the function.. need to keep an eye on this.
+        args.splice(2, 1, ...DEFAULT_CONFIG.getJVMOptions())
 
         args = args.concat(this._resolveForgeArgs())
 
@@ -161,6 +166,28 @@ class ProcessBuilder {
         }
         mcArgs.push('--modListFile')
         mcArgs.push('absolute:' + this.fmlDir)
+
+        // Prepare game resolution
+        if(DEFAULT_CONFIG.isFullscreen()){
+            mcArgs.unshift('--fullscreen')
+        } else {
+            mcArgs.unshift(DEFAULT_CONFIG.getGameWidth())
+            mcArgs.unshift('--width')
+            mcArgs.unshift(DEFAULT_CONFIG.getGameHeight())
+            mcArgs.unshift('--height')
+        }
+
+        // Prepare autoconnect
+        if(DEFAULT_CONFIG.isAutoConnect() && this.server.autoconnect){
+            const serverURL = new URL('my://' + this.server.server_ip)
+            mcArgs.unshift(serverURL.hostname)
+            mcArgs.unshift('--server')
+            if(serverURL.port){
+                mcArgs.unshift(serverURL.port)
+                mcArgs.unshift('--port')
+            }
+        }
+
         return mcArgs
     }
 
@@ -244,7 +271,11 @@ class ProcessBuilder {
                         // Extract the file.
                         if(!shouldExclude){
                             mkpath.sync(path.join(nativePath, fileName, '..'))
-                            fs.writeFile(path.join(nativePath, fileName), zipEntries[i].getData())
+                            fs.writeFile(path.join(nativePath, fileName), zipEntries[i].getData(), (err) => {
+                                if(err){
+                                    console.error('Error while extracting native library:', err)
+                                }
+                            })
                         }
     
                     }

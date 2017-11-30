@@ -7,7 +7,7 @@
             "news_feed": "http://www.westeroscraft.com/api/rss.php?preset_id=12700544",
             "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-prod.png",
             "revision": "0.0.1",
-            "server_ip": "mc.westeroscraft.com:4444",
+            "server_ip": "mc.westeroscraft.com",
             "mc_version": "1.11.2",
             "autoconnect": true,
             "modules": [

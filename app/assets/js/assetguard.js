@@ -22,21 +22,22 @@
  * @module assetguard
  */
 // Requirements
-const fs = require('fs')
-const request = require('request')
-const path = require('path')
-const mkpath = require('mkdirp');
-const async = require('async')
-const crypto = require('crypto')
 const AdmZip = require('adm-zip')
+const async = require('async')
 const child_process = require('child_process')
+const crypto = require('crypto')
+const {DEFAULT_CONFIG} = require('./constants')
 const EventEmitter = require('events')
+const fs = require('fs')
+const mkpath = require('mkdirp');
+const path = require('path')
+const request = require('request')
 const {remote} = require('electron')
 
 // Classes
 
 /** Class representing a base asset. */
-class Asset{
+class Asset {
     /**
      * Create an asset.
      * 
@@ -56,7 +57,7 @@ class Asset{
 }
 
 /** Class representing a mojang library. */
-class Library extends Asset{
+class Library extends Asset {
 
     /**
      * Converts the process.platform OS names to match mojang's OS names.
@@ -349,7 +350,7 @@ function _extractPackXZ(filePaths){
     return new Promise(function(fulfill, reject){
         const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
         const filePath = filePaths.join(',')
-        const child = child_process.spawn('C:\\Program Files\\Java\\jdk1.8.0_152\\bin\\javaw.exe', ['-jar', libPath, '-packxz', filePath])
+        const child = child_process.spawn(DEFAULT_CONFIG.getJavaExecutable(), ['-jar', libPath, '-packxz', filePath])
         child.stdout.on('data', (data) => {
             //console.log('PackXZExtract:', data.toString('utf8'))
         })

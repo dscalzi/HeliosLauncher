@@ -6,10 +6,10 @@
   "main": "index.js",
   "scripts": {
     "start": "electron index.js",
-    "buildwin": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=win32 --arch=x64 --ignore=\"\\.git(ignore|modules)|package\\.bat|node_modules|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
-    "builddarwin": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=darwin --ignore=\"\\.git(ignore|modules)|package\\.bat|node_modules|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
-    "buildlinux": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=linux --arch=x64 --ignore=\"\\.git(ignore|modules)|package\\.bat|node_modules|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
-    "buildlinuxarm": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=linux --arch=arm64 --ignore=\"\\.git(ignore|modules)|package\\.bat|node_modules|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\""
+    "buildwin": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=win32 --arch=x64 --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
+    "builddarwin": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=darwin --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
+    "buildlinux": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=linux --arch=x64 --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
+    "buildlinuxarm": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=linux --arch=arm64 --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\""
   },
   "engines": {
     "node": "8.9.x"
@@ -27,6 +27,7 @@
   "dependencies": {
     "adm-zip": "^0.4.7",
     "async": "^2.6.0",
+    "discord-rpc": "^3.0.0-beta.4",
     "ejs": "^2.5.7",
     "ejs-electron": "^2.0.1",
     "find-java-home": "^0.2.0",
