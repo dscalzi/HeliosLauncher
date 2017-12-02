@@ -14,6 +14,7 @@ The distribution index is written in JSON. The general format of the index is as
             "revision": "0.0.1",
             "server_ip": "mc.westeroscraft.com:1337",
             "mc_version": "1.11.2",
+            "default_selected": true,
             "autoconnect": true,
             "modules": [
                 ...
@@ -25,6 +26,8 @@ The distribution index is written in JSON. The general format of the index is as
 
 You can declare an unlimited number of servers, however you must provide valid values for the fields listed above. In addition to that, the server can declare modules.
 
+Only one server in the array should have the `default_selected` property enabled. This will tell the launcher that this is the default server to select if either the previously selected server is invalid, or there is no previously selected server. This field is not defined by any server (avoid this), the first server will be selected as the default. If multiple servers have `default_selected` enabled, the first one the launcher finds will be the effective value. Servers which are not the default may omit this property rather than explicitly setting it to false.
+
 ## Modules
 
 A module is a generic representation of a file required to run the minecraft client. It takes the general form:
@@ -35,8 +38,8 @@ A module is a generic representation of a file required to run the minecraft cli
     "name": "Artifact {version}",
     "type": "{a valid type}",
     "artifact": {
-        "size": {file size in bytes},
-        "MD5": {MD5 hash for the file, string},
+        "size": "{file size in bytes}",
+        "MD5": "{MD5 hash for the file, string}",
         "extension": ".jar",
         "url": "http://files.site.com/maven/group/id/artifact/version/artifact-version.jar"
     },
@@ -46,8 +49,8 @@ A module is a generic representation of a file required to run the minecraft cli
             "name": "Example File",
             "type": "file",
             "artifact": {
-                "size": {file size in bytes},
-                "MD5": {MD5 hash for the file, string},
+                "size": "{file size in bytes}",
+                "MD5": "{MD5 hash for the file, string}",
                 "path": "examplefile.txt",
                 "url": "http://files.site.com/examplefile.txt"
             }
@@ -63,8 +66,8 @@ Modules may also declare a `required` object.
 
 ```json
 "required": {
-    "value": false, (if the module is required)
-    "def": false (if it's enabled by default, has no effect if value is true)
+    "value": false, "(if the module is required)"
+    "def": false "(if it's enabled by default, has no effect if value is true)"
 }
 ```
 
@@ -74,6 +77,8 @@ If a module does not declare this object, both `value` and `def` default to true
 The format of the module's artifact depends on several things. The most important factor is where the file will be stored. If you are providing a simple file to be placed in the root directory of the client files, you may decided to format the module as the `examplefile` module declared above. This module provides a `path` option, allowing you to directly set where the file will be saved to. Only the `path` will affect the final downloaded file.
 
 Other times, you may want to store the files maven-style, such as with libraries and mods. In this case you must declare the module as the example artifact above. The `id` becomes more important as it will be used to resolve the final path. The `id` must be provided in maven format, that is `group.id.maybemore:artifact:version`. From there, you need to declare the `extension` of the file in the artifact object. This effectively replaces the `path` option we used above.
+
+**It is EXTREMELY IMPORTANT that the file size is CORRECT. The launcher's download queue will not function properly otherwise.**
 
 Ex.
 

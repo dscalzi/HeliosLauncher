@@ -8,10 +8,19 @@ document.addEventListener('readystatechange', function(){
     if (document.readyState === 'interactive'){
 
         // Bind launch button
-        document.getElementById("launch_button").addEventListener('click', function(e){
+        document.getElementById('launch_button').addEventListener('click', function(e){
             console.log('Launching game..')
             testdownloads()
         })
+        
+        if(DEFAULT_CONFIG.getSelectedServer() == null){
+            console.log('Determining default selected server..')
+            DEFAULT_CONFIG.setSelectedServer(AssetGuard.resolveSelectedServer())
+        }
+
+        // TODO convert this to dropdown menu.
+        // Bind selected server
+        document.getElementById('server_selection').innerHTML = '\u2022 ' + AssetGuard.getServerById(DEFAULT_CONFIG.getSelectedServer()).name
 
     }
 }, false)
@@ -20,11 +29,11 @@ document.addEventListener('readystatechange', function(){
 let tracker;
 
 testdownloads = async function(){
-    const content = document.getElementById("launch_content")
-    const details = document.getElementById("launch_details")
-    const progress = document.getElementById("launch_progress")
-    const progress_text = document.getElementById("launch_progress_label")
-    const det_text = document.getElementById("launch_details_text")
+    const content = document.getElementById('launch_content')
+    const details = document.getElementById('launch_details')
+    const progress = document.getElementById('launch_progress')
+    const progress_text = document.getElementById('launch_progress_label')
+    const det_text = document.getElementById('launch_details_text')
 
     det_text.innerHTML = 'Please wait..'
     progress.setAttribute('max', '100')
@@ -33,34 +42,34 @@ testdownloads = async function(){
 
     tracker = new AssetGuard()
 
-    det_text.innerHTML = 'Loading version information..'
-    const versionData = await tracker.loadVersionData('1.11.2', GAME_DIRECTORY)
+    det_text.innerHTML = 'Loading server information..'
+    const serv = await tracker.validateDistribution(DEFAULT_CONFIG.getSelectedServer(), GAME_DIRECTORY)
     progress.setAttribute('value', 20)
     progress_text.innerHTML = '20%'
+    console.log('forge stuff done')
+
+    det_text.innerHTML = 'Loading version information..'
+    const versionData = await tracker.loadVersionData(serv.mc_version, GAME_DIRECTORY)
+    progress.setAttribute('value', 40)
+    progress_text.innerHTML = '40%'
 
     det_text.innerHTML = 'Validating asset integrity..'
     await tracker.validateAssets(versionData, GAME_DIRECTORY)
-    progress.setAttribute('value', 40)
-    progress_text.innerHTML = '40%'
+    progress.setAttribute('value', 60)
+    progress_text.innerHTML = '60%'
     console.log('assets done')
 
     det_text.innerHTML = 'Validating library integrity..'
     await tracker.validateLibraries(versionData, GAME_DIRECTORY)
-    progress.setAttribute('value', 60)
-    progress_text.innerHTML = '60%'
+    progress.setAttribute('value', 80)
+    progress_text.innerHTML = '80%'
     console.log('libs done')
 
     det_text.innerHTML = 'Validating miscellaneous file integrity..'
     await tracker.validateMiscellaneous(versionData, GAME_DIRECTORY)
-    progress.setAttribute('value', 80)
-    progress_text.innerHTML = '80%'
-    console.log('files done')
-
-    det_text.innerHTML = 'Validating server distribution files..'
-    const serv = await tracker.validateDistribution('WesterosCraft-1.11.2', GAME_DIRECTORY)
     progress.setAttribute('value', 100)
     progress_text.innerHTML = '100%'
-    console.log('forge stuff done')
+    console.log('files done')
 
     det_text.innerHTML = 'Downloading files..'
     tracker.on('totaldlprogress', function(data){
@@ -72,7 +81,7 @@ testdownloads = async function(){
     tracker.on('dlcomplete', async function(){
 
         det_text.innerHTML = 'Preparing to launch..'
-        const forgeData = await tracker.loadForgeData('WesterosCraft-1.11.2', GAME_DIRECTORY)
+        const forgeData = await tracker.loadForgeData(serv.id, GAME_DIRECTORY)
         const authUser = await mojang.auth('EMAIL', 'PASS', DEFAULT_CONFIG.getClientToken(), {
             name: 'Minecraft',
             version: 1

@@ -9,6 +9,7 @@
             "revision": "0.0.1",
             "server_ip": "mc.westeroscraft.com",
             "mc_version": "1.11.2",
+            "default_selected": true,
             "autoconnect": true,
             "modules": [
                 {

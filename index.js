@@ -9,7 +9,15 @@ const ejse = require('ejs-electron')
 let win
 
 function createWindow() {
-    win = new BrowserWindow({ width: 980, height: 552, icon: getPlatformIcon('WesterosSealSquare'), frame: false})
+    win = new BrowserWindow({
+        width: 980,
+        height: 552,
+        icon: getPlatformIcon('WesterosSealSquare'),
+        frame: false,
+        webPreferences: {
+            preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js')
+        }
+    })
 
     ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))
 

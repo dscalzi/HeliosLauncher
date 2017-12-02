@@ -26,7 +26,7 @@ const AdmZip = require('adm-zip')
 const async = require('async')
 const child_process = require('child_process')
 const crypto = require('crypto')
-const {DEFAULT_CONFIG} = require('./constants')
+const {DEFAULT_CONFIG, DISTRO_DIRECTORY} = require('./constants')
 const EventEmitter = require('events')
 const fs = require('fs')
 const mkpath = require('mkdirp');
@@ -152,6 +152,8 @@ class DLTracker {
 
 }
 
+let distributionData = null
+
 /**
  * Central object class used for control flow. This object stores data about
  * categories of downloads. Each category is assigned an identifier with a 
@@ -270,6 +272,85 @@ class AssetGuard extends EventEmitter {
             return calcdhash === hash
         }
         return false;
+    }
+
+    /**
+     * Statically retrieve the distribution data.
+     * 
+     * @param {Boolean} cached - optional. False if the distro should be freshly downloaded, else
+     * a cached copy will be returned.
+     * @returns {Promise.<Object>} - A promise which resolves to the distribution data object.
+     */
+    static retrieveDistributionData(cached = true){
+        return new Promise(function(fulfill, reject){
+            if(!cached || distributionData == null){
+                // TODO Download file from upstream.
+                //const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
+                // TODO Save file to DISTRO_DIRECTORY
+                // TODO Fulfill with JSON.parse()
+
+                // Workaround while file is not hosted.
+                fs.readFile(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8', (err, data) => {
+                    distributionData = JSON.parse(data)
+                    fulfill(distributionData)
+                })
+            } else {
+                fulfill(distributionData)
+            }
+        })
+    }
+
+    /**
+     * Statically retrieve the distribution data.
+     * 
+     * @param {Boolean} cached - optional. False if the distro should be freshly downloaded, else
+     * a cached copy will be returned.
+     * @returns {Object} - The distribution data object.
+     */
+    static retrieveDistributionDataSync(cached = true){
+        if(!cached || distributionData == null){
+            distributionData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8'))
+        }
+        return distributionData
+    }
+
+    /**
+     * Resolve the default selected server from the distribution index.
+     * 
+     * @returns {Object} - An object resolving to the default selected server.
+     */
+    static resolveSelectedServer(){
+        const distro = AssetGuard.retrieveDistributionDataSync()
+        const servers = distro.servers
+        for(let i=0; i<servers.length; i++){
+            if(servers[i].default_selected){
+                return servers[i].id
+            }
+        }
+        // If no server declares default_selected, default to the first one declared.
+        return (servers.length > 0) ? servers[0].id : null
+    }
+
+    /**
+     * Gets a server from the distro index which maches the provided ID.
+     * Returns null if the ID could not be found or the distro index has
+     * not yet been loaded.
+     * 
+     * @param {String} serverID - The id of the server to retrieve.
+     * @returns {Object} - The server object whose id matches the parameter.
+     */
+    static getServerById(serverID){
+        if(distributionData == null){
+            AssetGuard.retrieveDistributionDataSync(false)
+        }
+        const servers = distributionData.servers
+        let serv = null
+        for(let i=0; i<servers.length; i++){
+            if(servers[i].id === serverID){
+                serv = servers[i]
+            }
+        }
+        return serv
     }
 
     /**
@@ -718,15 +799,16 @@ class AssetGuard extends EventEmitter {
     validateDistribution(serverpackid, basePath){
         const self = this
         return new Promise(function(fulfill, reject){
-            self._chainValidateDistributionIndex(basePath).then((value) => {
-                let servers = value.servers
+            AssetGuard.retrieveDistributionData(false).then((value) => {
+                /*const servers = value.servers
                 let serv = null
                 for(let i=0; i<servers.length; i++){
                     if(servers[i].id === serverpackid){
                         serv = servers[i]
                         break
                     }
-                }
+                }*/
+                const serv = AssetGuard.getServerById(serverpackid)
 
                 self.forge = self._parseDistroModules(serv.modules, basePath, serv.mc_version)
                 //Correct our workaround here.
@@ -744,19 +826,18 @@ class AssetGuard extends EventEmitter {
         })
     }
 
-    //TODO The distro index should be downloaded in the 'pre-loader'. This is because
-    //we will eventually NEED the index to generate the server list on the ui. 
+    /*//TODO The file should be hosted, the following code is for local testing.
     _chainValidateDistributionIndex(basePath){
         return new Promise(function(fulfill, reject){
             //const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
-            const targetFile = path.join(basePath, 'westeroscraft.json')
+            //const targetFile = path.join(basePath, 'westeroscraft.json')
 
             //TEMP WORKAROUND TO TEST WHILE THIS IS NOT HOSTED
             fs.readFile(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8', (err, data) => {
                 fulfill(JSON.parse(data))
             })
         })
-    }
+    }*/
 
     _parseDistroModules(modules, basePath, version){
         let alist = []
@@ -816,7 +897,7 @@ class AssetGuard extends EventEmitter {
     loadForgeData(serverpack, basePath){
         const self = this
         return new Promise(async function(fulfill, reject){
-            let distro = await self._chainValidateDistributionIndex(basePath)
+            let distro = AssetGuard.retrieveDistributionDataSync()
             
             const servers = distro.servers
             let serv = null
