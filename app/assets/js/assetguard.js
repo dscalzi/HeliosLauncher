@@ -26,7 +26,6 @@ const AdmZip = require('adm-zip')
 const async = require('async')
 const child_process = require('child_process')
 const crypto = require('crypto')
-const {DEFAULT_CONFIG, DISTRO_DIRECTORY} = require('./constants')
 const EventEmitter = require('events')
 const fs = require('fs')
 const mkpath = require('mkdirp');
@@ -165,11 +164,15 @@ let distributionData = null
 class AssetGuard extends EventEmitter {
 
     /**
-     * AssetGuard class should only ever have one instance which is defined in
-     * this module. On creation the object's properties are never-null default
+     * Create an instance of AssetGuard.
+     * On creation the object's properties are never-null default
      * values. Each identifier is resolved to an empty DLTracker.
+     * 
+     * @param {String} basePath - base path for asset validation (game root).
+     * @param {String} javaexec - path to a java executable which will be used
+     * to finalize installation.
      */
-    constructor(){
+    constructor(basePath, javaexec){
         super()
         this.totaldlsize = 0;
         this.progress = 0;
@@ -177,6 +180,8 @@ class AssetGuard extends EventEmitter {
         this.libraries = new DLTracker([], 0)
         this.files = new DLTracker([], 0)
         this.forge = new DLTracker([], 0)
+        this.basePath = basePath
+        this.javaexec = javaexec
     }
 
     // Static Utility Functions
@@ -277,16 +282,17 @@ class AssetGuard extends EventEmitter {
     /**
      * Statically retrieve the distribution data.
      * 
+     * @param {String} basePath - base path for asset validation (game root).
      * @param {Boolean} cached - optional. False if the distro should be freshly downloaded, else
      * a cached copy will be returned.
      * @returns {Promise.<Object>} - A promise which resolves to the distribution data object.
      */
-    static retrieveDistributionData(cached = true){
+    static retrieveDistributionData(basePath, cached = true){
         return new Promise(function(fulfill, reject){
             if(!cached || distributionData == null){
                 // TODO Download file from upstream.
                 //const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
-                // TODO Save file to DISTRO_DIRECTORY
+                // TODO Save file to path.join(basePath, 'westeroscraft.json')
                 // TODO Fulfill with JSON.parse()
 
                 // Workaround while file is not hosted.
@@ -303,11 +309,12 @@ class AssetGuard extends EventEmitter {
     /**
      * Statically retrieve the distribution data.
      * 
+     * @param {String} basePath - base path for asset validation (game root).
      * @param {Boolean} cached - optional. False if the distro should be freshly downloaded, else
      * a cached copy will be returned.
      * @returns {Object} - The distribution data object.
      */
-    static retrieveDistributionDataSync(cached = true){
+    static retrieveDistributionDataSync(basePath, cached = true){
         if(!cached || distributionData == null){
             distributionData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8'))
         }
@@ -317,10 +324,11 @@ class AssetGuard extends EventEmitter {
     /**
      * Resolve the default selected server from the distribution index.
      * 
+     * @param {String} basePath - base path for asset validation (game root).
      * @returns {Object} - An object resolving to the default selected server.
      */
-    static resolveSelectedServer(){
-        const distro = AssetGuard.retrieveDistributionDataSync()
+    static resolveSelectedServer(basePath){
+        const distro = AssetGuard.retrieveDistributionDataSync(basePath)
         const servers = distro.servers
         for(let i=0; i<servers.length; i++){
             if(servers[i].default_selected){
@@ -336,12 +344,13 @@ class AssetGuard extends EventEmitter {
      * Returns null if the ID could not be found or the distro index has
      * not yet been loaded.
      * 
+     * @param {String} basePath - base path for asset validation (game root).
      * @param {String} serverID - The id of the server to retrieve.
      * @returns {Object} - The server object whose id matches the parameter.
      */
-    static getServerById(serverID){
+    static getServerById(basePath, serverID){
         if(distributionData == null){
-            AssetGuard.retrieveDistributionDataSync(false)
+            AssetGuard.retrieveDistributionDataSync(basePath, false)
         }
         const servers = distributionData.servers
         let serv = null
@@ -424,11 +433,11 @@ class AssetGuard extends EventEmitter {
      * @param {Array.<String>} filePaths - The paths of the files to be extracted and unpacked.
      * @returns {Promise.<Void>} - An empty promise to indicate the extraction has completed.
      */
-    static _extractPackXZ(filePaths){
+    static _extractPackXZ(filePaths, javaExecutable){
         return new Promise(function(fulfill, reject){
             const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
             const filePath = filePaths.join(',')
-            const child = child_process.spawn(DEFAULT_CONFIG.getJavaExecutable(), ['-jar', libPath, '-packxz', filePath])
+            const child = child_process.spawn(javaExecutable, ['-jar', libPath, '-packxz', filePath])
             child.stdout.on('data', (data) => {
                 //console.log('PackXZExtract:', data.toString('utf8'))
             })
@@ -449,7 +458,7 @@ class AssetGuard extends EventEmitter {
      * in a promise.
      * 
      * @param {Asset} asset - The Asset object representing Forge.
-     * @param {String} basePath
+     * @param {String} basePath - Base path for asset validation (game root).
      * @returns {Promise.<Object>} - A promise which resolves to the contents of forge's version.json.
      */
     static _finalizeForgeAsset(asset, basePath){
@@ -557,15 +566,15 @@ class AssetGuard extends EventEmitter {
      * Loads the version data for a given minecraft version.
      * 
      * @param {String} version - the game version for which to load the index data.
-     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
      * @param {Boolean} force - optional. If true, the version index will be downloaded even if it exists locally. Defaults to false.
      * @returns {Promise.<Object>} - Promise which resolves to the version data object.
      */
-    loadVersionData(version, basePath, force = false){
+    loadVersionData(version, force = false){
+        const self = this
         return new Promise(function(fulfill, reject){
             const name = version + '.json'
             const url = 'https://s3.amazonaws.com/Minecraft.Download/versions/' + version + '/' + name
-            const versionPath = path.join(basePath, 'versions', version)
+            const versionPath = path.join(self.basePath, 'versions', version)
             const versionFile = path.join(versionPath, name)
             if(!fs.existsSync(versionFile) || force){
                 //This download will never be tracked as it's essential and trivial.
@@ -590,14 +599,13 @@ class AssetGuard extends EventEmitter {
      * If not, it will be added to the download queue for the 'assets' identifier.
      * 
      * @param {Object} versionData - the version data for the assets.
-     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
      * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
      * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
      */
-    validateAssets(versionData, basePath, force = false){
+    validateAssets(versionData, force = false){
         const self = this
         return new Promise(function(fulfill, reject){
-            self._assetChainIndexData(versionData, basePath, force).then(() => {
+            self._assetChainIndexData(versionData, force).then(() => {
                 fulfill()
             })
         })
@@ -608,17 +616,16 @@ class AssetGuard extends EventEmitter {
      * Private function used to chain the asset validation process. This function retrieves
      * the index data.
      * @param {Object} versionData
-     * @param {String} basePath
      * @param {Boolean} force
      * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
      */
-    _assetChainIndexData(versionData, basePath, force = false){
+    _assetChainIndexData(versionData, force = false){
         const self = this
         return new Promise(function(fulfill, reject){
             //Asset index constants.
             const assetIndex = versionData.assetIndex
             const name = assetIndex.id + '.json'
-            const indexPath = path.join(basePath, 'assets', 'indexes')
+            const indexPath = path.join(self.basePath, 'assets', 'indexes')
             const assetIndexLoc = path.join(indexPath, name)
 
             let data = null
@@ -628,13 +635,13 @@ class AssetGuard extends EventEmitter {
                 const stream = request(assetIndex.url).pipe(fs.createWriteStream(assetIndexLoc))
                 stream.on('finish', function() {
                     data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
-                    self._assetChainValidateAssets(versionData, basePath, data).then(() => {
+                    self._assetChainValidateAssets(versionData, data).then(() => {
                         fulfill()
                     })
                 })
             } else {
                 data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
-                self._assetChainValidateAssets(versionData, basePath, data).then(() => {
+                self._assetChainValidateAssets(versionData, data).then(() => {
                     fulfill()
                 })
             }
@@ -645,17 +652,16 @@ class AssetGuard extends EventEmitter {
      * Private function used to chain the asset validation process. This function processes
      * the assets and enqueues missing or invalid files.
      * @param {Object} versionData
-     * @param {String} basePath
      * @param {Boolean} force
      * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
      */
-    _assetChainValidateAssets(versionData, basePath, indexData){
+    _assetChainValidateAssets(versionData, indexData){
         const self = this
         return new Promise(function(fulfill, reject){
 
             //Asset constants
             const resourceURL = 'http://resources.download.minecraft.net/'
-            const localPath = path.join(basePath, 'assets')
+            const localPath = path.join(self.basePath, 'assets')
             const indexPath = path.join(localPath, 'indexes')
             const objectPath = path.join(localPath, 'objects')
 
@@ -686,15 +692,14 @@ class AssetGuard extends EventEmitter {
      * queue for the 'libraries' identifier.
      * 
      * @param {Object} versionData - the version data for the assets.
-     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
      * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
      */
-    validateLibraries(versionData, basePath){
+    validateLibraries(versionData){
         const self = this
         return new Promise(function(fulfill, reject){
 
             const libArr = versionData.libraries
-            const libPath = path.join(basePath, 'libraries')
+            const libPath = path.join(self.basePath, 'libraries')
 
             const libDlQueue = []
             let dlSize = 0
@@ -722,14 +727,13 @@ class AssetGuard extends EventEmitter {
      * the 'files' identifier.
      * 
      * @param {Object} versionData - the version data for the assets.
-     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
      * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
      */
-    validateMiscellaneous(versionData, basePath){
+    validateMiscellaneous(versionData){
         const self = this
         return new Promise(async function(fulfill, reject){
-            await self.validateClient(versionData, basePath)
-            await self.validateLogConfig(versionData, basePath)
+            await self.validateClient(versionData)
+            await self.validateLogConfig(versionData)
             fulfill()
         })
     }
@@ -738,16 +742,15 @@ class AssetGuard extends EventEmitter {
      * Validate client file - artifact renamed from client.jar to '{version}'.jar.
      * 
      * @param {Object} versionData - the version data for the assets.
-     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
      * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
      * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
      */
-    validateClient(versionData, basePath, force = false){
+    validateClient(versionData, force = false){
         const self = this
         return new Promise(function(fulfill, reject){
             const clientData = versionData.downloads.client
             const version = versionData.id
-            const targetPath = path.join(basePath, 'versions', version)
+            const targetPath = path.join(self.basePath, 'versions', version)
             const targetFile = version + '.jar'
 
             let client = new Asset(version + ' client', clientData.sha1, clientData.size, clientData.url, path.join(targetPath, targetFile))
@@ -766,16 +769,15 @@ class AssetGuard extends EventEmitter {
      * Validate log config.
      * 
      * @param {Object} versionData - the version data for the assets.
-     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
      * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
      * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
      */
-    validateLogConfig(versionData, basePath){
+    validateLogConfig(versionData){
         const self = this
         return new Promise(function(fulfill, reject){
             const client = versionData.logging.client
             const file = client.file
-            const targetPath = path.join(basePath, 'assets', 'log_configs')
+            const targetPath = path.join(self.basePath, 'assets', 'log_configs')
 
             let logConfig = new Asset(file.id, file.sha1, file.size, file.url, path.join(targetPath, file.id))
 
@@ -793,13 +795,12 @@ class AssetGuard extends EventEmitter {
      * Validate the distribution.
      * 
      * @param {String} serverpackid - The id of the server to validate.
-     * @param {String} basePath - the absolute file path which will be prepended to the given relative paths.
      * @returns {Promise.<Object>} - A promise which resolves to the server distribution object.
      */
-    validateDistribution(serverpackid, basePath){
+    validateDistribution(serverpackid){
         const self = this
         return new Promise(function(fulfill, reject){
-            AssetGuard.retrieveDistributionData(false).then((value) => {
+            AssetGuard.retrieveDistributionData(self.basePath, false).then((value) => {
                 /*const servers = value.servers
                 let serv = null
                 for(let i=0; i<servers.length; i++){
@@ -808,17 +809,17 @@ class AssetGuard extends EventEmitter {
                         break
                     }
                 }*/
-                const serv = AssetGuard.getServerById(serverpackid)
+                const serv = AssetGuard.getServerById(self.basePath, serverpackid)
 
-                self.forge = self._parseDistroModules(serv.modules, basePath, serv.mc_version)
+                self.forge = self._parseDistroModules(serv.modules, serv.mc_version)
                 //Correct our workaround here.
                 let decompressqueue = self.forge.callback
                 self.forge.callback = function(asset){
                     if(asset.to.toLowerCase().endsWith('.pack.xz')){
-                        AssetGuard._extractPackXZ([asset.to])
+                        AssetGuard._extractPackXZ([asset.to], self.javaexec)
                     }
                     if(asset.type === 'forge-hosted' || asset.type === 'forge'){
-                        AssetGuard._finalizeForgeAsset(asset, basePath)
+                        AssetGuard._finalizeForgeAsset(asset, self.basePath)
                     }
                 }
                 fulfill(serv)
@@ -839,7 +840,7 @@ class AssetGuard extends EventEmitter {
         })
     }*/
 
-    _parseDistroModules(modules, basePath, version){
+    _parseDistroModules(modules, version){
         let alist = []
         let asize = 0;
         //This may be removed soon, considering the most efficient way to extract.
@@ -853,19 +854,19 @@ class AssetGuard extends EventEmitter {
                 case 'forge-hosted':
                 case 'forge':
                 case 'library':
-                    obPath = path.join(basePath, 'libraries', obPath)
+                    obPath = path.join(this.basePath, 'libraries', obPath)
                     break
                 case 'forgemod':
-                    //obPath = path.join(basePath, 'mods', obPath)
-                    obPath = path.join(basePath, 'modstore', obPath)
+                    //obPath = path.join(this.basePath, 'mods', obPath)
+                    obPath = path.join(this.basePath, 'modstore', obPath)
                     break
                 case 'litemod':
-                    //obPath = path.join(basePath, 'mods', version, obPath)
-                    obPath = path.join(basePath, 'modstore', obPath)
+                    //obPath = path.join(this.basePath, 'mods', version, obPath)
+                    obPath = path.join(this.basePath, 'modstore', obPath)
                     break
                 case 'file':
                 default: 
-                    obPath = path.join(basePath, obPath)
+                    obPath = path.join(this.basePath, obPath)
             }
             let artifact = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, obType)
             const validationPath = obPath.toLowerCase().endsWith('.pack.xz') ? obPath.substring(0, obPath.toLowerCase().lastIndexOf('.pack.xz')) : obPath
@@ -876,7 +877,7 @@ class AssetGuard extends EventEmitter {
             }
             //Recursively process the submodules then combine the results.
             if(ob.sub_modules != null){
-                let dltrack = this._parseDistroModules(ob.sub_modules, basePath, version)
+                let dltrack = this._parseDistroModules(ob.sub_modules, version)
                 asize += dltrack.dlsize*1
                 alist = alist.concat(dltrack.dlqueue)
                 decompressqueue = decompressqueue.concat(dltrack.callback)
@@ -891,13 +892,12 @@ class AssetGuard extends EventEmitter {
      * Loads Forge's version.json data into memory for the specified server id.
      * 
      * @param {String} serverpack - The id of the server to load Forge data for.
-     * @param {String} basePath
      * @returns {Promise.<Object>} - A promise which resolves to Forge's version.json data.
      */
-    loadForgeData(serverpack, basePath){
+    loadForgeData(serverpack){
         const self = this
         return new Promise(async function(fulfill, reject){
-            let distro = AssetGuard.retrieveDistributionDataSync()
+            let distro = AssetGuard.retrieveDistributionDataSync(self.basePath)
             
             const servers = distro.servers
             let serv = null
@@ -913,9 +913,9 @@ class AssetGuard extends EventEmitter {
                 const ob = modules[i]
                 if(ob.type === 'forge-hosted' || ob.type === 'forge'){
                     let obArtifact = ob.artifact
-                    let obPath = obArtifact.path == null ? path.join(basePath, 'libraries', AssetGuard._resolvePath(ob.id, obArtifact.extension)) : obArtifact.path
+                    let obPath = obArtifact.path == null ? path.join(self.basePath, 'libraries', AssetGuard._resolvePath(ob.id, obArtifact.extension)) : obArtifact.path
                     let asset = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, ob.type)
-                    let forgeData = await AssetGuard._finalizeForgeAsset(asset, basePath)
+                    let forgeData = await AssetGuard._finalizeForgeAsset(asset, self.basePath)
                     fulfill(forgeData)
                     return
                 }

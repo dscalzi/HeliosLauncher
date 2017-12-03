@@ -8,7 +8,7 @@
 const AdmZip = require('adm-zip')
 const {AssetGuard, Library} = require('./assetguard.js')
 const child_process = require('child_process')
-const {DEFAULT_CONFIG} = require('./constants')
+const {DEFAULT_CONFIG} = require('./enumerator.js').enum
 const fs = require('fs')
 const mkpath = require('mkdirp')
 const path = require('path')

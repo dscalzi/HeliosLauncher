@@ -1,6 +1,6 @@
 // Work in progress
 const Client = require('discord-rpc')
-const {DEFAULT_CONFIG} = require('./constants')
+const {DEFAULT_CONFIG} = require('./enumerator.js').enum
 
 let rpc
 

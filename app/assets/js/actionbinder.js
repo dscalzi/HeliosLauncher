@@ -2,7 +2,7 @@ const mojang = require('mojang')
 const path = require('path')
 const {AssetGuard} = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
 const ProcessBuilder = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
-const {GAME_DIRECTORY, DEFAULT_CONFIG} = require(path.join(__dirname, 'assets', 'js', 'constants.js'))
+const {GAME_DIRECTORY, DEFAULT_CONFIG} = require(path.join(__dirname, 'assets', 'js', 'enumerator.js')).enum
 
 document.addEventListener('readystatechange', function(){
     if (document.readyState === 'interactive'){
@@ -12,15 +12,10 @@ document.addEventListener('readystatechange', function(){
             console.log('Launching game..')
             testdownloads()
         })
-        
-        if(DEFAULT_CONFIG.getSelectedServer() == null){
-            console.log('Determining default selected server..')
-            DEFAULT_CONFIG.setSelectedServer(AssetGuard.resolveSelectedServer())
-        }
 
         // TODO convert this to dropdown menu.
         // Bind selected server
-        document.getElementById('server_selection').innerHTML = '\u2022 ' + AssetGuard.getServerById(DEFAULT_CONFIG.getSelectedServer()).name
+        document.getElementById('server_selection').innerHTML = '\u2022 ' + AssetGuard.getServerById(GAME_DIRECTORY, DEFAULT_CONFIG.getSelectedServer()).name
 
     }
 }, false)
@@ -40,33 +35,34 @@ testdownloads = async function(){
     details.style.display = 'flex'
     content.style.display = 'none'
 
-    tracker = new AssetGuard()
+    console.log(DEFAULT_CONFIG.getJavaExecutable())
+    tracker = new AssetGuard(GAME_DIRECTORY, DEFAULT_CONFIG.getJavaExecutable())
 
     det_text.innerHTML = 'Loading server information..'
-    const serv = await tracker.validateDistribution(DEFAULT_CONFIG.getSelectedServer(), GAME_DIRECTORY)
+    const serv = await tracker.validateDistribution(DEFAULT_CONFIG.getSelectedServer())
     progress.setAttribute('value', 20)
     progress_text.innerHTML = '20%'
     console.log('forge stuff done')
 
     det_text.innerHTML = 'Loading version information..'
-    const versionData = await tracker.loadVersionData(serv.mc_version, GAME_DIRECTORY)
+    const versionData = await tracker.loadVersionData(serv.mc_version)
     progress.setAttribute('value', 40)
     progress_text.innerHTML = '40%'
 
     det_text.innerHTML = 'Validating asset integrity..'
-    await tracker.validateAssets(versionData, GAME_DIRECTORY)
+    await tracker.validateAssets(versionData)
     progress.setAttribute('value', 60)
     progress_text.innerHTML = '60%'
     console.log('assets done')
 
     det_text.innerHTML = 'Validating library integrity..'
-    await tracker.validateLibraries(versionData, GAME_DIRECTORY)
+    await tracker.validateLibraries(versionData)
     progress.setAttribute('value', 80)
     progress_text.innerHTML = '80%'
     console.log('libs done')
 
     det_text.innerHTML = 'Validating miscellaneous file integrity..'
-    await tracker.validateMiscellaneous(versionData, GAME_DIRECTORY)
+    await tracker.validateMiscellaneous(versionData)
     progress.setAttribute('value', 100)
     progress_text.innerHTML = '100%'
     console.log('files done')
@@ -81,7 +77,7 @@ testdownloads = async function(){
     tracker.on('dlcomplete', async function(){
 
         det_text.innerHTML = 'Preparing to launch..'
-        const forgeData = await tracker.loadForgeData(serv.id, GAME_DIRECTORY)
+        const forgeData = await tracker.loadForgeData(serv.id)
         const authUser = await mojang.auth('EMAIL', 'PASS', DEFAULT_CONFIG.getClientToken(), {
             name: 'Minecraft',
             version: 1

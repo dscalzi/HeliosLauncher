@@ -1,6 +1,8 @@
 /**
  * Core UI functions are initialized in this file. This prevents
- * unexpected errors from breaking the core features.
+ * unexpected errors from breaking the core features. Specifically,
+ * actions in this file should not require the usage of any internal
+ * modules, excluding dependencies.
  */
 const $ = require('jquery');
 const {remote, shell} = require('electron')
