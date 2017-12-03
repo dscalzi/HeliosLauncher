@@ -131,7 +131,7 @@ class ProcessBuilder {
                 let val = null;
                 switch(identifier){
                     case 'auth_player_name':
-                        val = this.authUser.selectedProfile.name
+                        val = this.authUser.displayName
                         break
                     case 'version_name':
                         //val = versionData.id
@@ -147,7 +147,7 @@ class ProcessBuilder {
                         val = this.versionData.assets
                         break
                     case 'auth_uuid':
-                        val = this.authUser.selectedProfile.id
+                        val = this.authUser.uuid
                         break
                     case 'auth_access_token':
                         val = this.authUser.accessToken

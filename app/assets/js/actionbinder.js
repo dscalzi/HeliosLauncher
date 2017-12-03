@@ -1,10 +1,10 @@
-const mojang = require('mojang')
 const path = require('path')
 const {AssetGuard} = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
 const ProcessBuilder = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
 const ConfigManager = require(path.join(__dirname, 'assets', 'js', 'configmanager.js'))
 const DiscordWrapper = require(path.join(__dirname, 'assets', 'js', 'discordwrapper.js'))
-const mojang2 = require(path.join(__dirname, 'assets', 'js', 'mojang.js'))
+const Mojang = require(path.join(__dirname, 'assets', 'js', 'mojang.js'))
+const AuthManager = require(path.join(__dirname, 'assets', 'js', 'authmanager.js'))
 
 let mojangStatusListener
 
@@ -28,7 +28,7 @@ document.addEventListener('readystatechange', function(){
             console.log('Refreshing Mojang Statuses..')
             try {
                 let status = 'grey'
-                const statuses = await mojang2.status()
+                const statuses = await Mojang.status()
                 greenCount = 0
                 for(let i=0; i<statuses.length; i++){
                     if(statuses[i].status === 'yellow' && status !== 'red'){
@@ -44,7 +44,7 @@ document.addEventListener('readystatechange', function(){
                     status = 'green'
                 }
 
-                document.getElementById('mojang_status_icon').style.color = mojang2.statusToHex(status)
+                document.getElementById('mojang_status_icon').style.color = Mojang.statusToHex(status)
 
             } catch (err) {
                 console.error('Unable to refresh Mojang service status..', err)
@@ -62,6 +62,13 @@ document.addEventListener('readystatechange', function(){
 let tracker;
 
 testdownloads = async function(){
+
+    if(ConfigManager.getSelectedAccount() == null){
+        console.error('login first.')
+        //in devtools AuthManager.addAccount(username, pass)
+        return
+    }
+
     const content = document.getElementById('launch_content')
     const details = document.getElementById('launch_details')
     const progress = document.getElementById('launch_progress')
@@ -115,10 +122,7 @@ testdownloads = async function(){
 
         det_text.innerHTML = 'Preparing to launch..'
         const forgeData = await tracker.loadForgeData(serv.id)
-        const authUser = await mojang.auth('EMAIL', 'PASS', ConfigManager.getClientToken(), {
-            name: 'Minecraft',
-            version: 1
-        })
+        const authUser = await AuthManager.validateSelected()
         let pb = new ProcessBuilder(ConfigManager.getGameDirectory(), serv, versionData, forgeData, authUser)
         det_text.innerHTML = 'Launching game..'
         let proc;

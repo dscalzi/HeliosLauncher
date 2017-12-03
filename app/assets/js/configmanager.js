@@ -42,7 +42,7 @@ const DEFAULT_CONFIG = {
     clientToken: uuidV4(),
     selectedServer: null, // Resolved
     selectedAccount: null,
-    authenticationDatabase: []
+    authenticationDatabase: {}
 }
 
 let config = null;
@@ -118,7 +118,68 @@ exports.setSelectedServer = function(serverID){
     config.selectedServer = serverID
 }
 
-//TODO Write Authentication Database/Selected Account accessors here
+/**
+ * Get an array of each account currently authenticated by the launcher.
+ * 
+ * @returns {Array.<Object>} - an array of each stored authenticated account.
+ */
+exports.getAuthAccounts = function(){
+    return config.authenticationDatabase
+}
+
+/**
+ * Returns the authenticated account with the given uuid. Value may
+ * be null.
+ * 
+ * @param {String} uuid - the uuid of the authenticated account.
+ * @returns {Object} - the authenticated account with the given uuid.
+ */
+exports.getAuthAccount = function(uuid){
+    return config.authenticationDatabase[uuid]
+}
+
+/**
+ * Update the access token of an authenticated account.
+ * 
+ * @param {String} uuid - uuid of the authenticated account.
+ * @param {String} accessToken - the new Access Token.
+ * 
+ * @returns {Object} - the authenticated account object created by this action.
+ */
+exports.updateAuthAccount = function(uuid, accessToken){
+    config.authenticationDatabase[uuid].accessToken = accessToken
+    return config.authenticationDatabase[uuid]
+}
+
+/**
+ * Adds an authenticated account to the database to be stored.
+ * 
+ * @param {String} uuid - uuid of the authenticated account.
+ * @param {String} accessToken - accessToken of the authenticated account.
+ * @param {String} username - username (usually email) of the authenticated account.
+ * @param {String} displayName - in game name of the authenticated account.
+ * 
+ * @returns {Object} - the authenticated account object created by this action.
+ */
+exports.addAuthAccount = function(uuid, accessToken, username, displayName){
+    config.selectedAccount = uuid
+    config.authenticationDatabase[uuid] = {
+        accessToken,
+        username,
+        uuid,
+        displayName
+    }
+    return config.authenticationDatabase[uuid]
+}
+
+/**
+ * Get the currently selected authenticated account.
+ * 
+ * @returns {Object} - the selected authenticated account.
+ */
+exports.getSelectedAccount = function(){
+    return config.authenticationDatabase[config.selectedAccount]
+}
 
 // User Configurable Settings
 
