@@ -1,5 +1,5 @@
 // Work in progress
-const Client = require('discord-rpc')
+const {Client} = require('discord-rpc')
 const ConfigManager = require('./configmanager.js')
 
 let rpc
@@ -11,10 +11,10 @@ exports.initRPC = function(genSettings, servSettings){
         const activity = {
             // state = top text
             // details = bottom text
-            state: 'Server: ' + settings.shortId,
-            details: '',
+            state: 'Server: ' + servSettings.shortId,
+            details: 'Exploring the wall',
             largeImageKey: servSettings.largeImageKey,
-            largeImageText: serSettings.largeImageText,
+            largeImageText: servSettings.largeImageText,
             smallImageKey: genSettings.smallImageKey,
             smallImageText: genSettings.smallImageText,
             startTimestamp: new Date().getTime() / 1000,
@@ -24,11 +24,11 @@ exports.initRPC = function(genSettings, servSettings){
         rpc.setActivity(activity)
     })
 
-    rpc.login(genSettings.clientID()).catch(error => {
+    rpc.login(genSettings.clientID).catch(error => {
         if(error.message.includes('ENOENT')) {
             console.log('Unable to initialize Discord Rich Presence, no client detected.')
         } else {
-            console.log('Unable to initialize Discord Rich Presence: ' + error.message)
+            console.log('Unable to initialize Discord Rich Presence: ' + error.message, error)
         }
     })
 }

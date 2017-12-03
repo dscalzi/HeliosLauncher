@@ -1,7 +1,7 @@
 {
     "version": "1.0",
     "discord": {
-        "clientID": 385581240906022916,
+        "clientID": "385581240906022916",
         "smallImageText": "WesterosCraft",
         "smallImageKey": "seal-circle"
     },
