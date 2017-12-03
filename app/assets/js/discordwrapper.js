@@ -1,19 +1,24 @@
 // Work in progress
 const Client = require('discord-rpc')
-const {DEFAULT_CONFIG} = require('./enumerator.js').enum
+const ConfigManager = require('./configmanager.js')
 
 let rpc
 
 function initRPC(){
     rpc = new Client({ transport: 'ipc' });
 
-    rpc.login(DEFAULT_CONFIG.getDiscordClientID()).catch(error => {
+    rpc.login(ConfigManager.getDiscordClientID()).catch(error => {
         if(error.message.includes('ENOENT')) {
             console.log('Unable to initialize Discord Rich Presence, no client detected.')
         } else {
             console.log('Unable to initialize Discord Rich Presence: ' + error.message)
         }
     })
+
+    const activity = {
+        details: 'Playing on WesterosCraft',
+
+    }
 }
 
 function shutdownRPC(){

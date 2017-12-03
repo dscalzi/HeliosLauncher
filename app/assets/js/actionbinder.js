@@ -2,7 +2,7 @@ const mojang = require('mojang')
 const path = require('path')
 const {AssetGuard} = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
 const ProcessBuilder = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
-const {GAME_DIRECTORY, DEFAULT_CONFIG} = require(path.join(__dirname, 'assets', 'js', 'enumerator.js')).enum
+const ConfigManager = require(path.join(__dirname, 'assets', 'js', 'configmanager.js'))
 
 document.addEventListener('readystatechange', function(){
     if (document.readyState === 'interactive'){
@@ -15,7 +15,7 @@ document.addEventListener('readystatechange', function(){
 
         // TODO convert this to dropdown menu.
         // Bind selected server
-        document.getElementById('server_selection').innerHTML = '\u2022 ' + AssetGuard.getServerById(GAME_DIRECTORY, DEFAULT_CONFIG.getSelectedServer()).name
+        document.getElementById('server_selection').innerHTML = '\u2022 ' + AssetGuard.getServerById(ConfigManager.getGameDirectory(), ConfigManager.getSelectedServer()).name
 
     }
 }, false)
@@ -35,11 +35,10 @@ testdownloads = async function(){
     details.style.display = 'flex'
     content.style.display = 'none'
 
-    console.log(DEFAULT_CONFIG.getJavaExecutable())
-    tracker = new AssetGuard(GAME_DIRECTORY, DEFAULT_CONFIG.getJavaExecutable())
+    tracker = new AssetGuard(ConfigManager.getGameDirectory(), ConfigManager.getJavaExecutable())
 
     det_text.innerHTML = 'Loading server information..'
-    const serv = await tracker.validateDistribution(DEFAULT_CONFIG.getSelectedServer())
+    const serv = await tracker.validateDistribution(ConfigManager.getSelectedServer())
     progress.setAttribute('value', 20)
     progress_text.innerHTML = '20%'
     console.log('forge stuff done')
@@ -78,11 +77,11 @@ testdownloads = async function(){
 
         det_text.innerHTML = 'Preparing to launch..'
         const forgeData = await tracker.loadForgeData(serv.id)
-        const authUser = await mojang.auth('EMAIL', 'PASS', DEFAULT_CONFIG.getClientToken(), {
+        const authUser = await mojang.auth('EMAIL', 'PASS', ConfigManager.getClientToken(), {
             name: 'Minecraft',
             version: 1
         })
-        let pb = new ProcessBuilder(GAME_DIRECTORY, serv, versionData, forgeData, authUser)
+        let pb = new ProcessBuilder(ConfigManager.getGameDirectory(), serv, versionData, forgeData, authUser)
         det_text.innerHTML = 'Launching game..'
         let proc;
         try{

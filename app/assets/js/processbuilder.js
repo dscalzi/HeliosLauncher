@@ -8,7 +8,7 @@
 const AdmZip = require('adm-zip')
 const {AssetGuard, Library} = require('./assetguard.js')
 const child_process = require('child_process')
-const {DEFAULT_CONFIG} = require('./enumerator.js').enum
+const ConfigManager = require('./configmanager.js')
 const fs = require('fs')
 const mkpath = require('mkdirp')
 const path = require('path')
@@ -42,7 +42,7 @@ class ProcessBuilder {
 
         console.log(args)
 
-        const child = child_process.spawn(DEFAULT_CONFIG.getJavaExecutable(), args)
+        const child = child_process.spawn(ConfigManager.getJavaExecutable(), args)
 
         child.stdout.on('data', (data) => {
             console.log('Minecraft:', data.toString('utf8'))
@@ -98,8 +98,8 @@ class ProcessBuilder {
      */
     constructJVMArguments(mods){
         
-        let args = ['-Xmx' + DEFAULT_CONFIG.getMaxRAM(),
-        '-Xms' + DEFAULT_CONFIG.getMinRAM(),,
+        let args = ['-Xmx' + ConfigManager.getMaxRAM(),
+        '-Xms' + ConfigManager.getMinRAM(),,
         '-Djava.library.path=' + path.join(this.dir, 'natives'),
         '-cp',
         this.classpathArg(mods).join(';'),
@@ -108,7 +108,7 @@ class ProcessBuilder {
         // For some reason this will add an undefined value unless
         // the delete count is 1. I suspect this is unintended behavior
         // by the function.. need to keep an eye on this.
-        args.splice(2, 1, ...DEFAULT_CONFIG.getJVMOptions())
+        args.splice(2, 1, ...ConfigManager.getJVMOptions())
 
         args = args.concat(this._resolveForgeArgs())
 
@@ -168,17 +168,17 @@ class ProcessBuilder {
         mcArgs.push('absolute:' + this.fmlDir)
 
         // Prepare game resolution
-        if(DEFAULT_CONFIG.isFullscreen()){
+        if(ConfigManager.isFullscreen()){
             mcArgs.unshift('--fullscreen')
         } else {
-            mcArgs.unshift(DEFAULT_CONFIG.getGameWidth())
+            mcArgs.unshift(ConfigManager.getGameWidth())
             mcArgs.unshift('--width')
-            mcArgs.unshift(DEFAULT_CONFIG.getGameHeight())
+            mcArgs.unshift(ConfigManager.getGameHeight())
             mcArgs.unshift('--height')
         }
 
         // Prepare autoconnect
-        if(DEFAULT_CONFIG.isAutoConnect() && this.server.autoconnect){
+        if(ConfigManager.isAutoConnect() && this.server.autoconnect){
             const serverURL = new URL('my://' + this.server.server_ip)
             mcArgs.unshift(serverURL.hostname)
             mcArgs.unshift('--server')
