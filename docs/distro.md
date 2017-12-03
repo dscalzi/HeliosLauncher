@@ -5,6 +5,11 @@ The distribution index is written in JSON. The general format of the index is as
 ```json
 {
     "version": "1.0",
+    "discord": {
+        "clientID": 12334567890,
+        "smallImageText": "WesterosCraft",
+        "smallImageKey": "seal-circle"
+    },
     "servers": [
         {
             "id": "Example_Server",
@@ -14,6 +19,11 @@ The distribution index is written in JSON. The general format of the index is as
             "revision": "0.0.1",
             "server_ip": "mc.westeroscraft.com:1337",
             "mc_version": "1.11.2",
+            "discord": {
+                "shortId": "Example",
+                "largeImageText": "WesterosCraft Example Server",
+                "largeImageKey": "server-example"
+            },
             "default_selected": true,
             "autoconnect": true,
             "modules": [
@@ -25,6 +35,8 @@ The distribution index is written in JSON. The general format of the index is as
 ```
 
 You can declare an unlimited number of servers, however you must provide valid values for the fields listed above. In addition to that, the server can declare modules.
+
+The discord settings are to enable the use of Rich Presence on the launcher. For more details, see [discord's documentation](https://discordapp.com/developers/docs/rich-presence/how-to#updating-presence-update-presence-payload-fields).
 
 Only one server in the array should have the `default_selected` property enabled. This will tell the launcher that this is the default server to select if either the previously selected server is invalid, or there is no previously selected server. This field is not defined by any server (avoid this), the first server will be selected as the default. If multiple servers have `default_selected` enabled, the first one the launcher finds will be the effective value. Servers which are not the default may omit this property rather than explicitly setting it to false.
 

@@ -1,5 +1,10 @@
 {
     "version": "1.0",
+    "discord": {
+        "clientID": 385581240906022916,
+        "smallImageText": "WesterosCraft",
+        "smallImageKey": "seal-circle"
+    },
     "servers": [
         {
             "id": "WesterosCraft-1.11.2",
@@ -9,6 +14,11 @@
             "revision": "0.0.1",
             "server_ip": "mc.westeroscraft.com",
             "mc_version": "1.11.2",
+            "discord": {
+                "shortId": "Production",
+                "largeImageText": "WesterosCraft Production Server",
+                "largeImageKey": "server-prod"
+            },
             "default_selected": true,
             "autoconnect": true,
             "modules": [

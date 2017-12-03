@@ -4,24 +4,37 @@ const ConfigManager = require('./configmanager.js')
 
 let rpc
 
-function initRPC(){
+exports.initRPC = function(genSettings, servSettings){
     rpc = new Client({ transport: 'ipc' });
 
-    rpc.login(ConfigManager.getDiscordClientID()).catch(error => {
+    rpc.on('ready', () => {
+        const activity = {
+            // state = top text
+            // details = bottom text
+            state: 'Server: ' + settings.shortId,
+            details: '',
+            largeImageKey: servSettings.largeImageKey,
+            largeImageText: serSettings.largeImageText,
+            smallImageKey: genSettings.smallImageKey,
+            smallImageText: genSettings.smallImageText,
+            startTimestamp: new Date().getTime() / 1000,
+            instance: false
+        }
+    
+        rpc.setActivity(activity)
+    })
+
+    rpc.login(genSettings.clientID()).catch(error => {
         if(error.message.includes('ENOENT')) {
             console.log('Unable to initialize Discord Rich Presence, no client detected.')
         } else {
             console.log('Unable to initialize Discord Rich Presence: ' + error.message)
         }
     })
-
-    const activity = {
-        details: 'Playing on WesterosCraft',
-
-    }
 }
 
-function shutdownRPC(){
+exports.shutdownRPC = function(){
+    rpc.setActivity({})
     rpc.destroy()
     rpc = null
 }

@@ -42,10 +42,7 @@ const DEFAULT_CONFIG = {
     clientToken: uuidV4(),
     selectedServer: null, // Resolved
     selectedAccount: null,
-    authenticationDatabase: [],
-    discord: {
-        clientID: 385581240906022916
-    }
+    authenticationDatabase: []
 }
 
 let config = null;
@@ -122,25 +119,6 @@ exports.setSelectedServer = function(serverID){
 }
 
 //TODO Write Authentication Database/Selected Account accessors here
-
-/**
- * Retrieve the launcher's Discord Client ID.
- * 
- * @param {Boolean} def - optional. If true, the default value will be returned.
- * @returns {String} - the launcher's Discord Client ID.
- */
-exports.getDiscordClientID = function(def = false){
-    return !def ? config.discord.clientID : DEFAULT_CONFIG.discord.clientID
-}
-
-/**
- * Set the launcher's Discord Client ID.
- * 
- * @param {String} clientID - the launcher's new Discord Client ID.
- */
-exports.setDiscordClientID = function(clientID){
-    config.discord.clientID = clientID
-}
 
 // User Configurable Settings
 

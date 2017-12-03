@@ -3,6 +3,7 @@ const path = require('path')
 const {AssetGuard} = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
 const ProcessBuilder = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
 const ConfigManager = require(path.join(__dirname, 'assets', 'js', 'configmanager.js'))
+const DiscordWrapper = require(path.join(__dirname, 'assets', 'js', 'discordwrapper.js'))
 
 document.addEventListener('readystatechange', function(){
     if (document.readyState === 'interactive'){
@@ -95,6 +96,14 @@ testdownloads = async function(){
                 }
             }
             proc.stdout.on('data', tempListener)
+            // Init Discord Hook (Untested)
+            const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getGameDirectory)
+            if(distro.discord != null && serv.discord != null){
+                DiscordWrapper.initRPC(distro.discord, serv.discord)
+                proc.on('close', (code, signal) => {
+                    DiscordWrapper.shutdownRPC()
+                })
+            }
         } catch(err) {
             //det_text.innerHTML = 'Error: ' + err.message;
             det_text.innerHTML = 'Error: See log for details..';
