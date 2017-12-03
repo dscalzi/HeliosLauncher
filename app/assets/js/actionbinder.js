@@ -4,7 +4,11 @@ const {AssetGuard} = require(path.join(__dirname, 'assets', 'js', 'assetguard.js
 const ProcessBuilder = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
 const ConfigManager = require(path.join(__dirname, 'assets', 'js', 'configmanager.js'))
 const DiscordWrapper = require(path.join(__dirname, 'assets', 'js', 'discordwrapper.js'))
+const mojang2 = require(path.join(__dirname, 'assets', 'js', 'mojang.js'))
 
+let mojangStatusListener
+
+// Synchronous Listener
 document.addEventListener('readystatechange', function(){
     if (document.readyState === 'interactive'){
 
@@ -17,6 +21,39 @@ document.addEventListener('readystatechange', function(){
         // TODO convert this to dropdown menu.
         // Bind selected server
         document.getElementById('server_selection').innerHTML = '\u2022 ' + AssetGuard.getServerById(ConfigManager.getGameDirectory(), ConfigManager.getSelectedServer()).name
+
+
+        // Update Mojang Status Color
+        const refreshMojangStatuses = async function(){
+            console.log('Refreshing Mojang Statuses..')
+            try {
+                let status = 'grey'
+                const statuses = await mojang2.status()
+                greenCount = 0
+                for(let i=0; i<statuses.length; i++){
+                    if(statuses[i].status === 'yellow' && status !== 'red'){
+                        status = 'yellow'
+                        continue
+                    } else if(statuses[i].status === 'red'){
+                        status = 'red'
+                        break
+                    }
+                    ++greenCount
+                }
+                if(greenCount == statuses.length){
+                    status = 'green'
+                }
+
+                document.getElementById('mojang_status_icon').style.color = mojang2.statusToHex(status)
+
+            } catch (err) {
+                console.error('Unable to refresh Mojang service status..', err)
+            }
+        }
+
+        refreshMojangStatuses()
+        // Set refresh rate to once every 5 minutes.
+        mojangStatusListener = setInterval(refreshMojangStatuses, 300000)
 
     }
 }, false)
