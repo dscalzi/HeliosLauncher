@@ -27,16 +27,16 @@
   "dependencies": {
     "adm-zip": "^0.4.7",
     "async": "^2.6.0",
-    "discord-rpc": "^3.0.0-beta.4",
+    "discord-rpc": "^3.0.0-beta.8",
     "ejs": "^2.5.7",
     "ejs-electron": "^2.0.1",
     "find-java-home": "^0.2.0",
     "jquery": "^3.2.1",
     "request-promise-native": "^1.0.5",
-    "uuid": "^3.1.0"
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "electron": "^1.7.9",
-    "electron-packager": "^9.1.0"
+    "electron": "^1.7.10",
+    "electron-packager": "^10.1.1"
   }
 }

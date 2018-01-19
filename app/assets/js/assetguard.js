@@ -31,7 +31,6 @@ const fs = require('fs')
 const mkpath = require('mkdirp');
 const path = require('path')
 const request = require('request')
-const {remote} = require('electron')
 
 // Classes
 
