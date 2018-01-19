@@ -39,7 +39,7 @@ const DEFAULT_CONFIG = {
 
         }
     },
-    clientToken: uuidV4(),
+    clientToken: uuidV4().replace(/-/g, ''),
     selectedServer: null, // Resolved
     selectedAccount: null,
     authenticationDatabase: {}
@@ -82,12 +82,12 @@ exports.load = function(){
 
 /**
  * Retrieve the launcher's Client Token.
+ * There is no default client token.
  * 
- * @param {Boolean} def - optional. If true, the default value will be returned.
  * @returns {String} - the launcher's Client Token.
  */
-exports.getClientToken = function(def = false){
-    return !def ? config.clientToken : DEFAULT_CONFIG.clientToken
+exports.getClientToken = function(){
+    return config.clientToken
 }
 
 /**

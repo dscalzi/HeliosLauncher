@@ -148,9 +148,10 @@ exports.validate = function(accessToken, clientToken){
             }
         },
         function(error, response, body){
-            if(error && error.message === 'Invalid token'){
+            if(response.statusCode === 403){
                 fulfill(false)
             } else {
+                // 204 if valid
                 fulfill(true)
             }
         })
@@ -212,7 +213,7 @@ exports.refresh = function(accessToken, clientToken, requestUser = true){
             if(response.statusCode === 200){
                 fulfill(body)
             } else {
-                reject()
+                reject(response.body)
             }
         })
     })
