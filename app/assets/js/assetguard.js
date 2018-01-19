@@ -498,7 +498,6 @@ class AssetGuard extends EventEmitter {
      */
     startAsyncProcess(identifier, limit = 5){
         const self = this
-        let win = remote.getCurrentWindow()
         let acc = 0
         const concurrentDlTracker = this[identifier]
         const concurrentDlQueue = concurrentDlTracker.dlqueue.slice(0)
@@ -526,7 +525,6 @@ class AssetGuard extends EventEmitter {
                         req.abort()
                         console.log('Failed to download ' + asset.from + '. Response code', resp.statusCode)
                         self.progress += asset.size*1
-                        win.setProgressBar(self.progress/self.totaldlsize)
                         self.emit('totaldlprogress', {acc: self.progress, total: self.totaldlsize})
                         cb()
                     }
@@ -536,8 +534,6 @@ class AssetGuard extends EventEmitter {
                     self.progress += chunk.length
                     acc += chunk.length
                     self.emit(identifier + 'dlprogress', acc)
-                    //console.log(identifier + ' Progress', acc/this[identifier].dlsize)
-                    win.setProgressBar(self.progress/self.totaldlsize)
                     self.emit('totaldlprogress', {acc: self.progress, total: self.totaldlsize})
                 })
             }, function(err){
@@ -552,7 +548,6 @@ class AssetGuard extends EventEmitter {
                 self.progress -= self[identifier].dlsize
                 self[identifier] = new DLTracker([], 0)
                 if(self.totaldlsize === 0) {
-                    win.setProgressBar(-1)
                     self.emit('dlcomplete')
                 }
             })
@@ -811,6 +806,10 @@ class AssetGuard extends EventEmitter {
                 }*/
                 const serv = AssetGuard.getServerById(self.basePath, serverpackid)
 
+                if(serv == null) {
+                    console.error('Invalid server pack id:', serverpackid)
+                }
+
                 self.forge = self._parseDistroModules(serv.modules, serv.mc_version)
                 //Correct our workaround here.
                 let decompressqueue = self.forge.callback
@@ -944,7 +943,6 @@ class AssetGuard extends EventEmitter {
      */
     processDlQueues(identifiers = [{id:'assets', limit:20}, {id:'libraries', limit:5}, {id:'files', limit:5}, {id:'forge', limit:5}]){
         this.progress = 0;
-        let win = remote.getCurrentWindow()
 
         let shouldFire = true
 

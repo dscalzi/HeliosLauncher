@@ -3,16 +3,15 @@ const {Client} = require('discord-rpc')
 const ConfigManager = require('./configmanager.js')
 
 let rpc
+let activity
 
-exports.initRPC = function(genSettings, servSettings){
-    rpc = new Client({ transport: 'ipc' });
+exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting for Client..'){
+    rpc = new Client({ transport: 'ipc' })
 
     rpc.on('ready', () => {
-        const activity = {
-            // state = top text
-            // details = bottom text
+        activity = {
+            details: initialDetails,
             state: 'Server: ' + servSettings.shortId,
-            details: 'Exploring the wall',
             largeImageKey: servSettings.largeImageKey,
             largeImageText: servSettings.largeImageText,
             smallImageKey: genSettings.smallImageKey,
@@ -33,8 +32,18 @@ exports.initRPC = function(genSettings, servSettings){
     })
 }
 
+exports.updateDetails = function(details){
+    if(activity == null){
+        console.error('Discord RPC is not initialized and therefore cannot be updated.')
+    }
+    activity.details = details
+    rpc.setActivity(activity)
+}
+
 exports.shutdownRPC = function(){
+    if(!rpc) return
     rpc.setActivity({})
     rpc.destroy()
     rpc = null
+    activity = null
 }

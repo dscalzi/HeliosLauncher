@@ -1,3 +1,4 @@
+const cp = require('child_process')
 const path = require('path')
 const {AssetGuard} = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
 const ProcessBuilder = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
@@ -8,14 +9,25 @@ const AuthManager = require(path.join(__dirname, 'assets', 'js', 'authmanager.js
 
 let mojangStatusListener
 
+// Launch Elements
+let launch_content, launch_details, launch_progress, launch_progress_label, launch_details_text
+
 // Synchronous Listener
 document.addEventListener('readystatechange', function(){
     if (document.readyState === 'interactive'){
 
+        // Save a reference to the launch elements.
+        launch_content = document.getElementById('launch_content')
+        launch_details = document.getElementById('launch_details')
+        launch_progress = document.getElementById('launch_progress')
+        launch_progress_label = document.getElementById('launch_progress_label')
+        launch_details_text = document.getElementById('launch_details_text')
+
         // Bind launch button
         document.getElementById('launch_button').addEventListener('click', function(e){
             console.log('Launching game..')
-            testdownloads()
+            //testdownloads()
+            dlAsync()
         })
 
         // TODO convert this to dropdown menu.
@@ -58,104 +70,180 @@ document.addEventListener('readystatechange', function(){
     }
 }, false)
 
-// Keep reference to AssetGuard object temporarily
-let tracker;
+// Keep reference to Minecraft Process
+let proc
+// Is DiscordRPC enabled
+let hasRPC = false
+// Joined server regex
+const servJoined = /[[0-2][0-9]:[0-6][0-9]:[0-6][0-9]\] \[Client thread\/INFO\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/g
+const gameJoined = /\[[0-2][0-9]:[0-6][0-9]:[0-6][0-9]\] \[Client thread\/WARN\]: Skipping bad option: lastServer:/g
+const gameJoined2 = /\[[0-2][0-9]:[0-6][0-9]:[0-6][0-9]\] \[Client thread\/INFO\]: Created: \d+x\d+ textures-atlas/g
 
-testdownloads = async function(){
+let aEx
+let currentProc
+let serv
+let versionData
+let forgeData
 
-    if(ConfigManager.getSelectedAccount() == null){
-        console.error('login first.')
-        //in devtools AuthManager.addAccount(username, pass)
-        return
+function dlAsync(login = true){
+
+    // Login parameter is temporary for debug purposes. Allows testing the validation/downloads without
+    // launching the game.
+
+    if(login) {
+        if(ConfigManager.getSelectedAccount() == null){
+            console.error('login first.')
+            //in devtools AuthManager.addAccount(username, pass)
+            return
+        }
     }
 
-    const content = document.getElementById('launch_content')
-    const details = document.getElementById('launch_details')
-    const progress = document.getElementById('launch_progress')
-    const progress_text = document.getElementById('launch_progress_label')
-    const det_text = document.getElementById('launch_details_text')
+    launch_details_text.innerHTML = 'Please wait..'
+    launch_progress.setAttribute('max', '100')
+    launch_details.style.display = 'flex'
+    launch_content.style.display = 'none'
 
-    det_text.innerHTML = 'Please wait..'
-    progress.setAttribute('max', '100')
-    details.style.display = 'flex'
-    content.style.display = 'none'
+    aEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
+        ConfigManager.getGameDirectory(),
+        ConfigManager.getJavaExecutable()
+    ])
 
-    tracker = new AssetGuard(ConfigManager.getGameDirectory(), ConfigManager.getJavaExecutable())
+    aEx.on('message', (m) => {
+        if(currentProc === 'validateDistribution'){
 
-    det_text.innerHTML = 'Loading server information..'
-    const serv = await tracker.validateDistribution(ConfigManager.getSelectedServer())
-    progress.setAttribute('value', 20)
-    progress_text.innerHTML = '20%'
-    console.log('forge stuff done')
+            launch_progress.setAttribute('value', 20)
+            launch_progress_label.innerHTML = '20%'
+            serv = m.result
+            console.log('forge stuff done')
 
-    det_text.innerHTML = 'Loading version information..'
-    const versionData = await tracker.loadVersionData(serv.mc_version)
-    progress.setAttribute('value', 40)
-    progress_text.innerHTML = '40%'
+            // Begin version load.
+            launch_details_text.innerHTML = 'Loading version information..'
+            currentProc = 'loadVersionData'
+            aEx.send({task: 0, content: currentProc, argsArr: [serv.mc_version]})
 
-    det_text.innerHTML = 'Validating asset integrity..'
-    await tracker.validateAssets(versionData)
-    progress.setAttribute('value', 60)
-    progress_text.innerHTML = '60%'
-    console.log('assets done')
+        } else if(currentProc === 'loadVersionData'){
 
-    det_text.innerHTML = 'Validating library integrity..'
-    await tracker.validateLibraries(versionData)
-    progress.setAttribute('value', 80)
-    progress_text.innerHTML = '80%'
-    console.log('libs done')
+            launch_progress.setAttribute('value', 40)
+            launch_progress_label.innerHTML = '40%'
+            versionData = m.result
 
-    det_text.innerHTML = 'Validating miscellaneous file integrity..'
-    await tracker.validateMiscellaneous(versionData)
-    progress.setAttribute('value', 100)
-    progress_text.innerHTML = '100%'
-    console.log('files done')
+            // Begin asset validation.
+            launch_details_text.innerHTML = 'Validating asset integrity..'
+            currentProc = 'validateAssets'
+            aEx.send({task: 0, content: currentProc, argsArr: [versionData]})
 
-    det_text.innerHTML = 'Downloading files..'
-    tracker.on('totaldlprogress', function(data){
-        progress.setAttribute('max', data.total)
-        progress.setAttribute('value', data.acc)
-        progress_text.innerHTML = parseInt((data.acc/data.total)*100) + '%'
-    })
+        } else if(currentProc === 'validateAssets'){
 
-    tracker.on('dlcomplete', async function(){
+            launch_progress.setAttribute('value', 60)
+            launch_progress_label.innerHTML = '60%'
+            console.log('assets done')
 
-        det_text.innerHTML = 'Preparing to launch..'
-        const forgeData = await tracker.loadForgeData(serv.id)
-        const authUser = await AuthManager.validateSelected()
-        let pb = new ProcessBuilder(ConfigManager.getGameDirectory(), serv, versionData, forgeData, authUser)
-        det_text.innerHTML = 'Launching game..'
-        let proc;
-        try{
-            proc = pb.build()
-            det_text.innerHTML = 'Done. Enjoy the server!'
-            const tempListener = function(data){
-                if(data.indexOf('[Client thread/INFO]: -- System Details --') > -1){
-                    details.style.display = 'none'
-                    content.style.display = 'inline-flex'
-                    proc.stdout.removeListener('data', tempListener)
+            // Begin library validation.
+            launch_details_text.innerHTML = 'Validating library integrity..'
+            currentProc = 'validateLibraries'
+            aEx.send({task: 0, content: currentProc, argsArr: [versionData]})
+
+        } else if(currentProc === 'validateLibraries'){
+
+            launch_progress.setAttribute('value', 80)
+            launch_progress_label.innerHTML = '80%'
+            console.log('libs done')
+
+            // Begin miscellaneous validation.
+            launch_details_text.innerHTML = 'Validating miscellaneous file integrity..'
+            currentProc = 'validateMiscellaneous'
+            aEx.send({task: 0, content: currentProc, argsArr: [versionData]})
+
+        } else if(currentProc === 'validateMiscellaneous'){
+
+            launch_progress.setAttribute('value', 100)
+            launch_progress_label.innerHTML = '100%'
+            console.log('files done')
+
+            launch_details_text.innerHTML = 'Downloading files..'
+            currentProc = 'processDlQueues'
+            aEx.send({task: 0, content: currentProc})
+
+        } else if(currentProc === 'processDlQueues'){
+            if(m.task === 0){
+                remote.getCurrentWindow().setProgressBar(m.value/m.total)
+                launch_progress.setAttribute('max', m.total)
+                launch_progress.setAttribute('value', m.value)
+                launch_progress_label.innerHTML = m.percent + '%'
+            } else if(m.task === 1){
+                remote.getCurrentWindow().setProgressBar(-1)
+
+                launch_details_text.innerHTML = 'Preparing to launch..'
+                currentProc = 'loadForgeData'
+                aEx.send({task: 0, content: currentProc, argsArr: [serv.id]})
+
+            } else {
+                console.error('Unknown download data type.', m)
+            }
+        } else if(currentProc === 'loadForgeData'){
+
+            forgeData = m.result
+
+            if(login) {
+                //if(!(await AuthManager.validateSelected())){
+                    // 
+                //}
+                const authUser = ConfigManager.getSelectedAccount();
+                console.log('authu', authUser)
+                let pb = new ProcessBuilder(ConfigManager.getGameDirectory(), serv, versionData, forgeData, authUser)
+                launch_details_text.innerHTML = 'Launching game..'
+                try{
+                    proc = pb.build()
+                    launch_details_text.innerHTML = 'Done. Enjoy the server!'
+                    const tempListener = function(data){
+                        if(data.indexOf('[Client thread/INFO]: -- System Details --') > -1){
+                            launch_details.style.display = 'none'
+                            launch_content.style.display = 'inline-flex'
+                            if(hasRPC){
+                                DiscordWrapper.updateDetails('Loading game..')
+                            }
+                            proc.stdout.removeListener('data', tempListener)
+                        }
+                    }
+                    const gameStateChange = function(data){
+                        if(servJoined.test(data)){
+                            DiscordWrapper.updateDetails('Exploring the Realm!')
+                        } else if(gameJoined.test(data)){
+                            DiscordWrapper.updateDetails('Idling on Main Menu')
+                        }
+                    }
+                    proc.stdout.on('data', tempListener)
+                    proc.stdout.on('data', gameStateChange)
+                    // Init Discord Hook (Untested)
+                    const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getGameDirectory)
+                    if(distro.discord != null && serv.discord != null){
+                        DiscordWrapper.initRPC(distro.discord, serv.discord)
+                        hasRPC = true
+                        proc.on('close', (code, signal) => {
+                            console.log('Shutting down Discord Rich Presence..')
+                            DiscordWrapper.shutdownRPC()
+                            hasRPC = false
+                            proc = null
+                        })
+                    }
+                } catch(err) {
+                    //launch_details_text.innerHTML = 'Error: ' + err.message;
+                    launch_details_text.innerHTML = 'Error: See log for details..';
+                    console.log(err)
+                    setTimeout(function(){
+                        launch_details.style.display = 'none'
+                        launch_content.style.display = 'inline-flex'
+                    }, 5000)
                 }
             }
-            proc.stdout.on('data', tempListener)
-            // Init Discord Hook (Untested)
-            const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getGameDirectory)
-            if(distro.discord != null && serv.discord != null){
-                DiscordWrapper.initRPC(distro.discord, serv.discord)
-                proc.on('close', (code, signal) => {
-                    DiscordWrapper.shutdownRPC()
-                })
-            }
-        } catch(err) {
-            //det_text.innerHTML = 'Error: ' + err.message;
-            det_text.innerHTML = 'Error: See log for details..';
-            console.log(err)
-            setTimeout(function(){
-                details.style.display = 'none'
-                content.style.display = 'inline-flex'
-            }, 5000)
+
+            // Disconnect from AssetExec
+            aEx.disconnect()
+
         }
-        // Remove reference to tracker.
-        tracker = null
     })
-    tracker.processDlQueues()
+
+    launch_details_text.innerHTML = 'Loading server information..'
+    currentProc = 'validateDistribution'
+    aEx.send({task: 0, content: currentProc, argsArr: [ConfigManager.getSelectedServer()]})
 }

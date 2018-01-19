@@ -1,25 +1,30 @@
 const ConfigManager = require('./configmanager.js')
 const Mojang = require('./mojang.js')
 
-exports.addAccount = function(username, password){
-    return new Promise(async function(resolve, reject){
-        const session = await Mojang.authenticate(username, password, ConfigManager.getClientToken)
-        const ret = ConfigManager.addAuthAccount(session.selectedProfile.id, session.accessToken, username, session.selectedProfile.name)
-        ConfigManager.save()
-        resolve(ret)
-    })
+exports.addAccount = async function(username, password){
+    const session = await Mojang.authenticate(username, password, ConfigManager.getClientToken)
+    const ret = ConfigManager.addAuthAccount(session.selectedProfile.id, session.accessToken, username, session.selectedProfile.name)
+    ConfigManager.save()
+    return ret
 }
 
-exports.validateSelected = function(){
-    return new Promise(async function(resolve, reject){
-        const current = ConfigManager.getSelectedAccount()
-        if(!await Mojang.validate(current.accessToken, ConfigManager.getClientToken)){
-            const session = Mojang.refresh(current.accessToken, ConfigManager.getClientToken)
-            const ret = ConfigManager.updateAuthAccount(current.uuid, session.accessToken)
+exports.validateSelected = async function(){
+    const current = ConfigManager.getSelectedAccount()
+    const isValid = await Mojang.validate(current.accessToken, ConfigManager.getClientToken())
+    console.log(isValid)
+    if(!isValid){
+        try {
+            const session = await Mojang.refresh(current.accessToken, ConfigManager.getClientToken())
+            console.log('ses', session)
+            ConfigManager.updateAuthAccount(current.uuid, session.accessToken)
             ConfigManager.save()
-            resolve(ret)
-        } else {
-            resolve(current)
+        } catch(err) {
+            if(err && err.message === 'ForbiddenOperationException'){
+                return false
+            }
         }
-    })
+        return true
+    } else {
+        return true
+    }
 }
