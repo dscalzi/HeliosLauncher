@@ -389,6 +389,11 @@ p {
     height: 20px;
 }
 
+/* News icon colors. */
+#newsSVG {
+    stroke: #ffffff;
+}
+
 /* Twitter icon colors. */
 #twitterSVG:hover {
     fill: #1da1f2;
