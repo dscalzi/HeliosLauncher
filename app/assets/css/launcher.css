@@ -311,7 +311,7 @@ p {
 }
 
 /* Social media icon content container. */
-#media_container {
+#mediaContent {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -319,6 +319,7 @@ p {
     align-items: flex-end;
     margin-top: 40px;
     height: 100%;
+    align-items: center;
 }
 
 /* Social Media Icon division containers. */
@@ -327,11 +328,64 @@ p {
     flex-direction: column;
 }
 
+/* Container object which wraps an icon to ensure fluid transitions. */
+.mediaContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 27px;
+}
+
+/* Divider bar between the external and internal icons. */
+.mediaDivider {
+    height: 1px;
+    width: 14px;
+    background: rgb(255, 255, 255);
+    margin: 10px 0px;
+}
+
 /* Social media icon shared styles. */
 .mediaSVG {
     fill: #ffffff;
-    margin-top: 15px;
     height: 12px;
+    transition: 0.25s ease;
+    cursor: pointer;
+}
+.mediaSVG:hover, .mediaSVG:active {
+    height: 20px;
+}
+
+/* Twitter icon colors. */
+#twitterSVG:hover {
+    fill: #1da1f2;
+}
+#twitterSVG:active {
+    fill: #1b8dd4;
+}
+
+/* Instagram icon colors. */
+#instagramSVG:hover {
+    fill: url('#instaFill')
+    /*fill: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); */
+}
+#instagramSVG:active {
+    fill: url('#instaFill')
+}
+
+/* Youtube icon colors. */
+#youtubeSVG:hover {
+    fill: #f00;
+}
+#youtubeSVG:active {
+    fill: #ea0202;
+}
+
+/* Discord icon colors. */
+#discordSVG:hover {
+    fill: #7288d9;
+}
+#discordSVG:active {
+    fill: #657ac4;
 }
 
 /*******************************************************************************
