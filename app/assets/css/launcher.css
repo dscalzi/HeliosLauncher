@@ -1,7 +1,19 @@
+/*******************************************************************************
+ *                                                                             *
+ * Fonts                                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
 @font-face {
     font-family: 'Avenir Book';
     src: url('../fonts/Avenir.ttc');
 }
+
+/*******************************************************************************
+ *                                                                             *
+ * Element Styles                                                              *
+ *                                                                             *
+ ******************************************************************************/
 
 /* Reset body, html, and div presets. */
 body, html, div {
@@ -23,7 +35,7 @@ p {
 
 /*******************************************************************************
  *                                                                             *
- * frame.ejs                                                                   *
+ * Frame Styles (frame.ejs)                                                    *
  *                                                                             *
  ******************************************************************************/
 
@@ -82,7 +94,7 @@ p {
 
 /*******************************************************************************
  *                                                                             *
- * login.ejs                                                                   *
+ * Login View (login.ejs)                                                      *
  *                                                                             *
  ******************************************************************************/
 
@@ -161,53 +173,52 @@ p {
     letter-spacing: 0.3em;
 }*/
 
+
 /*******************************************************************************
  *                                                                             *
- * index.ejs                                                                   *
+ * Landing View (Structural Styles)                                            *
  *                                                                             *
  ******************************************************************************/
 
+/* Main content container. */
 #main {
     height: calc(100% - 22px);
 }
 
+/* Upper content container. */
 #main > #upper {
     height: 77%;
     display: flex;
 }
-
-#main > #lower {
-    height: 23%;
-    display: flex;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-}
-
 #main > #upper > #left {
     display: inline-flex;
     width: 15%;
     height: 100%;
     justify-content: flex-end;
 }
-
 #main > #upper > #content {
     display: inline-flex;
     width: 59%;
     height: 100%;
 }
-
 #main > #upper > #right {
     display: inline-flex;
     width: 26%;
     height: 100%;
 }
 
+/* Lower content container. */
+#main > #lower {
+    height: 23%;
+    display: flex;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
 #main > #lower > #left {
     height: 100%;
     width: 33%;
     display: inline-flex;
     justify-content: center;
 }
-
 #main > #lower > #left #content {
     position: relative;
     top: 25px;
@@ -215,32 +226,33 @@ p {
     line-height: 24px;
     left: 50px;
 }
-
 #main > #lower > #center {
     height: 100%;
     width: 34%;
     display: inline-flex;
     justify-content: center;
 }
-
 #main > #lower > #center #content {
     position: relative;
     top: 10px;
 }
-
 #main > #lower > #right {
     height: 100%;
     width: 33%;
     display: inline-flex;
 }
 
-#main > #lower > #right #launch_content {
-    position: relative;
-    top: 25px;
-    display: inline-flex;
-    line-height: 24px;
-}
+/*******************************************************************************
+ *                                                                             *
+ * Landing View (Top Styles)                                                   *
+ *                                                                             *
+ ******************************************************************************/
 
+/* * *
+* Landing View (Top Styles) | Left Content
+* * */
+
+/* Logo image. */
 #image_seal {
     height: 70px;
     width: auto;
@@ -248,24 +260,43 @@ p {
     margin-top: 50px;
     border: 2px solid white;
     border-radius: 50%;
+    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
 }
 
-#user_content > #top {
+/* * *
+* Landing View (Bottom Styles) | Right Content
+* * */
+
+/*  Wrapper container for top, right content. */
+#rightContainer {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    top: 50px;
+    align-items: flex-end;
+    height: calc(100% - 50px);
+}
+
+/* Right hand user content container. */
+#user_content {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    top: 50px;
+    box-sizing: border-box;
+    height: 75px;
 }
 
+/* User profile avater. */
 #user_avatar {
     border-radius: 50%;
     border: 2px solid #cad7e1;
     background: rgba(1, 2, 1, 0.5);
     height: 70px;
     width: auto;
+    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
 }
 
+/* User profile name text. */
 #user_text {
     font-family: 'Avenir Book';
     font-size: 12px;
@@ -278,75 +309,38 @@ p {
     right: 25px;
     text-align: right;
 }
-/*
-#main_progress[value] {
-    height: 32px;
-    width: 245px;
-    -webkit-appearance: none;
-}
 
-#main_progress[value]:before {
-    position: absolute;
-    content: attr(data-label);
-    color: white;
-    font-family: 'Avenir Book';
-    font-size: 15px;
-    line-height: 32px;
-    margin-left: 8px;
-}
-
-#main_progress[value]::-webkit-progress-bar {
-    border-radius: 20px 0px 0px 20px;
-    background-color: black;
-}
-
-#main_progress[value]::-webkit-progress-value {
-    background-color: black;
-    background-image: -webkit-linear-gradient(-45deg, 
-    transparent 33%, rgba(0, 0, 0, .1) 33%, 
-    rgba(0,0, 0, .1) 66%, transparent 66%),
--webkit-linear-gradient(top, 
-    rgba(255, 255, 255, .25), 
-    rgba(0, 0, 0, .25)),
--webkit-linear-gradient(left, #09c, #f44);
-    border-radius: 20px 0px 0px 20px;
-    background-size: 35px 20px, 100% 100%, 100% 100%;
-}
-
-#launch_area_container {
+/* Social media icon content container. */
+#media_container {
+    position: relative;
     display: flex;
-    position: absolute;
-    left: 40px;
-    top: 32px;
+    flex-direction: column;
+    right: 25px;
+    align-items: flex-end;
+    margin-top: 40px;
+    height: 100%;
 }
 
-.home_btn {
-    background-color: black;
-    color: white;
-    font-family: 'Avenir Book';
-    border: none;
-    border-radius: 20px;
-    font-size: 11px;
-    height: 20px;
-    padding: 0px 17px 0px 12px;
-    line-height: 20px;
+/* Social Media Icon division containers. */
+#internalMedia, #externalMedia {
+    display: flex;
+    flex-direction: column;
 }
 
-.home_btn:focus {
-    outline: 0px;
+/* Social media icon shared styles. */
+.mediaSVG {
+    fill: #ffffff;
+    margin-top: 15px;
+    height: 12px;
 }
 
-#mojang_btn {
-    position: absolute;
-    left: 150px;
-}
+/*******************************************************************************
+ *                                                                             *
+ * Landing View (Bottom Styles)                                                *
+ *                                                                             *
+ ******************************************************************************/
 
-#mojang_btn:before {
-    color: #93b253;
-    content: '\2022  ';
-    line-height: 20px;
-} */
-
+/* Style for a general label on the bottom of the landing view. */
 .bot_label {
     color: white;
     font-family: 'Avenir Book';
@@ -356,6 +350,20 @@ p {
     text-shadow: 0px 0px 0px #bebcbb;
 }
 
+/* Divider used on the bottom of the landing view. */
+.bot_divider {
+    height: 25px;
+    width: 2px;
+    background: rgba(107, 105, 105, 0.7);
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* * *
+* Landing View (Bottom Styles) | Left Content
+* * */
+
+/* Span which displays the player count of the selected server. */
 #player_count {
     color: #949494;
     font-family: 'Avenir Book';
@@ -365,20 +373,18 @@ p {
     margin-left: 10px;
 }
 
-.bot_divider {
-    height: 25px;
-    width: 2px;
-    background: rgba(107, 105, 105, 0.7);
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
+/* Icon which displays the status of the mojang services. */
 #mojang_status_icon {
     font-size: 30px;
     color: #848484;
     margin-left: 15px;
 }
 
+/* * *
+* Landing View (Bottom Styles) | Center Content
+* * */
+
+/* Button which opens the menu view. */
 #menu_button {
     font-family: 'Avenir Book';
     background: none;
@@ -386,11 +392,13 @@ p {
     cursor: pointer;
 }
 
+/* Arrow image which floats above the menu button. */
 #menu_img {
     height: 11px;
     margin-left: -2px;
 }
 
+/* Span which contains the menu button text. */
 #menu_text {
     color: white;
     font-weight: 900;
@@ -401,6 +409,19 @@ p {
     display: flex;
 }
 
+/* * *
+* Landing View (Bottom Styles) | Right Content
+* * */
+
+/* Main launch content container. */
+#main > #lower > #right #launch_content {
+    position: relative;
+    top: 25px;
+    display: inline-flex;
+    line-height: 24px;
+}
+
+/* The launch button. */
 #launch_button {
     font-family: 'Avenir Book';
     background: none;
@@ -414,44 +435,19 @@ p {
     padding: 0px;
 }
 
+/* Launch details main container, hidden until launch processing begins. */
 #launch_details {
     position: relative;
     top: 25px;
-    /*display: flex;*/
     display: none;
 }
-
+ 
+/* Left side of launch details container, displays percentage and a divider. */
 #launch_details_left {
     display: flex;
 }
 
-#launch_details_right {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-#launch_progress[value] {
-    height: 3px;
-    width: 265px;
-    -webkit-appearance: none;
-}
-
-#launch_progress[value]::-webkit-progress-bar {
-    background-color: transparent;
-}
-
-#launch_progress[value]::-webkit-progress-value {
-    background-color: #fff;
-}
-
-#launch_details_text {
-    font-size: 11px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
+/* Span which displays percentage complete. */
 #launch_progress_label {
     color: white;
     font-family: 'Avenir Book';
@@ -462,4 +458,32 @@ p {
     min-width: 53.21px;
     max-width: 53.21px;
     text-align: right;
+}
+
+/* Right side of launch details container, displays progress bar and details. */
+#launch_details_right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Progress bar styles. */
+#launch_progress[value] {
+    height: 3px;
+    width: 265px;
+    -webkit-appearance: none;
+}
+#launch_progress[value]::-webkit-progress-bar {
+    background-color: transparent;
+}
+#launch_progress[value]::-webkit-progress-value {
+    background-color: #fff;
+}
+
+/* Span which displays information about the status of the launch process. */
+#launch_details_text {
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
