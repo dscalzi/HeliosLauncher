@@ -133,6 +133,8 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
+    padding: 0px 25px;
 }
 
 /* Login form. */
@@ -150,6 +152,12 @@ p {
     color: #848484;
     font-weight: bold;
     text-decoration: none;
+    transition: 0.25s ease;
+}
+#loginForm a:hover,
+#loginForm a:focus {
+    color: #a2a2a2;
+    outline: none;
 }
 
 /* Logo on login form. */
@@ -174,6 +182,8 @@ p {
 /* SVG icons on the login view. */
 .loginSVG {
     fill: #fff;
+    height: 20px;
+    width: 20px;
 }
 
 /* Login text input styles. */
@@ -222,6 +232,7 @@ p {
 /* Remember option text. */
 #loginRememberText {
     padding-right: 10px;
+    transition: 0.25s ease;
 }
 
 /* Login button styles. */
@@ -239,13 +250,13 @@ p {
     right: -20px;
     transition: 0.5s ease;
 }
-#loginButton:hover {
-    text-shadow: 0px 0px 20px #fff;
-}
+#loginButton:hover,
 #loginButton:focus {
+    text-shadow: 0px 0px 20px #fff;
     outline: none;
 }
 #loginSVG {
+    -webkit-transform: translate3d(0, 0, 0);
     overflow: visible;
     transform: rotate(90deg);
     margin-left: 20px;
@@ -253,7 +264,8 @@ p {
     width: 20px;
     height: 20px;
 }
-#loginButton:hover #loginSVG {
+#loginButton:hover #loginSVG,
+#loginButton:focus #loginSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
 }
 
@@ -316,14 +328,13 @@ p {
     background: none;
     transition: border-color 0.25s ease;
 }
-/* On mouse-over, add a grey border color. */
-#checkmarkContainer:hover input ~ .loginCheckmark {
-    border-color: #a2a2a2;;
+/* On hover and focus, add a grey border color. */
+#checkmarkContainer:hover input ~ *,
+#checkmarkContainer input:focus ~ * {
+    color: #a2a2a2;
+    border-color: #a2a2a2;
 }
-/* When the checkbox is checked, add a grey border color. */
-#checkmarkContainer input:checked ~ .loginCheckmark {
-    border-color: #a2a2a2;;
-}
+/* For checked -> #checkmarkContainer input:checked ~ * */
 /* Create the checkmark/indicator (hidden when not checked). */
 .loginCheckmark:after {
     content: "";
@@ -340,7 +351,7 @@ p {
     top: 0.5px;
     width: 2px;
     height: 6px;
-    border: solid #a2a2a2;;
+    border: solid #a2a2a2;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
@@ -567,6 +578,8 @@ p {
     height: 12px;
     transition: 0.25s ease;
     cursor: pointer;
+    height: 12px;
+    width: 25px;
 }
 .mediaSVG:hover, .mediaSVG:active {
     height: 20px;
