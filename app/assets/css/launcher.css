@@ -9,6 +9,11 @@
     src: url('../fonts/Avenir.ttc');
 }
 
+@font-face {
+    font-family: 'Avenir Medium';
+    src: url('../fonts/Avenir-Medium.otf');
+}
+
 /*******************************************************************************
  *                                                                             *
  * Element Styles                                                              *
@@ -91,6 +96,227 @@ p {
 #frame_btn_minimize:hover {
     background-color: #D6FFA6;
 }
+
+/*******************************************************************************
+ *                                                                             *
+ * Login View (login.ejs)                                                      *
+ *                                                                             *
+ ******************************************************************************/
+
+#loginContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+#loginContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#loginForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#loginImageSeal {
+    border-radius: 50%;
+    border: 2px solid #cad7e1;
+    background: rgba(1, 2, 1, 0.5);
+    height: 125px;
+    width: 125px;
+    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    margin-bottom: 20px;
+}
+
+.loginSpan {
+    font-family: 'Avenir Book';
+    font-size: 14px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.loginSpanDim {
+    font-family: 'Avenir Book';
+    font-size: 12px;
+    color: #848484;
+    font-weight: bold;
+}
+
+#loginForm a {
+    font-family: 'Avenir Book';
+    font-size: 12px;
+    color: #848484;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.loginSVG {
+    fill: #fff;
+}
+
+#labelPassword {
+    margin-bottom: 13px;
+}
+
+.loginField {
+    font-family: 'Avenir Book';
+    background: none;
+    border-width: 1.5px 0px 0px 0px;
+    border-style: solid;
+    width: 250px;
+    margin-bottom: 20px;
+    border-color: #fff;
+    color: rgb(197, 197, 197);
+    font-weight: bold;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 7.5px;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.loginField:focus {
+    outline: none;
+}
+
+.loginField::-webkit-input-placeholder {
+    color: rgb(197, 197, 197);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-align: center;
+    font-weight: bold;
+}
+.loginField:focus::-webkit-input-placeholder {
+    color: transparent;
+}
+
+#loginSubheader {
+    font-family: 'Avenir Medium';
+    margin-bottom: 25px;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+#loginOptions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#loginRememberText {
+    padding-right: 10px;
+}
+
+#checkmarkContainer input {
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Customize the label (the container) */
+#checkmarkContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+#checkmarkContainer input {
+    opacity: 0;
+    cursor: pointer;
+    position: absolute;
+}
+
+/* Create a custom checkbox */
+.loginCheckmark {
+    position: relative;
+    height: 10px;
+    width: 10px;
+    border: 1px solid #848484;
+    border-radius: 1px;
+    background: none;
+}
+
+/* On mouse-over, add a grey background color */
+#checkmarkContainer:hover input ~ .loginCheckmark {
+    border-color: #848484;
+}
+
+/* When the checkbox is checked, add a blue background */
+#checkmarkContainer input:checked ~ .loginCheckmark {
+    border-color: #848484;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.loginCheckmark:after {
+    content: "";
+    display: none;
+}
+
+/* Show the checkmark when checked */
+#checkmarkContainer input:checked ~ .loginCheckmark:after {
+    display: block;
+}
+  
+/* Style the checkmark/indicator */
+#checkmarkContainer .loginCheckmark:after {
+    position: absolute;
+    left: 3.5px;
+    top: 0.5px;
+    width: 2px;
+    height: 6px;
+    border: solid #848484;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+#loginDisclaimer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginDisclaimerText {
+    font-family: 'Avenir Book';
+    font-size: 7px;
+    color: #848484;
+    font-weight: bold;
+    text-align: center;
+}
+
+#loginRegisterSpan {
+    margin-bottom: 5px;
+}
+
+#loginButton {
+    background: none;
+    color: #fff;
+    font-weight: bold;
+    font-family: 'Avenir Book';
+    letter-spacing: 2px;
+    border: none;
+    padding: 15px 5px;
+    margin: 10px 0px;
+    cursor: pointer;
+    position: relative;
+    right: -20px;
+}
+
+#loginButton img {
+    transform: rotate(90deg);
+    margin-left: 20px;
+}
+
 
 /*******************************************************************************
  *                                                                             *
@@ -293,7 +519,6 @@ p {
     background: rgba(1, 2, 1, 0.5);
     height: 70px;
     width: 70px;
-    width: auto;
     box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
     overflow: hidden;
     position: relative;

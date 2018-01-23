@@ -1,0 +1,24 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Westeroscraft Launcher</title>
+    <script src="./assets/js/uicore.js"></script>
+    <script src="./assets/js/actionbinder.js"></script>
+    <link type="text/css" rel="stylesheet" href="./assets/css/launcher.css">
+    <style>
+        body {
+            background: url('assets/images/backgrounds/<%=0%>.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        #main {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 50%);
+        }
+    </style>
+</head>
+<body>
+    <% include frame.ejs %>
+    <div id="main">
+        <% include login.ejs %>
+    </div>
+</body>
+</html>
