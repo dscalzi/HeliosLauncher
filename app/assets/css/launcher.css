@@ -6,12 +6,12 @@
 
 @font-face {
     font-family: 'Avenir Book';
-    src: url('../fonts/Avenir.ttc');
+    src: url('../fonts/Avenir-Book.ttf');
 }
 
 @font-face {
     font-family: 'Avenir Medium';
-    src: url('../fonts/Avenir-Medium.otf');
+    src: url('../fonts/Avenir-Medium.ttf');
 }
 
 /*******************************************************************************
