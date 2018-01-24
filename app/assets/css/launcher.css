@@ -76,25 +76,34 @@ p {
 #frame_btn_close {
     background-color: #e74c32;
 }
-
-#frame_btn_close:hover {
+#frame_btn_close:hover,
+#frame_btn_close:focus {
     background-color: #FF9A8A;
+}
+#frame_btn_close:active {
+    background-color: #ff8d7b;
 }
 
 #frame_btn_restoredown {
     background-color: #fed045;
 }
-
-#frame_btn_restoredown:hover {
+#frame_btn_restoredown:hover,
+#frame_btn_restoredown:focus {
     background-color: #FFE9A9;
+}
+#frame_btn_restoredown:active {
+    background-color: #ffde7b;
 }
 
 #frame_btn_minimize {
     background-color: #96e734;
 }
-
-#frame_btn_minimize:hover {
+#frame_btn_minimize:hover,
+#frame_btn_minimize:focus {
     background-color: #D6FFA6;
+}
+#frame_btn_minimize:active {
+    background-color: #bfff76;
 }
 
 /*******************************************************************************
@@ -159,6 +168,9 @@ p {
     color: #a2a2a2;
     outline: none;
 }
+#loginForm a:active {
+    color: #8b8b8b;
+}
 
 /* Logo on login form. */
 #loginImageSeal {
@@ -195,7 +207,7 @@ p {
     width: 250px;
     margin-bottom: 20px;
     border-color: #fff;
-    color: rgb(197, 197, 197);
+    color: rgba(255, 255, 255, 0.75);
     font-weight: bold;
     text-align: center;
     box-sizing: border-box;
@@ -207,7 +219,7 @@ p {
     outline: none;
 }
 .loginField::-webkit-input-placeholder {
-    color: rgb(197, 197, 197);
+    color: rgba(255, 255, 255, 0.75);
     font-size: 10px;
     letter-spacing: 1px;
     text-align: center;
@@ -255,6 +267,10 @@ p {
     text-shadow: 0px 0px 20px #fff;
     outline: none;
 }
+#loginButton:active {
+    color: #c7c7c7;
+    text-shadow:  0px 0px 20px #c7c7c7;
+}
 #loginSVG {
     -webkit-transform: translate3d(0, 0, 0);
     overflow: visible;
@@ -267,6 +283,12 @@ p {
 #loginButton:hover #loginSVG,
 #loginButton:focus #loginSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+}
+#loginButton:active #loginSVG .arrowLine {
+    stroke: #c7c7c7;
+}
+#loginButton:active #loginSVG {
+    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 
 #loginButtonContent {
@@ -326,13 +348,18 @@ p {
     border: 1px solid #848484;
     border-radius: 1px;
     background: none;
-    transition: border-color 0.25s ease;
+    transition: 0.25s ease;
 }
 /* On hover and focus, add a grey border color. */
 #checkmarkContainer:hover input ~ *,
 #checkmarkContainer input:focus ~ * {
     color: #a2a2a2;
     border-color: #a2a2a2;
+}
+/* On keydown, darken the checkbox a bit. */
+#checkmarkContainer input:active ~ *:not(#loginRememberText) {
+    color: #8d8d8d;
+    border-color: #8d8d8d;
 }
 /* For checked -> #checkmarkContainer input:checked ~ * */
 /* Create the checkmark/indicator (hidden when not checked). */
