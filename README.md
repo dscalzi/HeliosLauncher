@@ -42,24 +42,25 @@ If you use VS Code, you can run this directly from the IDE. Copy the following c
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceRoot}",
-      "runtimeExecutable": "${workspaceRoot}\\node_modules\\.bin\\electron",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
-        "runtimeExecutable": "${workspaceRoot}\\node_modules\\.bin\\electron.cmd"
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
       },
-      "program": "${workspaceRoot}\\index.js",
+      "program": "${workspaceRoot}/index.js",
       "console": "integratedTerminal",
-      "protocol": "inspector"
+      "protocol": "inspector",
+      "timeout": 100000000
     },
     {
       "name": "Debug Renderer Process",
       "type": "chrome",
       "request": "launch",
-      "runtimeExecutable": "${workspaceRoot}\\node_modules\\.bin\\electron",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
-        "runtimeExecutable": "${workspaceRoot}\\node_modules\\.bin\\electron.cmd"
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
       },
       "runtimeArgs": [
-        "${workspaceRoot}\\index.js",
+        "${workspaceRoot}/index.js",
         "--remote-debugging-port=9222"
       ],
       "webRoot": "${workspaceRoot}"
@@ -84,16 +85,20 @@ Please note that if you are debugging the application with VS Code and have laun
 
 # Building
 
-Run either of the build scrips noted below. On some operating systems you may need to run these commands through a terminal with administrator privileges.
+Run either of the build scrips noted below. Note that each platform can only be build when running on the specific operating system. Currently investigating ways to run multi-platform builds efficiently.
 
-### Supported Platforms
+### Build for Current Platform
+
+* `npm run dist`
+
+### Platforms Specifc Builds
 
 * Windows x64 (win32 x64)
-  * `npm run buildwin`
+  * `npm run dist:win`
 * MacOS (darwin x64)
-  * `npm run builddarwin`
+  * `npm run dist:mac`
 * Linux (linux x64)
-  * `npm run buildlinux`
+  * `npm run dist:linux`
 
 # Issues / Further Support #
 

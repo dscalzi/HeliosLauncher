@@ -6,11 +6,11 @@
   "main": "index.js",
   "scripts": {
     "start": "electron index.js",
-    "buildwin": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=win32 --arch=x64 --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
-    "builddarwin": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=darwin --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
-    "buildlinux": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=linux --arch=x64 --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
-    "buildlinuxarm": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=linux --arch=arm64 --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
-    "dist": "SET ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true & electron-builder"
+    "dist": "SET ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true & electron-builder",
+    "dist:win": "npm run dist -- --win --x64",
+    "dist:mac": "npm run dist -- --mac",
+    "dist:linux": "npm run dist -- --linux --x64",
+    "dist:all": "npm run dist -- -wl --x64"
   },
   "engines": {
     "node": "8.9.x"
@@ -38,24 +38,44 @@
   },
   "devDependencies": {
     "electron": "^1.7.11",
-    "electron-builder": "^19.54.0",
-    "electron-packager": "^10.1.1"
+    "electron-builder": "^19.54.0"
   },
   "build": {
-    "appId": "com.westeroscraft.launcher",
-    "productName": "WesterosCraftLauncher",
+    "appId": "westeroscraftlauncher",
+    "productName": "WesterosCraft Launcher",
+    "artifactName": "${productName}.${ext}",
     "copyright": "Copyright © 2018 WesterosCraft",
     "directories": {
       "buildResources": "build",
-      "output": "dist",
-      "app": "."
+      "output": "dist"
     },
     "win": {
       "target": "portable",
       "icon": "build/icon.ico"
     },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.games",
+      "icon": "build/icon.icns",
+      "type": "distribution"
+    },
+    "linux": {
+      "target": "AppImage",
+      "maintainer": "Daniel Scalzi",
+      "vendor": "WesterosCraft",
+      "synopsis": "Custom modded launcher for WesterosCraft",
+      "description": "Custom launcher which allows users to join WesterosCraft. All mods, configurations, and updates are handled automatically.",
+      "category": "Game"
+    },
+    "deb": {
+      "compression": "xz",
+      "packageCategory": "Games",
+      "priority": "optional"
+    },
     "compression": "maximum",
-    "files": ["!{target,logs,.vscode,docs}"],
+    "files": [
+      "!{target,logs,.vscode,docs}"
+    ],
     "asar": true
   }
 }
