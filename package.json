@@ -9,7 +9,8 @@
     "buildwin": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=win32 --arch=x64 --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
     "builddarwin": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=darwin --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
     "buildlinux": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=linux --arch=x64 --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
-    "buildlinuxarm": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=linux --arch=arm64 --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\""
+    "buildlinuxarm": "electron-packager . WesteroscraftLauncher --overwrite --asar --platform=linux --arch=arm64 --ignore=\"\\.git(ignore|modules)|logs|README.md|.vscode|docs|target\" --out=\"./target\" --icon=\"app/assets/images/WesterosSealSquare.ico\"",
+    "dist": "SET ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true & electron-builder"
   },
   "engines": {
     "node": "8.9.x"
@@ -36,7 +37,25 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "electron": "^1.7.10",
+    "electron": "^1.7.11",
+    "electron-builder": "^19.54.0",
     "electron-packager": "^10.1.1"
+  },
+  "build": {
+    "appId": "com.westeroscraft.launcher",
+    "productName": "WesterosCraftLauncher",
+    "copyright": "Copyright © 2018 WesterosCraft",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist",
+      "app": "."
+    },
+    "win": {
+      "target": "portable",
+      "icon": "build/icon.ico"
+    },
+    "compression": "maximum",
+    "files": ["!{target,logs,.vscode,docs}"],
+    "asar": true
   }
 }
