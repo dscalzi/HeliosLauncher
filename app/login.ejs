@@ -9,12 +9,14 @@
                 </g>
             </svg>
             <input id="loginUsername" class="loginField" type="text" placeholder="EMAIL"/>
+            <span class="loginErrorSpan">* Invalid Username</span>
             <svg id="lockSVG" class="loginSVG" viewBox="40 32 60.36 70.43">
                 <g>
                     <path d="M86.16,54a16.38,16.38,0,1,0-32,0H44V102.7H96V54Zm-25.9-3.39a9.89,9.89,0,1,1,19.77,0A9.78,9.78,0,0,1,79.39,54H60.89A9.78,9.78,0,0,1,60.26,50.59ZM70,96.2a6.5,6.5,0,0,1-6.5-6.5,6.39,6.39,0,0,1,3.1-5.4V67h6.5V84.11a6.42,6.42,0,0,1,3.39,5.6A6.5,6.5,0,0,1,70,96.2Z"/>
                 </g>
             </svg>
             <input id="loginPassword" class="loginField" type="password" placeholder="PASSWORD"/>
+            <span class="loginErrorSpan">* Required</span>
             <div id="loginOptions">
                 <span class="loginSpanDim">
                     <a href="https://help.mojang.com/customer/en/portal/articles/329524-change-or-forgot-password">forgot password?</a>
@@ -34,6 +36,10 @@
                         </defs>
                         <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"/>
                     </svg>
+                    <div class="circle-loader">
+                        <div class="checkmark draw"></div>
+                    </div>
+                    <!--<div class="spinningCircle" id="loginSpinner"></div>-->
                 </div>
             </button>
             <div id="loginDisclaimer">
@@ -45,4 +51,43 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        //const validEmail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+        const loginUsername = document.getElementById('loginUsername')
+        const loginPassword = document.getElementById('loginPassword')
+        const checkmarkContainer = document.getElementById('checkmarkContainer')
+        const loginRememberOption = document.getElementById('loginRememberOption')
+        const loginButton = document.getElementById('loginButton')
+        loginButton.addEventListener('click', () => {
+            loginButton.disabled = true
+            loginUsername.disabled = true
+            loginPassword.disabled = true
+            checkmarkContainer.setAttribute('disabled', true)
+            loginRememberOption.disabled = true
+            loginButton.innerHTML = loginButton.innerHTML.replace('LOGIN', 'LOGGING IN')
+            setTimeout(() => {
+                loginButton.innerHTML = loginButton.innerHTML.replace('LOGGING IN', 'SUCCESS')
+                loginButton.style.color = '#ffffff'
+                $('.circle-loader').toggleClass('load-complete');
+                $('.checkmark').toggle();
+            }, 2500)
+        })
+    </script>
+    <div id="loginErrorContainer">
+        <div id="loginErrorContent">
+            <span id="loginErrorTitle">LOGIN FAILED:<br>INVALID CREDENTIALS</span>
+            <span id="loginErrorDesc">Either the email or password you supplied is invalid. Please ensure everything is correct and try again.</span>
+            <button id="loginErrorAcknowledge">Try Again</button>
+        </div>
+    </div>
+    <!-- Will reuse this down the line, then it will be removed from this file. -->
+    <!--<div id="loginLoading">
+        <div id="loginLoadingContent">
+            <div id="loadSpinnerContainer">
+                <img id="loadCenterImage" src="assets/images/westeroscraftlogo1.png">
+                <img id="loadSpinnerImage" class="rotating" src="assets/images/westeroscraftlogo2.png">
+            </div>
+            <span id="loadDescText">LOGGING IN</span>
+        </div>
+    </div>-->
 </div>

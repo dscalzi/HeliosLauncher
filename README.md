@@ -75,10 +75,10 @@ You can find more information [here](http://code.matsu.io/1).
 
 ### Notes on DevTools Window ###
 
-Once you run the program, you can open the DevTools window by typing the following keys in sequence on the main window.
+Once you run the program, you can open the DevTools window by using the following keybind.
 
 ```shell
-wcdev
+ctrl + shift + i
 ```
 
 Please note that if you are debugging the application with VS Code and have launched the program using the **Debug Renderer Process** configuration you cannot open the DevTools window. If you attempt to do so, the program will crash. Remote debugging cannot be  done with multiple DevTools clients.
