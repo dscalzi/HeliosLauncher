@@ -197,18 +197,13 @@ p {
     letter-spacing: 1px;
 }
 
-/* Div to display any login errors. */
-#loginError {
-    font-family: 'Avenir Book';
-    color: #fff;
-    font-size: 12px;
-    background: #9b1313;
-    border: 0.5px solid white;
-    padding: 2px 0px;
-    width: 100%;
-    text-align: center;
-    font-weight: bold;
-    margin: 8px 0px;
+/* Container to organize login field elements. */
+.loginFieldContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 /* SVG icons on the login view. */
@@ -218,6 +213,18 @@ p {
     width: 20px;
 }
 
+/* Span which displays errors related to login field content. */
+.loginErrorSpan {
+    font-family: 'Avenir Medium';
+    font-weight: bold;
+    font-size: 8px;
+    color: #ff1b0c;
+    width: 100%;
+    text-align: right;
+    position: absolute;
+    top: 7px;
+}
+
 /* Login text input styles. */
 .loginField {
     font-family: 'Avenir Book';
@@ -225,7 +232,7 @@ p {
     border-width: 1.5px 0px 0px 0px;
     border-style: solid;
     width: 250px;
-    /*margin-bottom: 20px;*/
+    margin-bottom: 20px;
     border-color: #fff;
     color: rgba(255, 255, 255, 0.75);
     font-weight: bold;
@@ -252,16 +259,6 @@ p {
 /* Add spacing between password field and options bar. */
 #labelPassword {
     margin-bottom: 13px;
-}
-
-.loginErrorSpan {
-    font-family: 'Avenir Medium';
-    font-weight: bold;
-    font-size: 8px;
-    color: red;
-    width: 100%;
-    text-align: right;
-    margin-bottom: 15px;
 }
 
 /* Container which contains the forgot and remember options. */
