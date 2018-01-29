@@ -70,6 +70,11 @@
         const basicEmail = /^\S+@\S+\.\S+$/
 
         // DOM cache.
+        const loginContainer = document.getElementById('loginContainer')
+        const loginErrorTitle = document.getElementById('loginErrorTitle')
+        const loginErrorDesc = document.getElementById('loginErrorDesc')
+        const loginErrorAcknowledge = document.getElementById('loginErrorAcknowledge')
+
         const loginEmailError = document.getElementById('loginEmailError')
         const loginUsername = document.getElementById('loginUsername')
         const loginPasswordError = document.getElementById('loginPasswordError')
@@ -159,10 +164,11 @@
 
         // Enable or disable loading elements.
         function loginLoading(v){
-            loginButton.setAttribute('loading', v)
             if(v){
+                loginButton.setAttribute('loading', v)
                 loginButton.innerHTML = loginButton.innerHTML.replace('LOGIN', 'LOGGING IN')
             } else {
+                loginButton.removeAttribute('loading')
                 loginButton.innerHTML = loginButton.innerHTML.replace('LOGGING IN', 'LOGIN')
             }
         }
@@ -170,10 +176,45 @@
         // Disable or enable login form.
         function formDisabled(v){
             loginDisabled(v)
-            loginUsername.disabled = true
-            loginPassword.disabled = true
-            checkmarkContainer.setAttribute('disabled', true)
-            loginRememberOption.disabled = true
+            loginUsername.disabled = v
+            loginPassword.disabled = v
+            if(v){
+                checkmarkContainer.setAttribute('disabled', v)
+            } else {
+                checkmarkContainer.removeAttribute('disabled')
+            }
+            loginRememberOption.disabled = v
+        }
+
+        function resolveError(err){
+            if(err.cause != null && err.cause === 'UserMigratedException') {
+                return {
+                    title: 'Error During Login:<br>Invalid Credentials',
+                    desc: 'You\'ve attempted to login with a migrated account. Try again using the account email as the username.'
+                }
+            } else {
+                if(err.error != null){
+                    if(err.error === 'ForbiddenOperationException'){
+                        if(err.errorMessage != null){
+                            if(err.errorMessage === 'Invalid credentials. Invalid username or password.'){
+                                return {
+                                    title: 'Error During Login:<br>Invalid Credentials',
+                                    desc: 'The email or password you\'ve entered is incorrect. Please try again.'
+                                }
+                            } else if(err.errorMessage === 'Invalid credentials.'){
+                                return {
+                                    title: 'Error During Login:<br>Too Many Attempts',
+                                    desc: 'There have been too many login attempts with this account recently. Please try again later.'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return {
+                title: err.error,
+                desc: err.errorMessage
+            }
         }
 
         loginButton.addEventListener('click', () => {
@@ -183,14 +224,34 @@
             // Show loading stuff.
             loginLoading(true)
 
+            AuthManager.addAccount(loginUsername.value, loginPassword.value).then((value) => {
+                loginButton.innerHTML = loginButton.innerHTML.replace('LOGGING IN', 'SUCCESS')
+                $('.circle-loader').toggleClass('load-complete')
+                $('.checkmark').toggle()
+                console.log(value)
+            }).catch((err) => {
+                loginLoading(false)
+                $('#loginErrorContainer').css('display', 'flex').hide().fadeIn(250)
+                loginContainer.setAttribute('error', true)
+                const errF = resolveError(err)
+                loginErrorTitle.innerHTML = errF.title
+                loginErrorDesc.innerHTML = errF.desc
+                console.log(err)
+            })
+
             // Temp for debugging, use procedure with real code.
             setTimeout(() => {
                 loginButton.innerHTML = loginButton.innerHTML.replace('LOGGING IN', 'SUCCESS')
-                loginButton.style.color = '#ffffff'
                 $('.circle-loader').toggleClass('load-complete')
                 $('.checkmark').toggle()
             }, 2500)
 
+        })
+
+        loginErrorAcknowledge.addEventListener('click', () => {
+            formDisabled(false)
+            loginContainer.removeAttribute('error', false)
+            $('#loginErrorContainer').fadeOut(250)
         })
     </script>
     <!-- Will reuse this down the line, then it will be removed from this file. -->

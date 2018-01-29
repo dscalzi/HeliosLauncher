@@ -141,6 +141,7 @@ p {
     align-items: center;
     height: 100%;
     width: 100%;
+    transition: 0.25s ease;
 }
 
 /* Login content wrapper. */
@@ -319,6 +320,9 @@ p {
 #loginButton:disabled {
     color: rgba(255, 255, 255, 0.75);
     pointer-events: none;
+}
+#loginButton[loading] {
+    color: #fff;
 }
 #loginButton:hover,
 #loginButton:focus {
@@ -567,9 +571,9 @@ p {
     background: rgba(0, 0, 0, 0.50);
 }
 
-#loginContainer[error] > #loginErrorContainer {
+/*#loginContainer[error] > #loginErrorContainer {
     display: flex;
-}
+}*/
 
 #loginContainer[error] > div:not(#loginErrorContainer) {
     filter: blur(3px) contrast(0.9) brightness(1.0);
@@ -613,6 +617,16 @@ p {
     border-radius: 2px;
     width: 75px;
     cursor: pointer;
+    transition: 0.25s ease;
+}
+#loginErrorAcknowledge:hover,
+#loginErrorAcknowledge:focus {
+    box-shadow: 0px 0px 10px 0px #fff;
+    outline: none;
+}
+#loginErrorAcknowledge:active {
+    border-color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
 }
 
 /* * *

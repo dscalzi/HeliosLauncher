@@ -122,7 +122,7 @@ exports.authenticate = function(username, password, clientToken, requestUser = t
             if(response.statusCode === 200){
                 fulfill(body)
             } else {
-                reject()
+                reject(body)
             }
         })
     })
