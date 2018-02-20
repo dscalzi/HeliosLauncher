@@ -113,6 +113,155 @@ p {
 
 /*******************************************************************************
  *                                                                             *
+ * Welcome View (welcome.ejs)                                                  *
+ *                                                                             *
+ ******************************************************************************/
+
+#welcomeContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    transition: 0.25s ease;
+}
+
+#welcomeContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    top: -10%;
+    position: relative;
+}
+
+.cloudDiv {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cloudTop {
+    height: 50%;
+    width: 100%;
+    background-image: url('../images/cloudTrans.png');
+    animation: clouds1 80s linear infinite;
+    background-size: cover;
+}
+
+.cloudBottom {
+    height: 50%;
+    width: 100%;
+    background-image: url('../images/cloudTrans2.png');
+    animation: clouds2 70s linear infinite;
+    background-size: cover;
+}
+
+@keyframes clouds1 {
+    to {
+        background-position: 200%;
+    }
+}
+@keyframes clouds2 {
+    to {
+        background-position: 230%;
+    }
+}
+
+#welcomeImageSeal {
+    border-radius: 50%;
+    border: 2px solid #cad7e1;
+    background: rgba(1, 2, 1, 0.5);
+    height: 125px;
+    width: 125px;
+    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    margin-bottom: 10%;
+    margin-top: 10%;
+}
+
+#welcomeHeader {
+    font-family: 'Avenir Medium';
+    text-align: center;
+    color: white;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+    font-size: 20px;
+    text-shadow: white 0px 0px 0px;
+}
+
+#welcomeDescription {
+    font-family: 'Avenir Book';
+    text-align: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 100;
+    text-shadow: rgba(255, 255, 255, 0.75) 0px 0px 20px
+}
+
+/* Login button styles. */
+#welcomeButton {
+    background: none;
+    color: #fff;
+    font-weight: bold;
+    font-family: 'Avenir Book';
+    letter-spacing: 2px;
+    border: none;
+    padding: 15px 5px;
+    margin: 10px 0px;
+    cursor: pointer;
+    position: relative;
+    right: -20px;
+    transition: 0.5s ease;
+    margin-top: 5%;
+    margin-bottom: -5%;
+}
+#welcomeButton:disabled {
+    color: rgba(255, 255, 255, 0.75);
+    pointer-events: none;
+}
+#welcomeButton:hover,
+#welcomeButton:focus {
+    text-shadow: 0px 0px 20px #fff;
+    outline: none;
+}
+#welcomeButton:active {
+    color: #c7c7c7;
+    text-shadow:  0px 0px 20px #c7c7c7;
+}
+#welcomeSVG {
+    -webkit-transform: translate3d(0, 0, 0);
+    overflow: visible;
+    transform: rotate(90deg);
+    margin-left: 20px;
+    transition: 0.25s ease;
+    width: 20px;
+    height: 20px;
+}
+#welcomeButton:hover #welcomeSVG,
+#welcomeButton:focus #welcomeSVG {
+    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+}
+#welcomeButton:active #welcomeSVG .arrowLine {
+    stroke: #c7c7c7;
+}
+#welcomeButton:active #welcomeSVG {
+    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+}
+#welcomeButton:disabled #welcomeSVG .arrowLine {
+    stroke: rgba(255, 255, 255, 0.75);
+}
+
+#welcomeButtonContent {
+    display: flex;
+    align-items: center;
+}
+
+/*******************************************************************************
+ *                                                                             *
  * Login View (login.ejs)                                                      *
  *                                                                             *
  ******************************************************************************/
