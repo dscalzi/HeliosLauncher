@@ -1,0 +1,67 @@
+/*******************************************************************************
+ *                                                                             *
+ * Frame Styles (frame.ejs)                                                    *
+ *                                                                             *
+ ******************************************************************************/
+
+.frame_bar {
+    -webkit-app-region: drag;
+    -webkit-user-select: none;
+    background: rgba(1, 2, 1, 0.5);
+    min-height: 22px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 10000;
+}
+
+.frame_btn_dock {
+    margin-left: 2px;
+}
+
+.frame_btn {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    border: 0px;
+    margin-left: 5px;
+    -webkit-app-region: no-drag !important;
+    cursor: pointer;
+}
+
+.frame_btn:focus {
+    outline: 0px;
+}
+
+#frame_btn_close {
+    background-color: #e74c32;
+}
+#frame_btn_close:hover,
+#frame_btn_close:focus {
+    background-color: #FF9A8A;
+}
+#frame_btn_close:active {
+    background-color: #ff8d7b;
+}
+
+#frame_btn_restoredown {
+    background-color: #fed045;
+}
+#frame_btn_restoredown:hover,
+#frame_btn_restoredown:focus {
+    background-color: #FFE9A9;
+}
+#frame_btn_restoredown:active {
+    background-color: #ffde7b;
+}
+
+#frame_btn_minimize {
+    background-color: #96e734;
+}
+#frame_btn_minimize:hover,
+#frame_btn_minimize:focus {
+    background-color: #D6FFA6;
+}
+#frame_btn_minimize:active {
+    background-color: #bfff76;
+}

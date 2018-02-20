@@ -2,7 +2,6 @@ const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')
 const fs = require('fs')
-const ejse = require('ejs-electron')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -19,10 +18,10 @@ function createWindow() {
         }
     })
 
-    ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))
+    //ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))
 
     win.loadURL(url.format({
-        pathname: path.join(__dirname, 'app', 'app.ejs'),
+        pathname: path.join(__dirname, 'app', 'app.html'),
         protocol: 'file:',
         slashes: true
     }))
