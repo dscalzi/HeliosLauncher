@@ -4,7 +4,17 @@ const path = require('path')
 const Registry = require('winreg')
 
 /**
- * WIP -> get a valid x64 Java path on windows.
+ * Attempts to find a valid x64 installation of Java on Windows machines.
+ * Possible paths will be pulled from the registry and the JAVA_HOME environment
+ * variable. The paths will be sorted with higher versions preceeding lower, and
+ * JREs preceeding JDKs. The binaries at the sorted paths will then be validated.
+ * The first validated is returned.
+ * 
+ * Higher versions > Lower versions
+ * If versions are equal, JRE > JDK.
+ * 
+ * @returns {string} The root path of a valid x64 Java installation. If none are
+ * found, null is returned.
  */
 async function _win32Validate(){
 
@@ -20,16 +30,35 @@ async function _win32Validate(){
     }
 
     // Convert path set to an array for processing.
-    const pathArr = Array.from(pathSet)
+    let pathArr = Array.from(pathSet)
 
     console.log(pathArr) // DEBUGGING
 
-    // TODO - Determine best candidate (based on version, etc).
+    // Sorts array. Higher version numbers preceed lower. JRE preceeds JDK.
+    pathArr = pathArr.sort((a, b) => {
+        // Note that Java 9+ uses semver and that will need to be accounted for in
+        // the future.
+        const aVer = parseInt(a.split('_')[1])
+        const bVer = parseInt(b.split('_')[1])
+        if(bVer === aVer){
+            return a.indexOf('jdk') > -1 ? 1 : 0
+        } else {
+            return bVer - aVer
+        }
+    })
 
+    console.log(pathArr) // DEBUGGING
 
+    // Validate that the binary is actually x64.
+    for(let i=0; i<pathArr.length; i++) {
+        let res = await _validateBinary(pathArr[i])
+        if(res){
+            return pathArr[i]
+        }
+    }
 
-    let res = await _validateBinary(pathArr[0]) // DEBUGGING
-    console.log(res) // DEBUGGING
+    // No suitable candidates found.
+    return null;
 
 }
 
@@ -168,29 +197,39 @@ function _scanRegistry(){
  * WIP ->  get a valid x64 Java path on macOS.
  */
 function _darwinValidate(){
-
+    return null
 }
 
 /**
  * WIP ->  get a valid x64 Java path on linux.
  */
 function _linuxValidate(){
-
+    return null
 }
 
 // This will eventually return something.
 async function validate(){
+
+    let res = null
+
     const opSys = process.platform
     if(opSys === 'win32'){
-        await _win32Validate()
+        res = await _win32Validate()
     } else if(opSys === 'darwin'){
-        _darwinValidate()
+        res = _darwinValidate()
     } else if(opSys === 'linux'){
-        _linuxValidate()
+        res = _linuxValidate()
     }
+
+    return res;
+
 }
 
-validate()
+async function test(){
+    console.log(await validate())
+}
+
+test()
 
 module.exports = {
     validate
