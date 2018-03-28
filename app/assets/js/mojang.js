@@ -43,8 +43,8 @@ const statuses = [
  * are 'green', 'yellow', 'red', and 'grey'. Grey is a custom status
  * to our project which represends an unknown status.
  * 
- * @param {String} status - a valid status code.
- * @returns {String} - the hex color of the status code.
+ * @param {string} status A valid status code.
+ * @returns {string} The hex color of the status code.
  */
 exports.statusToHex = function(status){
     switch(status.toLowerCase()){
@@ -97,11 +97,11 @@ exports.status = function(){
 /**
  * Authenticate a user with their Mojang credentials.
  * 
- * @param {String} username - user's username, this is often an email.
- * @param {String} password - user's password.
- * @param {String} clientToken - launcher's Client Token.
- * @param {Boolean} requestUser - optional. Adds user object to the reponse.
- * @param {Object} agent - optional. Provided by default. Adds user info to the response.
+ * @param {string} username The user's username, this is often an email.
+ * @param {string} password The user's password.
+ * @param {string} clientToken The launcher's Client Token.
+ * @param {boolean} requestUser Optional. Adds user object to the reponse.
+ * @param {Object} agent Optional. Provided by default. Adds user info to the response.
  * 
  * @see http://wiki.vg/Authentication#Authenticate
  */
@@ -132,8 +132,8 @@ exports.authenticate = function(username, password, clientToken, requestUser = t
  * Validate an access token. This should always be done before launching.
  * The client token should match the one used to create the access token.
  * 
- * @param {String} accessToken - the access token to validate.
- * @param {String} clientToken - the launcher's client token.
+ * @param {string} accessToken The access token to validate.
+ * @param {string} clientToken The launcher's client token.
  * 
  * @see http://wiki.vg/Authentication#Validate
  */
@@ -162,8 +162,8 @@ exports.validate = function(accessToken, clientToken){
  * Invalidates an access token. The clientToken must match the
  * token used to create the provided accessToken.
  * 
- * @param {String} accessToken - the access token to invalidate.
- * @param {String} clientToken - the launcher's client token.
+ * @param {string} accessToken The access token to invalidate.
+ * @param {string} clientToken The launcher's client token.
  * 
  * @see http://wiki.vg/Authentication#Invalidate
  */
@@ -192,9 +192,9 @@ exports.invalidate = function(accessToken, clientToken){
  * in without asking them for their credentials again. A new access token will
  * be generated using a recent invalid access token. See Wiki for more info.
  * 
- * @param {String} accessToken - the old access token.
- * @param {String} clientToken - the launcher's client token.
- * @param {Boolean} requestUser - optional. Adds user object to the reponse.
+ * @param {string} accessToken The old access token.
+ * @param {string} clientToken The launcher's client token.
+ * @param {boolean} requestUser Optional. Adds user object to the reponse.
  * 
  * @see http://wiki.vg/Authentication#Refresh
  */

@@ -39,11 +39,11 @@ class Asset {
     /**
      * Create an asset.
      * 
-     * @param {any} id - id of the asset.
-     * @param {String} hash - hash value of the asset.
-     * @param {Number} size - size in bytes of the asset.
-     * @param {String} from - url where the asset can be found.
-     * @param {String} to - absolute local file path of the asset.
+     * @param {any} id The id of the asset.
+     * @param {string} hash The hash value of the asset.
+     * @param {number} size The size in bytes of the asset.
+     * @param {string} from The url where the asset can be found.
+     * @param {string} to The absolute local file path of the asset.
      */
     constructor(id, hash, size, from, to){
         this.id = id
@@ -80,8 +80,8 @@ class Library extends Asset {
      * property has instead specified an OS, the library can be downloaded on any OS EXCLUDING
      * the one specified.
      * 
-     * @param {Object} rules - the Library's download rules.
-     * @returns {Boolean} - true if the Library follows the specified rules, otherwise false.
+     * @param {Object} rules The Library's download rules.
+     * @returns {boolean} True if the Library follows the specified rules, otherwise false.
      */
     static validateRules(rules){
         if(rules == null) return true
@@ -115,12 +115,12 @@ class DistroModule extends Asset {
      * not equivalent to the module objects in the
      * distro index.
      * 
-     * @param {any} id - id of the asset.
-     * @param {String} hash - hash value of the asset.
-     * @param {Number} size - size in bytes of the asset.
-     * @param {String} from - url where the asset can be found.
-     * @param {String} to - absolute local file path of the asset.
-     * @param {String} type - the module type.
+     * @param {any} id The id of the asset.
+     * @param {string} hash The hash value of the asset.
+     * @param {number} size The size in bytes of the asset.
+     * @param {string} from The url where the asset can be found.
+     * @param {string} to The absolute local file path of the asset.
+     * @param {string} type The the module type.
      */
     constructor(id, hash, size, from, to, type){
         super(id, hash, size, from, to)
@@ -138,9 +138,9 @@ class DLTracker {
     /**
      * Create a DLTracker
      * 
-     * @param {Array.<Asset>} dlqueue - an array containing assets queued for download.
-     * @param {Number} dlsize - the combined size of each asset in the download queue array.
-     * @param {function(Asset)} callback - optional callback which is called when an asset finishes downloading.
+     * @param {Array.<Asset>} dlqueue An array containing assets queued for download.
+     * @param {number} dlsize The combined size of each asset in the download queue array.
+     * @param {function(Asset)} callback Optional callback which is called when an asset finishes downloading.
      */
     constructor(dlqueue, dlsize, callback = null){
         this.dlqueue = dlqueue
@@ -167,8 +167,8 @@ class AssetGuard extends EventEmitter {
      * On creation the object's properties are never-null default
      * values. Each identifier is resolved to an empty DLTracker.
      * 
-     * @param {String} basePath - base path for asset validation (game root).
-     * @param {String} javaexec - path to a java executable which will be used
+     * @param {string} basePath The base path for asset validation (game root).
+     * @param {string} javaexec The path to a java executable which will be used
      * to finalize installation.
      */
     constructor(basePath, javaexec){
@@ -190,9 +190,9 @@ class AssetGuard extends EventEmitter {
      * 'net.minecraftforge:forge:1.11.2-13.20.0.2282', '.jar' becomes
      * net\minecraftforge\forge\1.11.2-13.20.0.2282\forge-1.11.2-13.20.0.2282.jar
      * 
-     * @param {String} artifactid - the artifact id string.
-     * @param {String} extension - the extension of the file at the resolved path.
-     * @returns {String} - the resolved relative path from the artifact id.
+     * @param {string} artifactid The artifact id string.
+     * @param {string} extension The extension of the file at the resolved path.
+     * @returns {string} The resolved relative path from the artifact id.
      */
     static _resolvePath(artifactid, extension){
         let ps = artifactid.split(':')
@@ -210,9 +210,9 @@ class AssetGuard extends EventEmitter {
      * 'net.minecraftforge:forge:1.11.2-13.20.0.2282', '.jar' becomes
      * net/minecraftforge/forge/1.11.2-13.20.0.2282/forge-1.11.2-13.20.0.2282.jar
      * 
-     * @param {String} artifactid - the artifact id string.
-     * @param {String} extension - the extension of the file at the resolved url.
-     * @returns {String} - the resolved relative URL from the artifact id.
+     * @param {string} artifactid The artifact id string.
+     * @param {string} extension The extension of the file at the resolved url.
+     * @returns {string} The resolved relative URL from the artifact id.
      */
     static _resolveURL(artifactid, extension){
         let ps = artifactid.split(':')
@@ -228,9 +228,9 @@ class AssetGuard extends EventEmitter {
     /**
      * Calculates the hash for a file using the specified algorithm.
      * 
-     * @param {Buffer} buf - the buffer containing file data.
-     * @param {String} algo - the hash algorithm.
-     * @returns {String} - the calculated hash in hex.
+     * @param {Buffer} buf The buffer containing file data.
+     * @param {string} algo The hash algorithm.
+     * @returns {string} The calculated hash in hex.
      */
     static _calculateHash(buf, algo){
         return crypto.createHash(algo).update(buf).digest('hex')
@@ -240,8 +240,8 @@ class AssetGuard extends EventEmitter {
      * Used to parse a checksums file. This is specifically designed for
      * the checksums.sha1 files found inside the forge scala dependencies.
      * 
-     * @param {String} content - the string content of the checksums file.
-     * @returns {Object} - an object with keys being the file names, and values being the hashes.
+     * @param {string} content The string content of the checksums file.
+     * @returns {Object} An object with keys being the file names, and values being the hashes.
      */
     static _parseChecksumsFile(content){
         let finalContent = {}
@@ -259,10 +259,10 @@ class AssetGuard extends EventEmitter {
     /**
      * Validate that a file exists and matches a given hash value.
      * 
-     * @param {String} filePath - the path of the file to validate.
-     * @param {String} algo - the hash algorithm to check against.
-     * @param {String} hash - the existing hash to check against.
-     * @returns {Boolean} - true if the file exists and calculated hash matches the given hash, otherwise false.
+     * @param {string} filePath The path of the file to validate.
+     * @param {string} algo The hash algorithm to check against.
+     * @param {string} hash The existing hash to check against.
+     * @returns {boolean} True if the file exists and calculated hash matches the given hash, otherwise false.
      */
     static _validateLocal(filePath, algo, hash){
         if(fs.existsSync(filePath)){
@@ -281,10 +281,10 @@ class AssetGuard extends EventEmitter {
     /**
      * Statically retrieve the distribution data.
      * 
-     * @param {String} basePath - base path for asset validation (game root).
-     * @param {Boolean} cached - optional. False if the distro should be freshly downloaded, else
+     * @param {string} basePath The base path for asset validation (game root).
+     * @param {boolean} cached Optional. False if the distro should be freshly downloaded, else
      * a cached copy will be returned.
-     * @returns {Promise.<Object>} - A promise which resolves to the distribution data object.
+     * @returns {Promise.<Object>} A promise which resolves to the distribution data object.
      */
     static retrieveDistributionData(basePath, cached = true){
         return new Promise(function(fulfill, reject){
@@ -308,10 +308,10 @@ class AssetGuard extends EventEmitter {
     /**
      * Statically retrieve the distribution data.
      * 
-     * @param {String} basePath - base path for asset validation (game root).
-     * @param {Boolean} cached - optional. False if the distro should be freshly downloaded, else
+     * @param {string} basePath The base path for asset validation (game root).
+     * @param {boolean} cached Optional. False if the distro should be freshly downloaded, else
      * a cached copy will be returned.
-     * @returns {Object} - The distribution data object.
+     * @returns {Object} The distribution data object.
      */
     static retrieveDistributionDataSync(basePath, cached = true){
         if(!cached || distributionData == null){
@@ -323,8 +323,8 @@ class AssetGuard extends EventEmitter {
     /**
      * Resolve the default selected server from the distribution index.
      * 
-     * @param {String} basePath - base path for asset validation (game root).
-     * @returns {Object} - An object resolving to the default selected server.
+     * @param {string} basePath The base path for asset validation (game root).
+     * @returns {Object} An object resolving to the default selected server.
      */
     static resolveSelectedServer(basePath){
         const distro = AssetGuard.retrieveDistributionDataSync(basePath)
@@ -343,9 +343,9 @@ class AssetGuard extends EventEmitter {
      * Returns null if the ID could not be found or the distro index has
      * not yet been loaded.
      * 
-     * @param {String} basePath - base path for asset validation (game root).
-     * @param {String} serverID - The id of the server to retrieve.
-     * @returns {Object} - The server object whose id matches the parameter.
+     * @param {string} basePath The base path for asset validation (game root).
+     * @param {string} serverID The id of the server to retrieve.
+     * @returns {Object} The server object whose id matches the parameter.
      */
     static getServerById(basePath, serverID){
         if(distributionData == null){
@@ -364,9 +364,9 @@ class AssetGuard extends EventEmitter {
     /**
      * Validates a file in the style used by forge's version index.
      * 
-     * @param {String} filePath - the path of the file to validate.
-     * @param {Array.<String>} checksums - the checksums listed in the forge version index.
-     * @returns {Boolean} - true if the file exists and the hashes match, otherwise false.
+     * @param {string} filePath The path of the file to validate.
+     * @param {Array.<string>} checksums The checksums listed in the forge version index.
+     * @returns {boolean} True if the file exists and the hashes match, otherwise false.
      */
     static _validateForgeChecksum(filePath, checksums){
         if(fs.existsSync(filePath)){
@@ -389,9 +389,9 @@ class AssetGuard extends EventEmitter {
      * This can be an expensive task as it usually requires that we calculate thousands
      * of hashes.
      * 
-     * @param {Buffer} buf - the buffer of the jar file.
-     * @param {Array.<String>} checksums - the checksums listed in the forge version index.
-     * @returns {Boolean} - true if all hashes declared in the checksums.sha1 file match the actual hashes.
+     * @param {Buffer} buf The buffer of the jar file.
+     * @param {Array.<string>} checksums The checksums listed in the forge version index.
+     * @returns {boolean} True if all hashes declared in the checksums.sha1 file match the actual hashes.
      */
     static _validateForgeJar(buf, checksums){
         // Double pass method was the quickest I found. I tried a version where we store data
@@ -429,8 +429,8 @@ class AssetGuard extends EventEmitter {
     /**
      * Extracts and unpacks a file from .pack.xz format.
      * 
-     * @param {Array.<String>} filePaths - The paths of the files to be extracted and unpacked.
-     * @returns {Promise.<Void>} - An empty promise to indicate the extraction has completed.
+     * @param {Array.<string>} filePaths The paths of the files to be extracted and unpacked.
+     * @returns {Promise.<void>} An empty promise to indicate the extraction has completed.
      */
     static _extractPackXZ(filePaths, javaExecutable){
         return new Promise(function(fulfill, reject){
@@ -456,9 +456,9 @@ class AssetGuard extends EventEmitter {
      * instance already exists, the contents of the version.json file are read and returned
      * in a promise.
      * 
-     * @param {Asset} asset - The Asset object representing Forge.
-     * @param {String} basePath - Base path for asset validation (game root).
-     * @returns {Promise.<Object>} - A promise which resolves to the contents of forge's version.json.
+     * @param {Asset} asset The Asset object representing Forge.
+     * @param {string} basePath Base path for asset validation (game root).
+     * @returns {Promise.<Object>} A promise which resolves to the contents of forge's version.json.
      */
     static _finalizeForgeAsset(asset, basePath){
         return new Promise(function(fulfill, reject){
@@ -491,9 +491,9 @@ class AssetGuard extends EventEmitter {
     /**
      * Initiate an async download process for an AssetGuard DLTracker.
      * 
-     * @param {String} identifier - the identifier of the AssetGuard DLTracker.
-     * @param {Number} limit - optional. The number of async processes to run in parallel.
-     * @returns {Boolean} - true if the process began, otherwise false.
+     * @param {string} identifier The identifier of the AssetGuard DLTracker.
+     * @param {number} limit Optional. The number of async processes to run in parallel.
+     * @returns {boolean} True if the process began, otherwise false.
      */
     startAsyncProcess(identifier, limit = 5){
         const self = this
@@ -559,9 +559,9 @@ class AssetGuard extends EventEmitter {
     /**
      * Loads the version data for a given minecraft version.
      * 
-     * @param {String} version - the game version for which to load the index data.
-     * @param {Boolean} force - optional. If true, the version index will be downloaded even if it exists locally. Defaults to false.
-     * @returns {Promise.<Object>} - Promise which resolves to the version data object.
+     * @param {string} version The game version for which to load the index data.
+     * @param {boolean} force Optional. If true, the version index will be downloaded even if it exists locally. Defaults to false.
+     * @returns {Promise.<Object>} Promise which resolves to the version data object.
      */
     loadVersionData(version, force = false){
         const self = this
@@ -592,9 +592,9 @@ class AssetGuard extends EventEmitter {
      * asset entry. In this analysis it will check to see if the local file exists and is valid.
      * If not, it will be added to the download queue for the 'assets' identifier.
      * 
-     * @param {Object} versionData - the version data for the assets.
-     * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
-     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     * @param {Object} versionData The version data for the assets.
+     * @param {boolean} force Optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
+     * @returns {Promise.<void>} An empty promise to indicate the async processing has completed.
      */
     validateAssets(versionData, force = false){
         const self = this
@@ -610,8 +610,8 @@ class AssetGuard extends EventEmitter {
      * Private function used to chain the asset validation process. This function retrieves
      * the index data.
      * @param {Object} versionData
-     * @param {Boolean} force
-     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     * @param {boolean} force
+     * @returns {Promise.<void>} An empty promise to indicate the async processing has completed.
      */
     _assetChainIndexData(versionData, force = false){
         const self = this
@@ -646,8 +646,8 @@ class AssetGuard extends EventEmitter {
      * Private function used to chain the asset validation process. This function processes
      * the assets and enqueues missing or invalid files.
      * @param {Object} versionData
-     * @param {Boolean} force
-     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     * @param {boolean} force
+     * @returns {Promise.<void>} An empty promise to indicate the async processing has completed.
      */
     _assetChainValidateAssets(versionData, indexData){
         const self = this
@@ -685,8 +685,8 @@ class AssetGuard extends EventEmitter {
      * check to see if the local file exists and is valid. If not, it will be added to the download
      * queue for the 'libraries' identifier.
      * 
-     * @param {Object} versionData - the version data for the assets.
-     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     * @param {Object} versionData The version data for the assets.
+     * @returns {Promise.<void>} An empty promise to indicate the async processing has completed.
      */
     validateLibraries(versionData){
         const self = this
@@ -720,8 +720,8 @@ class AssetGuard extends EventEmitter {
      * Public miscellaneous mojang file validation function. These files will be enqueued under
      * the 'files' identifier.
      * 
-     * @param {Object} versionData - the version data for the assets.
-     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     * @param {Object} versionData The version data for the assets.
+     * @returns {Promise.<void>} An empty promise to indicate the async processing has completed.
      */
     validateMiscellaneous(versionData){
         const self = this
@@ -735,9 +735,9 @@ class AssetGuard extends EventEmitter {
     /**
      * Validate client file - artifact renamed from client.jar to '{version}'.jar.
      * 
-     * @param {Object} versionData - the version data for the assets.
-     * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
-     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     * @param {Object} versionData The version data for the assets.
+     * @param {boolean} force Optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
+     * @returns {Promise.<void>} An empty promise to indicate the async processing has completed.
      */
     validateClient(versionData, force = false){
         const self = this
@@ -762,9 +762,9 @@ class AssetGuard extends EventEmitter {
     /**
      * Validate log config.
      * 
-     * @param {Object} versionData - the version data for the assets.
-     * @param {Boolean} force - optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
-     * @returns {Promise.<Void>} - An empty promise to indicate the async processing has completed.
+     * @param {Object} versionData The version data for the assets.
+     * @param {boolean} force Optional. If true, the asset index will be downloaded even if it exists locally. Defaults to false.
+     * @returns {Promise.<void>} An empty promise to indicate the async processing has completed.
      */
     validateLogConfig(versionData){
         const self = this
@@ -788,8 +788,8 @@ class AssetGuard extends EventEmitter {
     /**
      * Validate the distribution.
      * 
-     * @param {String} serverpackid - The id of the server to validate.
-     * @returns {Promise.<Object>} - A promise which resolves to the server distribution object.
+     * @param {string} serverpackid The id of the server to validate.
+     * @returns {Promise.<Object>} A promise which resolves to the server distribution object.
      */
     validateDistribution(serverpackid){
         const self = this
@@ -889,8 +889,8 @@ class AssetGuard extends EventEmitter {
     /**
      * Loads Forge's version.json data into memory for the specified server id.
      * 
-     * @param {String} serverpack - The id of the server to load Forge data for.
-     * @returns {Promise.<Object>} - A promise which resolves to Forge's version.json data.
+     * @param {string} serverpack The id of the server to load Forge data for.
+     * @returns {Promise.<Object>} A promise which resolves to Forge's version.json data.
      */
     loadForgeData(serverpack){
         const self = this
@@ -938,7 +938,7 @@ class AssetGuard extends EventEmitter {
      * immediately. Once all downloads are complete, this function will fire the 'dlcomplete' event on the
      * global object instance.
      * 
-     * @param {Array.<{id: string, limit: number}>} identifiers - optional. The identifiers to process and corresponding parallel async task limit.
+     * @param {Array.<{id: string, limit: number}>} identifiers Optional. The identifiers to process and corresponding parallel async task limit.
      */
     processDlQueues(identifiers = [{id:'assets', limit:20}, {id:'libraries', limit:5}, {id:'files', limit:5}, {id:'forge', limit:5}]){
         this.progress = 0;

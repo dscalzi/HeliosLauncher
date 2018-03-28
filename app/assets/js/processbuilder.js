@@ -93,8 +93,8 @@ class ProcessBuilder {
     /**
      * Construct the argument array that will be passed to the JVM process.
      * 
-     * @param {Array.<Object>} mods - An array of enabled mods which will be launched with this process.
-     * @returns {Array.<String>} - An array containing the full JVM arguments for this process.
+     * @param {Array.<Object>} mods An array of enabled mods which will be launched with this process.
+     * @returns {Array.<string>} An array containing the full JVM arguments for this process.
      */
     constructJVMArguments(mods){
         
@@ -118,7 +118,7 @@ class ProcessBuilder {
     /**
      * Resolve the arguments required by forge.
      * 
-     * @returns {Array.<String>} - An array containing the arguments required by forge.
+     * @returns {Array.<string>} An array containing the arguments required by forge.
      */
     _resolveForgeArgs(){
         const mcArgs = this.forgeData.minecraftArguments.split(' ')
@@ -196,8 +196,8 @@ class ProcessBuilder {
      * libraries as well as the libraries declared by the server. Since mods are permitted to declare libraries,
      * this method requires all enabled mods as an input
      * 
-     * @param {Array.<Object>} mods - An array of enabled mods which will be launched with this process.
-     * @returns {Array.<String>} - An array containing the paths of each library required by this process.
+     * @param {Array.<Object>} mods An array of enabled mods which will be launched with this process.
+     * @returns {Array.<string>} An array containing the paths of each library required by this process.
      */
     classpathArg(mods){
         let cpArgs = []
@@ -223,7 +223,7 @@ class ProcessBuilder {
      * 
      * TODO - clean up function
      * 
-     * @returns {Array.<String>} - An array containing the paths of each library mojang declares.
+     * @returns {Array.<string>} An array containing the paths of each library mojang declares.
      */
     _resolveMojangLibraries(){
         const libs = []
@@ -293,8 +293,8 @@ class ProcessBuilder {
      * This method will also check each enabled mod for libraries, as mods are permitted to
      * declare libraries.
      * 
-     * @param {Array.<Object>} mods - An array of enabled mods which will be launched with this process.
-     * @returns {Array.<String>} - An array containing the paths of each library this server requires.
+     * @param {Array.<Object>} mods An array of enabled mods which will be launched with this process.
+     * @returns {Array.<string>} An array containing the paths of each library this server requires.
      */
     _resolveServerLibraries(mods){
         const mdles = this.server.modules
@@ -330,8 +330,8 @@ class ProcessBuilder {
     /**
      * Recursively resolve the path of each library required by this module.
      * 
-     * @param {Object} mdle - A module object from the server distro index.
-     * @returns {Array.<String>} - An array containing the paths of each library this module requires.
+     * @param {Object} mdle A module object from the server distro index.
+     * @returns {Array.<string>} An array containing the paths of each library this module requires.
      */
     _resolveModuleLibraries(mdle){
         if(mdle.sub_modules == null){

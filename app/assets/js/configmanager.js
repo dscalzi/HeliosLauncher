@@ -84,7 +84,7 @@ exports.load = function(){
  * Retrieve the launcher's Client Token.
  * There is no default client token.
  * 
- * @returns {String} - the launcher's Client Token.
+ * @returns {string} The launcher's Client Token.
  */
 exports.getClientToken = function(){
     return config.clientToken
@@ -93,7 +93,7 @@ exports.getClientToken = function(){
 /**
  * Set the launcher's Client Token.
  * 
- * @param {String} clientToken - the launcher's new Client Token.
+ * @param {string} clientToken The launcher's new Client Token.
  */
 exports.setClientToken = function(clientToken){
     config.clientToken = clientToken
@@ -102,8 +102,8 @@ exports.setClientToken = function(clientToken){
 /**
  * Retrieve the ID of the selected serverpack.
  * 
- * @param {Boolean} def - optional. If true, the default value will be returned.
- * @returns {String} - the ID of the selected serverpack.
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {string} The ID of the selected serverpack.
  */
 exports.getSelectedServer = function(def = false){
     return !def ? config.selectedServer : DEFAULT_CONFIG.clientToken
@@ -112,7 +112,7 @@ exports.getSelectedServer = function(def = false){
 /**
  * Set the ID of the selected serverpack.
  * 
- * @param {String} serverID - the ID of the new selected serverpack.
+ * @param {string} serverID The ID of the new selected serverpack.
  */
 exports.setSelectedServer = function(serverID){
     config.selectedServer = serverID
@@ -121,7 +121,7 @@ exports.setSelectedServer = function(serverID){
 /**
  * Get an array of each account currently authenticated by the launcher.
  * 
- * @returns {Array.<Object>} - an array of each stored authenticated account.
+ * @returns {Array.<Object>} An array of each stored authenticated account.
  */
 exports.getAuthAccounts = function(){
     return config.authenticationDatabase
@@ -131,8 +131,8 @@ exports.getAuthAccounts = function(){
  * Returns the authenticated account with the given uuid. Value may
  * be null.
  * 
- * @param {String} uuid - the uuid of the authenticated account.
- * @returns {Object} - the authenticated account with the given uuid.
+ * @param {string} uuid The uuid of the authenticated account.
+ * @returns {Object} The authenticated account with the given uuid.
  */
 exports.getAuthAccount = function(uuid){
     return config.authenticationDatabase[uuid]
@@ -141,10 +141,10 @@ exports.getAuthAccount = function(uuid){
 /**
  * Update the access token of an authenticated account.
  * 
- * @param {String} uuid - uuid of the authenticated account.
- * @param {String} accessToken - the new Access Token.
+ * @param {string} uuid The uuid of the authenticated account.
+ * @param {string} accessToken The new Access Token.
  * 
- * @returns {Object} - the authenticated account object created by this action.
+ * @returns {Object} The authenticated account object created by this action.
  */
 exports.updateAuthAccount = function(uuid, accessToken){
     config.authenticationDatabase[uuid].accessToken = accessToken
@@ -154,12 +154,12 @@ exports.updateAuthAccount = function(uuid, accessToken){
 /**
  * Adds an authenticated account to the database to be stored.
  * 
- * @param {String} uuid - uuid of the authenticated account.
- * @param {String} accessToken - accessToken of the authenticated account.
- * @param {String} username - username (usually email) of the authenticated account.
- * @param {String} displayName - in game name of the authenticated account.
+ * @param {string} uuid The uuid of the authenticated account.
+ * @param {string} accessToken The accessToken of the authenticated account.
+ * @param {string} username The username (usually email) of the authenticated account.
+ * @param {string} displayName The in game name of the authenticated account.
  * 
- * @returns {Object} - the authenticated account object created by this action.
+ * @returns {Object} The authenticated account object created by this action.
  */
 exports.addAuthAccount = function(uuid, accessToken, username, displayName){
     config.selectedAccount = uuid
@@ -175,7 +175,7 @@ exports.addAuthAccount = function(uuid, accessToken, username, displayName){
 /**
  * Get the currently selected authenticated account.
  * 
- * @returns {Object} - the selected authenticated account.
+ * @returns {Object} The selected authenticated account.
  */
 exports.getSelectedAccount = function(){
     return config.authenticationDatabase[config.selectedAccount]
@@ -190,8 +190,8 @@ exports.getSelectedAccount = function(){
  * contains the units of memory. For example, '5G' = 5 GigaBytes, '1024M' = 
  * 1024 MegaBytes, etc.
  * 
- * @param {Boolean} def - optional. If true, the default value will be returned.
- * @returns {String} - the minimum amount of memory for JVM initialization.
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {string} The minimum amount of memory for JVM initialization.
  */
 exports.getMinRAM = function(def = false){
     return !def ? config.settings.java.minRAM : DEFAULT_CONFIG.settings.java.minRAM
@@ -202,7 +202,7 @@ exports.getMinRAM = function(def = false){
  * contain the units of memory. For example, '5G' = 5 GigaBytes, '1024M' = 
  * 1024 MegaBytes, etc.
  * 
- * @param {String} minRAM - the new minimum amount of memory for JVM initialization.
+ * @param {string} minRAM The new minimum amount of memory for JVM initialization.
  */
 exports.setMinRAM = function(minRAM){
     config.settings.java.minRAM = minRAM
@@ -213,8 +213,8 @@ exports.setMinRAM = function(minRAM){
  * contains the units of memory. For example, '5G' = 5 GigaBytes, '1024M' = 
  * 1024 MegaBytes, etc.
  * 
- * @param {Boolean} def - optional. If true, the default value will be returned.
- * @returns {String} - the maximum amount of memory for JVM initialization.
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {string} The maximum amount of memory for JVM initialization.
  */
 exports.getMaxRAM = function(def = false){
     return !def ? config.settings.java.maxRAM : resolveMaxRAM()
@@ -225,7 +225,7 @@ exports.getMaxRAM = function(def = false){
  * contain the units of memory. For example, '5G' = 5 GigaBytes, '1024M' = 
  * 1024 MegaBytes, etc.
  * 
- * @param {String} maxRAM - the new maximum amount of memory for JVM initialization.
+ * @param {string} maxRAM The new maximum amount of memory for JVM initialization.
  */
 exports.setMaxRAM = function(maxRAM){
     config.settings.java.maxRAM = maxRAM
@@ -236,7 +236,7 @@ exports.setMaxRAM = function(maxRAM){
  * 
  * This is a resolved configuration value and defaults to null until externally assigned.
  * 
- * @returns {String} - the path of the Java Executable.
+ * @returns {string} The path of the Java Executable.
  */
 exports.getJavaExecutable = function(){
     return config.settings.java.executable
@@ -245,7 +245,7 @@ exports.getJavaExecutable = function(){
 /**
  * Set the path of the Java Executable.
  * 
- * @param {String} executable - the new path of the Java Executable.
+ * @param {string} executable The new path of the Java Executable.
  */
 exports.setJavaExecutable = function(executable){
     config.settings.java.executable = executable
@@ -256,8 +256,8 @@ exports.setJavaExecutable = function(executable){
  * such as memory allocation, will be dynamically resolved and will not be included
  * in this value.
  * 
- * @param {Boolean} def - optional. If true, the default value will be returned.
- * @returns {Array.<String>} - an array of the additional arguments for JVM initialization.
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {Array.<string>} An array of the additional arguments for JVM initialization.
  */
 exports.getJVMOptions = function(def = false){
     return !def ? config.settings.java.jvmOptions : DEFAULT_CONFIG.settings.java.jvmOptions
@@ -268,7 +268,7 @@ exports.getJVMOptions = function(def = false){
  * such as memory allocation, will be dynamically resolved and should not be
  * included in this value.
  * 
- * @param {Array.<String>} jvmOptions - an array of the new additional arguments for JVM 
+ * @param {Array.<string>} jvmOptions An array of the new additional arguments for JVM 
  * initialization.
  */
 exports.setJVMOptions = function(jvmOptions){
@@ -280,8 +280,8 @@ exports.setJVMOptions = function(jvmOptions){
 /**
  * Retrieve the absolute path of the game directory.
  * 
- * @param {Boolean} def - optional. If true, the default value will be returned.
- * @returns {String} - the absolute path of the game directory.
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {string} The absolute path of the game directory.
  */
 exports.getGameDirectory = function(def = false){
     return !def ? config.settings.game.directory : DEFAULT_CONFIG.settings.game.directory
@@ -290,7 +290,7 @@ exports.getGameDirectory = function(def = false){
 /**
  * Set the absolute path of the game directory.
  * 
- * @param {String} directory - the absolute path of the new game directory.
+ * @param {string} directory The absolute path of the new game directory.
  */
 exports.setGameDirectory = function(directory){
     config.settings.game.directory = directory
@@ -299,8 +299,8 @@ exports.setGameDirectory = function(directory){
 /**
  * Retrieve the width of the game window.
  * 
- * @param {Boolean} def - optional. If true, the default value will be returned.
- * @returns {Number} - the width of the game window.
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {number} The width of the game window.
  */
 exports.getGameWidth = function(def = false){
     return !def ? config.settings.game.resWidth : DEFAULT_CONFIG.settings.game.resWidth
@@ -309,7 +309,7 @@ exports.getGameWidth = function(def = false){
 /**
  * Set the width of the game window.
  * 
- * @param {Number} resWidth - the new width of the game window.
+ * @param {number} resWidth The new width of the game window.
  */
 exports.setGameWidth = function(resWidth){
     config.settings.game.resWidth = resWidth
@@ -318,8 +318,8 @@ exports.setGameWidth = function(resWidth){
 /**
  * Retrieve the height of the game window.
  * 
- * @param {Boolean} def - optional. If true, the default value will be returned.
- * @returns {Number} - the height of the game window.
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {number} The height of the game window.
  */
 exports.getGameHeight = function(def = false){
     return !def ? config.settings.game.resHeight : DEFAULT_CONFIG.settings.game.resHeight
@@ -328,7 +328,7 @@ exports.getGameHeight = function(def = false){
 /**
  * Set the height of the game window.
  * 
- * @param {Number} resHeight - the new height of the game window.
+ * @param {number} resHeight The new height of the game window.
  */
 exports.setGameHeight = function(resHeight){
     config.settings.game.resHeight = resHeight
@@ -337,8 +337,8 @@ exports.setGameHeight = function(resHeight){
 /**
  * Check if the game should be launched in fullscreen mode.
  * 
- * @param {Boolean} def - optional. If true, the default value will be returned.
- * @returns {Boolean} - whether or not the game is set to launch in fullscreen mode.
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {boolean} Whether or not the game is set to launch in fullscreen mode.
  */
 exports.isFullscreen = function(def = false){
     return !def ? config.settings.game.fullscreen : DEFAULT_CONFIG.settings.game.fullscreen
@@ -347,7 +347,7 @@ exports.isFullscreen = function(def = false){
 /**
  * Change the status of if the game should be launched in fullscreen mode.
  * 
- * @param {Boolean} fullscreen - whether or not the game should launch in fullscreen mode.
+ * @param {boolean} fullscreen Whether or not the game should launch in fullscreen mode.
  */
 exports.setFullscreen = function(fullscreen){
     config.settings.game.fullscreen = fullscreen
@@ -356,8 +356,8 @@ exports.setFullscreen = function(fullscreen){
 /**
  * Check if the game should auto connect to servers.
  * 
- * @param {Boolean} def - optional. If true, the default value will be returned.
- * @returns {Boolean} - whether or not the game should auto connect to servers.
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {boolean} Whether or not the game should auto connect to servers.
  */
 exports.isAutoConnect = function(def = false){
     return !def ? config.settings.game.autoConnect : DEFAULT_CONFIG.settings.game.autoConnect
@@ -366,7 +366,7 @@ exports.isAutoConnect = function(def = false){
 /**
  * Change the status of whether or not the game should auto connect to servers.
  * 
- * @param {Boolean} autoConnect - whether or not the game should auto connect to servers.
+ * @param {boolean} autoConnect Whether or not the game should auto connect to servers.
  */
 exports.setAutoConnect = function(autoConnect){
     config.settings.game.autoConnect = autoConnect

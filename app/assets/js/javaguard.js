@@ -143,10 +143,10 @@ function _scanRegistry(){
                         const javaVer = javaVers[j]
                         const vKey = javaVer.key.substring(javaVer.key.lastIndexOf('\\')+1)
                         // Only Java 8 is supported currently.
-                        if(parseFloat(vKey) == 1.8){
+                        if(parseFloat(vKey) === 1.8){
                             javaVer.get('JavaHome', (err, res) => {
                                 const jHome = res.value
-                                if(jHome.indexOf('(x86)') == -1){
+                                if(jHome.indexOf('(x86)') === -1){
                                     candidates.add(jHome)
                                     cbAcc++
                                 }
