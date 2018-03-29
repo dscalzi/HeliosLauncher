@@ -5,6 +5,9 @@
         "smallImageText": "WesterosCraft",
         "smallImageKey": "seal-circle"
     },
+    "java": {
+        "oracle": "http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html"
+    },
     "servers": [
         {
             "id": "WesterosCraft-1.11.2",
