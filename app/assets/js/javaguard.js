@@ -2,6 +2,7 @@ const cp = require('child_process')
 const fs = require('fs')
 const path = require('path')
 const Registry = require('winreg')
+const request = require('request')
 
 /**
  * Attempts to find a valid x64 installation of Java on Windows machines.
@@ -79,31 +80,35 @@ function _validateBinary(binaryPath){
 
     return new Promise((resolve, reject) => {
         const fBp = path.join(binaryPath, 'bin', 'java.exe')
-        cp.exec('"' + fBp + '" -XshowSettings:properties', (err, stdout, stderr) => {
+        if(fs.existsSync(fBp)){
+            cp.exec('"' + fBp + '" -XshowSettings:properties', (err, stdout, stderr) => {
 
-            try {
-                // Output is stored in stderr?
-                const res = stderr
-                const props = res.split('\n')
-                for(let i=0; i<props.length; i++){
-                    if(props[i].indexOf('sun.arch.data.model') > -1){
-                        let arch = props[i].split('=')[1].trim()
-                        console.log(props[i].trim() + ' for ' + binaryPath)
-                        resolve(parseInt(arch) >= 64)
+                try {
+                    // Output is stored in stderr?
+                    const res = stderr
+                    const props = res.split('\n')
+                    for(let i=0; i<props.length; i++){
+                        if(props[i].indexOf('sun.arch.data.model') > -1){
+                            let arch = props[i].split('=')[1].trim()
+                            console.log(props[i].trim() + ' for ' + binaryPath)
+                            resolve(parseInt(arch) >= 64)
+                        }
                     }
+
+                    // sun.arch.data.model not found?
+                    // Disregard this test.
+                    resolve(true)
+
+                } catch (err){
+
+                    // Output format might have changed, validation cannot be completed.
+                    // Disregard this test in that case.
+                    resolve(true)
                 }
-
-                // sun.arch.data.model not found?
-                // Disregard this test.
-                resolve(true)
-
-            } catch (err){
-
-                // Output format might have changed, validation cannot be completed.
-                // Disregard this test in that case.
-                resolve(true)
-            }
-        })
+            })
+        } else {
+            resolve(false)
+        }
     })
     
 }
@@ -225,11 +230,44 @@ async function validate(){
 
 }
 
+const PLATFORM_MAP = {
+    win32: '-windows-x64.tar.gz',
+    darwin: '-macosx-x64.tar.gz',
+    linux: '-linux-x64.tar.gz'
+}
+
+const BASE_URL = 'http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jre-8u161'
+
+function _downloadJava(acceptLicense, dir){
+    if(!acceptLicense){
+        return
+    }
+
+    // TODO -> Complete this code. See format used in assetguard.js#510
+
+    const combined = BASE_URL + PLATFORM_MAP[process.platform]
+    const name = combined.substring(combined.lastIndexOf('/')+1)
+    const fDir = path.join(dir, name)
+
+    const opts = {
+        url: combined,
+        headers: {
+            'Cookie': 'oraclelicense=accept-securebackup-cookie'
+        }
+    }
+
+    const req = request(opts)
+    let writeStream = fs.createWriteStream(fDir)
+    req.pipe(writeStream)
+    req.resume()
+}
+
 async function test(){
     console.log(await validate())
 }
 
-test()
+//test()
+_downloadJava(true, 'C:\\Users\\Asus\\Desktop\\LauncherElectron\\target\\')
 
 module.exports = {
     validate
