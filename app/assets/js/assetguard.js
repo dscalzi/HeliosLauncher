@@ -30,6 +30,7 @@ const EventEmitter = require('events')
 const fs = require('fs')
 const mkpath = require('mkdirp');
 const path = require('path')
+const Registry = require('winreg')
 const request = require('request')
 
 // Classes
@@ -173,17 +174,22 @@ class AssetGuard extends EventEmitter {
      */
     constructor(basePath, javaexec){
         super()
-        this.totaldlsize = 0;
-        this.progress = 0;
+        this.totaldlsize = 0
+        this.progress = 0
         this.assets = new DLTracker([], 0)
         this.libraries = new DLTracker([], 0)
         this.files = new DLTracker([], 0)
         this.forge = new DLTracker([], 0)
+        this.java = new DLTracker([], 0)
         this.basePath = basePath
         this.javaexec = javaexec
     }
 
     // Static Utility Functions
+    // #region
+
+    // Static General Resolve Functions
+    // #region
 
     /**
      * Resolve an artifact id into a path. For example, on windows
@@ -224,6 +230,11 @@ class AssetGuard extends EventEmitter {
 
         return cs.join('/')
     }
+
+    // #endregion
+
+    // Static Hash Validation Functions
+    // #region
 
     /**
      * Calculates the hash for a file using the specified algorithm.
@@ -277,6 +288,76 @@ class AssetGuard extends EventEmitter {
         }
         return false;
     }
+
+    /**
+     * Validates a file in the style used by forge's version index.
+     * 
+     * @param {string} filePath The path of the file to validate.
+     * @param {Array.<string>} checksums The checksums listed in the forge version index.
+     * @returns {boolean} True if the file exists and the hashes match, otherwise false.
+     */
+    static _validateForgeChecksum(filePath, checksums){
+        if(fs.existsSync(filePath)){
+            if(checksums == null || checksums.length === 0){
+                return true
+            }
+            let buf = fs.readFileSync(filePath)
+            let calcdhash = AssetGuard._calculateHash(buf, 'sha1')
+            let valid = checksums.includes(calcdhash)
+            if(!valid && filePath.endsWith('.jar')){
+                valid = AssetGuard._validateForgeJar(filePath, checksums)
+            }
+            return valid
+        }
+        return false
+    }
+
+    /**
+     * Validates a forge jar file dependency who declares a checksums.sha1 file.
+     * This can be an expensive task as it usually requires that we calculate thousands
+     * of hashes.
+     * 
+     * @param {Buffer} buf The buffer of the jar file.
+     * @param {Array.<string>} checksums The checksums listed in the forge version index.
+     * @returns {boolean} True if all hashes declared in the checksums.sha1 file match the actual hashes.
+     */
+    static _validateForgeJar(buf, checksums){
+        // Double pass method was the quickest I found. I tried a version where we store data
+        // to only require a single pass, plus some quick cleanup but that seemed to take slightly more time.
+
+        const hashes = {}
+        let expected = {}
+
+        const zip = new AdmZip(buf)
+        const zipEntries = zip.getEntries()
+
+        //First pass
+        for(let i=0; i<zipEntries.length; i++){
+            let entry = zipEntries[i]
+            if(entry.entryName === 'checksums.sha1'){
+                expected = AssetGuard._parseChecksumsFile(zip.readAsText(entry))
+            }
+            hashes[entry.entryName] = AssetGuard._calculateHash(entry.getData(), 'sha1')
+        }
+
+        if(!checksums.includes(hashes['checksums.sha1'])){
+            return false
+        }
+
+        //Check against expected
+        const expectedEntries = Object.keys(expected)
+        for(let i=0; i<expectedEntries.length; i++){
+            if(expected[expectedEntries[i]] !== hashes[expectedEntries[i]]){
+                return false
+            }
+        }
+        return true
+    }
+
+    // #endregion
+
+    // Static Distribution Index Functions
+    // #region
 
     /**
      * Statically retrieve the distribution data.
@@ -361,70 +442,10 @@ class AssetGuard extends EventEmitter {
         return serv
     }
 
-    /**
-     * Validates a file in the style used by forge's version index.
-     * 
-     * @param {string} filePath The path of the file to validate.
-     * @param {Array.<string>} checksums The checksums listed in the forge version index.
-     * @returns {boolean} True if the file exists and the hashes match, otherwise false.
-     */
-    static _validateForgeChecksum(filePath, checksums){
-        if(fs.existsSync(filePath)){
-            if(checksums == null || checksums.length === 0){
-                return true
-            }
-            let buf = fs.readFileSync(filePath)
-            let calcdhash = AssetGuard._calculateHash(buf, 'sha1')
-            let valid = checksums.includes(calcdhash)
-            if(!valid && filePath.endsWith('.jar')){
-                valid = AssetGuard._validateForgeJar(filePath, checksums)
-            }
-            return valid
-        }
-        return false
-    }
+    // #endregion
 
-    /**
-     * Validates a forge jar file dependency who declares a checksums.sha1 file.
-     * This can be an expensive task as it usually requires that we calculate thousands
-     * of hashes.
-     * 
-     * @param {Buffer} buf The buffer of the jar file.
-     * @param {Array.<string>} checksums The checksums listed in the forge version index.
-     * @returns {boolean} True if all hashes declared in the checksums.sha1 file match the actual hashes.
-     */
-    static _validateForgeJar(buf, checksums){
-        // Double pass method was the quickest I found. I tried a version where we store data
-        // to only require a single pass, plus some quick cleanup but that seemed to take slightly more time.
-
-        const hashes = {}
-        let expected = {}
-
-        const zip = new AdmZip(buf)
-        const zipEntries = zip.getEntries()
-
-        //First pass
-        for(let i=0; i<zipEntries.length; i++){
-            let entry = zipEntries[i]
-            if(entry.entryName === 'checksums.sha1'){
-                expected = AssetGuard._parseChecksumsFile(zip.readAsText(entry))
-            }
-            hashes[entry.entryName] = AssetGuard._calculateHash(entry.getData(), 'sha1')
-        }
-
-        if(!checksums.includes(hashes['checksums.sha1'])){
-            return false
-        }
-
-        //Check against expected
-        const expectedEntries = Object.keys(expected)
-        for(let i=0; i<expectedEntries.length; i++){
-            if(expected[expectedEntries[i]] !== hashes[expectedEntries[i]]){
-                return false
-            }
-        }
-        return true
-    }
+    // Miscellaneous Static Functions
+    // #region
 
     /**
      * Extracts and unpacks a file from .pack.xz format.
@@ -488,73 +509,244 @@ class AssetGuard extends EventEmitter {
         })
     }
 
+    // #endregion
+
+    // Static Java Utility
+    // #region
+
     /**
-     * Initiate an async download process for an AssetGuard DLTracker.
+     * Validates that a Java binary is at least 64 bit. This makes use of the non-standard
+     * command line option -XshowSettings:properties. The output of this contains a property,
+     * sun.arch.data.model = ARCH, in which ARCH is either 32 or 64. This option is supported
+     * in Java 8 and 9. Since this is a non-standard option. This will resolve to true if
+     * the function's code throws errors. That would indicate that the option is changed or
+     * removed.
      * 
-     * @param {string} identifier The identifier of the AssetGuard DLTracker.
-     * @param {number} limit Optional. The number of async processes to run in parallel.
-     * @returns {boolean} True if the process began, otherwise false.
+     * @param {string} binaryPath Path to the root of the java binary we wish to validate.
+     * 
+     * @returns {Promise.<boolean>} Resolves to false only if the test is successful and the result
+     * is less than 64.
      */
-    startAsyncProcess(identifier, limit = 5){
-        const self = this
-        let acc = 0
-        const concurrentDlTracker = this[identifier]
-        const concurrentDlQueue = concurrentDlTracker.dlqueue.slice(0)
-        if(concurrentDlQueue.length === 0){
-            return false
-        } else {
-            async.eachLimit(concurrentDlQueue, limit, function(asset, cb){
-                let count = 0;
-                mkpath.sync(path.join(asset.to, ".."))
-                let req = request(asset.from)
-                req.pause()
-                req.on('response', (resp) => {
-                    if(resp.statusCode === 200){
-                        let writeStream = fs.createWriteStream(asset.to)
-                        writeStream.on('close', () => {
-                            //console.log('DLResults ' + asset.size + ' ' + count + ' ', asset.size === count)
-                            if(concurrentDlTracker.callback != null){
-                                concurrentDlTracker.callback.apply(concurrentDlTracker, [asset])
+    static _validateJavaBinary(binaryPath){
+
+        return new Promise((resolve, reject) => {
+            const fBp = path.join(binaryPath, 'bin', 'java.exe')
+            if(fs.existsSync(fBp)){
+                child_process.exec('"' + fBp + '" -XshowSettings:properties', (err, stdout, stderr) => {
+
+                    try {
+                        // Output is stored in stderr?
+                        const res = stderr
+                        const props = res.split('\n')
+                        for(let i=0; i<props.length; i++){
+                            if(props[i].indexOf('sun.arch.data.model') > -1){
+                                let arch = props[i].split('=')[1].trim()
+                                console.log(props[i].trim() + ' for ' + binaryPath)
+                                resolve(parseInt(arch) >= 64)
                             }
-                            cb()
-                        })
-                        req.pipe(writeStream)
-                        req.resume()
-                    } else {
-                        req.abort()
-                        console.log('Failed to download ' + asset.from + '. Response code', resp.statusCode)
-                        self.progress += asset.size*1
-                        self.emit('totaldlprogress', {acc: self.progress, total: self.totaldlsize})
-                        cb()
+                        }
+
+                        // sun.arch.data.model not found?
+                        // Disregard this test.
+                        resolve(true)
+
+                    } catch (err){
+
+                        // Output format might have changed, validation cannot be completed.
+                        // Disregard this test in that case.
+                        resolve(true)
                     }
                 })
-                req.on('data', function(chunk){
-                    count += chunk.length
-                    self.progress += chunk.length
-                    acc += chunk.length
-                    self.emit(identifier + 'dlprogress', acc)
-                    self.emit('totaldlprogress', {acc: self.progress, total: self.totaldlsize})
-                })
-            }, function(err){
-                if(err){
-                    self.emit(identifier + 'dlerror')
-                    console.log('An item in ' + identifier + ' failed to process');
-                } else {
-                    self.emit(identifier + 'dlcomplete')
-                    console.log('All ' + identifier + ' have been processed successfully')
-                }
-                self.totaldlsize -= self[identifier].dlsize
-                self.progress -= self[identifier].dlsize
-                self[identifier] = new DLTracker([], 0)
-                if(self.totaldlsize === 0) {
-                    self.emit('dlcomplete')
-                }
-            })
-            return true
+            } else {
+                resolve(false)
+            }
+        })
+        
+    }
+
+    /**
+     * Checks for the presence of the environment variable JAVA_HOME. If it exits, we will check
+     * to see if the value points to a path which exists. If the path exits, the path is returned.
+     * 
+     * @returns {string} The path defined by JAVA_HOME, if it exists. Otherwise null.
+     */
+    static _scanJavaHome(){
+        const jHome = process.env.JAVA_HOME
+        try {
+            let res = fs.existsSync(jHome)
+            return res ? jHome : null
+        } catch (err) {
+            // Malformed JAVA_HOME property.
+            return null
         }
     }
 
+    /**
+     * Scans the registry for 64-bit Java entries. The paths of each entry are added to
+     * a set and returned. Currently, only Java 8 (1.8) is supported.
+     * 
+     * @returns {Promise.<Set.<string>>} A promise which resolves to a set of 64-bit Java root
+     * paths found in the registry.
+     */
+    static _scanRegistry(){
+
+        return new Promise((resolve, reject) => {
+            // Keys for Java v9.0.0 and later:
+            // 'SOFTWARE\\JavaSoft\\JRE'
+            // 'SOFTWARE\\JavaSoft\\JDK'
+            // Forge does not yet support Java 9, therefore we do not.
+
+            let cbTracker = 0
+            let cbAcc = 0
+
+            // Keys for Java 1.8 and prior:
+            const regKeys = [
+                '\\SOFTWARE\\JavaSoft\\Java Runtime Environment',
+                '\\SOFTWARE\\JavaSoft\\Java Development Kit'
+            ]
+
+            const candidates = new Set()
+
+            for(let i=0; i<regKeys.length; i++){
+                const key = new Registry({
+                    hive: Registry.HKLM,
+                    key: regKeys[i],
+                    arch: 'x64'
+                })
+                key.keyExists((err, exists) => {
+                    if(exists) {
+                        key.keys((err, javaVers) => {
+                            if(err){
+                                console.error(err)
+                                if(i === regKeys.length-1 && cbAcc === cbTracker){
+                                    resolve(candidates)
+                                }
+                            } else {
+                                cbTracker += javaVers.length
+                                if(i === regKeys.length-1 && cbTracker === cbAcc){
+                                    resolve(candidates)
+                                } else {
+                                    for(let j=0; j<javaVers.length; j++){
+                                        const javaVer = javaVers[j]
+                                        const vKey = javaVer.key.substring(javaVer.key.lastIndexOf('\\')+1)
+                                        // Only Java 8 is supported currently.
+                                        if(parseFloat(vKey) === 1.8){
+                                            javaVer.get('JavaHome', (err, res) => {
+                                                const jHome = res.value
+                                                if(jHome.indexOf('(x86)') === -1){
+                                                    candidates.add(jHome)
+                                                    
+                                                }
+                                                cbAcc++
+                                                if(i === regKeys.length-1 && cbAcc === cbTracker){
+                                                    resolve(candidates)
+                                                }
+                                            })
+                                        } else {
+                                            cbAcc++
+                                            if(i === regKeys.length-1 && cbAcc === cbTracker){
+                                                resolve(candidates)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                    } else {
+                        if(i === regKeys.length-1 && cbAcc === cbTracker){
+                            resolve(candidates)
+                        }
+                    }
+                })
+            }
+
+        })
+        
+    }
+
+    /**
+     * Attempts to find a valid x64 installation of Java on Windows machines.
+     * Possible paths will be pulled from the registry and the JAVA_HOME environment
+     * variable. The paths will be sorted with higher versions preceeding lower, and
+     * JREs preceeding JDKs. The binaries at the sorted paths will then be validated.
+     * The first validated is returned.
+     * 
+     * Higher versions > Lower versions
+     * If versions are equal, JRE > JDK.
+     * 
+     * @returns {string} The root path of a valid x64 Java installation. If none are
+     * found, null is returned.
+     */
+    static async _win32JavaValidate(){
+
+        // Get possible paths from the registry.
+        const pathSet = await AssetGuard._scanRegistry()
+
+        console.log(Array.from(pathSet)) // DEBUGGING
+
+        // Validate JAVA_HOME
+        const jHome = AssetGuard._scanJavaHome()
+        if(jHome != null && jHome.indexOf('(x86)') === -1){
+            pathSet.add(jHome)
+        }
+
+        // Convert path set to an array for processing.
+        let pathArr = Array.from(pathSet)
+
+        console.log(pathArr) // DEBUGGING
+
+        // Sorts array. Higher version numbers preceed lower. JRE preceeds JDK.
+        pathArr = pathArr.sort((a, b) => {
+            // Note that Java 9+ uses semver and that will need to be accounted for in
+            // the future.
+            const aVer = parseInt(a.split('_')[1])
+            const bVer = parseInt(b.split('_')[1])
+            if(bVer === aVer){
+                return a.indexOf('jdk') > -1 ? 1 : 0
+            } else {
+                return bVer - aVer
+            }
+        })
+
+        console.log(pathArr) // DEBUGGING
+
+        // Validate that the binary is actually x64.
+        for(let i=0; i<pathArr.length; i++) {
+            let res = await AssetGuard._validateJavaBinary(pathArr[i])
+            if(res){
+                return pathArr[i]
+            }
+        }
+
+        // No suitable candidates found.
+        return null;
+
+    }
+
+    /**
+     * WIP ->  get a valid x64 Java path on macOS.
+     */
+    static async _darwinJavaValidate(){
+        return null
+    }
+
+    /**
+     * WIP ->  get a valid x64 Java path on linux.
+     */
+    static async _linuxJavaValidate(){
+        return null
+    }
+
+    static async validate(){
+        return await AssetGuard['_' + process.platform + 'JavaValidate']()
+    }
+
+    // #endregion
+
+    // #endregion
+
     // Validation Functions
+    // #region
 
     /**
      * Loads the version data for a given minecraft version.
@@ -585,6 +777,10 @@ class AssetGuard extends EventEmitter {
             }
         })
     }
+
+
+    // Asset (Category=''') Validation Functions
+    // #region
 
     /**
      * Public asset validation function. This function will handle the validation of assets.
@@ -678,6 +874,11 @@ class AssetGuard extends EventEmitter {
             })
         })
     }
+    
+    // #endregion
+
+    // Library (Category=''') Validation Functions
+    // #region
 
     /**
      * Public library validation function. This function will handle the validation of libraries.
@@ -715,6 +916,11 @@ class AssetGuard extends EventEmitter {
             })
         })
     }
+
+    // #endregion
+
+    // Miscellaneous (Category=files) Validation Functions
+    // #region
 
     /**
      * Public miscellaneous mojang file validation function. These files will be enqueued under
@@ -784,6 +990,11 @@ class AssetGuard extends EventEmitter {
             }
         })
     }
+
+    // #endregion
+
+    // Distribution (Category=forge) Validation Functions
+    // #region
 
     /**
      * Validate the distribution.
@@ -930,6 +1141,79 @@ class AssetGuard extends EventEmitter {
         */
     }
 
+    // #endregion
+
+    // #endregion
+
+    // Control Flow Functions
+    // #region
+
+    /**
+     * Initiate an async download process for an AssetGuard DLTracker.
+     * 
+     * @param {string} identifier The identifier of the AssetGuard DLTracker.
+     * @param {number} limit Optional. The number of async processes to run in parallel.
+     * @returns {boolean} True if the process began, otherwise false.
+     */
+    startAsyncProcess(identifier, limit = 5){
+        const self = this
+        let acc = 0
+        const concurrentDlTracker = this[identifier]
+        const concurrentDlQueue = concurrentDlTracker.dlqueue.slice(0)
+        if(concurrentDlQueue.length === 0){
+            return false
+        } else {
+            async.eachLimit(concurrentDlQueue, limit, function(asset, cb){
+                let count = 0;
+                mkpath.sync(path.join(asset.to, ".."))
+                let req = request(asset.from)
+                req.pause()
+                req.on('response', (resp) => {
+                    if(resp.statusCode === 200){
+                        let writeStream = fs.createWriteStream(asset.to)
+                        writeStream.on('close', () => {
+                            //console.log('DLResults ' + asset.size + ' ' + count + ' ', asset.size === count)
+                            if(concurrentDlTracker.callback != null){
+                                concurrentDlTracker.callback.apply(concurrentDlTracker, [asset])
+                            }
+                            cb()
+                        })
+                        req.pipe(writeStream)
+                        req.resume()
+                    } else {
+                        req.abort()
+                        console.log('Failed to download ' + asset.from + '. Response code', resp.statusCode)
+                        self.progress += asset.size*1
+                        self.emit('totaldlprogress', {acc: self.progress, total: self.totaldlsize})
+                        cb()
+                    }
+                })
+                req.on('data', function(chunk){
+                    count += chunk.length
+                    self.progress += chunk.length
+                    acc += chunk.length
+                    self.emit(identifier + 'dlprogress', acc)
+                    self.emit('totaldlprogress', {acc: self.progress, total: self.totaldlsize})
+                })
+            }, function(err){
+                if(err){
+                    self.emit(identifier + 'dlerror')
+                    console.log('An item in ' + identifier + ' failed to process');
+                } else {
+                    self.emit(identifier + 'dlcomplete')
+                    console.log('All ' + identifier + ' have been processed successfully')
+                }
+                self.totaldlsize -= self[identifier].dlsize
+                self.progress -= self[identifier].dlsize
+                self[identifier] = new DLTracker([], 0)
+                if(self.totaldlsize === 0) {
+                    self.emit('dlcomplete')
+                }
+            })
+            return true
+        }
+    }
+
     /**
      * This function will initiate the download processed for the specified identifiers. If no argument is
      * given, all identifiers will be initiated. Note that in order for files to be processed you need to run
@@ -962,6 +1246,8 @@ class AssetGuard extends EventEmitter {
             this.emit('dlcomplete')
         }
     }
+
+    // #endregion
 
 }
 
