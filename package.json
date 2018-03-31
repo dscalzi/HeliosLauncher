@@ -13,7 +13,7 @@
     "dist:all": "npm run dist -- -wl --x64"
   },
   "engines": {
-    "node": "8.9.x"
+    "node": "8.11.x"
   },
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
   "dependencies": {
     "adm-zip": "^0.4.7",
     "async": "^2.6.0",
-    "discord-rpc": "^3.0.0-beta.8",
+    "discord-rpc": "^3.0.0-beta.10",
     "ejs": "^2.5.7",
     "ejs-electron": "^2.0.1",
     "jquery": "^3.3.1",

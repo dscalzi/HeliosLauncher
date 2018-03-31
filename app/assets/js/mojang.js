@@ -41,7 +41,7 @@ const statuses = [
 /**
  * Converts a Mojang status color to a hex value. Valid statuses
  * are 'green', 'yellow', 'red', and 'grey'. Grey is a custom status
- * to our project which represends an unknown status.
+ * to our project which represents an unknown status.
  * 
  * @param {string} status A valid status code.
  * @returns {string} The hex color of the status code.
