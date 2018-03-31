@@ -42,7 +42,9 @@ class ProcessBuilder {
 
         console.log(args)
 
-        const child = child_process.spawn(ConfigManager.getJavaExecutable(), args)
+        const child = child_process.spawn(ConfigManager.getJavaExecutable(), args, {
+            cwd: ConfigManager.getGameDirectory()
+        })
 
         child.stdout.on('data', (data) => {
             console.log('Minecraft:', data.toString('utf8'))

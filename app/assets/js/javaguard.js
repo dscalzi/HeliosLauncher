@@ -267,6 +267,18 @@ class JavaGuard extends EventEmitter {
         })
     }
 
+    _headOracleJREDlSize(url){
+        return new Promise((resolve, reject) => {
+            request.head(url, (err, resp, body) => {
+                if(err){
+                    reject(err)
+                } else {
+                    resolve(resp.headers['content-length'])
+                }
+            })
+        })
+    }
+
     async _downloadOracleJRE(acceptLicense, dir){
 
         if(!acceptLicense){

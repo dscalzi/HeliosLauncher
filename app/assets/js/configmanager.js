@@ -4,6 +4,9 @@ const os = require('os')
 const path = require('path')
 const uuidV4 = require('uuid/v4')
 
+const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : '/var/local')
+const dataPath = path.join(sysRoot, '.westeroscraft')
+
 function resolveMaxRAM(){
     const mem = os.totalmem()
     return mem >= 8000000000 ? '4G' : (mem >= 6000000000 ? '3G' : '2G')
@@ -29,15 +32,13 @@ const DEFAULT_CONFIG = {
             ],
         },
         game: {
-            directory: path.join(__dirname, '..', '..', '..', 'target', 'test', 'mcfiles'),
+            directory: path.join(dataPath, 'game'),
             resWidth: 1280,
             resHeight: 720,
             fullscreen: false,
             autoConnect: true
         },
-        launcher: {
-
-        }
+        launcher: {}
     },
     clientToken: uuidV4().replace(/-/g, ''),
     selectedServer: null, // Resolved
@@ -53,7 +54,7 @@ let config = null;
  * Save the current configuration to a file.
  */
 exports.save = function(){
-    const filePath = path.join(config.settings.game.directory, 'config.json')
+    const filePath = path.join(dataPath, 'config.json')
     fs.writeFileSync(filePath, JSON.stringify(config, null, 4), 'UTF-8')
 }
 
@@ -65,8 +66,8 @@ exports.save = function(){
  */
 exports.load = function(){
     // Determine the effective configuration.
-    const EFFECTIVE_CONFIG = config == null ? DEFAULT_CONFIG : config
-    const filePath = path.join(EFFECTIVE_CONFIG.settings.game.directory, 'config.json')
+    //const EFFECTIVE_CONFIG = config == null ? DEFAULT_CONFIG : config
+    const filePath = path.join(dataPath, 'config.json')
 
     if(!fs.existsSync(filePath)){
         // Create all parent directories.
@@ -76,6 +77,15 @@ exports.load = function(){
     } else {
         config = JSON.parse(fs.readFileSync(filePath, 'UTF-8'))
     }
+}
+
+/**
+ * Retrieve the absolute path of the launcher directory.
+ * 
+ * @returns {string} The absolute path of the launcher directory.
+ */
+exports.getLauncherDirectory = function(){
+    return dataPath
 }
 
 // System Settings (Unconfigurable on UI)

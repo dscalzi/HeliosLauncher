@@ -33,6 +33,13 @@ const path = require('path')
 const Registry = require('winreg')
 const request = require('request')
 
+// Constants
+const PLATFORM_MAP = {
+    win32: '-windows-x64.tar.gz',
+    darwin: '-macosx-x64.tar.gz',
+    linux: '-linux-x64.tar.gz'
+}
+
 // Classes
 
 /** Class representing a base asset. */
@@ -515,6 +522,42 @@ class AssetGuard extends EventEmitter {
     // #region
 
     /**
+     * @typedef OracleJREData
+     * @property {string} uri The base uri of the JRE.
+     * @property {{major: string, update: string, build: string}} version Object containing version information.
+     */
+
+    /**
+     * Resolves the latest version of Oracle's JRE and parses its download link.
+     * 
+     * @returns {Promise.<OracleJREData>} Promise which resolved to an object containing the JRE download data.
+     */
+    static _latestJREOracle(){
+
+        const url = 'http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html'
+        const regex = /http:\/\/.+?(?=\/java)\/java\/jdk\/([0-9]+u[0-9]+)-(b[0-9]+)\/([a-f0-9]{32})?\/jre-\1/
+    
+        return new Promise((resolve, reject) => {
+            request(url, (err, resp, body) => {
+                if(!err){
+                    const arr = body.match(regex)
+                    const verSplit = arr[1].split('u')
+                    resolve({
+                        uri: arr[0],
+                        version: {
+                            major: verSplit[0],
+                            update: verSplit[1],
+                            build: arr[2]
+                        }
+                    })
+                } else {
+                    resolve(null)
+                }
+            })
+        })
+    }
+
+    /**
      * Validates that a Java binary is at least 64 bit. This makes use of the non-standard
      * command line option -XshowSettings:properties. The output of this contains a property,
      * sun.arch.data.model = ARCH, in which ARCH is either 32 or 64. This option is supported
@@ -737,7 +780,7 @@ class AssetGuard extends EventEmitter {
         return null
     }
 
-    static async validate(){
+    static async validateJava(){
         return await AssetGuard['_' + process.platform + 'JavaValidate']()
     }
 
@@ -776,6 +819,10 @@ class AssetGuard extends EventEmitter {
                 fulfill(JSON.parse(fs.readFileSync(versionFile)))
             }
         })
+    }
+
+    loadMojangLauncherData(){
+        //https://launchermeta.mojang.com/mc/launcher.json
     }
 
 
@@ -1143,6 +1190,36 @@ class AssetGuard extends EventEmitter {
 
     // #endregion
 
+    // Java (Category=''') Validation (download) Functions
+    // #region
+
+    async _enqueueOracleJRE(dir){
+        const verData = await AssetGuard._latestJREOracle()
+
+        const combined = verData.uri + PLATFORM_MAP[process.platform]
+        const name = combined.substring(combined.lastIndexOf('/')+1)
+        const fDir = path.join(dir, name)
+
+        const opts = {
+            url: combined,
+            headers: {
+                'Cookie': 'oraclelicense=accept-securebackup-cookie'
+            }
+        }
+
+        if(verData != null){
+            const jre = new Asset(name, null, 0, opts, fDir)
+            this.java = new DLTracker([jre], jre.size)
+            return true
+        } else {
+            return false
+        }
+    }
+
+
+
+    // #endregion
+
     // #endregion
 
     // Control Flow Functions
@@ -1182,7 +1259,8 @@ class AssetGuard extends EventEmitter {
                         req.resume()
                     } else {
                         req.abort()
-                        console.log('Failed to download ' + asset.from + '. Response code', resp.statusCode)
+                        const realFrom = typeof asset.from === 'object' ? asset.from.url : asset.from
+                        console.log('Failed to download ' + realFrom + '. Response code', resp.statusCode)
                         self.progress += asset.size*1
                         self.emit('totaldlprogress', {acc: self.progress, total: self.totaldlsize})
                         cb()
