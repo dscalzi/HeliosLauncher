@@ -32,6 +32,7 @@ const mkpath = require('mkdirp');
 const path = require('path')
 const Registry = require('winreg')
 const request = require('request')
+const targz = require('targz')
 
 // Constants
 const PLATFORM_MAP = {
@@ -558,6 +559,23 @@ class AssetGuard extends EventEmitter {
     }
 
     /**
+     * Load Mojang's launcher.json file.
+     * 
+     * @returns {Promise.<Object>} Promise which resolves to Mojang's launcher.json object.
+     */
+    static loadMojangLauncherData(){
+        return new Promise((resolve, reject) => {
+            request.get('https://launchermeta.mojang.com/mc/launcher.json', (err, resp, body) => {
+                if(err){
+                    resolve(null)
+                } else {
+                    resolve(JSON.parse(body))
+                }
+            })
+        })
+    }
+
+    /**
      * Validates that a Java binary is at least 64 bit. This makes use of the non-standard
      * command line option -XshowSettings:properties. The output of this contains a property,
      * sun.arch.data.model = ARCH, in which ARCH is either 32 or 64. This option is supported
@@ -717,15 +735,15 @@ class AssetGuard extends EventEmitter {
      * Higher versions > Lower versions
      * If versions are equal, JRE > JDK.
      * 
-     * @returns {string} The root path of a valid x64 Java installation. If none are
-     * found, null is returned.
+     * @returns {Promise.<string>} A Promise which resolves to the root path of a valid 
+     * x64 Java installation. If none are found, null is returned.
      */
     static async _win32JavaValidate(){
 
         // Get possible paths from the registry.
         const pathSet = await AssetGuard._scanRegistry()
 
-        console.log(Array.from(pathSet)) // DEBUGGING
+        //console.log(Array.from(pathSet)) // DEBUGGING
 
         // Validate JAVA_HOME
         const jHome = AssetGuard._scanJavaHome()
@@ -736,7 +754,7 @@ class AssetGuard extends EventEmitter {
         // Convert path set to an array for processing.
         let pathArr = Array.from(pathSet)
 
-        console.log(pathArr) // DEBUGGING
+        //console.log(pathArr) // DEBUGGING
 
         // Sorts array. Higher version numbers preceed lower. JRE preceeds JDK.
         pathArr = pathArr.sort((a, b) => {
@@ -751,7 +769,7 @@ class AssetGuard extends EventEmitter {
             }
         })
 
-        console.log(pathArr) // DEBUGGING
+        //console.log(pathArr) // DEBUGGING
 
         // Validate that the binary is actually x64.
         for(let i=0; i<pathArr.length; i++) {
@@ -780,6 +798,11 @@ class AssetGuard extends EventEmitter {
         return null
     }
 
+    /**
+     * Retrieve the path of a valid x64 Java installation.
+     * 
+     * @returns {string} A path to a valid x64 Java installation, null if none found.
+     */
     static async validateJava(){
         return await AssetGuard['_' + process.platform + 'JavaValidate']()
     }
@@ -800,29 +823,23 @@ class AssetGuard extends EventEmitter {
      */
     loadVersionData(version, force = false){
         const self = this
-        return new Promise(function(fulfill, reject){
+        return new Promise((resolve, reject) => {
             const name = version + '.json'
             const url = 'https://s3.amazonaws.com/Minecraft.Download/versions/' + version + '/' + name
             const versionPath = path.join(self.basePath, 'versions', version)
             const versionFile = path.join(versionPath, name)
             if(!fs.existsSync(versionFile) || force){
                 //This download will never be tracked as it's essential and trivial.
-                request.head(url, function(err, res, body){
-                    console.log('Preparing download of ' + version + ' assets.')
-                    mkpath.sync(versionPath)
-                    const stream = request(url).pipe(fs.createWriteStream(versionFile))
-                    stream.on('finish', function(){
-                        fulfill(JSON.parse(fs.readFileSync(versionFile)))
-                    })
+                console.log('Preparing download of ' + version + ' assets.')
+                mkpath.sync(versionPath)
+                const stream = request(url).pipe(fs.createWriteStream(versionFile))
+                stream.on('finish', () => {
+                    resolve(JSON.parse(fs.readFileSync(versionFile)))
                 })
             } else {
-                fulfill(JSON.parse(fs.readFileSync(versionFile)))
+                resolve(JSON.parse(fs.readFileSync(versionFile)))
             }
         })
-    }
-
-    loadMojangLauncherData(){
-        //https://launchermeta.mojang.com/mc/launcher.json
     }
 
 
@@ -1193,29 +1210,91 @@ class AssetGuard extends EventEmitter {
     // Java (Category=''') Validation (download) Functions
     // #region
 
-    async _enqueueOracleJRE(dir){
-        const verData = await AssetGuard._latestJREOracle()
+    _enqueueOracleJRE(dir){
+        return new Promise((resolve, reject) => {
+            AssetGuard._latestJREOracle().then(verData => {
+                if(verData != null){
 
-        const combined = verData.uri + PLATFORM_MAP[process.platform]
-        const name = combined.substring(combined.lastIndexOf('/')+1)
-        const fDir = path.join(dir, name)
+                    const combined = verData.uri + PLATFORM_MAP[process.platform]
+        
+                    const opts = {
+                        url: combined,
+                        headers: {
+                            'Cookie': 'oraclelicense=accept-securebackup-cookie'
+                        }
+                    }
+        
+                    request.head(opts, (err, resp, body) => {
+                        if(err){
+                            resolve(false)
+                        } else {
+                            const name = combined.substring(combined.lastIndexOf('/')+1)
+                            const fDir = path.join(dir, name)
+                            const jre = new Asset(name, null, resp.headers['content-length'], opts, fDir)
+                            this.java = new DLTracker([jre], jre.size, a => {
+                                targz.decompress({
+                                    src: a.to,
+                                    dest: dir
+                                }, err => {
+                                    if(err){
+                                        console.log(err)
+                                    } else {
+                                        fs.unlink(a.to, err => {
+                                            if(err){
+                                                console.log(err)
+                                            }
+                                        })
+                                    }
+                                })
+                            })
+                            resolve(true)
+                        }
+                    })
 
-        const opts = {
-            url: combined,
-            headers: {
-                'Cookie': 'oraclelicense=accept-securebackup-cookie'
-            }
-        }
+                } else {
+                    resolve(false)
+                }
+            })
+        })
 
-        if(verData != null){
-            const jre = new Asset(name, null, 0, opts, fDir)
-            this.java = new DLTracker([jre], jre.size)
-            return true
-        } else {
-            return false
-        }
     }
 
+    /*_enqueueMojangJRE(dir){
+        return new Promise((resolve, reject) => {
+            // Mojang does not host the JRE for linux.
+            if(process.platform === 'linux'){
+                resolve(false)
+            }
+            AssetGuard.loadMojangLauncherData().then(data => {
+                if(data != null) {
+
+                    try {
+                        const mJRE = data[Library.mojangFriendlyOS()]['64'].jre
+                        const url = mJRE.url
+
+                        request.head(url, (err, resp, body) => {
+                            if(err){
+                                resolve(false)
+                            } else {
+                                const name = url.substring(url.lastIndexOf('/')+1)
+                                const fDir = path.join(dir, name)
+                                const jre = new Asset('jre' + mJRE.version, mJRE.sha1, resp.headers['content-length'], url, fDir)
+                                this.java = new DLTracker([jre], jre.size, a => {
+                                    fs.readFile(a.to, (err, data) => {
+                                        // Data buffer needs to be decompressed from lzma,
+                                        // not really possible using node.js
+                                    })
+                                })
+                            }
+                        })
+                    } catch (err){
+                        resolve(false)
+                    }
+
+                }
+            })
+        })
+    }*/
 
 
     // #endregion
