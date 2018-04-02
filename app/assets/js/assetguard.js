@@ -591,7 +591,10 @@ class AssetGuard extends EventEmitter {
     static _validateJavaBinary(binaryPath){
 
         return new Promise((resolve, reject) => {
-            const fBp = path.join(binaryPath, 'bin', 'java.exe')
+            let fBp = binaryPath
+            if(!fBp.endsWith('.exe')){
+                fBp = path.join(binaryPath, 'bin', 'java.exe')
+            }
             if(fs.existsSync(fBp)){
                 child_process.exec('"' + fBp + '" -XshowSettings:properties', (err, stdout, stderr) => {
 
@@ -640,6 +643,37 @@ class AssetGuard extends EventEmitter {
             // Malformed JAVA_HOME property.
             return null
         }
+    }
+
+    /**
+     * Scans the data folder's runtime directory for suitable JRE candidates.
+     * 
+     * @param {string} dataDir The base launcher directory.
+     * @returns {Promise.<Set.<string>>} A set containing suitable JRE candidates found
+     * in the runtime directory.
+     */
+    static _scanDataFolder(dataDir){
+        return new Promise((resolve, reject) => {
+            const x64RuntimeDir = path.join(dataDir, 'runtime', 'x64')
+            fs.exists(x64RuntimeDir, (e) => {
+                let res = new Set()
+                if(e){
+                    fs.readdir(x64RuntimeDir, (err, files) => {
+                        if(err){
+                            resolve(res)
+                            console.log(err)
+                        } else {
+                            for(let i=0; i<files.length; i++){
+                               res.add(path.join(x64RuntimeDir, files[i]))
+                            }
+                            resolve(res)
+                        }
+                    })
+                } else {
+                    resolve(res)
+                }
+            })
+        })
     }
 
     /**
@@ -735,15 +769,19 @@ class AssetGuard extends EventEmitter {
      * Higher versions > Lower versions
      * If versions are equal, JRE > JDK.
      * 
+     * @param {string} dataDir The base launcher directory.
      * @returns {Promise.<string>} A Promise which resolves to the root path of a valid 
      * x64 Java installation. If none are found, null is returned.
      */
-    static async _win32JavaValidate(){
+    static async _win32JavaValidate(dataDir){
 
         // Get possible paths from the registry.
         const pathSet = await AssetGuard._scanRegistry()
 
         //console.log(Array.from(pathSet)) // DEBUGGING
+
+        // Get possible paths from the data directory.
+        const pathSet2 = await AssetGuard._scanDataFolder(dataDir)
 
         // Validate JAVA_HOME
         const jHome = AssetGuard._scanJavaHome()
@@ -751,8 +789,10 @@ class AssetGuard extends EventEmitter {
             pathSet.add(jHome)
         }
 
+        const mergedSet = new Set([...pathSet, ...pathSet2])
+
         // Convert path set to an array for processing.
-        let pathArr = Array.from(pathSet)
+        let pathArr = Array.from(mergedSet)
 
         //console.log(pathArr) // DEBUGGING
 
@@ -787,24 +827,25 @@ class AssetGuard extends EventEmitter {
     /**
      * WIP ->  get a valid x64 Java path on macOS.
      */
-    static async _darwinJavaValidate(){
+    static async _darwinJavaValidate(dataDir){
         return null
     }
 
     /**
      * WIP ->  get a valid x64 Java path on linux.
      */
-    static async _linuxJavaValidate(){
+    static async _linuxJavaValidate(dataDir){
         return null
     }
 
     /**
      * Retrieve the path of a valid x64 Java installation.
      * 
+     * @param {string} dataDir The base launcher directory.
      * @returns {string} A path to a valid x64 Java installation, null if none found.
      */
-    static async validateJava(){
-        return await AssetGuard['_' + process.platform + 'JavaValidate']()
+    static async validateJava(dataDir){
+        return await AssetGuard['_' + process.platform + 'JavaValidate'](dataDir)
     }
 
     // #endregion

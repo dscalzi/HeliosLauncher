@@ -7,25 +7,27 @@ console.log('AssetExec Started')
 process.on('unhandledRejection', r => console.log(r))
 
 tracker.on('totaldlprogress', (data) => {
-    process.send({task: 0, total: data.total, value: data.acc, percent: parseInt((data.acc/data.total)*100)})
+    process.send({task: 0, total: data.total, value: data.acc, percent: parseInt((data.acc/data.total)*100), content: 'dl'})
 })
 
 tracker.on('dlcomplete', () => {
-    process.send({task: 1})
+    process.send({task: 1, content: 'dl'})
 })
 
 process.on('message', (msg) => {
     if(msg.task === 0){
         const func = msg.content
-        if(typeof tracker[func] === 'function'){
-            const f = tracker[func]
-            const res = f.apply(tracker, msg.argsArr)
+        let nS = tracker[func]
+        let iS = AssetGuard[func]
+        if(typeof nS === 'function' || typeof iS === 'function'){
+            const f = typeof nS === 'function' ? nS : iS
+            const res = f.apply(f === nS ? tracker : null, msg.argsArr)
             if(res instanceof Promise){
                 res.then((v) => {
-                    process.send({result: v})
+                    process.send({result: v, content: msg.content})
                 })
             } else {
-                process.send({result: res})
+                process.send({result: res, content: msg.content})
             }
         }
     }

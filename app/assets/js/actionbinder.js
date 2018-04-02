@@ -35,8 +35,18 @@ document.addEventListener('readystatechange', function(){
         // Bind launch button
         document.getElementById('launch_button').addEventListener('click', function(e){
             console.log('Launching game..')
-            //testdownloads()
-            dlAsync()
+            const jExe = ConfigManager.getJavaExecutable()
+            if(jExe == null){
+                asyncSystemScan()
+            } else {
+                AssetGuard._validateJavaBinary(jExe).then((v) => {
+                    if(v){
+                        dlAsync()
+                    } else {
+                        asyncSystemScan()
+                    }
+                })
+            }
         })
 
         // TODO convert this to dropdown menu.
@@ -79,6 +89,64 @@ document.addEventListener('readystatechange', function(){
     }
 }, false)
 
+/* Launch Progress Wrapper Functions */
+
+function toggleLaunchArea(loading){
+    if(loading){
+        launch_details.style.display = 'flex'
+        launch_content.style.display = 'none'
+    } else {
+        launch_details.style.display = 'none'
+        launch_content.style.display = 'inline-flex'
+    }
+}
+
+function setLaunchDetails(details){
+    launch_details_text.innerHTML = details
+}
+
+function setLaunchPercentage(value, max, percent = ((value/max)*100)){
+    launch_progress.setAttribute('max', max)
+    launch_progress.setAttribute('value', value)
+    launch_progress_label.innerHTML = percent + '%'
+}
+
+function setDownloadPercentage(value, max, percent = ((value/max)*100)){
+    remote.getCurrentWindow().setProgressBar(value/max)
+    setLaunchPercentage(value, max, percent)
+}
+
+let sysAEx
+let scanAt
+
+function asyncSystemScan(){
+
+    setLaunchDetails('Please wait..')
+    toggleLaunchArea(true)
+    setLaunchPercentage(0, 100)
+
+    sysAEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
+        ConfigManager.getGameDirectory(),
+        ConfigManager.getJavaExecutable()
+    ])
+    
+    sysAEx.on('message', (m) => {
+        if(m.content === 'validateJava'){
+            jPath = m.result
+            console.log(m.result)
+            sysAEx.disconnect()
+        }
+    })
+
+    setLaunchDetails('Checking system info..')
+    sysAEx.send({task: 0, content: 'validateJava', argsArr: [ConfigManager.getLauncherDirectory()]})
+
+}
+
+function overlayError(){
+
+}
+
 // Keep reference to Minecraft Process
 let proc
 // Is DiscordRPC enabled
@@ -89,7 +157,6 @@ const gameJoined = /\[[0-2][0-9]:[0-6][0-9]:[0-6][0-9]\] \[Client thread\/WARN\]
 const gameJoined2 = /\[[0-2][0-9]:[0-6][0-9]:[0-6][0-9]\] \[Client thread\/INFO\]: Created: \d+x\d+ textures-atlas/g
 
 let aEx
-let currentProc
 let serv
 let versionData
 let forgeData
@@ -107,89 +174,86 @@ function dlAsync(login = true){
         }
     }
 
-    launch_details_text.innerHTML = 'Please wait..'
-    launch_progress.setAttribute('max', '100')
-    launch_details.style.display = 'flex'
-    launch_content.style.display = 'none'
+    setLaunchDetails('Please wait..')
+    toggleLaunchArea(true)
+    setLaunchPercentage(0, 100)
 
+    // Start AssetExec to run validations and downloads in a forked process.
     aEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
         ConfigManager.getGameDirectory(),
         ConfigManager.getJavaExecutable()
     ])
 
+    // Establish communications between the AssetExec and current process.
     aEx.on('message', (m) => {
-        if(currentProc === 'validateDistribution'){
+        if(m.content === 'validateDistribution'){
 
-            launch_progress.setAttribute('value', 20)
-            launch_progress_label.innerHTML = '20%'
+            setLaunchPercentage(20, 100)
             serv = m.result
-            console.log('forge stuff done')
+            console.log('Forge Validation Complete.')
 
             // Begin version load.
-            launch_details_text.innerHTML = 'Loading version information..'
-            currentProc = 'loadVersionData'
-            aEx.send({task: 0, content: currentProc, argsArr: [serv.mc_version]})
+            setLaunchDetails('Loading version information..')
+            aEx.send({task: 0, content: 'loadVersionData', argsArr: [serv.mc_version]})
 
-        } else if(currentProc === 'loadVersionData'){
+        } else if(m.content === 'loadVersionData'){
 
-            launch_progress.setAttribute('value', 40)
-            launch_progress_label.innerHTML = '40%'
+            setLaunchPercentage(40, 100)
             versionData = m.result
+            console.log('Version data loaded.')
 
             // Begin asset validation.
-            launch_details_text.innerHTML = 'Validating asset integrity..'
-            currentProc = 'validateAssets'
-            aEx.send({task: 0, content: currentProc, argsArr: [versionData]})
+            setLaunchDetails('Validating asset integrity..')
+            aEx.send({task: 0, content: 'validateAssets', argsArr: [versionData]})
 
-        } else if(currentProc === 'validateAssets'){
+        } else if(m.content === 'validateAssets'){
 
-            launch_progress.setAttribute('value', 60)
-            launch_progress_label.innerHTML = '60%'
-            console.log('assets done')
+            setLaunchPercentage(60, 100)
+            console.log('Asset Validation Complete')
 
             // Begin library validation.
-            launch_details_text.innerHTML = 'Validating library integrity..'
-            currentProc = 'validateLibraries'
-            aEx.send({task: 0, content: currentProc, argsArr: [versionData]})
+            setLaunchDetails('Validating library integrity..')
+            aEx.send({task: 0, content: 'validateLibraries', argsArr: [versionData]})
 
-        } else if(currentProc === 'validateLibraries'){
+        } else if(m.content === 'validateLibraries'){
 
-            launch_progress.setAttribute('value', 80)
-            launch_progress_label.innerHTML = '80%'
-            console.log('libs done')
+            setLaunchPercentage(80, 100)
+            console.log('Library validation complete.')
 
             // Begin miscellaneous validation.
-            launch_details_text.innerHTML = 'Validating miscellaneous file integrity..'
-            currentProc = 'validateMiscellaneous'
-            aEx.send({task: 0, content: currentProc, argsArr: [versionData]})
+            setLaunchDetails('Validating miscellaneous file integrity..')
+            aEx.send({task: 0, content: 'validateMiscellaneous', argsArr: [versionData]})
 
-        } else if(currentProc === 'validateMiscellaneous'){
+        } else if(m.content === 'validateMiscellaneous'){
 
-            launch_progress.setAttribute('value', 100)
-            launch_progress_label.innerHTML = '100%'
-            console.log('files done')
+            setLaunchPercentage(100, 100)
+            console.log('File validation complete.')
 
-            launch_details_text.innerHTML = 'Downloading files..'
-            currentProc = 'processDlQueues'
-            aEx.send({task: 0, content: currentProc})
+            // Download queued files.
+            setLaunchDetails('Downloading files..')
+            aEx.send({task: 0, content: 'processDlQueues'})
 
-        } else if(currentProc === 'processDlQueues'){
+        } else if(m.content === 'dl'){
+
             if(m.task === 0){
-                remote.getCurrentWindow().setProgressBar(m.value/m.total)
-                launch_progress.setAttribute('max', m.total)
-                launch_progress.setAttribute('value', m.value)
-                launch_progress_label.innerHTML = m.percent + '%'
+
+                setDownloadPercentage(m.value, m.total, m.percent)
+
             } else if(m.task === 1){
+
+                // Download will be at 100%, remove the loading from the OS progress bar.
                 remote.getCurrentWindow().setProgressBar(-1)
 
-                launch_details_text.innerHTML = 'Preparing to launch..'
-                currentProc = 'loadForgeData'
-                aEx.send({task: 0, content: currentProc, argsArr: [serv.id]})
+                setLaunchDetails('Preparing to launch..')
+                aEx.send({task: 0, content: 'loadForgeData', argsArr: [serv.id]})
 
             } else {
+
                 console.error('Unknown download data type.', m)
+
             }
-        } else if(currentProc === 'loadForgeData'){
+
+        } else if(m.content === 'loadForgeData'){
 
             forgeData = m.result
 
@@ -200,20 +264,27 @@ function dlAsync(login = true){
                 const authUser = ConfigManager.getSelectedAccount();
                 console.log('authu', authUser)
                 let pb = new ProcessBuilder(ConfigManager.getGameDirectory(), serv, versionData, forgeData, authUser)
-                launch_details_text.innerHTML = 'Launching game..'
-                try{
+                setLaunchDetails('Launching game..')
+                try {
+                    // Build Minecraft process.
                     proc = pb.build()
-                    launch_details_text.innerHTML = 'Done. Enjoy the server!'
+                    setLaunchDetails('Done. Enjoy the server!')
+
+                    // Attach a temporary listener to the client output.
+                    // Will wait for a certain bit of text meaning that
+                    // the client application has started, and we can hide
+                    // the progress bar stuff.
                     const tempListener = function(data){
                         if(data.indexOf('[Client thread/INFO]: -- System Details --') > -1){
-                            launch_details.style.display = 'none'
-                            launch_content.style.display = 'inline-flex'
+                            toggleLaunchArea(false)
                             if(hasRPC){
                                 DiscordWrapper.updateDetails('Loading game..')
                             }
                             proc.stdout.removeListener('data', tempListener)
                         }
                     }
+
+                    // Listener for Discord RPC.
                     const gameStateChange = function(data){
                         if(servJoined.test(data)){
                             DiscordWrapper.updateDetails('Exploring the Realm!')
@@ -221,9 +292,12 @@ function dlAsync(login = true){
                             DiscordWrapper.updateDetails('Idling on Main Menu')
                         }
                     }
+
+                    // Bind listeners to stdout.
                     proc.stdout.on('data', tempListener)
                     proc.stdout.on('data', gameStateChange)
-                    // Init Discord Hook (Untested)
+
+                    // Init Discord Hook
                     const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getGameDirectory)
                     if(distro.discord != null && serv.discord != null){
                         DiscordWrapper.initRPC(distro.discord, serv.discord)
@@ -235,14 +309,18 @@ function dlAsync(login = true){
                             proc = null
                         })
                     }
+
                 } catch(err) {
-                    //launch_details_text.innerHTML = 'Error: ' + err.message;
-                    launch_details_text.innerHTML = 'Error: See log for details..';
+
+                    // Show that there was an error then hide the
+                    // progress area. Maybe switch this to an error
+                    // alert in the future. TODO
+                    setLaunchDetails('Error: See log for details..')
                     console.log(err)
                     setTimeout(function(){
-                        launch_details.style.display = 'none'
-                        launch_content.style.display = 'inline-flex'
+                        toggleLaunchArea(false)
                     }, 5000)
+
                 }
             }
 
@@ -252,7 +330,9 @@ function dlAsync(login = true){
         }
     })
 
-    launch_details_text.innerHTML = 'Loading server information..'
-    currentProc = 'validateDistribution'
-    aEx.send({task: 0, content: currentProc, argsArr: [ConfigManager.getSelectedServer()]})
+    // Begin Validations
+
+    // Validate Forge files.
+    setLaunchDetails('Loading server information..')
+    aEx.send({task: 0, content: 'validateDistribution', argsArr: [ConfigManager.getSelectedServer()]})
 }

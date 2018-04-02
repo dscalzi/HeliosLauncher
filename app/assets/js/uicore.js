@@ -40,14 +40,18 @@ document.addEventListener('readystatechange', function () {
 
     } else if(document.readyState === 'complete'){
 
+        //266.01
+        //170.8
+        //53.21
         // Bind progress bar length to length of bot wrapper
-        const targetWidth = document.getElementById("launch_content").getBoundingClientRect().width
-        const targetWidth2 = document.getElementById("server_selection").getBoundingClientRect().width
-        const targetWidth3 = document.getElementById("launch_button").getBoundingClientRect().width
-        document.getElementById("launch_details").style.maxWidth = targetWidth
-        document.getElementById("launch_progress").style.width = targetWidth2
-        document.getElementById("launch_details_right").style.maxWidth = targetWidth2
-        document.getElementById("launch_progress_label").style.width = targetWidth3
+        //const targetWidth = document.getElementById("launch_content").getBoundingClientRect().width
+        //const targetWidth2 = document.getElementById("server_selection").getBoundingClientRect().width
+        //const targetWidth3 = document.getElementById("launch_button").getBoundingClientRect().width
+
+        document.getElementById("launch_details").style.maxWidth = 266.01
+        document.getElementById("launch_progress").style.width = 170.8
+        document.getElementById("launch_details_right").style.maxWidth = 170.8
+        document.getElementById("launch_progress_label").style.width = 53.21
         
     }
 
