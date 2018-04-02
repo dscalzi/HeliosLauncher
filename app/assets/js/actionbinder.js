@@ -14,6 +14,15 @@ let launch_content, launch_details, launch_progress, launch_progress_label, laun
 
 // Synchronous Listener
 document.addEventListener('readystatechange', function(){
+
+    if (document.readyState === 'complete'){
+        if(ConfigManager.isFirstLaunch()){
+            $('#welcomeContainer').fadeIn(500)
+        } else {
+            $('#landingContainer').fadeIn(500)
+        }
+    }
+
     if (document.readyState === 'interactive'){
 
         // Save a reference to the launch elements.

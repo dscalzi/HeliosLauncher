@@ -1,4 +1,4 @@
-<div id="welcomeContainer">
+<div id="welcomeContainer" style="display: none;">
     <div class="cloudDiv">
         <div class="cloudTop"></div>
         <div class="cloudBottom"></div>
@@ -19,4 +19,16 @@
             </div>
         </button>
     </div>
+    <script type="application/javascript">
+
+        // DOM cache.
+        const welcomeButton = document.getElementById('welcomeButton')
+
+        welcomeButton.addEventListener('click', e => {
+            $('#welcomeContainer').fadeOut(250, () => {
+                $('#loginContainer').fadeIn(250)
+            })
+        })
+
+    </script>
 </div>

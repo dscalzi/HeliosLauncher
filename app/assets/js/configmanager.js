@@ -7,6 +7,8 @@ const uuidV4 = require('uuid/v4')
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : '/var/local')
 const dataPath = path.join(sysRoot, '.westeroscraft')
 
+const firstLaunch = !fs.existsSync(dataPath)
+
 function resolveMaxRAM(){
     const mem = os.totalmem()
     return mem >= 8000000000 ? '4G' : (mem >= 6000000000 ? '3G' : '2G')
@@ -86,6 +88,16 @@ exports.load = function(){
  */
 exports.getLauncherDirectory = function(){
     return dataPath
+}
+
+/**
+ * Check to see if this is the first time the user has launched the
+ * application. This is determined by the existance of the data path.
+ * 
+ * @returns {boolean} True if this is the first launch, otherwise false.
+ */
+exports.isFirstLaunch = function(){
+    return firstLaunch
 }
 
 // System Settings (Unconfigurable on UI)

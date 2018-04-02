@@ -290,7 +290,7 @@ p {
     align-items: center;
     height: 100%;
     width: 100%;
-    transition: 0.25s ease;
+    transition: filter 0.25s ease;
 }
 
 /* Login content wrapper. */
@@ -859,62 +859,62 @@ p {
  ******************************************************************************/
 
 /* Main content container. */
-#main {
-    height: calc(100% - 22px);
+#landingContainer {
+    height: 100%;
 }
 
 /* Upper content container. */
-#main > #upper {
+#landingContainer > #upper {
     height: 77%;
     display: flex;
 }
-#main > #upper > #left {
+#landingContainer > #upper > #left {
     display: inline-flex;
     width: 15%;
     height: 100%;
     justify-content: flex-end;
 }
-#main > #upper > #content {
+#landingContainer > #upper > #content {
     display: inline-flex;
     width: 59%;
     height: 100%;
 }
-#main > #upper > #right {
+#landingContainer > #upper > #right {
     display: inline-flex;
     width: 26%;
     height: 100%;
 }
 
 /* Lower content container. */
-#main > #lower {
+#landingContainer > #lower {
     height: 23%;
     display: flex;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
 }
-#main > #lower > #left {
+#landingContainer > #lower > #left {
     height: 100%;
     width: 33%;
     display: inline-flex;
     justify-content: center;
 }
-#main > #lower > #left #content {
+#landingContainer > #lower > #left #content {
     position: relative;
     top: 25px;
     display: inline-flex;
     line-height: 24px;
     left: 50px;
 }
-#main > #lower > #center {
+#landingContainer > #lower > #center {
     height: 100%;
     width: 34%;
     display: inline-flex;
     justify-content: center;
 }
-#main > #lower > #center #content {
+#landingContainer > #lower > #center #content {
     position: relative;
     top: 10px;
 }
-#main > #lower > #right {
+#landingContainer > #lower > #right {
     height: 100%;
     width: 33%;
     display: inline-flex;
@@ -1186,7 +1186,7 @@ p {
 * * */
 
 /* Main launch content container. */
-#main > #lower > #right #launch_content {
+#landingContainer > #lower > #right #launch_content {
     position: relative;
     top: 25px;
     display: inline-flex;

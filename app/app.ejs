@@ -11,6 +11,7 @@
             background-size: cover;
         }
         #main {
+            height: calc(100% - 22px);
             background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
         }
     </style>
@@ -18,7 +19,9 @@
 <body>
     <% include frame.ejs %>
     <div id="main">
+        <% include welcome.ejs %>
         <% include login.ejs %>
+        <% include landing.ejs %>
     </div>
 </body>
 </html>
