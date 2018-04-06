@@ -4,11 +4,16 @@ const url = require('url')
 const fs = require('fs')
 const ejse = require('ejs-electron')
 
+// Disable hardware acceleration.
+// https://electronjs.org/docs/tutorial/offscreen-rendering
+app.disableHardwareAcceleration()
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
 function createWindow() {
+
     win = new BrowserWindow({
         width: 980,
         height: 552,

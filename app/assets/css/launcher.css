@@ -1259,3 +1259,70 @@ p {
     white-space: nowrap;
     overflow: hidden;
 }
+
+/*******************************************************************************
+ *                                                                             *
+ * Overlay View (app.ejs)                                                      *
+ *                                                                             *
+ ******************************************************************************/
+
+#overlayContainer {
+    position: absolute;
+    top: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100% - 22px);
+    background: rgba(0, 0, 0, 0.50);
+}
+
+#overlayContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 300px;
+    height: 35%;
+    box-sizing: border-box;
+    padding: 15px 0px;
+    /* background-color: #424242; */
+    text-align: center;
+}
+
+#overlayTitle {
+    font-family: 'Avenir Medium';
+    font-size: 20px;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+#overlayDesc {
+    font-family: 'Avenir Book';
+    font-size: 12px;
+    color: #fff;
+    font-weight: bold;
+}
+
+#overlayAcknowledge {
+    background: none;
+    border: 1px solid #ffffff;
+    color: white;
+    font-family: 'Avenir Medium';
+    font-weight: bold;
+    border-radius: 2px;
+    width: 75px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+#overlayAcknowledge:hover,
+#overlayAcknowledge:focus {
+    box-shadow: 0px 0px 10px 0px #fff;
+    outline: none;
+}
+#overlayAcknowledge:active {
+    border-color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+}

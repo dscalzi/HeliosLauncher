@@ -89,8 +89,33 @@ document.addEventListener('readystatechange', function(){
     }
 }, false)
 
+/* Overlay Wrapper Functions */
+
+/**
+ * Toggle the visibility of the overlay.
+ * 
+ * @param {boolean} toggleState True to display, false to hide.
+ */
+function toggleOverlay(toggleState){
+    if(toggleState == null){
+        toggleState = !document.getElementById('main').hasAttribute('overlay')
+    }
+    if(toggleState){
+        document.getElementById('main').setAttribute('overlay', true)
+        $('#overlayContainer').fadeToggle(500)
+    } else {
+        document.getElementById('main').removeAttribute('overlay')
+        $('#overlayContainer').fadeToggle(500)
+    }
+}
+
 /* Launch Progress Wrapper Functions */
 
+/**
+ * Show/hide the loading area.
+ * 
+ * @param {boolean} loading True if the loading area should be shown, otherwise false.
+ */
 function toggleLaunchArea(loading){
     if(loading){
         launch_details.style.display = 'flex'
@@ -101,20 +126,41 @@ function toggleLaunchArea(loading){
     }
 }
 
+/**
+ * Set the details text of the loading area.
+ * 
+ * @param {string} details The new text for the loading details.
+ */
 function setLaunchDetails(details){
     launch_details_text.innerHTML = details
 }
 
+/**
+ * Set the value of the loading progress bar and display that value.
+ * 
+ * @param {number} value The progress value.
+ * @param {number} max The total size.
+ * @param {number|string} percent Optional. The percentage to display on the progress label.
+ */
 function setLaunchPercentage(value, max, percent = ((value/max)*100)){
     launch_progress.setAttribute('max', max)
     launch_progress.setAttribute('value', value)
     launch_progress_label.innerHTML = percent + '%'
 }
 
+/**
+ * Set the value of the OS progress bar and display that on the UI.
+ * 
+ * @param {number} value The progress value.
+ * @param {number} max The total download size.
+ * @param {number|string} percent Optional. The percentage to display on the progress label.
+ */
 function setDownloadPercentage(value, max, percent = ((value/max)*100)){
     remote.getCurrentWindow().setProgressBar(value/max)
     setLaunchPercentage(value, max, percent)
 }
+
+/* System (Java) Scan */
 
 let sysAEx
 let scanAt
