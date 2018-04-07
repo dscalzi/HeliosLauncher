@@ -137,6 +137,7 @@ p {
     position: relative;
 }
 
+/*
 .cloudDiv {
     position: absolute;
     height: 100%;
@@ -171,6 +172,7 @@ p {
         background-position: 230%;
     }
 }
+*/
 
 #welcomeImageSeal {
     border-radius: 50%;
@@ -179,7 +181,7 @@ p {
     height: 125px;
     width: 125px;
     box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
-    margin-bottom: 10%;
+    margin-bottom: 5%;
     margin-top: 10%;
 }
 
@@ -194,6 +196,15 @@ p {
 }
 
 #welcomeDescription {
+    font-family: 'Avenir Book';
+    text-align: justify;
+    color: white;
+    font-size: 14px;
+    font-weight: 100;
+    text-shadow: rgba(255, 255, 255, 0.75) 0px 0px 20px
+}
+
+#welcomeDescCTA {
     font-family: 'Avenir Book';
     text-align: center;
     color: white;

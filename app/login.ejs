@@ -221,7 +221,12 @@
                 loginButton.innerHTML = loginButton.innerHTML.replace('LOGGING IN', 'SUCCESS')
                 $('.circle-loader').toggleClass('load-complete')
                 $('.checkmark').toggle()
-                console.log(value)
+                //console.log(value)
+                setTimeout(() => {
+                    $('#loginContainer').fadeOut(500, () => {
+                        $('#landingContainer').fadeIn(500)
+                    })
+                }, 1000)
             }).catch((err) => {
                 loginLoading(false)
                 const errF = resolveError(err)
@@ -233,13 +238,6 @@
                 toggleOverlay(true)
                 console.log(err)
             })
-
-            // Temp for debugging, use procedure with real code.
-            setTimeout(() => {
-                loginButton.innerHTML = loginButton.innerHTML.replace('LOGGING IN', 'SUCCESS')
-                $('.circle-loader').toggleClass('load-complete')
-                $('.checkmark').toggle()
-            }, 2500)
 
         })
     </script>
