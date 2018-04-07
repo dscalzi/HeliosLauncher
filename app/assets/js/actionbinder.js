@@ -214,13 +214,11 @@ function asyncSystemScan(launchAfter = true){
     sysAEx.on('message', (m) => {
         if(m.content === 'validateJava'){
 
-            //m.result = null
-
             if(m.result == null){
                 // If the result is null, no valid Java installation was found.
                 // Show this information to the user.
                 setOverlayContent(
-                    'No Compatible<br>Java Installation Found..',
+                    'No Compatible<br>Java Installation Found',
                     'In order to join WesterosCraft, you need a 64-bit installation of Java 8. Would you like us to install a copy? By installing, you accept <a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">Oracle\'s license agreement</a>.',
                     'Install Java'
                 )
@@ -256,11 +254,14 @@ function asyncSystemScan(launchAfter = true){
                 // Oracle JRE enqueue failed. Probably due to a change in their website format.
                 // User will have to follow the guide to install Java.
                 setOverlayContent(
-                    'Yikes!<br>Java download failed.',
-                    'Unfortunately we\'ve encountered an issue while attempting to install Java. You will need to install a copy yourself. Please check out <a href="http://westeroscraft.wikia.com/wiki/Troubleshooting_Guide">this guide</a> for more details and instructions.',
-                    'Got it'
+                    'Unexpected Issue:<br>Java Download Failed',
+                    'Unfortunately we\'ve encountered an issue while attempting to install Java. You will need to manually install a copy. Please check out our <a href="http://westeroscraft.wikia.com/wiki/Troubleshooting_Guide">Troubleshooting Guide</a> for more details and instructions.',
+                    'I Understand'
                 )
-                setOverlayHandler(null)
+                setOverlayHandler(() => {
+                    toggleOverlay(false)
+                    toggleLaunchArea(false)
+                })
                 toggleOverlay(true)
                 sysAEx.disconnect()
 
