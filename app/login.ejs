@@ -55,13 +55,6 @@
             </div>
         </div>
     </div>
-    <div id="loginErrorContainer">
-        <div id="loginErrorContent">
-            <span id="loginErrorTitle">LOGIN FAILED:<br>INVALID CREDENTIALS</span>
-            <span id="loginErrorDesc">Either the email or password you supplied is invalid. Please ensure everything is correct and try again.</span>
-            <button id="loginErrorAcknowledge">Try Again</button>
-        </div>
-    </div>
     <script type="application/javascript">
         //const validEmail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
         
@@ -231,11 +224,13 @@
                 console.log(value)
             }).catch((err) => {
                 loginLoading(false)
-                $('#loginErrorContainer').css('display', 'flex').hide().fadeIn(250)
-                loginContainer.setAttribute('error', true)
                 const errF = resolveError(err)
-                loginErrorTitle.innerHTML = errF.title
-                loginErrorDesc.innerHTML = errF.desc
+                setOverlayContent(errF.title, errF.desc, 'Try Again')
+                setOverlayHandler(() => {
+                    formDisabled(false)
+                    toggleOverlay(false)
+                })
+                toggleOverlay(true)
                 console.log(err)
             })
 
@@ -246,12 +241,6 @@
                 $('.checkmark').toggle()
             }, 2500)
 
-        })
-
-        loginErrorAcknowledge.addEventListener('click', () => {
-            formDisabled(false)
-            loginContainer.removeAttribute('error', false)
-            $('#loginErrorContainer').fadeOut(250)
         })
     </script>
     <!-- Will reuse this down the line, then it will be removed from this file. -->

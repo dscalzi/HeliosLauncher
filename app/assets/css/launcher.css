@@ -707,78 +707,6 @@ p {
 }
 
 /* * *
-* Login View | Error Overlay
-* * */
-
-#loginErrorContainer {
-    position: absolute;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.50);
-}
-
-/*#loginContainer[error] > #loginErrorContainer {
-    display: flex;
-}*/
-
-#loginContainer[error] > div:not(#loginErrorContainer) {
-    filter: blur(3px) contrast(0.9) brightness(1.0);
-}
-
-#loginErrorContent {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    width: 300px;
-    height: 35%;
-    box-sizing: border-box;
-    padding: 15px 0px;
-    /* background-color: #424242; */
-    text-align: center;
-}
-
-#loginErrorTitle {
-    font-family: 'Avenir Medium';
-    font-size: 20px;
-    color: #fff;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-#loginErrorDesc {
-    font-family: 'Avenir Book';
-    font-size: 12px;
-    color: #fff;
-    font-weight: bold;
-}
-
-#loginErrorAcknowledge {
-    background: none;
-    border: 1px solid #ffffff;
-    color: white;
-    font-family: 'Avenir Medium';
-    font-weight: bold;
-    border-radius: 2px;
-    width: 75px;
-    cursor: pointer;
-    transition: 0.25s ease;
-}
-#loginErrorAcknowledge:hover,
-#loginErrorAcknowledge:focus {
-    box-shadow: 0px 0px 10px 0px #fff;
-    outline: none;
-}
-#loginErrorAcknowledge:active {
-    border-color: rgba(255, 255, 255, 0.75);
-    color: rgba(255, 255, 255, 0.75);
-}
-
-/* * *
 * Login View | Loader
 * * */
 /* Will reuse this elsewhere down the line.
@@ -1313,7 +1241,7 @@ p {
     font-family: 'Avenir Medium';
     font-weight: bold;
     border-radius: 2px;
-    width: 75px;
+    padding: 0px 8.1px;
     cursor: pointer;
     transition: 0.25s ease;
 }

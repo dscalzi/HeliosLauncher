@@ -102,10 +102,39 @@ function toggleOverlay(toggleState){
     }
     if(toggleState){
         document.getElementById('main').setAttribute('overlay', true)
-        $('#overlayContainer').fadeToggle(500)
+        $('#overlayContainer').fadeToggle(250)
     } else {
         document.getElementById('main').removeAttribute('overlay')
-        $('#overlayContainer').fadeToggle(500)
+        $('#overlayContainer').fadeToggle(250)
+    }
+}
+
+/**
+ * Set the content of the overlay.
+ * 
+ * @param {string} title Overlay title text.
+ * @param {string} description Overlay description text.
+ * @param {string} acknowledge Acknowledge button text.
+ */
+function setOverlayContent(title, description, acknowledge){
+    document.getElementById('overlayTitle').innerHTML = title
+    document.getElementById('overlayDesc').innerHTML = description
+    document.getElementById('overlayAcknowledge').innerHTML = acknowledge
+}
+
+/**
+ * Set the onclick handler of the overlay acknowledge button.
+ * If the handler is null, a default handler will be added.
+ * 
+ * @param {function} handler 
+ */
+function setOverlayHandler(handler){
+    if(handler == null){
+        document.getElementById('overlayAcknowledge').onclick = () => {
+            toggleOverlay(false)
+        }
+    } else {
+        document.getElementById('overlayAcknowledge').onclick = handler
     }
 }
 
