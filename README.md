@@ -104,4 +104,6 @@ Run either of the build scrips noted below. Note that each platform can only be 
 
 If you run into any issue which cannot be resolved via a quick google search, create an issue using the tab above.
 
-Much of the discussion regarding this launcher is done on Discord, feel free to join us there [![Discord](https://discordapp.com/api/guilds/98469309352775680/widget.png)](https://discord.gg/hqdjs3m)
+Much of the discussion regarding this launcher is done on #launcherdev in Discord, feel free to join us there.
+
+[![Discord](https://discordapp.com/api/guilds/98469309352775680/embed.png?style=banner2)](https://discord.gg/hqdjs3m)

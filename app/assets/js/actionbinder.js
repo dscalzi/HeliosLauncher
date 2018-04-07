@@ -39,6 +39,11 @@ document.addEventListener('readystatechange', function(){
             if(jExe == null){
                 asyncSystemScan()
             } else {
+
+                setLaunchDetails('Please wait..')
+                toggleLaunchArea(true)
+                setLaunchPercentage(0, 100)
+
                 AssetGuard._validateJavaBinary(jExe).then((v) => {
                     if(v){
                         dlAsync()
@@ -194,12 +199,13 @@ function setDownloadPercentage(value, max, percent = ((value/max)*100)){
 let sysAEx
 let scanAt
 
-function asyncSystemScan(){
+function asyncSystemScan(launchAfter = true){
 
     setLaunchDetails('Please wait..')
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
+    // Fork a process to run validations.
     sysAEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
         ConfigManager.getGameDirectory(),
         ConfigManager.getJavaExecutable()
@@ -207,18 +213,93 @@ function asyncSystemScan(){
     
     sysAEx.on('message', (m) => {
         if(m.content === 'validateJava'){
-            jPath = m.result
-            console.log(m.result)
-            sysAEx.disconnect()
+
+            //m.result = null
+
+            if(m.result == null){
+                // If the result is null, no valid Java installation was found.
+                // Show this information to the user.
+                setOverlayContent(
+                    'No Compatible<br>Java Installation Found..',
+                    'In order to join WesterosCraft, you need a 64-bit installation of Java 8. Would you like us to install a copy? By installing, you accept <a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">Oracle\'s license agreement</a>.',
+                    'Install Java'
+                )
+                setOverlayHandler(() => {
+                    setLaunchDetails('Preparing Java Download..')
+                    sysAEx.send({task: 0, content: '_enqueueOracleJRE', argsArr: [ConfigManager.getLauncherDirectory()]})
+                    toggleOverlay(false)
+                })
+                toggleOverlay(true)
+
+                // TODO Add option to not install Java x64.
+
+            } else {
+                // Java installation found, use this to launch the game.
+                ConfigManager.setJavaExecutable(m.result)
+                ConfigManager.save()
+                if(launchAfter){
+                    dlAsync()
+                }
+                sysAEx.disconnect()
+            }
+
+        } else if(m.content === '_enqueueOracleJRE'){
+
+            if(m.result === true){
+
+                // Oracle JRE enqueued successfully, begin download.
+                setLaunchDetails('Downloading Java..')
+                sysAEx.send({task: 0, content: 'processDlQueues', argsArr: [[{id:'java', limit:1}]]})
+
+            } else {
+
+                // Oracle JRE enqueue failed. Probably due to a change in their website format.
+                // User will have to follow the guide to install Java.
+                setOverlayContent(
+                    'Yikes!<br>Java download failed.',
+                    'Unfortunately we\'ve encountered an issue while attempting to install Java. You will need to install a copy yourself. Please check out <a href="http://westeroscraft.wikia.com/wiki/Troubleshooting_Guide">this guide</a> for more details and instructions.',
+                    'Got it'
+                )
+                setOverlayHandler(null)
+                toggleOverlay(true)
+                sysAEx.disconnect()
+
+            }
+
+        } else if(m.content === 'dl'){
+
+            if(m.task === 0){
+                // Downloading..
+                setDownloadPercentage(m.value, m.total, m.percent)
+            } else if(m.task === 1){
+                // Download will be at 100%, remove the loading from the OS progress bar.
+                remote.getCurrentWindow().setProgressBar(-1)
+
+                // Wait for extration to complete.
+                setLaunchDetails('Extracting..')
+
+            } else if(m.task === 2){
+
+                // Extraction completed successfully.
+                ConfigManager.setJavaExecutable(m.jPath)
+                ConfigManager.save()
+
+                setLaunchDetails('Java Installed!')
+
+                if(launchAfter){
+                    dlAsync()
+                }
+
+                sysAEx.disconnect()
+            } else {
+                console.error('Unknown download data type.', m)
+            }
         }
     })
 
+    // Begin system Java scan.
     setLaunchDetails('Checking system info..')
     sysAEx.send({task: 0, content: 'validateJava', argsArr: [ConfigManager.getLauncherDirectory()]})
-
-}
-
-function overlayError(){
 
 }
 
@@ -283,12 +364,18 @@ function dlAsync(login = true){
 
         } else if(m.content === 'validateAssets'){
 
-            setLaunchPercentage(60, 100)
-            console.log('Asset Validation Complete')
+            // Asset validation can *potentially* take longer, so let's track progress.
+            if(m.task === 0){
+                const perc = (m.value/m.total)*20
+                setLaunchPercentage(40+perc, 100, parseInt(40+perc))
+            } else {
+                setLaunchPercentage(60, 100)
+                console.log('Asset Validation Complete')
 
-            // Begin library validation.
-            setLaunchDetails('Validating library integrity..')
-            aEx.send({task: 0, content: 'validateLibraries', argsArr: [versionData]})
+                // Begin library validation.
+                setLaunchDetails('Validating library integrity..')
+                aEx.send({task: 0, content: 'validateLibraries', argsArr: [versionData]})
+            }
 
         } else if(m.content === 'validateLibraries'){
 

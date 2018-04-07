@@ -33,7 +33,7 @@
     "ejs-electron": "^2.0.1",
     "jquery": "^3.3.1",
     "request-promise-native": "^1.0.5",
-    "targz": "^1.0.1",
+    "tar-fs": "^1.16.0",
     "uuid": "^3.2.1",
     "winreg": "^1.2.4"
   },

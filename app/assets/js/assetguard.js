@@ -32,7 +32,8 @@ const mkpath = require('mkdirp');
 const path = require('path')
 const Registry = require('winreg')
 const request = require('request')
-const targz = require('targz')
+const tar = require('tar-fs')
+const zlib = require('zlib')
 
 // Constants
 const PLATFORM_MAP = {
@@ -559,6 +560,23 @@ class AssetGuard extends EventEmitter {
     }
 
     /**
+     * Returns the path of the OS-specific executable for the given Java
+     * installation. Supported OS's are win32, darwin, linux.
+     * 
+     * @param {string} rootDir The root directory of the Java installation.
+     */
+    static javaExecFromRoot(rootDir){
+        if(process.platform === 'win32'){
+            return path.join(rootDir, 'bin', 'javaw.exe')
+        } else if(process.platform === 'darwin'){
+            return path.join(rootDir, 'Contents', 'Home', 'bin', 'java')
+        } else if(process.platform === 'linux'){
+            return path.join(rootDir, 'bin', 'java')
+        }
+        return rootDir
+    }
+
+    /**
      * Load Mojang's launcher.json file.
      * 
      * @returns {Promise.<Object>} Promise which resolves to Mojang's launcher.json object.
@@ -583,20 +601,16 @@ class AssetGuard extends EventEmitter {
      * the function's code throws errors. That would indicate that the option is changed or
      * removed.
      * 
-     * @param {string} binaryPath Path to the root of the java binary we wish to validate.
+     * @param {string} binaryExecPath Path to the java executable we wish to validate.
      * 
      * @returns {Promise.<boolean>} Resolves to false only if the test is successful and the result
      * is less than 64.
      */
-    static _validateJavaBinary(binaryPath){
+    static _validateJavaBinary(binaryExecPath){
 
         return new Promise((resolve, reject) => {
-            let fBp = binaryPath
-            if(!fBp.endsWith('.exe')){
-                fBp = path.join(binaryPath, 'bin', 'java.exe')
-            }
-            if(fs.existsSync(fBp)){
-                child_process.exec('"' + fBp + '" -XshowSettings:properties', (err, stdout, stderr) => {
+            if(fs.existsSync(binaryExecPath)){
+                child_process.exec('"' + binaryExecPath + '" -XshowSettings:properties', (err, stdout, stderr) => {
 
                     try {
                         // Output is stored in stderr?
@@ -605,7 +619,7 @@ class AssetGuard extends EventEmitter {
                         for(let i=0; i<props.length; i++){
                             if(props[i].indexOf('sun.arch.data.model') > -1){
                                 let arch = props[i].split('=')[1].trim()
-                                console.log(props[i].trim() + ' for ' + binaryPath)
+                                console.log(props[i].trim() + ' for ' + binaryExecPath)
                                 resolve(parseInt(arch) >= 64)
                             }
                         }
@@ -770,7 +784,7 @@ class AssetGuard extends EventEmitter {
      * If versions are equal, JRE > JDK.
      * 
      * @param {string} dataDir The base launcher directory.
-     * @returns {Promise.<string>} A Promise which resolves to the root path of a valid 
+     * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
      * x64 Java installation. If none are found, null is returned.
      */
     static async _win32JavaValidate(dataDir){
@@ -813,9 +827,10 @@ class AssetGuard extends EventEmitter {
 
         // Validate that the binary is actually x64.
         for(let i=0; i<pathArr.length; i++) {
-            let res = await AssetGuard._validateJavaBinary(pathArr[i])
+            const execPath = AssetGuard.javaExecFromRoot(pathArr[i])
+            let res = await AssetGuard._validateJavaBinary(execPath)
             if(res){
-                return pathArr[i]
+                return execPath
             }
         }
 
@@ -961,9 +976,13 @@ class AssetGuard extends EventEmitter {
             const objectPath = path.join(localPath, 'objects')
 
             const assetDlQueue = []
-            let dlSize = 0;
+            let dlSize = 0
+            let acc = 0
+            const total = Object.keys(indexData.objects).length
             //const objKeys = Object.keys(data.objects)
             async.forEachOfLimit(indexData.objects, 10, function(value, key, cb){
+                acc++
+                self.emit('assetVal', {acc, total})
                 const hash = value.hash
                 const assetName = path.join(hash.substring(0, 2), hash)
                 const urlName = hash.substring(0, 2) + "/" + hash
@@ -1128,7 +1147,7 @@ class AssetGuard extends EventEmitter {
                 self.forge = self._parseDistroModules(serv.modules, serv.mc_version)
                 //Correct our workaround here.
                 let decompressqueue = self.forge.callback
-                self.forge.callback = function(asset){
+                self.forge.callback = function(asset, self){
                     if(asset.to.toLowerCase().endsWith('.pack.xz')){
                         AssetGuard._extractPackXZ([asset.to], self.javaexec)
                     }
@@ -1251,7 +1270,7 @@ class AssetGuard extends EventEmitter {
     // Java (Category=''') Validation (download) Functions
     // #region
 
-    _enqueueOracleJRE(dir){
+    _enqueueOracleJRE(dataDir){
         return new Promise((resolve, reject) => {
             AssetGuard._latestJREOracle().then(verData => {
                 if(verData != null){
@@ -1269,24 +1288,37 @@ class AssetGuard extends EventEmitter {
                         if(err){
                             resolve(false)
                         } else {
+                            dataDir = path.join(dataDir, 'runtime', 'x64')
                             const name = combined.substring(combined.lastIndexOf('/')+1)
-                            const fDir = path.join(dir, name)
+                            const fDir = path.join(dataDir, name)
                             const jre = new Asset(name, null, resp.headers['content-length'], opts, fDir)
-                            this.java = new DLTracker([jre], jre.size, a => {
-                                targz.decompress({
-                                    src: a.to,
-                                    dest: dir
-                                }, err => {
-                                    if(err){
-                                        console.log(err)
-                                    } else {
+                            this.java = new DLTracker([jre], jre.size, (a, self) => {
+                                let h = null
+                                fs.createReadStream(a.to)
+                                    .on('error', err => console.log(err))
+                                .pipe(zlib.createGunzip())
+                                    .on('error', err => console.log(err))
+                                .pipe(tar.extract(dataDir, {
+                                    map: (header) => {
+                                        if(h == null){
+                                            h = header.name
+                                        }
+                                    }
+                                }))
+                                    .on('error', err => console.log(err))
+                                    .on('finish', () => {
                                         fs.unlink(a.to, err => {
                                             if(err){
                                                 console.log(err)
                                             }
+                                            if(h.indexOf('/') > -1){
+                                                h = h.substring(0, h.indexOf('/'))
+                                            }
+                                            const pos = path.join(dataDir, h)
+                                            self.emit('jExtracted', AssetGuard.javaExecFromRoot(pos))
                                         })
-                                    }
-                                })
+                                    })
+                                
                             })
                             resolve(true)
                         }
@@ -1371,7 +1403,7 @@ class AssetGuard extends EventEmitter {
                         writeStream.on('close', () => {
                             //console.log('DLResults ' + asset.size + ' ' + count + ' ', asset.size === count)
                             if(concurrentDlTracker.callback != null){
-                                concurrentDlTracker.callback.apply(concurrentDlTracker, [asset])
+                                concurrentDlTracker.callback.apply(concurrentDlTracker, [asset, self])
                             }
                             cb()
                         })

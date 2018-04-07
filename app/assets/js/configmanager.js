@@ -25,7 +25,7 @@ const DEFAULT_CONFIG = {
         java: {
             minRAM: '2G',
             maxRAM: resolveMaxRAM(), // Dynamic
-            executable: 'C:\\Program Files\\Java\\jdk1.8.0_152\\bin\\javaw.exe', // TODO Resolve
+            executable: null,
             jvmOptions: [
                 '-XX:+UseConcMarkSweepGC',
                 '-XX:+CMSIncrementalMode',

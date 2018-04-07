@@ -1210,13 +1210,36 @@ p {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     width: 300px;
-    height: 35%;
+    /*height: 35%;*/
     box-sizing: border-box;
     padding: 15px 0px;
     /* background-color: #424242; */
     text-align: center;
+}
+
+#overlayContent a {
+    color: rgba(202, 202, 202, 0.75);
+    transition: 0.25s ease;
+}
+#overlayContent a:hover {
+    color: rgba(255, 255, 255, 0.75);
+}
+#overlayContent a:active {
+    color: rgba(165, 165, 165, 0.75);
+}
+
+#overlayContent > *:first-child {
+    margin-top: 0px !important;
+}
+
+#overlayContent > *:last-child {
+    margin-bottom: 0px !important;
+}
+
+#overlayContent > * {
+    margin: 8px 0px;
 }
 
 #overlayTitle {
