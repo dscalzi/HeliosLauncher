@@ -6,6 +6,8 @@
   "main": "index.js",
   "scripts": {
     "start": "electron index.js",
+    "travislinux": "electron-builder --linux --win",
+    "travisdarwin": "electron-builder --mac",
     "dist": "SET ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true & electron-builder",
     "dist:win": "npm run dist -- --win --x64",
     "dist:mac": "npm run dist -- --mac",
@@ -17,12 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/westeroscraft/electronlauncher.git"
+    "url": "git+https://github.com/WesterosCraftCode/ElectronLauncher.git"
   },
   "author": "Daniel Scalzi",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://gitlab.com/westeroscraft/electronlauncher/issues"
+    "url": "https://github.com/WesterosCraftCode/ElectronLauncher/issues"
   },
   "homepage": "http://www.westeroscraft.com/",
   "dependencies": {
@@ -32,6 +34,7 @@
     "ejs": "^2.5.7",
     "ejs-electron": "^2.0.1",
     "jquery": "^3.3.1",
+    "mkdirp": "^0.5.1",
     "request-promise-native": "^1.0.5",
     "tar-fs": "^1.16.0",
     "uuid": "^3.2.1",
@@ -51,8 +54,22 @@
       "output": "dist"
     },
     "win": {
-      "target": "portable",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": "x64"
+        }
+      ],
       "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeader": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico"
     },
     "mac": {
       "target": "dmg",
