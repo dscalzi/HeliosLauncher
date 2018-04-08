@@ -1,6 +1,6 @@
 <div id="loginContainer" style="display: none;">
     <div id="loginContent">
-        <div id='loginForm'>
+        <form id="loginForm" onsubmit="void(0); return false;">
             <img id="loginImageSeal" src="assets/images/WesterosSealCircle.png"/>
             <span class="loginSpan" id="loginSubheader">MEMBER LOGIN</span>
             <div class="loginFieldContainer">
@@ -53,7 +53,7 @@
                 <p class="loginDisclaimerText">Your password is sent directly to mojang and never stored.</p>
                 <p class="loginDisclaimerText">WesterosCraft is not affiliated with Mojang AB.</p>
             </div>
-        </div>
+        </form>
     </div>
     <script type="application/javascript">
         //const validEmail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
