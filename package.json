@@ -67,9 +67,7 @@
       "perMachine": true,
       "allowElevation": true,
       "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
-      "installerHeader": "build/icon.ico",
-      "installerHeaderIcon": "build/icon.ico"
+      "uninstallerIcon": "build/icon.ico"
     },
     "mac": {
       "target": "dmg",

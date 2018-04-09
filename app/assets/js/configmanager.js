@@ -195,6 +195,31 @@ exports.addAuthAccount = function(uuid, accessToken, username, displayName){
 }
 
 /**
+ * Remove an authenticated account from the database. If the account
+ * was also the selected account, a new one will be selected. If there
+ * are no accounts, the selected account will be null.
+ * 
+ * @param {string} uuid The uuid of the authenticated account.
+ * 
+ * @returns {boolean} True if the account was removed, false if it never existed.
+ */
+exports.removeAuthAccount = function(uuid){
+    if(config.authenticationDatabase[uuid] != null){
+        delete config.authenticationDatabase[uuid]
+        if(config.selectedAccount === uuid){
+            const keys = Object.keys(config.authenticationDatabase)
+            if(keys.length > 0){
+                config.selectedAccount = keys[0]
+            } else {
+                config.selectedAccount = null
+            }
+        }
+        return true
+    }
+    return false
+}
+
+/**
  * Get the currently selected authenticated account.
  * 
  * @returns {Object} The selected authenticated account.
