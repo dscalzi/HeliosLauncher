@@ -126,7 +126,26 @@
                     <button id="launch_button">PLAY</button>
                     <div class="bot_divider"></div>
                     <!-- Span until we implement the real selection -->
-                    <span class="bot_label" id="server_selection">&#8226; No Server Selected</span>
+                    <div id="serverSelectContainer">
+                        <div id="serverSelectContent">
+                            <div class="serverSelectElement" sel>
+                                <span class="serverSelected">◆</span>
+                                <span class="bot_label serverSelectName">WesterosCraft Production Server</span>
+                                <span class="bot_label serverSelectDesc">Main WesterosCraft Server</span>
+                            </div>
+                            <div class="serverSelectElement">
+                                <span class="serverSelected">◆</span>
+                                <span class="bot_label serverSelectName">WesterosCraft Test Server</span>
+                                <span class="bot_label serverSelectDesc">Test server for production.</span>
+                            </div>
+                            <div class="serverSelectElement">
+                                <span class="serverSelected">◆</span>
+                                <span class="bot_label serverSelectName">1.12.2 Test Server</span>
+                                <span class="bot_label serverSelectDesc">Server for 1.12.2 testing.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="bot_label" id="server_selection"style="display:none;line-height: 24px;">&#8226; No Server Selected</span>
                 </div>
                 <div id="launch_details">
                     <div id="launch_details_left">
