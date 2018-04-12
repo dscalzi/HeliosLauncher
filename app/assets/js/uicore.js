@@ -8,6 +8,7 @@ const $ = require('jquery');
 const {remote, shell, webFrame} = require('electron')
 
 // Disable zoom, needed for darwin.
+webFrame.setZoomLevel(0)
 webFrame.setVisualZoomLevelLimits(1, 1)
 webFrame.setLayoutZoomLevelLimits(0, 0)
 
