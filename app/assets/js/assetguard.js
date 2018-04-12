@@ -564,16 +564,34 @@ class AssetGuard extends EventEmitter {
      * installation. Supported OS's are win32, darwin, linux.
      * 
      * @param {string} rootDir The root directory of the Java installation.
+     * @returns {string} The path to the Java executable.
      */
     static javaExecFromRoot(rootDir){
         if(process.platform === 'win32'){
             return path.join(rootDir, 'bin', 'javaw.exe')
         } else if(process.platform === 'darwin'){
-            return path.join(rootDir, 'Contents', 'Home', 'bin', 'java')
+            return path.join(rootDir, 'bin', 'java')
         } else if(process.platform === 'linux'){
             return path.join(rootDir, 'bin', 'java')
         }
         return rootDir
+    }
+
+    /**
+     * Check to see if the given path points to a Java executable.
+     * 
+     * @param {string} pth The path to check against.
+     * @returns {boolean} True if the path points to a Java executable, otherwise false.
+     */
+    static isJavaExecPath(pth){
+        if(process.platform === 'win32'){
+            return pth.endsWith(path.join('bin', 'javaw.exe'))
+        } else if(process.platform === 'darwin'){
+            return pth.endsWith(path.join('bin', 'java'))
+        } else if(process.platform === 'linux'){
+            return pth.endsWith(path.join('bin', 'java'))
+        }
+        return false
     }
 
     /**
@@ -594,6 +612,28 @@ class AssetGuard extends EventEmitter {
     }
 
     /**
+     * Validates the output of a JVM's properties. Currently validates that a JRE is x64.
+     * 
+     * @param {string} stderr The output to validate.
+     * 
+     * @returns {Promise.<boolean>} A promise which resolves to true if the properties are valid.
+     * Otherwise false.
+     */
+    static _validateJVMProperties(stderr){
+        const res = stderr
+        const props = res.split('\n')
+        for(let i=0; i<props.length; i++){
+            if(props[i].indexOf('sun.arch.data.model') > -1){
+                let arch = props[i].split('=')[1].trim()
+                console.log(props[i].trim())
+                return parseInt(arch) >= 64
+            }
+        }
+        // sun.arch.data.model not found?
+        return false
+    }
+
+    /**
      * Validates that a Java binary is at least 64 bit. This makes use of the non-standard
      * command line option -XshowSettings:properties. The output of this contains a property,
      * sun.arch.data.model = ARCH, in which ARCH is either 32 or 64. This option is supported
@@ -611,28 +651,12 @@ class AssetGuard extends EventEmitter {
         return new Promise((resolve, reject) => {
             if(fs.existsSync(binaryExecPath)){
                 child_process.exec('"' + binaryExecPath + '" -XshowSettings:properties', (err, stdout, stderr) => {
-
                     try {
                         // Output is stored in stderr?
-                        const res = stderr
-                        const props = res.split('\n')
-                        for(let i=0; i<props.length; i++){
-                            if(props[i].indexOf('sun.arch.data.model') > -1){
-                                let arch = props[i].split('=')[1].trim()
-                                console.log(props[i].trim() + ' for ' + binaryExecPath)
-                                resolve(parseInt(arch) >= 64)
-                            }
-                        }
-
-                        // sun.arch.data.model not found?
-                        // Disregard this test.
-                        resolve(true)
-
+                        resolve(this._validateJVMProperties(stderr))
                     } catch (err){
-
                         // Output format might have changed, validation cannot be completed.
-                        // Disregard this test in that case.
-                        resolve(true)
+                        resolve(false)
                     }
                 })
             } else {
@@ -641,6 +665,26 @@ class AssetGuard extends EventEmitter {
         })
         
     }
+
+    /*static _validateJavaBinaryDarwin(binaryPath){
+
+        return new Promise((resolve, reject) => {
+            if(fs.existsSync(binaryExecPath)){
+                child_process.exec('export JAVA_HOME="' + binaryPath + '"; java -XshowSettings:properties', (err, stdout, stderr) => {
+                    try {
+                        // Output is stored in stderr?
+                        resolve(this._validateJVMProperties(stderr))
+                    } catch (err){
+                        // Output format might have changed, validation cannot be completed.
+                        resolve(false)
+                    }
+                })
+            } else {
+                resolve(false)
+            }
+        })
+
+    }*/
 
     /**
      * Checks for the presence of the environment variable JAVA_HOME. If it exits, we will check
@@ -840,9 +884,43 @@ class AssetGuard extends EventEmitter {
     }
 
     /**
+     * See if JRE exists in the Internet Plug-Ins folder.
+     * 
+     * @returns {string} The path of the JRE if found, otherwise null.
+     */
+    static _scanInternetPlugins(){
+        // /Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java
+        const pth = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home'
+        const res = fs.existsSync(pth)
+        return res ? pthRoot : null
+    }
+
+    /**
      * WIP ->  get a valid x64 Java path on macOS.
      */
     static async _darwinJavaValidate(dataDir){
+
+        const pathSet = new Set()
+
+        const iPPath = AssetGuard._scanInternetPlugins()
+        if(iPPath != null){
+            pathSet.add(iPPath)
+        }
+
+        const jHome = AssetGuard._scanJavaHome()
+        if(jHome != null){
+            pathSet.add(jHome)
+        }
+
+        let pathArr = Array.from(pathSet)
+        for(let i=0; i<pathArr.length; i++) {
+            const execPath = AssetGuard.javaExecFromRoot(pathArr[i])
+            let res = await AssetGuard._validateJavaBinary(execPath)
+            if(res){
+                return execPath
+            }
+        }
+
         return null
     }
 
