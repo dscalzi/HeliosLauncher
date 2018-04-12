@@ -892,7 +892,7 @@ class AssetGuard extends EventEmitter {
         // /Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java
         const pth = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home'
         const res = fs.existsSync(pth)
-        return res ? pthRoot : null
+        return res ? pth : null
     }
 
     /**
