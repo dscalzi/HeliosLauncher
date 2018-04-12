@@ -5,7 +5,11 @@
  * modules, excluding dependencies.
  */
 const $ = require('jquery');
-const {remote, shell} = require('electron')
+const {remote, shell, webFrame} = require('electron')
+
+// Disable zoom, needed for darwin.
+webFrame.setVisualZoomLevelLimits(1, 1)
+webFrame.setLayoutZoomLevelLimits(0, 0)
 
 /* jQuery Example
 $(function(){
