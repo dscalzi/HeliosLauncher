@@ -624,9 +624,9 @@ class AssetGuard extends EventEmitter {
         const ret = {}
         let pts = verString.split('-')
         ret.build = parseInt(pts[1].substring(1))
-        pts = verString[0].split('_')
+        pts = pts[0].split('_')
         ret.update = parseInt(pts[1])
-        ret.major = parseInt(pts[0].split['.'][1])
+        ret.major = parseInt(pts[0].split('.')[1])
         return ret
     }
 
