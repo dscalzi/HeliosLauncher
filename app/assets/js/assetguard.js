@@ -612,7 +612,27 @@ class AssetGuard extends EventEmitter {
     }
 
     /**
-     * Validates the output of a JVM's properties. Currently validates that a JRE is x64.
+     * Parses a **full** Java Runtime version string and resolves
+     * the version information. Uses Java 8 formatting.
+     * 
+     * @param {string} verString Full version string to parse.
+     * @returns Object containing the version information.
+     */
+    static parseJavaRuntimeVersion(verString){
+        // 1.{major}.0_{update}-b{build}
+        // ex. 1.8.0_152-b16
+        const ret = {}
+        let pts = verString.split('-')
+        ret.build = parseInt(pts[1].substring(1))
+        pts = verString[0].split('_')
+        ret.update = parseInt(pts[1])
+        ret.major = parseInt(pts[0].split['.'][1])
+        return ret
+    }
+
+    /**
+     * Validates the output of a JVM's properties. Currently validates that a JRE is x64
+     * and that the major = 8, update > 52.
      * 
      * @param {string} stderr The output to validate.
      * 
@@ -622,15 +642,34 @@ class AssetGuard extends EventEmitter {
     static _validateJVMProperties(stderr){
         const res = stderr
         const props = res.split('\n')
+
+        const goal = 2
+        let checksum = 0
+
         for(let i=0; i<props.length; i++){
             if(props[i].indexOf('sun.arch.data.model') > -1){
                 let arch = props[i].split('=')[1].trim()
                 console.log(props[i].trim())
-                return parseInt(arch) >= 64
+                if(parseInt(arch) === 64){
+                    ++checksum
+                    if(checksum === goal){
+                        return true
+                    }
+                }
+            } else if(props[i].indexOf('java.runtime.version') > -1){
+                let verString = props[i].split('=')[1].trim()
+                console.log(props[i].trim())
+                const verOb = AssetGuard.parseJavaRuntimeVersion(verString)
+                if(verOb.major === 8 && verOb.update > 52){
+                    ++checksum
+                    if(checksum === goal){
+                        return true
+                    }
+                }
             }
         }
-        // sun.arch.data.model not found?
-        return false
+        
+        return checksum === goal
     }
 
     /**
@@ -722,7 +761,12 @@ class AssetGuard extends EventEmitter {
                             console.log(err)
                         } else {
                             for(let i=0; i<files.length; i++){
-                               res.add(path.join(x64RuntimeDir, files[i]))
+                                if(process.platform === 'darwin'){
+                                    // On darwin, Java home is root/Contents/Home
+                                    res.add(path.join(x64RuntimeDir, files[i], 'Contents', 'Home'))
+                                } else {
+                                    res.add(path.join(x64RuntimeDir, files[i]))
+                                }
                             }
                             resolve(res)
                         }
@@ -902,17 +946,24 @@ class AssetGuard extends EventEmitter {
 
         const pathSet = new Set()
 
+        // Check Internet Plugins folder.
         const iPPath = AssetGuard._scanInternetPlugins()
         if(iPPath != null){
             pathSet.add(iPPath)
         }
 
+        // Check the JAVA_HOME environment variable.
         const jHome = AssetGuard._scanJavaHome()
         if(jHome != null){
             pathSet.add(jHome)
         }
 
-        let pathArr = Array.from(pathSet)
+        // Get possible paths from the data directory.
+        const pathSet2 = await AssetGuard._scanDataFolder(dataDir)
+
+        // TODO Sort by highest version.
+
+        let pathArr = Array.from(pathSet2).concat(Array.from(pathSet))
         for(let i=0; i<pathArr.length; i++) {
             const execPath = AssetGuard.javaExecFromRoot(pathArr[i])
             let res = await AssetGuard._validateJavaBinary(execPath)
