@@ -570,7 +570,7 @@ class AssetGuard extends EventEmitter {
         if(process.platform === 'win32'){
             return path.join(rootDir, 'bin', 'javaw.exe')
         } else if(process.platform === 'darwin'){
-            return path.join(rootDir, 'bin', 'java')
+            return path.join(rootDir, 'Contents', 'Home', 'bin', 'java')
         } else if(process.platform === 'linux'){
             return path.join(rootDir, 'bin', 'java')
         }
@@ -761,12 +761,7 @@ class AssetGuard extends EventEmitter {
                             console.log(err)
                         } else {
                             for(let i=0; i<files.length; i++){
-                                if(process.platform === 'darwin'){
-                                    // On darwin, Java home is root/Contents/Home
-                                    res.add(path.join(x64RuntimeDir, files[i], 'Contents', 'Home'))
-                                } else {
-                                    res.add(path.join(x64RuntimeDir, files[i]))
-                                }
+                                res.add(path.join(x64RuntimeDir, files[i]))
                             }
                             resolve(res)
                         }
@@ -934,8 +929,8 @@ class AssetGuard extends EventEmitter {
      */
     static _scanInternetPlugins(){
         // /Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java
-        const pth = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home'
-        const res = fs.existsSync(pth)
+        const pth = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin'
+        const res = fs.existsSync(AssetGuard.javaExecFromRoot(pth))
         return res ? pth : null
     }
 
@@ -955,6 +950,10 @@ class AssetGuard extends EventEmitter {
         // Check the JAVA_HOME environment variable.
         const jHome = AssetGuard._scanJavaHome()
         if(jHome != null){
+            // Ensure we are at the absolute root.
+            if(jHome.contains('/Contents/Home')){
+                jHome = jHome.substring(0, jHome.indexOf('/Contents/Home'))
+            }
             pathSet.add(jHome)
         }
 
