@@ -49,22 +49,113 @@ p {
  *                                                                             *
  ******************************************************************************/
 
-#frame_bar {
-    -webkit-app-region: drag;
-    -webkit-user-select: none;
-    background: rgba(1, 2, 1, 0.5);
-    min-height: 22px;
+/* Frame Bar */
+#frameBar {
     display: flex;
+    flex-direction: column;
+    background: rgba(1, 2, 1, 0.5);
+    -webkit-user-select: none;
+}
+
+/* Undraggable region on the top of the frame. */
+#frameResizableTop {
+    height: 2px;
+    width: 100%;
+    -webkit-app-region: no-drag;
+}
+
+/* Flexbox to wrap the main frame content. */
+#frameMain {
+    display: flex;
+    height: 20px
+}
+
+/* Undraggable region on the left and right of the frame. */
+.frameResizableVert {
+    width: 2px;
+    -webkit-app-region: no-drag;
+}
+
+/* Main frame content for windows. */
+#frameContentWin {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    -webkit-app-region: drag;
+}
+
+/* Main frame content for darwin. */
+#frameContentDarwin {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    -webkit-app-region: drag;
+}
+
+/* Frame logo (windows only). */
+#frameImageDock {
+    width: 100px;
+    display: flex;
+    justify-content: center;
     align-items: center;
     position: relative;
-    z-index: 10000;
+}
+#frameImage {
+    height: 15px;
+    filter: grayscale(100%);
 }
 
-#frame_btn_dock {
-    margin-left: 2px;
+/* Windows frame button dock. */
+#frameButtonDockWin {
+    -webkit-app-region: no-drag !important;
+    position: relative;
+    top: -2px;
+    right: -2px;
+    height: 22px;
+}
+#frameButtonDockWin > .frameButton:not(:first-child) {
+    margin-left: -4px;
 }
 
-.frame_btn {
+/* Darwin frame button dock: NaN; */
+#frameButtonDockDarwin {
+    -webkit-app-region: no-drag !important;
+    position: relative;
+    top: -1px;
+    right: -1px;
+}
+
+/* Windows Frame Button Styles. */
+.frameButton {
+    background: none;
+    border: none;
+    height: 22px;
+    width: 39px;
+    cursor: pointer;
+}
+.frameButton:hover,
+.frameButton:focus {
+    background: rgba(189, 189, 189, 0.43);
+}
+.frameButton:active {
+    background: rgba(156, 156, 156, 0.43);
+}
+.frameButton:focus {
+    outline: 0px;
+}
+
+/* Close button is red. */
+#frameButton_close:hover,
+#frameButton_close:focus {
+    background: rgba(255, 53, 53, 0.61) !important;
+}
+#frameButton_close:active {
+    background: rgba(235, 0, 0, 0.61) !important;
+}
+
+/* Darwin Frame Button Styles. */
+.frameButtonDarwin {
     height: 12px;
     width: 12px;
     border-radius: 50%;
@@ -73,41 +164,40 @@ p {
     -webkit-app-region: no-drag !important;
     cursor: pointer;
 }
-
-.frame_btn:focus {
+.frameButtonDarwin:focus {
     outline: 0px;
 }
 
-#frame_btn_close {
+#frameButtonDarwin_close {
     background-color: #e74c32;
 }
-#frame_btn_close:hover,
-#frame_btn_close:focus {
+#frameButtonDarwin_close:hover,
+#frameButtonDarwin_close:focus {
     background-color: #FF9A8A;
 }
-#frame_btn_close:active {
+#frameButtonDarwin_close:active {
     background-color: #ff8d7b;
 }
 
-#frame_btn_restoredown {
+#frameButtonDarwin_minimize {
     background-color: #fed045;
 }
-#frame_btn_restoredown:hover,
-#frame_btn_restoredown:focus {
+#frameButtonDarwin_minimize:hover,
+#frameButtonDarwin_minimize:focus {
     background-color: #FFE9A9;
 }
-#frame_btn_restoredown:active {
+#frameButtonDarwin_minimize:active {
     background-color: #ffde7b;
 }
 
-#frame_btn_minimize {
+#frameButtonDarwin_restoredown {
     background-color: #96e734;
 }
-#frame_btn_minimize:hover,
-#frame_btn_minimize:focus {
+#frameButtonDarwin_restoredown:hover,
+#frameButtonDarwin_restoredown:focus {
     background-color: #D6FFA6;
 }
-#frame_btn_minimize:active {
+#frameButtonDarwin_restoredown:active {
     background-color: #bfff76;
 }
 

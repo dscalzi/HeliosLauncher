@@ -22,25 +22,33 @@ document.addEventListener('readystatechange', function () {
         console.log('UICore Initializing..');
 
         // Bind close button.
-        document.getElementById("frame_btn_close").addEventListener("click", function (e) {
-            const window = remote.getCurrentWindow()
-            window.close()
+        Array.from(document.getElementsByClassName('fCb')).map((val) => {
+            val.addEventListener('click', e => {
+                const window = remote.getCurrentWindow()
+                window.close()
+            })
         })
 
         // Bind restore down button.
-        document.getElementById("frame_btn_restoredown").addEventListener("click", function (e) {
-            const window = remote.getCurrentWindow()
-            if(window.isMaximized()){
-                window.unmaximize();
-            } else {
-                window.maximize()
-            }
+        Array.from(document.getElementsByClassName('fRb')).map((val) => {
+            val.addEventListener('click', e => {
+                const window = remote.getCurrentWindow()
+                if(window.isMaximized()){
+                    window.unmaximize()
+                } else {
+                    window.maximize()
+                }
+                document.activeElement.blur()
+            })
         })
 
         // Bind minimize button.
-        document.getElementById("frame_btn_minimize").addEventListener("click", function (e) {
-            const window = remote.getCurrentWindow()
-            window.minimize()
+        Array.from(document.getElementsByClassName('fMb')).map((val) => {
+            val.addEventListener('click', e => {
+                const window = remote.getCurrentWindow()
+                window.minimize()
+                document.activeElement.blur()
+            })
         })
 
     } else if(document.readyState === 'complete'){
