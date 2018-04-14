@@ -180,6 +180,8 @@
         }
 
         function resolveError(err){
+            // Mojang Response => err.cause | err.error | err.errorMessage
+            // Node error => err.code | err.message
             if(err.cause != null && err.cause === 'UserMigratedException') {
                 return {
                     title: 'Error During Login:<br>Invalid Credentials',
@@ -202,11 +204,37 @@
                             }
                         }
                     }
+                } else {
+                    // Request errors (from Node).
+                    if(err.code != null){
+                        if(err.code === 'ENOENT'){
+                            // No Internet.
+                            return {
+                                title: 'Error During Login:<br>No Internet Connection',
+                                desc: 'You must be connected to the internet in order to login. Please connect and try again.'
+                            }
+                        } else if(err.code === 'ENOTFOUND'){
+                            // Could not reach server.
+                            return {
+                                title: 'Error During Login:<br>Authentication Server Offline',
+                                desc: 'Mojang\'s authentication server is currently offline or unreachable. Please wait a bit and try again. You can check the status of the server on <a href="https://help.mojang.com/">Mojang\'s help portal</a>.'
+                            }
+                        }
+                    }
                 }
             }
-            return {
-                title: err.error,
-                desc: err.errorMessage
+            if(err.message != null){
+                // Unknown error with request.
+                return {
+                    title: 'Error During Login:<br>Unknown Error',
+                    desc: err.message
+                }
+            } else {
+                // Unknown Mojang error.
+                return {
+                    title: err.error,
+                    desc: err.errorMessage
+                }
             }
         }
 

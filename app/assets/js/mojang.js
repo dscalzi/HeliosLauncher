@@ -75,7 +75,12 @@ exports.status = function(){
             json: true
         },
         function(error, response, body){
-            if(response.statusCode === 200){
+
+            if(error || response.statusCode !== 200){
+                console.warn('Unable to retrieve Mojang status.')
+                console.debug('Error while retrieving Mojang statuses:', error)
+                reject(error || response.statusCode)
+            } else {
                 for(let i=0; i<body.length; i++){
                     const key = Object.keys(body[i])[0]
                     inner:
@@ -87,8 +92,6 @@ exports.status = function(){
                     }
                 }
                 fulfill(statuses)
-            } else {
-                reject()
             }
         })
     })
@@ -119,10 +122,15 @@ exports.authenticate = function(username, password, clientToken, requestUser = t
             }
         },
         function(error, response, body){
-            if(response.statusCode === 200){
-                fulfill(body)
+            if(error){
+                console.error('Error during authentication.', error)
+                reject(error)
             } else {
-                reject(body)
+                if(response.statusCode === 200){
+                    fulfill(body)
+                } else {
+                    reject(body || {code: 'ENOTFOUND'})
+                }
             }
         })
     })
@@ -148,11 +156,16 @@ exports.validate = function(accessToken, clientToken){
             }
         },
         function(error, response, body){
-            if(response.statusCode === 403){
-                fulfill(false)
+            if(error){
+                console.error('Error during validation.', error)
+                reject(error)
             } else {
-                // 204 if valid
-                fulfill(true)
+                if(response.statusCode === 403){
+                    fulfill(false)
+                } else {
+                    // 204 if valid
+                    fulfill(true)
+                }
             }
         })
     })
@@ -178,10 +191,15 @@ exports.invalidate = function(accessToken, clientToken){
             }
         },
         function(error, response, body){
-            if(response.statusCode === 200){
-                fulfill()
+            if(error){
+                console.error('Error during invalidation.', error)
+                reject(error)
             } else {
-                reject()
+                if(response.statusCode === 204){
+                    fulfill()
+                } else {
+                    reject(body)
+                }
             }
         })
     })
@@ -210,10 +228,15 @@ exports.refresh = function(accessToken, clientToken, requestUser = true){
             }
         },
         function(error, response, body){
-            if(response.statusCode === 200){
-                fulfill(body)
+            if(error){
+                console.error('Error during refresh.', error)
+                reject(error)
             } else {
-                reject(response.body)
+                if(response.statusCode === 200){
+                    fulfill(body)
+                } else {
+                    reject(body)
+                }
             }
         })
     })

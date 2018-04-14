@@ -62,8 +62,8 @@ document.addEventListener('readystatechange', function(){
         // Update Mojang Status Color
         const refreshMojangStatuses = async function(){
             console.log('Refreshing Mojang Statuses..')
+            let status = 'grey'
             try {
-                let status = 'grey'
                 const statuses = await Mojang.status()
                 greenCount = 0
                 for(let i=0; i<statuses.length; i++){
@@ -79,12 +79,11 @@ document.addEventListener('readystatechange', function(){
                 if(greenCount == statuses.length){
                     status = 'green'
                 }
-
-                document.getElementById('mojang_status_icon').style.color = Mojang.statusToHex(status)
-
             } catch (err) {
-                console.error('Unable to refresh Mojang service status..', err)
+                console.warn('Unable to refresh Mojang service status.')
+                console.debug(err)
             }
+            document.getElementById('mojang_status_icon').style.color = Mojang.statusToHex(status)
         }
 
         refreshMojangStatuses()
