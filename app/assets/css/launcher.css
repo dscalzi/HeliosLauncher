@@ -1417,6 +1417,12 @@ p {
     font-weight: bold;
 }
 
+#overlayActionContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 #overlayAcknowledge {
     background: none;
     border: 1px solid #ffffff;
@@ -1436,4 +1442,18 @@ p {
 #overlayAcknowledge:active {
     border-color: rgba(255, 255, 255, 0.75);
     color: rgba(255, 255, 255, 0.75);
+}
+
+#overlayDismiss {
+    font-family: 'Avenir Book';
+    font-weight: bold;
+    font-size: 10px;
+    text-decoration: none;
+    padding-top: 2.5px;
+}
+#overlayDismiss:hover {
+    color: rgba(255, 255, 255, 0.75);
+}
+#overlayDismiss:active {
+    color: rgba(165, 165, 165, 0.75);
 }

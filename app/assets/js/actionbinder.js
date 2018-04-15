@@ -99,17 +99,21 @@ document.addEventListener('readystatechange', function(){
  * Toggle the visibility of the overlay.
  * 
  * @param {boolean} toggleState True to display, false to hide.
+ * @param {boolean} dismissable Optional. True to show the dismiss option, otherwise false.
  */
-function toggleOverlay(toggleState){
+function toggleOverlay(toggleState, dismissable = false){
     if(toggleState == null){
         toggleState = !document.getElementById('main').hasAttribute('overlay')
     }
     if(toggleState){
         document.getElementById('main').setAttribute('overlay', true)
+        $('#overlayDismiss').toggle(dismissable)
         $('#overlayContainer').fadeToggle(250)
     } else {
         document.getElementById('main').removeAttribute('overlay')
-        $('#overlayContainer').fadeToggle(250)
+        $('#overlayContainer').fadeToggle(250, () => {
+            $('#overlayDismiss').toggle(dismissable)
+        })
     }
 }
 
@@ -119,11 +123,13 @@ function toggleOverlay(toggleState){
  * @param {string} title Overlay title text.
  * @param {string} description Overlay description text.
  * @param {string} acknowledge Acknowledge button text.
+ * @param {string} dismiss Dismiss button text.
  */
-function setOverlayContent(title, description, acknowledge){
+function setOverlayContent(title, description, acknowledge, dismiss = 'Dismiss'){
     document.getElementById('overlayTitle').innerHTML = title
     document.getElementById('overlayDesc').innerHTML = description
     document.getElementById('overlayAcknowledge').innerHTML = acknowledge
+    document.getElementById('overlayDismiss').innerHTML = dismiss
 }
 
 /**
@@ -139,6 +145,22 @@ function setOverlayHandler(handler){
         }
     } else {
         document.getElementById('overlayAcknowledge').onclick = handler
+    }
+}
+
+/**
+ * Set the onclick handler of the overlay dismiss button.
+ * If the handler is null, a default handler will be added.
+ * 
+ * @param {function} handler 
+ */
+function setDismissHandler(handler){
+    if(handler == null){
+        document.getElementById('overlayDismiss').onclick = () => {
+            toggleOverlay(false)
+        }
+    } else {
+        document.getElementById('overlayDismiss').onclick = handler
     }
 }
 
@@ -212,21 +234,42 @@ function asyncSystemScan(launchAfter = true){
     
     sysAEx.on('message', (m) => {
         if(m.content === 'validateJava'){
-
+            m.result = null
             if(m.result == null){
                 // If the result is null, no valid Java installation was found.
                 // Show this information to the user.
                 setOverlayContent(
                     'No Compatible<br>Java Installation Found',
                     'In order to join WesterosCraft, you need a 64-bit installation of Java 8. Would you like us to install a copy? By installing, you accept <a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">Oracle\'s license agreement</a>.',
-                    'Install Java'
+                    'Install Java',
+                    'Install Manually'
                 )
                 setOverlayHandler(() => {
                     setLaunchDetails('Preparing Java Download..')
                     sysAEx.send({task: 0, content: '_enqueueOracleJRE', argsArr: [ConfigManager.getLauncherDirectory()]})
                     toggleOverlay(false)
                 })
-                toggleOverlay(true)
+                setDismissHandler(() => {
+                    $('#overlayContent').fadeOut(250, () => {
+                        //$('#overlayDismiss').toggle(false)
+                        setOverlayContent(
+                            'Don\'t Forget!<br>Java is Required',
+                            'A valid x64 installation of Java 8 is required to launch. Downloads can be found on <a href="http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html">Oracle\'s website</a>. Once installed, you will be able to connect to the server.<br><br>Please refer to our <a href="http://westeroscraft.wikia.com/wiki/Troubleshooting_Guide">Troubleshooting Guide</a> if you have any difficulty.',
+                            'I Understand',
+                            'Go Back'
+                        )
+                        setOverlayHandler(() => {
+                            toggleLaunchArea(false)
+                            toggleOverlay(false)
+                        })
+                        setDismissHandler(() => {
+                            toggleOverlay(false, true)
+                            asyncSystemScan()
+                        })
+                        $('#overlayContent').fadeIn(250)
+                    })
+                })
+                toggleOverlay(true, true)
 
                 // TODO Add option to not install Java x64.
 
@@ -423,7 +466,7 @@ function dlAsync(login = true){
                 //if(!(await AuthManager.validateSelected())){
                     // 
                 //}
-                const authUser = ConfigManager.getSelectedAccount();
+                const authUser = ConfigManager.getSelectedAccount()
                 console.log('authu', authUser)
                 let pb = new ProcessBuilder(ConfigManager.getGameDirectory(), serv, versionData, forgeData, authUser)
                 setLaunchDetails('Launching game..')
