@@ -1,9 +1,6 @@
 /**
  * The initial iteration of this file will not support optional submodules.
  * Support will be added down the line, only top-level modules will recieve optional support.
- * 
- * 
- * TODO why are logs not working??????
  */
 const AdmZip = require('adm-zip')
 const {AssetGuard, Library} = require('./assetguard.js')

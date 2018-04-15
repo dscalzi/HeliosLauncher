@@ -1,5 +1,14 @@
+/**
+ * Mojang
+ * 
+ * This module serves as a minimal wrapper for Mojang's REST api.
+ * 
+ * @module mojang
+ */
+// Requirements
 const request = require('request')
 
+// Constants
 const minecraftAgent = {
     name: 'Minecraft',
     version: 1
@@ -37,6 +46,8 @@ const statuses = [
         name: 'Mojang accounts website'
     }
 ]
+
+// Functions
 
 /**
  * Converts a Mojang status color to a hex value. Valid statuses
