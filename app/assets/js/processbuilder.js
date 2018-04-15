@@ -6,9 +6,12 @@ const AdmZip = require('adm-zip')
 const {AssetGuard, Library} = require('./assetguard.js')
 const child_process = require('child_process')
 const ConfigManager = require('./configmanager.js')
+const crypto = require('crypto')
 const fs = require('fs')
 const mkpath = require('mkdirp')
+const os = require('os')
 const path = require('path')
+const rimraf = require('rimraf')
 const {URL} = require('url')
 
 class ProcessBuilder {
@@ -32,10 +35,11 @@ class ProcessBuilder {
      * Convienence method to run the functions typically used to build a process.
      */
     build(){
+        const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         const mods = this.resolveDefaultMods()
         this.constructFMLModList(mods, true)
-        const args = this.constructJVMArguments(mods)
+        const args = this.constructJVMArguments(mods, tempNativePath)
 
         console.log(args)
 
@@ -51,6 +55,13 @@ class ProcessBuilder {
         })
         child.on('close', (code, signal) => {
             console.log('Exited with code', code)
+            rimraf(tempNativePath, (err) => {
+                if(err){
+                    console.warn('Error while deleting temp dir', err)
+                } else {
+                    console.log('Temp dir deleted successfully.')
+                }
+            })
         })
 
         return child
@@ -93,15 +104,16 @@ class ProcessBuilder {
      * Construct the argument array that will be passed to the JVM process.
      * 
      * @param {Array.<Object>} mods An array of enabled mods which will be launched with this process.
+     * @param {string} tempNativePath The path to store the native libraries.
      * @returns {Array.<string>} An array containing the full JVM arguments for this process.
      */
-    constructJVMArguments(mods){
-        
+    constructJVMArguments(mods, tempNativePath){
+
         let args = ['-Xmx' + ConfigManager.getMaxRAM(),
         '-Xms' + ConfigManager.getMinRAM(),,
-        '-Djava.library.path=' + path.join(this.dir, 'natives'),
+        '-Djava.library.path=' + tempNativePath,
         '-cp',
-        this.classpathArg(mods).join(';'),
+        this.classpathArg(mods, tempNativePath).join(';'),
         this.forgeData.mainClass]
 
         // For some reason this will add an undefined value unless
@@ -196,9 +208,10 @@ class ProcessBuilder {
      * this method requires all enabled mods as an input
      * 
      * @param {Array.<Object>} mods An array of enabled mods which will be launched with this process.
+     * @param {string} tempNativePath The path to store the native libraries.
      * @returns {Array.<string>} An array containing the paths of each library required by this process.
      */
-    classpathArg(mods){
+    classpathArg(mods, tempNativePath){
         let cpArgs = []
 
         // Add the version.jar to the classpath.
@@ -206,7 +219,7 @@ class ProcessBuilder {
         cpArgs.push(path.join(this.dir, 'versions', version, version + '.jar'))
 
         // Resolve the Mojang declared libraries.
-        const mojangLibs = this._resolveMojangLibraries()
+        const mojangLibs = this._resolveMojangLibraries(tempNativePath)
         cpArgs = cpArgs.concat(mojangLibs)
 
         // Resolve the server declared libraries.
@@ -222,13 +235,14 @@ class ProcessBuilder {
      * 
      * TODO - clean up function
      * 
+     * @param {string} tempNativePath The path to store the native libraries.
      * @returns {Array.<string>} An array containing the paths of each library mojang declares.
      */
-    _resolveMojangLibraries(){
+    _resolveMojangLibraries(tempNativePath){
         const libs = []
 
         const libArr = this.versionData.libraries
-        const nativePath = path.join(this.dir, 'natives')
+        mkpath.sync(tempNativePath)
         for(let i=0; i<libArr.length; i++){
             const lib = libArr[i]
             if(Library.validateRules(lib.rules)){
@@ -269,8 +283,7 @@ class ProcessBuilder {
 
                         // Extract the file.
                         if(!shouldExclude){
-                            mkpath.sync(path.join(nativePath, fileName, '..'))
-                            fs.writeFile(path.join(nativePath, fileName), zipEntries[i].getData(), (err) => {
+                            fs.writeFile(path.join(tempNativePath, fileName), zipEntries[i].getData(), (err) => {
                                 if(err){
                                     console.error('Error while extracting native library:', err)
                                 }
@@ -278,8 +291,6 @@ class ProcessBuilder {
                         }
     
                     }
-    
-                    libs.push(to)
                 }
             }
         }

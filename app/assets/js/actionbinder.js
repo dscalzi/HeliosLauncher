@@ -234,7 +234,7 @@ function asyncSystemScan(launchAfter = true){
     
     sysAEx.on('message', (m) => {
         if(m.content === 'validateJava'){
-            m.result = null
+
             if(m.result == null){
                 // If the result is null, no valid Java installation was found.
                 // Show this information to the user.

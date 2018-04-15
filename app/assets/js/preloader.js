@@ -1,6 +1,8 @@
 const {AssetGuard} = require('./assetguard.js')
 const ConfigManager = require('./configmanager.js')
+const os = require('os')
 const path = require('path')
+const rimraf = require('rimraf')
 
 console.log('Preloading')
 
@@ -16,3 +18,12 @@ if(ConfigManager.getSelectedServer() == null){
     ConfigManager.setSelectedServer(AssetGuard.resolveSelectedServer(ConfigManager.getGameDirectory()))
     ConfigManager.save()
 }
+
+// Clean up temp dir.
+rimraf(path.join(os.tmpdir(), ConfigManager.getTempNativeFolder()), (err) => {
+    if(err){
+        console.warn('Error while cleaning temp dir', err)
+    } else {
+        console.log('Cleaned temp dir.')
+    }
+})
