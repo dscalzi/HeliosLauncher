@@ -113,7 +113,7 @@ class ProcessBuilder {
         '-Xms' + ConfigManager.getMinRAM(),,
         '-Djava.library.path=' + tempNativePath,
         '-cp',
-        this.classpathArg(mods, tempNativePath).join(';'),
+        this.classpathArg(mods, tempNativePath).join(process.platform === 'win32' ? ';' : ':'),
         this.forgeData.mainClass]
 
         // For some reason this will add an undefined value unless
