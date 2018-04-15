@@ -110,7 +110,7 @@ class ProcessBuilder {
     constructJVMArguments(mods, tempNativePath){
 
         let args = ['-Xmx' + ConfigManager.getMaxRAM(),
-        '-Xms' + ConfigManager.getMinRAM(),,
+        '-Xms' + ConfigManager.getMinRAM(),
         '-Djava.library.path=' + tempNativePath,
         '-cp',
         this.classpathArg(mods, tempNativePath).join(process.platform === 'win32' ? ';' : ':'),
@@ -121,10 +121,7 @@ class ProcessBuilder {
             args.unshift('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
 
-        // For some reason this will add an undefined value unless
-        // the delete count is 1. I suspect this is unintended behavior
-        // by the function.. need to keep an eye on this.
-        args.splice(2, 1, ...ConfigManager.getJVMOptions())
+        args.splice(2, 0, ...ConfigManager.getJVMOptions())
 
         args = args.concat(this._resolveForgeArgs())
 
