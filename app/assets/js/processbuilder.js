@@ -116,6 +116,11 @@ class ProcessBuilder {
         this.classpathArg(mods, tempNativePath).join(process.platform === 'win32' ? ';' : ':'),
         this.forgeData.mainClass]
 
+        if(process.platform === 'darwin'){
+            args.unshift('-Xdock:name=WesterosCraft')
+            args.unshift('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
+        }
+
         // For some reason this will add an undefined value unless
         // the delete count is 1. I suspect this is unintended behavior
         // by the function.. need to keep an eye on this.

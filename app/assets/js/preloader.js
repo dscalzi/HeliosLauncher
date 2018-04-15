@@ -19,7 +19,7 @@ if(ConfigManager.getSelectedServer() == null){
     ConfigManager.save()
 }
 
-// Clean up temp dir.
+// Clean up temp dir incase previous launches ended unexpectedly. 
 rimraf(path.join(os.tmpdir(), ConfigManager.getTempNativeFolder()), (err) => {
     if(err){
         console.warn('Error while cleaning temp dir', err)
