@@ -1235,6 +1235,7 @@ p {
     padding: 0px;
 }
 
+/*
 #serverSelectContainer {
     display: flex;
     align-items: center;
@@ -1284,7 +1285,7 @@ p {
 }
 .serverSelectElement[sel] > .serverSelected {
     display: initial;
-}
+}*/
 
 /*.serverSelectName {
 }*/
