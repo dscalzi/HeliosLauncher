@@ -6,8 +6,11 @@ const ConfigManager = require(path.join(__dirname, 'assets', 'js', 'configmanage
 const DiscordWrapper = require(path.join(__dirname, 'assets', 'js', 'discordwrapper.js'))
 const Mojang = require(path.join(__dirname, 'assets', 'js', 'mojang.js'))
 const AuthManager = require(path.join(__dirname, 'assets', 'js', 'authmanager.js'))
+const ServerStatus = require(path.join(__dirname, 'assets', 'js', 'serverstatus.js'))
+const {URL} = require('url')
 
 let mojangStatusListener
+let serverStatusListener
 
 // Launch Elements
 let launch_content, launch_details, launch_progress, launch_progress_label, launch_details_text
@@ -86,9 +89,36 @@ document.addEventListener('readystatechange', function(){
             document.getElementById('mojang_status_icon').style.color = Mojang.statusToHex(status)
         }
 
+        const refreshServerStatus = async function(){
+            console.log('Refreshing Server Status')
+            const serv = AssetGuard.resolveSelectedServer(ConfigManager.getGameDirectory())
+
+            let pLabel = 'SERVER'
+            let pVal = 'OFFLINE'
+
+            try {
+                console.log(serv)
+                const serverURL = new URL('my://' + serv.server_ip)
+                const servStat = await ServerStatus.getStatus(serverURL.hostname, serverURL.port)
+                if(servStat.online){
+                    pLabel = 'PLAYERS'
+                    pVal = servStat.onlinePlayers + '/' + servStat.maxPlayers
+                }
+
+            } catch (err) {
+                console.warn('Unable to refresh server status, assuming offline.')
+                console.debug(err)
+            }
+            document.getElementById('landingPlayerLabel').innerHTML = pLabel
+            document.getElementById('player_count').innerHTML = pVal
+        }
+
         refreshMojangStatuses()
+        refreshServerStatus()
+
         // Set refresh rate to once every 5 minutes.
         mojangStatusListener = setInterval(refreshMojangStatuses, 300000)
+        serverStatusListener = setInterval(refreshServerStatus, 300000)
 
     }
 }, false)

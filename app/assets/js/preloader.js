@@ -15,7 +15,7 @@ AssetGuard.retrieveDistributionDataSync(ConfigManager.getGameDirectory(), false)
 // Resolve the selected server if its value has yet to be set.
 if(ConfigManager.getSelectedServer() == null){
     console.log('Determining default selected server..')
-    ConfigManager.setSelectedServer(AssetGuard.resolveSelectedServer(ConfigManager.getGameDirectory()))
+    ConfigManager.setSelectedServer(AssetGuard.resolveSelectedServer(ConfigManager.getGameDirectory()).id)
     ConfigManager.save()
 }
 

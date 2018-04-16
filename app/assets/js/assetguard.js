@@ -421,11 +421,11 @@ class AssetGuard extends EventEmitter {
         const servers = distro.servers
         for(let i=0; i<servers.length; i++){
             if(servers[i].default_selected){
-                return servers[i].id
+                return servers[i]
             }
         }
         // If no server declares default_selected, default to the first one declared.
-        return (servers.length > 0) ? servers[0].id : null
+        return (servers.length > 0) ? servers[0] : null
     }
 
     /**
