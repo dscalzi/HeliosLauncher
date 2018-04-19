@@ -97,7 +97,6 @@ document.addEventListener('readystatechange', function(){
             let pVal = 'OFFLINE'
 
             try {
-                console.log(serv)
                 const serverURL = new URL('my://' + serv.server_ip)
                 const servStat = await ServerStatus.getStatus(serverURL.hostname, serverURL.port)
                 if(servStat.online){
