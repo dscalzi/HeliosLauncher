@@ -1235,67 +1235,6 @@ p {
     padding: 0px;
 }
 
-/*
-#serverSelectContainer {
-    display: flex;
-    align-items: center;
-    border-left: 0.5px solid #fff;
-    max-height: 75px;
-}
-
-#serverSelectContent {
-    padding-right: 5px;
-    max-height: 75px;
-    overflow-y: scroll;
-}
-
-#serverSelectContent::-webkit-scrollbar {
-    width: 2px;
-}
-
-#serverSelectContent::-webkit-scrollbar-track {
-    display: none;
-}
-
-#serverSelectContent::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
-}
-
-.serverSelectElement {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    padding: 5px 5px 5px 10px;
-}
-
-.serverSelected {
-    color: #fff;
-    position: absolute;
-    top: 0px;
-    left: -9px;
-    font-size: 20px;
-    text-align: center;
-    line-height: 35.33px;
-    display: none;
-}
-
-.serverSelectElement[sel] {
-    background: rgba(255, 255, 255, 0.25);
-}
-.serverSelectElement[sel] > .serverSelected {
-    display: initial;
-}*/
-
-/*.serverSelectName {
-}*/
-
-.serverSelectDesc {
-    font-weight: initial;
-    text-shadow: none;
-    letter-spacing: 0.5px;
-}
-
 /* Launch details main container, hidden until launch processing begins. */
 #launch_details {
     position: relative;
