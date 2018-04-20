@@ -39,6 +39,8 @@
 }
 
 .serverListing {
+    border: none;
+    padding: 0px;
     width: 375px;
     min-height: 60px;
     display: flex;
@@ -54,7 +56,9 @@
     cursor: default;
     opacity: 1.0;
 }
-.serverListing:hover {
+.serverListing:hover,
+.serverListing:focus {
+    outline: none;
     opacity: 1.0;
 }
 #serverSelectListScrollable > .serverListing:not(:first-child):not(:last-child) {
@@ -219,7 +223,7 @@
         <span id="serverSelectHeader">Available Servers</span>
         <div id="serverSelectList">
             <div id="serverSelectListScrollable">
-                <div class="serverListing" selected>
+                <button class="serverListing" selected>
                     <img class="serverListingImg" src="./assets/images/WesterosSealSquare.png"/>
                     <div class="serverListingDetails">
                         <span class="serverListingName">WesterosCraft Production Server</span>
@@ -239,8 +243,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="serverListing">
+                </button>
+                <button class="serverListing">
                     <img class="serverListingImg" src="./assets/images/testserver.png"/>
                     <div class="serverListingDetails">
                         <span class="serverListingName">WesterosCraft Test Server</span>
@@ -250,8 +254,8 @@
                             <div class="serverListingRevision">3.6.0</div>
                         </div>
                     </div>
-                </div>
-                <div class="serverListing">
+                </button>
+                <button class="serverListing">
                     <img class="serverListingImg" src="./assets/images/testserver.png"/>
                     <div class="serverListingDetails">
                         <span class="serverListingName">WesterosCraft 1.12.2 Test Server</span>
@@ -261,8 +265,8 @@
                             <div class="serverListingRevision">4.0.1</div>
                         </div>
                     </div>
-                </div>
-                <div class="serverListing">
+                </button>
+                <button class="serverListing">
                     <img class="serverListingImg" src="./assets/images/testserver.png"/>
                     <div class="serverListingDetails">
                         <span class="serverListingName">EssosCraft Test Server</span>
@@ -272,7 +276,7 @@
                             <div class="serverListingRevision">9.7.2</div>
                         </div>
                     </div>
-                </div>
+                </button>
             </div>
         </div>
         <div id="serverSelectActions">
