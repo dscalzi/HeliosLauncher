@@ -129,19 +129,35 @@ document.addEventListener('readystatechange', function(){
  * 
  * @param {boolean} toggleState True to display, false to hide.
  * @param {boolean} dismissable Optional. True to show the dismiss option, otherwise false.
+ * @param {string} content Optional. The content div to be shown.
  */
-function toggleOverlay(toggleState, dismissable = false){
+function toggleOverlay(toggleState, dismissable = false, content = 'overlayContent'){
     if(toggleState == null){
         toggleState = !document.getElementById('main').hasAttribute('overlay')
     }
+    if(typeof dismissable === 'string'){
+        content = dismissable
+    }
     if(toggleState){
         document.getElementById('main').setAttribute('overlay', true)
-        $('#overlayDismiss').toggle(dismissable)
-        $('#overlayContainer').fadeToggle(250)
+        $('#' + content).parent().children().hide()
+        $('#' + content).show()
+        if(dismissable){
+            $('#overlayDismiss').show()
+        } else {
+            $('#overlayDismiss').hide()
+        }
+        $('#overlayContainer').fadeIn(250)
     } else {
         document.getElementById('main').removeAttribute('overlay')
-        $('#overlayContainer').fadeToggle(250, () => {
-            $('#overlayDismiss').toggle(dismissable)
+        $('#overlayContainer').fadeOut(250, () => {
+            $('#' + content).parent().children().hide()
+            $('#' + content).show()
+            if(dismissable){
+                $('#overlayDismiss').show()
+            } else {
+                $('#overlayDismiss').hide()
+            }
         })
     }
 }
