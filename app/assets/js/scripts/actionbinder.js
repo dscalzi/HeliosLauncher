@@ -13,9 +13,9 @@ document.addEventListener('readystatechange', function(){
         }
     }
 
-    if (document.readyState === 'interactive'){
+    /*if (document.readyState === 'interactive'){
         
-    }
+    }*/
 }, false)
 
 /* Overlay Wrapper Functions */

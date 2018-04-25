@@ -8,6 +8,12 @@
 const $                         = require('jquery');
 const {remote, shell, webFrame} = require('electron')
 
+// Disable eval function.
+// eslint-disable-next-line
+window.eval = global.eval = function () {
+    throw new Error('Sorry, this app does not support window.eval().')
+}
+
 // Disable zoom, needed for darwin.
 webFrame.setZoomLevel(0)
 webFrame.setVisualZoomLevelLimits(1, 1)
