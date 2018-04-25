@@ -1,33 +1,38 @@
 //const validEmail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 
 // Validation Regexes.
-const validUsername = /^[a-zA-Z0-9_]{1,16}$/
-const basicEmail = /^\S+@\S+\.\S+$/
+const validUsername         = /^[a-zA-Z0-9_]{1,16}$/
+const basicEmail            = /^\S+@\S+\.\S+$/
 
-// DOM cache.
-const loginContainer = document.getElementById('loginContainer')
-const loginErrorTitle = document.getElementById('loginErrorTitle')
-const loginErrorDesc = document.getElementById('loginErrorDesc')
-const loginErrorAcknowledge = document.getElementById('loginErrorAcknowledge')
-
-const loginEmailError = document.getElementById('loginEmailError')
-const loginUsername = document.getElementById('loginUsername')
-const loginPasswordError = document.getElementById('loginPasswordError')
-const loginPassword = document.getElementById('loginPassword')
-const checkmarkContainer = document.getElementById('checkmarkContainer')
-const loginRememberOption = document.getElementById('loginRememberOption')
-const loginButton = document.getElementById('loginButton')
+// Login Elements
+const loginEmailError       = document.getElementById('loginEmailError')
+const loginUsername         = document.getElementById('loginUsername')
+const loginPasswordError    = document.getElementById('loginPasswordError')
+const loginPassword         = document.getElementById('loginPassword')
+const checkmarkContainer    = document.getElementById('checkmarkContainer')
+const loginRememberOption   = document.getElementById('loginRememberOption')
+const loginButton           = document.getElementById('loginButton')
 
 // Control variables.
 let lu = false, lp = false
 
-// Show error element.
+
+/**
+ * Show a login error.
+ * 
+ * @param {HTMLElement} element The element on which to display the error.
+ * @param {string} value The error text.
+ */
 function showError(element, value){
     element.innerHTML = value
     element.style.opacity = 1
 }
 
-// Shake error element.
+/**
+ * Shake a login error to add emphasis.
+ * 
+ * @param {HTMLElement} element The element to shake.
+ */
 function shakeError(element){
     if(element.style.opacity == 1){
         element.classList.remove('shake')
@@ -36,7 +41,11 @@ function shakeError(element){
     }
 }
 
-// Validate email field is neither empty nor invalid.
+/**
+ * Validate that an email field is neither empty nor invalid.
+ * 
+ * @param {string} value The email value.
+ */
 function validateEmail(value){
     if(value){
         if(!basicEmail.test(value) && !validUsername.test(value)){
@@ -57,7 +66,11 @@ function validateEmail(value){
     }
 }
 
-// Validate password field is not empty.
+/**
+ * Validate that the password field is not empty.
+ * 
+ * @param {string} value The password value.
+ */
 function validatePassword(value){
     if(value){
         loginPasswordError.style.opacity = 0
@@ -90,14 +103,22 @@ loginPassword.addEventListener('input', (e) => {
     validatePassword(e.target.value)
 })
 
-// Enable or disable login button.
+/**
+ * Enable or disable the login button.
+ * 
+ * @param {boolean} v True to enable, false to disable.
+ */
 function loginDisabled(v){
     if(loginButton.disabled !== v){
         loginButton.disabled = v
     }
 }
 
-// Enable or disable loading elements.
+/**
+ * Enable or disable loading elements.
+ * 
+ * @param {boolean} v True to enable, false to disable.
+ */
 function loginLoading(v){
     if(v){
         loginButton.setAttribute('loading', v)
@@ -108,7 +129,11 @@ function loginLoading(v){
     }
 }
 
-// Disable or enable login form.
+/**
+ * Enable or disable login form.
+ * 
+ * @param {boolean} v True to enable, false to disable.
+ */
 function formDisabled(v){
     loginDisabled(v)
     loginUsername.disabled = v
@@ -121,6 +146,13 @@ function formDisabled(v){
     loginRememberOption.disabled = v
 }
 
+/**
+ * Parses an error and returns a user-friendly title and description
+ * for our error overlay.
+ * 
+ * @param {Error | {cause: string, error: string, errorMessage: string}} err A Node.js
+ * error or Mojang error response.
+ */
 function resolveError(err){
     // Mojang Response => err.cause | err.error | err.errorMessage
     // Node error => err.code | err.message
@@ -180,6 +212,7 @@ function resolveError(err){
     }
 }
 
+// Bind login button behavior.
 loginButton.addEventListener('click', () => {
     // Disable form.
     formDisabled(true)

@@ -4,7 +4,8 @@
  * actions in this file should not require the usage of any internal
  * modules, excluding dependencies.
  */
-const $ = require('jquery');
+// Requirements
+const $                         = require('jquery');
 const {remote, shell, webFrame} = require('electron')
 
 // Disable zoom, needed for darwin.
