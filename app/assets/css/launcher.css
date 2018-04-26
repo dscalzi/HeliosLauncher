@@ -898,7 +898,7 @@ p {
 /* Upper content container. */
 #landingContainer > #upper {
     position: relative;
-    transition: 2s ease;
+    transition: top 2s ease;
     top: 0px;
     height: 77%;
     display: flex;
@@ -928,7 +928,7 @@ p {
 }
 #landingContainer > #lower > #left {
     position: relative;
-    transition: 2s ease;
+    transition: top 2s ease;
     top: 0px;
     height: 100%;
     width: 33%;
@@ -944,7 +944,7 @@ p {
 }
 #landingContainer > #lower > #center {
     position: relative;
-    transition: 2s ease;
+    transition: top 2s ease;
     top: 0px;
     height: 100%;
     width: 34%;
@@ -952,13 +952,13 @@ p {
     justify-content: center;
 }
 #landingContainer > #lower > #center #content {
-    transition: 2s ease;
     position: relative;
+    transition: top 2s ease;
     top: 10px;
 }
 #landingContainer > #lower > #right {
     position: relative;
-    transition: 2s ease;
+    transition: top 2s ease;
     top: 0px;
     height: 100%;
     width: 33%;

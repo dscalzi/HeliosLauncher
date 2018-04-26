@@ -115,7 +115,13 @@ function slide_(up){
         lCLCenter.style.top = '-200vh'
         lCLRight.style.top = '-200vh'
         menuBtn.style.top = '130vh'
+        setTimeout(() => {
+            lCLCenter.style.transition = 'none'
+            menuBtn.style.transition = 'none'
+        }, 2000)
     } else {
+        lCLCenter.style.transition = null
+        menuBtn.style.transition = null
         lCUpper.style.top = '0px'
         lCLLeft.style.top = '0px'
         lCLCenter.style.top = '0px'
