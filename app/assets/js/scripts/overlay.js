@@ -2,8 +2,6 @@
  * Script for overlay.ejs
  */
 
-//document.getElementById('overlayDismiss').href = 'javascript:void(0);'
-
 /* Overlay Wrapper Functions */
 
 /**
@@ -90,3 +88,10 @@ function setDismissHandler(handler){
         document.getElementById('overlayDismiss').onclick = handler
     }
 }
+
+/* Server Select View */
+
+// Bind server select cancel button.
+document.getElementById('serverSelectCancel').addEventListener('click', () => {
+    toggleOverlay(false)
+})

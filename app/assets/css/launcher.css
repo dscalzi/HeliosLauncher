@@ -331,7 +331,7 @@ p {
 }
 #welcomeButton:active {
     color: #c7c7c7;
-    text-shadow:  0px 0px 20px #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7;
 }
 #welcomeSVG {
     -webkit-transform: translate3d(0, 0, 0);
@@ -1265,6 +1265,24 @@ p {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+#server_selection_button {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    line-height: 24px;
+    padding: 0px;
+    transition: 0.25s ease;
+}
+#server_selection_button:hover,
+#server_selection_button:focus {
+    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff, 0px 0px 20px #fff;
+}
+#server_selection_button:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
 }
 
 /* Progress bar styles. */

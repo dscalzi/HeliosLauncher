@@ -2,23 +2,24 @@
  * Script for landing.ejs
  */
 // Requirements
-const cp                    = require('child_process')
-const {URL}                 = require('url')
+const cp                      = require('child_process')
+const {URL}                   = require('url')
 
 // Internal Requirements
-const {AssetGuard}          = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
-const AuthManager           = require(path.join(__dirname, 'assets', 'js', 'authmanager.js'))
-const DiscordWrapper        = require(path.join(__dirname, 'assets', 'js', 'discordwrapper.js'))
-const Mojang                = require(path.join(__dirname, 'assets', 'js', 'mojang.js'))
-const ProcessBuilder        = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
-const ServerStatus          = require(path.join(__dirname, 'assets', 'js', 'serverstatus.js'))
+const {AssetGuard}            = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
+const AuthManager             = require(path.join(__dirname, 'assets', 'js', 'authmanager.js'))
+const DiscordWrapper          = require(path.join(__dirname, 'assets', 'js', 'discordwrapper.js'))
+const Mojang                  = require(path.join(__dirname, 'assets', 'js', 'mojang.js'))
+const ProcessBuilder          = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
+const ServerStatus            = require(path.join(__dirname, 'assets', 'js', 'serverstatus.js'))
 
 // Launch Elements
-const launch_content        = document.getElementById('launch_content')
-const launch_details        = document.getElementById('launch_details')
-const launch_progress       = document.getElementById('launch_progress')
-const launch_progress_label = document.getElementById('launch_progress_label')
-const launch_details_text   = document.getElementById('launch_details_text')
+const launch_content          = document.getElementById('launch_content')
+const launch_details          = document.getElementById('launch_details')
+const launch_progress         = document.getElementById('launch_progress')
+const launch_progress_label   = document.getElementById('launch_progress_label')
+const launch_details_text     = document.getElementById('launch_details_text')
+const server_selection_button = document.getElementById('server_selection_button')
 
 /* Launch Progress Wrapper Functions */
 
@@ -93,9 +94,12 @@ document.getElementById('launch_button').addEventListener('click', function(e){
     }
 })
 
-// TODO convert this to dropdown menu.
 // Bind selected server
-document.getElementById('server_selection').innerHTML = '\u2022 ' + AssetGuard.getServerById(ConfigManager.getGameDirectory(), ConfigManager.getSelectedServer()).name
+server_selection_button.innerHTML = '\u2022 ' + AssetGuard.getServerById(ConfigManager.getGameDirectory(), ConfigManager.getSelectedServer()).name
+server_selection_button.addEventListener('click', (e) => {
+    e.target.blur()
+    toggleOverlay(true, 'serverSelectContent')
+})
 
 // Update Mojang Status Color
 const refreshMojangStatuses = async function(){
