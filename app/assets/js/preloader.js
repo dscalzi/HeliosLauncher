@@ -4,7 +4,7 @@ const os = require('os')
 const path = require('path')
 const rimraf = require('rimraf')
 
-console.log('Preloading')
+console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Loading..')
 
 // Load ConfigManager
 ConfigManager.load()
@@ -22,8 +22,8 @@ if(ConfigManager.getSelectedServer() == null){
 // Clean up temp dir incase previous launches ended unexpectedly. 
 rimraf(path.join(os.tmpdir(), ConfigManager.getTempNativeFolder()), (err) => {
     if(err){
-        console.warn('Error while cleaning temp dir', err)
+        console.warn('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Error while cleaning natives directory', err)
     } else {
-        console.log('Cleaned temp dir.')
+        console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Cleaned natives directory.')
     }
 })

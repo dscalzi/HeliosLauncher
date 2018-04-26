@@ -1326,14 +1326,17 @@ p {
 }
 
 /* Main overlay content anchor styles. */
-#overlayContent a {
+#overlayContent a,
+#overlayDismiss {
     color: rgba(202, 202, 202, 0.75);
     transition: 0.25s ease;
 }
-#overlayContent a:hover {
+#overlayContent a:hover,
+#overlayDismiss {
     color: rgba(255, 255, 255, 0.75);
 }
-#overlayContent a:active {
+#overlayContent a:active,
+#overlayDismiss {
     color: rgba(165, 165, 165, 0.75);
 }
 
@@ -1401,6 +1404,10 @@ p {
     font-size: 10px;
     text-decoration: none;
     padding-top: 2.5px;
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
 }
 #overlayDismiss:hover {
     color: rgba(255, 255, 255, 0.75);
@@ -1640,6 +1647,10 @@ p {
     padding-top: 2.5px;
     color: rgba(202, 202, 202, 0.75);
     transition: 0.25s ease;
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
 }
 #serverSelectCancel:hover {
     color: rgba(255, 255, 255, 0.75);

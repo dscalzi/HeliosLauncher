@@ -2,6 +2,8 @@
  * Script for overlay.ejs
  */
 
+//document.getElementById('overlayDismiss').href = 'javascript:void(0);'
+
 /* Overlay Wrapper Functions */
 
 /**
