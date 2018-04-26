@@ -1,22 +1,6 @@
-// Requirements
-const path          = require('path')
-const ConfigManager = require(path.join(__dirname, 'assets', 'js', 'configmanager.js'))
-
-// Synchronous Listener
-document.addEventListener('readystatechange', function(){
-
-    if (document.readyState === 'complete'){
-        if(ConfigManager.isFirstLaunch()){
-            $('#welcomeContainer').fadeIn(500)
-        } else {
-            $('#landingContainer').fadeIn(500)
-        }
-    }
-
-    /*if (document.readyState === 'interactive'){
-        
-    }*/
-}, false)
+/**
+ * Script for overlay.ejs
+ */
 
 /* Overlay Wrapper Functions */
 
@@ -104,55 +88,3 @@ function setDismissHandler(handler){
         document.getElementById('overlayDismiss').onclick = handler
     }
 }
-
-/* Launch Progress Wrapper Functions */
-
-/**
- * Show/hide the loading area.
- * 
- * @param {boolean} loading True if the loading area should be shown, otherwise false.
- */
-function toggleLaunchArea(loading){
-    if(loading){
-        launch_details.style.display = 'flex'
-        launch_content.style.display = 'none'
-    } else {
-        launch_details.style.display = 'none'
-        launch_content.style.display = 'inline-flex'
-    }
-}
-
-/**
- * Set the details text of the loading area.
- * 
- * @param {string} details The new text for the loading details.
- */
-function setLaunchDetails(details){
-    launch_details_text.innerHTML = details
-}
-
-/**
- * Set the value of the loading progress bar and display that value.
- * 
- * @param {number} value The progress value.
- * @param {number} max The total size.
- * @param {number|string} percent Optional. The percentage to display on the progress label.
- */
-function setLaunchPercentage(value, max, percent = ((value/max)*100)){
-    launch_progress.setAttribute('max', max)
-    launch_progress.setAttribute('value', value)
-    launch_progress_label.innerHTML = percent + '%'
-}
-
-/**
- * Set the value of the OS progress bar and display that on the UI.
- * 
- * @param {number} value The progress value.
- * @param {number} max The total download size.
- * @param {number|string} percent Optional. The percentage to display on the progress label.
- */
-function setDownloadPercentage(value, max, percent = ((value/max)*100)){
-    remote.getCurrentWindow().setProgressBar(value/max)
-    setLaunchPercentage(value, max, percent)
-}
-

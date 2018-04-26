@@ -1,3 +1,6 @@
+/**
+ * Script for landing.ejs
+ */
 // Requirements
 const cp                    = require('child_process')
 const {URL}                 = require('url')
@@ -16,6 +19,57 @@ const launch_details        = document.getElementById('launch_details')
 const launch_progress       = document.getElementById('launch_progress')
 const launch_progress_label = document.getElementById('launch_progress_label')
 const launch_details_text   = document.getElementById('launch_details_text')
+
+/* Launch Progress Wrapper Functions */
+
+/**
+ * Show/hide the loading area.
+ * 
+ * @param {boolean} loading True if the loading area should be shown, otherwise false.
+ */
+function toggleLaunchArea(loading){
+    if(loading){
+        launch_details.style.display = 'flex'
+        launch_content.style.display = 'none'
+    } else {
+        launch_details.style.display = 'none'
+        launch_content.style.display = 'inline-flex'
+    }
+}
+
+/**
+ * Set the details text of the loading area.
+ * 
+ * @param {string} details The new text for the loading details.
+ */
+function setLaunchDetails(details){
+    launch_details_text.innerHTML = details
+}
+
+/**
+ * Set the value of the loading progress bar and display that value.
+ * 
+ * @param {number} value The progress value.
+ * @param {number} max The total size.
+ * @param {number|string} percent Optional. The percentage to display on the progress label.
+ */
+function setLaunchPercentage(value, max, percent = ((value/max)*100)){
+    launch_progress.setAttribute('max', max)
+    launch_progress.setAttribute('value', value)
+    launch_progress_label.innerHTML = percent + '%'
+}
+
+/**
+ * Set the value of the OS progress bar and display that on the UI.
+ * 
+ * @param {number} value The progress value.
+ * @param {number} max The total download size.
+ * @param {number|string} percent Optional. The percentage to display on the progress label.
+ */
+function setDownloadPercentage(value, max, percent = ((value/max)*100)){
+    remote.getCurrentWindow().setProgressBar(value/max)
+    setLaunchPercentage(value, max, percent)
+}
 
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', function(e){

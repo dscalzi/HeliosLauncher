@@ -1,7 +1,7 @@
-// DOM cache.
-const welcomeButton = document.getElementById('welcomeButton')
-
-welcomeButton.addEventListener('click', e => {
+/**
+ * Script for welcome.ejs
+ */
+document.getElementById('welcomeButton').addEventListener('click', e => {
     $('#welcomeContainer').fadeOut(500, () => {
         $('#loginContainer').fadeIn(500)
     })

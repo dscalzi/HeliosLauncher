@@ -1294,6 +1294,11 @@ p {
  *                                                                             *
  ******************************************************************************/
 
+/* * *
+* Overlay View (Main Content)
+* * */
+
+/* Overlay container, placed over the main div. */
 #overlayContainer {
     position: absolute;
     top: 22px;
@@ -1305,6 +1310,7 @@ p {
     background: rgba(0, 0, 0, 0.50);
 }
 
+/* Main overlay content. */
 #overlayContent {
     position: relative;
     display: flex;
@@ -1319,6 +1325,7 @@ p {
     text-align: center;
 }
 
+/* Main overlay content anchor styles. */
 #overlayContent a {
     color: rgba(202, 202, 202, 0.75);
     transition: 0.25s ease;
@@ -1330,18 +1337,18 @@ p {
     color: rgba(165, 165, 165, 0.75);
 }
 
+/* Add spacing between overlay content elements. */
 #overlayContent > *:first-child {
     margin-top: 0px !important;
 }
-
 #overlayContent > *:last-child {
     margin-bottom: 0px !important;
 }
-
 #overlayContent > * {
     margin: 8px 0px;
 }
 
+/* Overlay title styles. */
 #overlayTitle {
     font-family: 'Avenir Medium';
     font-size: 20px;
@@ -1350,6 +1357,7 @@ p {
     letter-spacing: 1px;
 }
 
+/* Overlay description styles. */
 #overlayDesc {
     font-family: 'Avenir Book';
     font-size: 12px;
@@ -1357,12 +1365,14 @@ p {
     font-weight: bold;
 }
 
+/* Div which contains action buttons. */
 #overlayActionContainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
+/* Overlay acknowledge button styles. */
 #overlayAcknowledge {
     background: none;
     border: 1px solid #ffffff;
@@ -1384,6 +1394,7 @@ p {
     color: rgba(255, 255, 255, 0.75);
 }
 
+/* Overlay dismiss option styles. */
 #overlayDismiss {
     font-family: 'Avenir Book';
     font-weight: bold;
@@ -1395,5 +1406,244 @@ p {
     color: rgba(255, 255, 255, 0.75);
 }
 #overlayDismiss:active {
+    color: rgba(165, 165, 165, 0.75);
+}
+
+/* * *
+* Overlay View (Server Selection Content)
+* * */
+
+/* Server selection content container. */
+#serverSelectContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 75%;
+}
+
+/* Server selection header. */
+#serverSelectHeader {
+    font-family: 'Avenir Medium';
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 25px;
+}
+
+/* Wrapper div for the list of available servers. */
+#serverSelectList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-height: 65%;
+    min-height: 40%;
+}
+
+/* Scrollable div which lists the available servers. */
+#serverSelectListScrollable {
+    padding: 0px 5px;
+    overflow-y: scroll;
+}
+#serverSelectListScrollable::-webkit-scrollbar {
+    width: 2px;
+}
+#serverSelectListScrollable::-webkit-scrollbar-track {
+    display: none;
+}
+#serverSelectListScrollable::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
+}
+
+/* Content container for a server listing. */
+.serverListing {
+    border: none;
+    padding: 0px;
+    width: 375px;
+    min-height: 60px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    opacity: 0.6;
+    transition: 0.25s ease;
+    cursor: pointer;
+    position: relative;
+    background: rgba(131, 131, 131, 0.25);
+}
+.serverListing[selected] {
+    cursor: default;
+    opacity: 1.0;
+}
+.serverListing:hover,
+.serverListing:focus {
+    outline: none;
+    opacity: 1.0;
+}
+
+/* Add spacing between server listings. */
+#serverSelectListScrollable > .serverListing:not(:first-child):not(:last-child) {
+    margin: 5px 0px;
+}
+#serverSelectListScrollable > .serverListing:first-child {
+    margin-bottom: 5px;
+}
+#serverSelectListScrollable > .serverListing:last-child {
+    margin-top: 5px;
+}
+
+/* Server listing image. */
+.serverListingImg {
+    margin: 0px 10px 0px 5px;
+    border: 1px solid #fff;
+    height: 50px;
+    width: auto;
+}
+
+/* Content container for the server listing's details. */
+.serverListingDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    height: 50px;
+}
+
+/* The name of the server listing. */
+.serverListingName {
+    font-family: 'Avenir Book';
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Description for the server listing. */
+.serverListingDescription {
+    font-family: 'Avenir Book';
+    font-size: 10px;
+    line-height: 10px;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Content container for the server listing's information. */
+.serverListingInfo {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* The minecraft version of the server listing. */
+.serverListingVersion {
+    font-size: 10px;
+    color: #fff;
+    font-family: 'Avenir Book';
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: rgba(31, 140, 11, 0.8);
+    padding: 0px 2px;
+}
+
+/* The revision version of the server's manifest. */
+.serverListingRevision {
+    font-family: 'Avenir Book';
+    color: #969696;
+    font-size: 10px;
+    line-height: 12px;
+    padding: 0px 5px;
+}
+
+/* Star which indicates the default (main) server. */
+.serverListingStarWrapper {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    height: 12px;
+    position: relative;
+}
+/* Tooltip which displays when hovering over the star. */
+.serverListingStarTooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: 65px;
+    background-color: rgba(0, 0, 0, 0.40);
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 1;
+    left: 130%;
+    font-family: 'Avenir Book';
+    font-size: 10px;
+    transition: visibility 0s linear 0.25s, opacity 0.25s ease;
+}
+.serverListingStarTooltip::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    right: 100%; /* To the left of the tooltip */
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent rgba(0, 0, 0, 0.40) transparent transparent;
+}
+#serverListingStarWrapper:hover .serverListingStarTooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay:0s;
+}
+
+/* Content container which contains the server select actions. */
+#serverSelectActions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+}
+
+/* Server selection confirm button styles. */
+#serverSelectConfirm {
+    background: none;
+    border: 1px solid #ffffff;
+    color: white;
+    font-family: 'Avenir Medium';
+    font-weight: bold;
+    border-radius: 2px;
+    padding: 0px 8.1px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    min-height: 20.67px;
+}
+#serverSelectConfirm:hover,
+#serverSelectConfirm:focus {
+    box-shadow: 0px 0px 10px 0px #fff;
+    outline: none;
+}
+#serverSelectConfirm:active {
+    border-color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* Server selection cancel button styles. */
+#serverSelectCancel {
+    font-family: 'Avenir Book';
+    font-weight: bold;
+    font-size: 10px;
+    text-decoration: none;
+    padding-top: 2.5px;
+    color: rgba(202, 202, 202, 0.75);
+    transition: 0.25s ease;
+}
+#serverSelectCancel:hover {
+    color: rgba(255, 255, 255, 0.75);
+}
+#serverSelectCancel:active {
     color: rgba(165, 165, 165, 0.75);
 }
