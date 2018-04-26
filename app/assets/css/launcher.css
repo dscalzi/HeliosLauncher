@@ -1180,6 +1180,12 @@ p {
 * Landing View (Bottom Styles) | Left Content
 * * */
 
+/* Maintains maximum width on the status bar. */
+#server_status_wrapper {
+    display: inline-flex;
+    width: 75px;
+}
+
 /* Span which displays the player count of the selected server. */
 #player_count {
     color: #949494;
@@ -1249,6 +1255,21 @@ p {
     text-shadow: 0px 0px 0px #bebcbb;
     font-size: 20px;
     padding: 0px;
+    transition: 0.25s ease;
+    outline: none;
+}
+#launch_button:hover,
+#launch_button:focus {
+    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
+}
+#launch_button:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+}
+#launch_button:disabled {
+    color: #c7c7c7;
+    cursor: default;
+    pointer-events: none;
 }
 
 /* Launch details main container, hidden until launch processing begins. */
@@ -1336,6 +1357,7 @@ p {
 /* Overlay container, placed over the main div. */
 #overlayContainer {
     position: absolute;
+    z-index: 500;
     top: 22px;
     display: flex;
     align-items: center;

@@ -72,6 +72,15 @@ function setDownloadPercentage(value, max, percent = ((value/max)*100)){
     setLaunchPercentage(value, max, percent)
 }
 
+/**
+ * Enable or disable the launch button.
+ * 
+ * @param {boolean} val True to enable, false to disable.
+ */
+function setLaunchEnabled(val){
+    document.getElementById('launch_button').disabled = !val
+}
+
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', function(e){
     console.log('Launching game..')
@@ -95,7 +104,13 @@ document.getElementById('launch_button').addEventListener('click', function(e){
 })
 
 // Bind selected server
-server_selection_button.innerHTML = '\u2022 ' + AssetGuard.getServerById(ConfigManager.getGameDirectory(), ConfigManager.getSelectedServer()).name
+function updateSelectedServer(serverName){
+    if(serverName == null){
+        serverName = 'No Server Selected'
+    }
+    server_selection_button.innerHTML = '\u2022 ' + serverName
+}
+updateSelectedServer(AssetGuard.getServerById(ConfigManager.getGameDirectory(), ConfigManager.getSelectedServer()).name)
 server_selection_button.addEventListener('click', (e) => {
     e.target.blur()
     toggleOverlay(true, 'serverSelectContent')
@@ -157,9 +172,9 @@ const refreshMojangStatuses = async function(){
     document.getElementById('mojang_status_icon').style.color = Mojang.statusToHex(status)
 }
 
-const refreshServerStatus = async function(){
+const refreshServerStatus = async function(fade = false){
     console.log('Refreshing Server Status')
-    const serv = AssetGuard.resolveSelectedServer(ConfigManager.getGameDirectory())
+    const serv = AssetGuard.getServerById(ConfigManager.getGameDirectory(), ConfigManager.getSelectedServer())
 
     let pLabel = 'SERVER'
     let pVal = 'OFFLINE'
@@ -176,16 +191,25 @@ const refreshServerStatus = async function(){
         console.warn('Unable to refresh server status, assuming offline.')
         console.debug(err)
     }
-    document.getElementById('landingPlayerLabel').innerHTML = pLabel
-    document.getElementById('player_count').innerHTML = pVal
+    if(fade){
+        $('#server_status_wrapper').fadeOut(250, () => {
+            document.getElementById('landingPlayerLabel').innerHTML = pLabel
+            document.getElementById('player_count').innerHTML = pVal
+            $('#server_status_wrapper').fadeIn(500)
+        })
+    } else {
+        document.getElementById('landingPlayerLabel').innerHTML = pLabel
+        document.getElementById('player_count').innerHTML = pVal
+    }
+    
 }
 
 refreshMojangStatuses()
 refreshServerStatus()
 
 // Set refresh rate to once every 5 minutes.
-let mojangStatusListener = setInterval(refreshMojangStatuses, 300000)
-let serverStatusListener = setInterval(refreshServerStatus, 300000)
+let mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 300000)
+let serverStatusListener = setInterval(() => refreshServerStatus(true), 300000)
 
 /* System (Java) Scan */
 

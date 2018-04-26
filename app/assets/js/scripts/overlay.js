@@ -91,7 +91,48 @@ function setDismissHandler(handler){
 
 /* Server Select View */
 
+document.getElementById('serverSelectConfirm').addEventListener('click', () => {
+    const listings = document.getElementsByClassName('serverListing')
+    for(let i=0; i<listings.length; i++){
+        if(listings[i].hasAttribute('selected')){
+            const serv = AssetGuard.getServerById(ConfigManager.getGameDirectory(), listings[i].getAttribute('servid'))
+            ConfigManager.setSelectedServer(serv != null ? serv.id : null)
+            updateSelectedServer(serv != null ? serv.name : null)
+            setLaunchEnabled(serv != null)
+            refreshServerStatus(true)
+            toggleOverlay(false)
+            return
+        }
+    }
+    // None are selected? Not possible right? Meh, handle it.
+    if(listings.length > 0){
+        ConfigManager.setSelectedServer(listings[0].getAttribute('servid'))
+        updateSelectedServer()
+        toggleOverlay(false)
+    }
+})
+
 // Bind server select cancel button.
 document.getElementById('serverSelectCancel').addEventListener('click', () => {
     toggleOverlay(false)
 })
+
+function setServerListingHandlers(){
+    const listings = Array.from(document.getElementsByClassName('serverListing'))
+    listings.map((val) => {
+        val.onclick = e => {
+            if(val.hasAttribute('selected')){
+                return
+            }
+            const cListings = document.getElementsByClassName('serverListing')
+            for(let i=0; i<cListings.length; i++){
+                if(cListings[i].hasAttribute('selected')){
+                    cListings[i].removeAttribute('selected')
+                }
+            }
+            val.setAttribute('selected', '')
+            document.activeElement.blur()
+        }
+    })
+}
+setServerListingHandlers()

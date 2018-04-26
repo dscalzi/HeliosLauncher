@@ -28,10 +28,10 @@
   },
   "homepage": "http://www.westeroscraft.com/",
   "dependencies": {
-    "adm-zip": "^0.4.7",
+    "adm-zip": "^0.4.9",
     "async": "^2.6.0",
     "discord-rpc": "^3.0.0-beta.10",
-    "ejs": "^2.5.7",
+    "ejs": "^2.5.9",
     "ejs-electron": "^2.0.1",
     "jquery": "^3.3.1",
     "mkdirp": "^0.5.1",
@@ -42,8 +42,8 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^1.8.4",
-    "electron-builder": "^20.8.1"
+    "electron": "^1.8.5",
+    "electron-builder": "^20.10.0"
   },
   "build": {
     "appId": "westeroscraftlauncher",

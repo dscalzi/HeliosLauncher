@@ -14,6 +14,7 @@ const loginPassword         = document.getElementById('loginPassword')
 const checkmarkContainer    = document.getElementById('checkmarkContainer')
 const loginRememberOption   = document.getElementById('loginRememberOption')
 const loginButton           = document.getElementById('loginButton')
+const loginForm             = document.getElementById('loginForm')
 
 // Control variables.
 let lu = false, lp = false
@@ -213,6 +214,9 @@ function resolveError(err){
         }
     }
 }
+
+// Disable default form behavior.
+loginForm.onsubmit = () => { return false }
 
 // Bind login button behavior.
 loginButton.addEventListener('click', () => {
