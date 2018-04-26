@@ -51,6 +51,8 @@ p {
 
 /* Frame Bar */
 #frameBar {
+    position: relative;
+    z-index: 100;
     display: flex;
     flex-direction: column;
     background: rgba(1, 2, 1, 0.5);
@@ -890,10 +892,14 @@ p {
 /* Main content container. */
 #landingContainer {
     height: 100%;
+    position: relative;
 }
 
 /* Upper content container. */
 #landingContainer > #upper {
+    position: relative;
+    transition: 2s ease;
+    top: 0px;
     height: 77%;
     display: flex;
 }
@@ -921,6 +927,9 @@ p {
     background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
 }
 #landingContainer > #lower > #left {
+    position: relative;
+    transition: 2s ease;
+    top: 0px;
     height: 100%;
     width: 33%;
     display: inline-flex;
@@ -934,16 +943,23 @@ p {
     left: 50px;
 }
 #landingContainer > #lower > #center {
+    position: relative;
+    transition: 2s ease;
+    top: 0px;
     height: 100%;
     width: 34%;
     display: inline-flex;
     justify-content: center;
 }
 #landingContainer > #lower > #center #content {
+    transition: 2s ease;
     position: relative;
     top: 10px;
 }
 #landingContainer > #lower > #right {
+    position: relative;
+    transition: 2s ease;
+    top: 0px;
     height: 100%;
     width: 33%;
     display: inline-flex;
@@ -1267,6 +1283,7 @@ p {
     justify-content: center;
 }
 
+/* Button which opens the server selection view. */
 #server_selection_button {
     background: none;
     border: none;

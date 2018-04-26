@@ -101,6 +101,29 @@ server_selection_button.addEventListener('click', (e) => {
     toggleOverlay(true, 'serverSelectContent')
 })
 
+// Test menu transform.
+function slide_(up){
+    const lCUpper = document.querySelector('#landingContainer > #upper')
+    const lCLLeft = document.querySelector('#landingContainer > #lower > #left')
+    const lCLCenter = document.querySelector('#landingContainer > #lower > #center')
+    const lCLRight = document.querySelector('#landingContainer > #lower > #right')
+    const menuBtn = document.querySelector('#landingContainer > #lower > #center #content')
+
+    if(up){
+        lCUpper.style.top = '-200vh'
+        lCLLeft.style.top = '-200vh'
+        lCLCenter.style.top = '-200vh'
+        lCLRight.style.top = '-200vh'
+        menuBtn.style.top = '130vh'
+    } else {
+        lCUpper.style.top = '0px'
+        lCLLeft.style.top = '0px'
+        lCLCenter.style.top = '0px'
+        lCLRight.style.top = '0px'
+        menuBtn.style.top = '10px'
+    }
+}
+
 // Update Mojang Status Color
 const refreshMojangStatuses = async function(){
     console.log('Refreshing Mojang Statuses..')
