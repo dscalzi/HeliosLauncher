@@ -35,31 +35,31 @@
         </Submodule>
         <Submodule id="scala-actors-migration" name="Minecraft Forge (scala-actors-migration)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-actors-migration_2.11-1.1.0.jar.pack.xz</URL>
-            <MD5>55e0dc48a2a122353628a463b9499cf0</MD5>
+            <MD5>04e3428b2600ace33c7ae2bf1f6c0a4c</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
         <Submodule id="scala-continuations-library" name="Minecraft Forge (scala-continuations-library)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-continuations-library_2.11-1.0.2.jar.pack.xz</URL>
-            <MD5>820008ee6df308dafa0a6c478270aa19</MD5>
+            <MD5>ed9b1d27aba8ac4090a3749c4dfc895a</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
         <Submodule id="scala-continuations-plugin" name="Minecraft Forge (scala-continuations-plugin)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-continuations-plugin_2.11.1-1.0.2.jar.pack.xz</URL>
-            <MD5>657a7ad23928bf4bee68202c7d7e1d56</MD5>
+            <MD5>a8232db22a72a981de6b1399eb86dff7</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
         <Submodule id="scala-parser-combinators" name="Minecraft Forge (scala-parser-combinators)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-parser-combinators_2.11-1.0.1.jar.pack.xz</URL>
-            <MD5>de496467c91610e55e6e711b6bdbf10c</MD5>
+            <MD5>2e50a7df17680daadacca69f07f8a16d</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
         <Submodule id="scala-reflect" name="Minecraft Forge (scala-reflect)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-reflect-2.11.1.jar.pack.xz</URL>
-            <MD5>abbdaf710e856f6e65376706c9505952</MD5>
+            <MD5>84e5dc81c10e2bd74c579c9d0332fdd9</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
@@ -83,7 +83,7 @@
         </Submodule>
         <Submodule id="typesafe-config" name="Minecraft Forge (typesafe-config)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/config-1.2.1.jar.pack.xz</URL>
-            <MD5>f24b281c40daef1280d5ef26b11caa63</MD5>
+            <MD5>10ec4ccabc4e68aac9cf87165ead5d7d</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
@@ -201,7 +201,7 @@
   </Server>
 
   <Server id="WesterosCraftTest-1.11.2" name="WesterosCraft Test Client" newsUrl="http://www.westeroscraft.com/home/" iconUrl="http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-test.png"
-    revision="3.4.18" serverAddress="mc.westeroscraft.com:4444" generateList="false" version="1.11.2" autoConnect="true" mainClass="net.minecraft.launchwrapper.Launch"
+    revision="3.6.0" serverAddress="mc.westeroscraft.com:4444" generateList="false" version="1.11.2" autoConnect="true" mainClass="net.minecraft.launchwrapper.Launch"
     libOverrides="com.google.guava:guava:17.0 org.apache.commons:commons-lang3:3.3.2">
     <Module id="forge" name="Minecraft Forge 13.20.1.2476">
         <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/forge-1.11.2-13.20.1.2476-universal.jar</URL>
@@ -235,31 +235,31 @@
         </Submodule>
         <Submodule id="scala-actors-migration" name="Minecraft Forge (scala-actors-migration)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-actors-migration_2.11-1.1.0.jar.pack.xz</URL>
-            <MD5>55e0dc48a2a122353628a463b9499cf0</MD5>
+            <MD5>04e3428b2600ace33c7ae2bf1f6c0a4c</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
         <Submodule id="scala-continuations-library" name="Minecraft Forge (scala-continuations-library)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-continuations-library_2.11-1.0.2.jar.pack.xz</URL>
-            <MD5>820008ee6df308dafa0a6c478270aa19</MD5>
+            <MD5>ed9b1d27aba8ac4090a3749c4dfc895a</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
         <Submodule id="scala-continuations-plugin" name="Minecraft Forge (scala-continuations-plugin)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-continuations-plugin_2.11.1-1.0.2.jar.pack.xz</URL>
-            <MD5>657a7ad23928bf4bee68202c7d7e1d56</MD5>
+            <MD5>a8232db22a72a981de6b1399eb86dff7</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
         <Submodule id="scala-parser-combinators" name="Minecraft Forge (scala-parser-combinators)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-parser-combinators_2.11-1.0.1.jar.pack.xz</URL>
-            <MD5>de496467c91610e55e6e711b6bdbf10c</MD5>
+            <MD5>2e50a7df17680daadacca69f07f8a16d</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
         <Submodule id="scala-reflect" name="Minecraft Forge (scala-reflect)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/scala-reflect-2.11.1.jar.pack.xz</URL>
-            <MD5>abbdaf710e856f6e65376706c9505952</MD5>
+            <MD5>84e5dc81c10e2bd74c579c9d0332fdd9</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
@@ -283,7 +283,7 @@
         </Submodule>
         <Submodule id="typesafe-config" name="Minecraft Forge (typesafe-config)">
             <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/config-1.2.1.jar.pack.xz</URL>
-            <MD5>f24b281c40daef1280d5ef26b11caa63</MD5>
+            <MD5>10ec4ccabc4e68aac9cf87165ead5d7d</MD5>
             <Required>true</Required>
             <ModType order="5">Library</ModType>
         </Submodule>
@@ -318,23 +318,23 @@
             <ModType order="10">Library</ModType>
         </Submodule>
     </Module>
-    <Module name="WesterosBlocks (3.0.0-beta-6-133)" id="WesterosBlocks">
+    <Module name="WesterosBlocks (3.1.0-alpha-2-134)" id="WesterosBlocks">
         <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/WesterosBlocks.jar</URL>
         <Required>true</Required>
         <ModType>Regular</ModType>
-        <MD5>5a89e2ab18916c18965fc93a0766cc6e</MD5>
+        <MD5>263cc5fb775763c811b02cef441b1471</MD5>
     </Module>
-    <Module name="OptiFine (1.11.2_HD_U_C3)" id="OptiFine">
+    <Module name="OptiFine (1.11.2_HD_U_C7)" id="OptiFine">
         <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/OptiFine.jar</URL>
         <Required>true</Required>
         <ModType>Regular</ModType>
-        <MD5>82f495594cd50e1fda7a8aa0246239fc</MD5>
+        <MD5>0dd7761e908f9b245bb0dc0fac5649f5</MD5>
     </Module>
-    <Module name="JustEnoughItems (1.11.2-4.5.0.290)" id="JustEnoughItems">
+    <Module name="JustEnoughItems (1.11.2-4.5.1.296)" id="JustEnoughItems">
         <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/jei.jar</URL>
         <Required>true</Required>
         <ModType>Regular</ModType>
-        <MD5>f4d931f6db6210621a86fa1e7eae8016</MD5>
+        <MD5>584b3099d34c9a1b8649385b90831b34</MD5>
     </Module>
     <Module name="Waila (1.7.1_1.11.2)" id="Waila">
         <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/Waila.jar</URL>
@@ -342,34 +342,34 @@
         <ModType>Regular</ModType>
         <MD5>26258a3557bf333e8f4ce8b1e9481031</MD5>
     </Module>
-    <Module name="WorldEditCUI (v2.1.1-mf-1.11.2-13.20.0.2228)" id="worldeditcuife">
+    <Module name="WorldEditCUI (v2.1.2-mf-1.11.2-13.20.0.2228)" id="worldeditcuife">
         <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/worldeditcuife.jar</URL>
         <Required isDefault="true">false</Required>
         <ModType>Regular</ModType>
-        <MD5>439f82b69f3464969163c188818c677b</MD5>
+        <MD5>53f6eef360af5329d9e52b5351657908</MD5>
     </Module>
-    <Module id="journeymap" name="JourneyMap (1.11.2-5.4.7)">
+    <Module id="journeymap" name="JourneyMap (1.11.2-5.5.2)">
         <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/journeymap.jar</URL>
         <Required isDefault="true">false</Required>
         <ModType>Regular</ModType>
-        <MD5>1c3380502eb7b9a495581b2402d144df</MD5>
+        <MD5>4315e9939bf64bfa963c8674cb13e838</MD5>
     </Module>
-    <Module id="BetterFoliage" name="BetterFoliage (1.11.2-2.1.8)">
+    <Module id="BetterFoliage" name="BetterFoliage (1.11.2-2.1.10)">
         <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/BetterFoliage.jar</URL>
         <Required isDefault="true">false</Required>
         <ModType>Regular</ModType>
-        <MD5>b2dd47e42da56fb49a07a0d38df91bc4</MD5>
+        <MD5>522fdf73b6e4343cb6243872fb7b4b6c</MD5>
         <ConfigFile>
             <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/config/betterfoliage.cfg</URL>
             <Path>/config/betterfoliage.cfg</Path>
             <MD5>6dd38f873c4129af05a2d6c500cbe954</MD5>
         </ConfigFile>
     </Module>
-    <Module id="DynamicSurroundings" name="DynamicSurroundings (1.11.2-3.4.6.2)">
+    <Module id="DynamicSurroundings" name="DynamicSurroundings (1.11.2-3.4.9.3)">
         <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/DynamicSurroundings.jar</URL>
         <Required isDefault="true">false</Required>
         <ModType>Regular</ModType>
-        <MD5>82a6aac5420151960b8dd709deee5423</MD5>
+        <MD5>65403c66d8b3655b372f58047941d206</MD5>
         <ConfigFile>
             <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/config/dsurround/dsurround.cfg</URL>
             <Path>/config/dsurround/dsurround.cfg</Path>
@@ -381,12 +381,12 @@
             <MD5>44eab112ff24d0bd29974c270de868ba</MD5>
         </ConfigFile>
     </Module>
-    <Module id="WesterosCraftRP" name="WesterosCraft Resource Pack (2017-08-16)">
+    <Module id="WesterosCraftRP" name="WesterosCraft Resource Pack (2018-03-10)">
         <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/resourcepacks/WesterosCraft.zip</URL>
         <Required>true</Required>
         <ModType>Regular</ModType>
         <ModPath>/resourcepacks/WesterosCraft.zip</ModPath>
-        <MD5>ec2d9fdb14d5c2eafe5975a240202f1a</MD5>
+        <MD5>ecb7ea884ab99a629e123d2c1ebe4467</MD5>
         <ConfigFile>
             <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/files/options-1.11.2.txt</URL>
             <Path>/options.txt</Path>
@@ -396,6 +396,206 @@
             <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/servers.dat</URL>
             <Path>/servers.dat</Path>
             <MD5>594de6063df993b5fde31c7290226ee4</MD5>
+        </ConfigFile>
+    </Module>
+  </Server>
+
+  <Server id="WesterosCraftTest-1.12.2" name="WesterosCraft Test Client (1.12.2)" newsUrl="http://www.westeroscraft.com/home/" iconUrl="http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-test.png"
+    revision="4.0.1" serverAddress="mc.westeroscraft.com:4445" generateList="false" version="1.12.2" autoConnect="true" mainClass="net.minecraft.launchwrapper.Launch"
+    libOverrides="com.google.guava:guava:21.0 org.apache.commons:commons-lang3:3.5">
+    <Module id="forge" name="Minecraft Forge 14.23.2.2618">
+        <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/forge-1.12.2-14.23.2.2651-universal.jar</URL>
+        <Required>true</Required>
+        <ModType order="1" jreArgs="-Dfml.ignorePatchDiscrepancies=true -Dfml.ignoreInvalidMinecraftCertificates=true" launchArgs="--tweakClass net.minecraftforge.fml.common.launcher.FMLTweaker --versionType Forge">Library</ModType>
+        <MD5>42d3aec7cdd6e4e49b4ff77a1db7c3a9</MD5>
+        
+        <Submodule id="launchwrapper" name="Mojang (LaunchWrapper)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/launchwrapper-1.12.jar</URL>
+            <MD5>934b2d91c7c5be4a49577c9e6b40e8da</MD5>
+            <Required>true</Required>
+            <ModType order="2">Library</ModType>
+        </Submodule>
+        <Submodule id="asm" name="Mojang (ASM)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/asm-all-5.2.jar</URL>
+            <MD5>f5ad16c7f0338b541978b0430d51dc83</MD5>
+            <Required>true</Required>
+            <ModType order="3">Library</ModType>
+        </Submodule>
+        <Submodule id="jline" name="Mojang (jline)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/jline-2.13.jar</URL>
+            <MD5>f251ba666cccb260ff7215b2cbeee8d4</MD5>
+            <Required>true</Required>
+            <ModType order="3">Library</ModType>
+        </Submodule>
+        <Submodule id="scala-lib" name="Minecraft Forge (scala-library)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/scala-library-2.11.1.jar.pack.xz</URL>
+            <MD5>379c15c4f724421c6d5d7aecedaf87a6</MD5>
+            <Required>true</Required>
+            <ModType order="4">Library</ModType>
+        </Submodule>
+        <Submodule id="scala-compiler" name="Minecraft Forge (scala-compiler)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/scala-compiler-2.11.1.jar.pack.xz</URL>
+            <MD5>7d89e952f2d5c74577310cd2c28e3f20</MD5>
+            <Required>true</Required>
+            <ModType order="5">Library</ModType>
+        </Submodule>
+        <Submodule id="scala-actors-migration" name="Minecraft Forge (scala-actors-migration)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/scala-actors-migration_2.11-1.1.0.jar.pack.xz</URL>
+            <MD5>04e3428b2600ace33c7ae2bf1f6c0a4c</MD5>
+            <Required>true</Required>
+            <ModType order="5">Library</ModType>
+        </Submodule>
+        <Submodule id="scala-continuations-library" name="Minecraft Forge (scala-continuations-library)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/scala-continuations-library_2.11-1.0.2.jar.pack.xz</URL>
+            <MD5>ed9b1d27aba8ac4090a3749c4dfc895a</MD5>
+            <Required>true</Required>
+            <ModType order="5">Library</ModType>
+        </Submodule>
+        <Submodule id="scala-continuations-plugin" name="Minecraft Forge (scala-continuations-plugin)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/scala-continuations-plugin_2.11.1-1.0.2.jar.pack.xz</URL>
+            <MD5>a8232db22a72a981de6b1399eb86dff7</MD5>
+            <Required>true</Required>
+            <ModType order="5">Library</ModType>
+        </Submodule>
+        <Submodule id="scala-parser-combinators" name="Minecraft Forge (scala-parser-combinators)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/scala-parser-combinators_2.11-1.0.1.jar.pack.xz</URL>
+            <MD5>2e50a7df17680daadacca69f07f8a16d</MD5>
+            <Required>true</Required>
+            <ModType order="5">Library</ModType>
+        </Submodule>
+        <Submodule id="scala-reflect" name="Minecraft Forge (scala-reflect)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/scala-reflect-2.11.1.jar.pack.xz</URL>
+            <MD5>84e5dc81c10e2bd74c579c9d0332fdd9</MD5>
+            <Required>true</Required>
+            <ModType order="5">Library</ModType>
+        </Submodule>
+        <Submodule id="scala-swing" name="Minecraft Forge (scala-swing)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/scala-swing_2.11-1.0.1.jar</URL>
+            <MD5>1d360289e697022a3f57abaad344b28f</MD5>
+            <Required>true</Required>
+            <ModType order="5">Library</ModType>
+        </Submodule>
+        <Submodule id="scala-xml" name="Minecraft Forge (scala-xml)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/scala-xml_2.11-1.0.2.jar.pack.xz</URL>
+            <MD5>cc891b094a4c32dedc56bfefe9b072ff</MD5>
+            <Required>true</Required>
+            <ModType order="5">Library</ModType>
+        </Submodule>
+        <Submodule id="akka-actor" name="Minecraft Forge (akka-actor)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/akka-actor_2.11-2.3.3.jar.pack.xz</URL>
+            <MD5>25cb22c3078e9fb3f7a861c912924862</MD5>
+            <Required>true</Required>
+            <ModType order="5">Library</ModType>
+        </Submodule>
+        <Submodule id="typesafe-config" name="Minecraft Forge (typesafe-config)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/config-1.2.1.jar.pack.xz</URL>
+            <MD5>10ec4ccabc4e68aac9cf87165ead5d7d</MD5>
+            <Required>true</Required>
+            <ModType order="5">Library</ModType>
+        </Submodule>
+        <Submodule id="lzma" name="Mojang (LZMA)">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/lzma-0.0.1.jar</URL>
+            <MD5>a3e3c3186e41c4a1a3027ba2bb23cdc6</MD5>
+            <Required>true</Required>
+            <ModType order="6">Library</ModType>
+        </Submodule>
+        <Submodule id="trove4j" name="Trove4J 3.0.3">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/trove4j-3.0.3.jar</URL>
+            <MD5>8fc4d4e0129244f9fd39650c5f30feb2</MD5>
+            <Required>true</Required>
+            <ModType order="7">Library</ModType>
+        </Submodule>
+        <Submodule id="vecmath" name="Vecmath 1.5.2">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/vecmath-1.5.2.jar</URL>
+            <MD5>e5d2b7f46c4800a32f62ce75676a5710</MD5>
+            <Required>true</Required>
+            <ModType order="8">Library</ModType>
+        </Submodule>
+        <Submodule id="jopt-simple" name="Jopt-simple 5.0.3">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/jopt-simple-5.0.3.jar</URL>
+            <MD5>0a5ec84e23df9d7cfb4063bc55f2744c</MD5>
+            <Required>true</Required>
+            <ModType order="9">Library</ModType>
+        </Submodule>
+        <Submodule id="MercuriusUpdater" name="MercuriusUpdater 1.12.2">
+            <URL priority="0">http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/MercuriusUpdater-1.12.1.jar</URL>
+            <MD5>5580745b0620323f7d3ccbac6fd310d5</MD5>
+            <Required>true</Required>
+            <ModType order="10">Library</ModType>
+        </Submodule>
+    </Module>
+    <Module name="WesterosBlocks (3.1.0-alpha-2-4)" id="WesterosBlocks">
+        <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/mods/WesterosBlocks.jar</URL>
+        <Required>true</Required>
+        <ModType>Regular</ModType>
+        <MD5>d7821ea6ee4ba3d4e620bbb95109f1da</MD5>
+    </Module>
+    <Module name="OptiFine (1.12.2_HD_U_D1)" id="OptiFine">
+        <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/mods/OptiFine.jar</URL>
+        <Required>true</Required>
+        <ModType>Regular</ModType>
+        <MD5>4bfc1c95dde8ec08568e01bfaa61e7c5</MD5>
+    </Module>
+    <Module name="JustEnoughItems (1.12.2-4.8.5.151)" id="JustEnoughItems">
+        <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/mods/jei.jar</URL>
+        <Required>true</Required>
+        <ModType>Regular</ModType>
+        <MD5>7194b7b1f1ea6ad20013c596319db5b0</MD5>
+    </Module>
+    <Module name="WorldEditCUI (v2.1.2-mf-1.12.2-14.23.0.2487)" id="worldeditcuife">
+        <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/mods/worldeditcuife.jar</URL>
+        <Required isDefault="true">false</Required>
+        <ModType>Regular</ModType>
+        <MD5>44b1b1031c25f04955bfd7ed734bd467</MD5>
+    </Module>
+    <Module id="journeymap" name="JourneyMap (1.12.2-5.5.2)">
+        <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/mods/journeymap.jar</URL>
+        <Required isDefault="true">false</Required>
+        <ModType>Regular</ModType>
+        <MD5>b743562dac1b5334c20ac87b54c0b518</MD5>
+    </Module>
+    <Module id="BetterFoliage" name="BetterFoliage (1.12-2.1.10)">
+        <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/mods/BetterFoliage.jar</URL>
+        <Required isDefault="true">false</Required>
+        <ModType>Regular</ModType>
+        <MD5>06714eb2c13f59df5e3c92cec7370e11</MD5>
+        <ConfigFile>
+            <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/config/betterfoliage.cfg</URL>
+            <Path>/config/betterfoliage.cfg</Path>
+            <MD5>6dd38f873c4129af05a2d6c500cbe954</MD5>
+        </ConfigFile>
+    </Module>
+    <Module id="DynamicSurroundings" name="DynamicSurroundings (1.12.2-3.4.9.3)">
+        <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/mods/DynamicSurroundings.jar</URL>
+        <Required isDefault="true">false</Required>
+        <ModType>Regular</ModType>
+        <MD5>115baf8e5f4e7d9757a2a85fb3507789</MD5>
+        <ConfigFile>
+            <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/config/dsurround/dsurround.cfg</URL>
+            <Path>/config/dsurround/dsurround.cfg</Path>
+            <MD5>4c64fc6cbbb83b18012ed4820b0b496e</MD5>
+        </ConfigFile>
+        <ConfigFile>
+            <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/config/dsurround/westeros.json</URL>
+            <Path>/config/dsurround/westeros.json</Path>
+            <MD5>44eab112ff24d0bd29974c270de868ba</MD5>
+        </ConfigFile>
+    </Module>
+    <Module id="WesterosCraftRP" name="WesterosCraft Resource Pack (2018-04-03)">
+        <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/resourcepacks/WesterosCraft.zip</URL>
+        <Required>true</Required>
+        <ModType>Regular</ModType>
+        <ModPath>/resourcepacks/WesterosCraft.zip</ModPath>
+        <MD5>2a3f5e68e9e27e037675d9ed56c73e50</MD5>
+        <ConfigFile>
+            <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/files/options-1.12.2.txt</URL>
+            <Path>/options.txt</Path>
+            <NoOverwrite>true</NoOverwrite>
+        </ConfigFile>
+        <ConfigFile>
+            <URL>http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/servers.dat</URL>
+            <Path>/servers.dat</Path>
+            <MD5>64dc1db90935997f07dfac422206f1de</MD5>
         </ConfigFile>
     </Module>
   </Server>
