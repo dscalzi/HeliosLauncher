@@ -12,9 +12,10 @@
         {
             "id": "WesterosCraft-1.11.2",
             "name": "WesterosCraft Production Server",
+            "description": "Main WesterosCraft server. Connect to enter the Realm.",
             "news_feed": "http://www.westeroscraft.com/api/rss.php?preset_id=12700544",
             "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-prod.png",
-            "revision": "0.0.1",
+            "revision": "3.4.17",
             "server_ip": "mc.westeroscraft.com",
             "mc_version": "1.11.2",
             "discord": {
@@ -409,6 +410,42 @@
                     }
                 }
             ]
+        },
+        {
+            "id": "WesterosCraftTest-1.11.2",
+            "name": "WesterosCraft Test Server",
+            "description": "Main testing server. Experimental changes are live here.",
+            "news_feed": "http://www.westeroscraft.com/api/rss.php?preset_id=12700544",
+            "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-test.png",
+            "revision": "3.6.0",
+            "server_ip": "mc.westeroscraft.com:4444",
+            "mc_version": "1.11.2",
+            "discord": {
+                "shortId": "Test Server",
+                "largeImageText": "WesterosCraft Test Server",
+                "largeImageKey": "server-test"
+            },
+            "default_selected": false,
+            "autoconnect": true,
+            "modules": []
+        },
+        {
+            "id": "WesterosCraftTest-1.12.2",
+            "name": "WesterosCraft 1.12.2 Test Server",
+            "description": "Tests for our version change to 1.12.2 are live here.",
+            "news_feed": "http://www.westeroscraft.com/api/rss.php?preset_id=12700544",
+            "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-test.png",
+            "revision": "4.0.1",
+            "server_ip": "mc.westeroscraft.com:4445",
+            "mc_version": "1.12.2",
+            "discord": {
+                "shortId": "1.12.2 Test Server",
+                "largeImageText": "WesterosCraft 1.12.2 Test Server",
+                "largeImageKey": "server-test"
+            },
+            "default_selected": false,
+            "autoconnect": true,
+            "modules": []
         }
     ]
 }

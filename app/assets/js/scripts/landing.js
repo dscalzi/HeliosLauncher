@@ -113,7 +113,7 @@ function updateSelectedServer(serverName){
 updateSelectedServer(AssetGuard.getServerById(ConfigManager.getGameDirectory(), ConfigManager.getSelectedServer()).name)
 server_selection_button.addEventListener('click', (e) => {
     e.target.blur()
-    toggleOverlay(true, 'serverSelectContent')
+    toggleServerSelection(true)
 })
 
 // Test menu transform.

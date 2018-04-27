@@ -1562,7 +1562,7 @@ p {
     margin: 0px 10px 0px 5px;
     border: 1px solid #fff;
     height: 50px;
-    width: auto;
+    width: 50px;
 }
 
 /* Content container for the server listing's details. */
@@ -1657,7 +1657,7 @@ p {
     border-style: solid;
     border-color: transparent rgba(0, 0, 0, 0.40) transparent transparent;
 }
-#serverListingStarWrapper:hover .serverListingStarTooltip {
+.serverListingStarWrapper:hover .serverListingStarTooltip {
     visibility: visible;
     opacity: 1;
     transition-delay:0s;
