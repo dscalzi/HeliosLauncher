@@ -35,7 +35,7 @@
     "ejs-electron": "^2.0.1",
     "jquery": "^3.3.1",
     "mkdirp": "^0.5.1",
-    "request-promise-native": "^1.0.5",
+    "request": "^2.85.0",
     "rimraf": "^2.6.2",
     "tar-fs": "^1.16.0",
     "uuid": "^3.2.1",
