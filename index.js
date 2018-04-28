@@ -6,7 +6,8 @@ const url = require('url')
 const fs = require('fs')
 const ejse = require('ejs-electron')
 
-function initAutoUpdater(event){
+// Setup auto updater.
+function initAutoUpdater(event) {
     // Defaults to true if application version contains prerelease components (e.g. 0.12.1-alpha.1)
     // autoUpdater.allowPrerelease = true
     if(isDev){
@@ -27,6 +28,7 @@ function initAutoUpdater(event){
     })  
 }
 
+// Open channel to listen for update actions.
 ipcMain.on('autoUpdateAction', (event, arg) => {
     switch(arg){
         case 'initAutoUpdater':
@@ -37,7 +39,7 @@ ipcMain.on('autoUpdateAction', (event, arg) => {
         case 'checkForUpdate':
             autoUpdater.checkForUpdates()
                 .catch(err => {
-                    event.sender.send('autoUpdateNotification', 'error', err)
+                    event.sender.send('autoUpdateNotification', 'realerror', err)
                 })
             break
         case 'installUpdateNow':

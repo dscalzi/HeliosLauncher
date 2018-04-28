@@ -5,9 +5,9 @@
  * modules, excluding dependencies.
  */
 // Requirements
-const $                         = require('jquery');
+const $                                      = require('jquery');
 const {ipcRenderer, remote, shell, webFrame} = require('electron')
-const isDev = require('electron-is-dev')
+const isDev                                  = require('electron-is-dev')
 
 // Disable eval function.
 // eslint-disable-next-line
@@ -29,35 +29,42 @@ webFrame.setLayoutZoomLevelLimits(0, 0)
 
 // Initialize auto updates in production environments.
 // TODO Make this the case after implementation is done.
+let updateCheckListener
 if(!isDev){
     ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
         switch(arg){
             case 'checking-for-update':
-                console.log('Checking for update..')
+                console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Checking for update..')
                 break
             case 'update-available':
-                console.log('New update available', info.version)
+                console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'New update available', info.version)
                 break
             case 'update-downloaded':
-                console.log('Update ' + info.version + ' ready to be installed.')
+                console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Update ' + info.version + ' ready to be installed.')
                 showUpdateUI(info)
                 break
             case 'update-not-available':
-                console.log('No new update found.')
+                console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'No new update found.')
                 break
             case 'ready':
+                updateCheckListener = setInterval(() => {
+                    ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+                }, 1800000)
                 ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
-            case 'error':
-                console.log('Error during update check..')
-                console.debug('Error Code:', info != null ? info.code : null)
-                if(err != null && err.code != null){
-                    if(err.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
-                        console.log('No suitable releases found.')
+            case 'realerror':
+                if(info != null && info.code != null){
+                    if(info.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
+                        console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'No suitable releases found.')
+                    } else if(info.code === 'ERR_XML_MISSED_ELEMENT'){
+                        console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'No releases found.')
+                    } else {
+                        console.error('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Error during update check..', info)
+                        console.debug('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Error Code:', info.code)
                     }
                 }
                 break
             default:
-                console.log('Unknown argument', arg)
+                console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Unknown argument', arg)
                 break
         }
     })
