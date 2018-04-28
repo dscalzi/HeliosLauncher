@@ -1,9 +1,53 @@
-const {app, BrowserWindow} = require('electron')
-//const autoUpdater = require("electron-updater").autoUpdater
+const {app, BrowserWindow, ipcMain} = require('electron')
+const autoUpdater = require("electron-updater").autoUpdater
+const isDev = require('electron-is-dev')
 const path = require('path')
 const url = require('url')
 const fs = require('fs')
 const ejse = require('ejs-electron')
+
+function initAutoUpdater(event){
+    // Defaults to true if application version contains prerelease components (e.g. 0.12.1-alpha.1)
+    // autoUpdater.allowPrerelease = true
+    if(isDev){
+        autoUpdater.autoInstallOnAppQuit = false
+        autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml')
+    }
+    autoUpdater.on('update-available', (info) => {
+        event.sender.send('autoUpdateNotification', 'update-available', info)
+    })
+    autoUpdater.on('update-downloaded', (info) => {
+        event.sender.send('autoUpdateNotification', 'update-downloaded', info)
+    })
+    autoUpdater.on('update-not-available', (info) => {
+        event.sender.send('autoUpdateNotification', 'update-not-available', info)
+    })
+    autoUpdater.on('checking-for-update', () => {
+        event.sender.send('autoUpdateNotification', 'checking-for-update')
+    })  
+}
+
+ipcMain.on('autoUpdateAction', (event, arg) => {
+    switch(arg){
+        case 'initAutoUpdater':
+            console.log('Initializing auto updater.')
+            initAutoUpdater(event)
+            event.sender.send('autoUpdateNotification', 'ready')
+            break
+        case 'checkForUpdate':
+            autoUpdater.checkForUpdates()
+                .catch(err => {
+                    event.sender.send('autoUpdateNotification', 'error', err)
+                })
+            break
+        case 'installUpdateNow':
+            autoUpdater.quitAndInstall()
+            break
+        default:
+            console.log('Unknown argument', arg)
+            break
+    }
+})
 
 // Disable hardware acceleration.
 // https://electronjs.org/docs/tutorial/offscreen-rendering

@@ -1002,8 +1002,12 @@ p {
     border-radius: 50%;
     margin-top: 50px;
 }
+#image_seal_container[update]{
+    cursor: pointer
+}
 #image_seal_container[update]:before,
 #image_seal_container[update]:after {
+    cursor: pointer;
     position: absolute;
     content: '';
     height: 100%;
@@ -1013,10 +1017,47 @@ p {
     border-radius: 50%;
     box-shadow: 0 0 15px #43c628;
     animation: glow-grow 4s ease-out infinite;
+    background: rgba(0, 0, 0, 0.15);
 }
-#image_seal_container[update]:after {
+#image_seal_container[update]:before {
     animation-delay: 2s;
 }
+
+#updateAvailableTooltip {
+    cursor: pointer;
+    visibility: hidden;
+    opacity: 0;
+    width: 100px;
+    height: 15px;
+    background-color: rgb(0, 0, 0);
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 2px;
+    position: absolute;
+    z-index: 1;
+    top: 115%;
+    left: -17.5px;
+    font-family: 'Avenir Medium';
+    font-size: 12px;
+    transition: visibility 0s linear 0.25s, opacity 0.25s ease;
+}
+#updateAvailableTooltip::after {
+    content: " ";
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent rgb(0, 0, 0) transparent;
+}
+#image_seal_container[update]:hover #updateAvailableTooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+
 @keyframes glow-grow {
     0% {
         opacity: 0;

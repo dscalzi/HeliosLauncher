@@ -6,7 +6,8 @@
  */
 // Requirements
 const $                         = require('jquery');
-const {remote, shell, webFrame} = require('electron')
+const {ipcRenderer, remote, shell, webFrame} = require('electron')
+const isDev = require('electron-is-dev')
 
 // Disable eval function.
 // eslint-disable-next-line
@@ -25,6 +26,61 @@ remote.getCurrentWebContents().on('devtools-opened', () => {
 webFrame.setZoomLevel(0)
 webFrame.setVisualZoomLevelLimits(1, 1)
 webFrame.setLayoutZoomLevelLimits(0, 0)
+
+// Initialize auto updates in production environments.
+// TODO Make this the case after implementation is done.
+if(!isDev){
+    ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
+        switch(arg){
+            case 'checking-for-update':
+                console.log('Checking for update..')
+                break
+            case 'update-available':
+                console.log('New update available', info.version)
+                break
+            case 'update-downloaded':
+                console.log('Update ' + info.version + ' ready to be installed.')
+                showUpdateUI(info)
+                break
+            case 'update-not-available':
+                console.log('No new update found.')
+                break
+            case 'ready':
+                ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+            case 'error':
+                console.log('Error during update check..')
+                console.debug('Error Code:', info != null ? info.code : null)
+                if(err.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
+                    console.log('No suitable releases found.')
+                }
+                break
+            default:
+                console.log('Unknown argument', arg)
+                break
+        }
+    })
+    ipcRenderer.send('autoUpdateAction', 'initAutoUpdater')
+}
+
+function showUpdateUI(info){
+    //TODO Make this message a bit more informative `${info.version}`
+    document.getElementById('image_seal_container').setAttribute('update', true)
+    document.getElementById('image_seal_container').onclick = () => {
+        setOverlayContent('Update Available', 'A new update for the launcher is available. Would you like to install now?', 'Install', 'Later')
+        setOverlayHandler(() => {
+            if(!isDev){
+                ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
+            } else {
+                console.error('Cannot install updates in development environment.')
+                toggleOverlay(false)
+            }
+        })
+        setDismissHandler(() => {
+            toggleOverlay(false)
+        })
+        toggleOverlay(true, true)
+    }
+}
 
 /* jQuery Example
 $(function(){

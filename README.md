@@ -46,10 +46,9 @@ If you use VS Code, you can run this directly from the IDE. Copy the following c
       "windows": {
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
       },
-      "program": "${workspaceRoot}/index.js",
+      "args": ["."],
       "console": "integratedTerminal",
-      "protocol": "inspector",
-      "timeout": 100000000
+      "protocol": "inspector"
     },
     {
       "name": "Debug Renderer Process",
@@ -60,7 +59,7 @@ If you use VS Code, you can run this directly from the IDE. Copy the following c
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
       },
       "runtimeArgs": [
-        "${workspaceRoot}/index.js",
+        "${workspaceRoot}/.",
         "--remote-debugging-port=9222"
       ],
       "webRoot": "${workspaceRoot}"
