@@ -1,4 +1,5 @@
 const {app, BrowserWindow} = require('electron')
+//const autoUpdater = require("electron-updater").autoUpdater
 const path = require('path')
 const url = require('url')
 const fs = require('fs')

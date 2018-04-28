@@ -74,9 +74,11 @@ exports.validateSelected = async function(){
             ConfigManager.updateAuthAccount(current.uuid, session.accessToken)
             ConfigManager.save()
         } catch(err) {
-            if(err && err.message === 'ForbiddenOperationException'){
-                return false
+            console.debug('Error while validating selected profile:', err)
+            if(err && err.error === 'ForbiddenOperationException'){
+                // What do we do?
             }
+            return false
         }
         return true
     } else {
