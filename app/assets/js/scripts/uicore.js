@@ -50,8 +50,10 @@ if(!isDev){
             case 'error':
                 console.log('Error during update check..')
                 console.debug('Error Code:', info != null ? info.code : null)
-                if(err.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
-                    console.log('No suitable releases found.')
+                if(err != null && err.code != null){
+                    if(err.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
+                        console.log('No suitable releases found.')
+                    }
                 }
                 break
             default:

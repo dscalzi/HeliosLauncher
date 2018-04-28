@@ -28,6 +28,7 @@ const child_process = require('child_process')
 const crypto = require('crypto')
 const EventEmitter = require('events')
 const fs = require('fs')
+const isDev = require('electron-is-dev')
 const mkpath = require('mkdirp');
 const path = require('path')
 const Registry = require('winreg')
@@ -464,7 +465,17 @@ class AssetGuard extends EventEmitter {
      */
     static _extractPackXZ(filePaths, javaExecutable){
         return new Promise(function(fulfill, reject){
-            const libPath = path.join(__dirname, '..', 'libraries', 'java', 'PackXZExtract.jar')
+            let libPath
+            if(isDev){
+                libPath = path.join(process.cwd(), 'libraries', 'java', 'PackXZExtract.jar')
+            } else {
+                if(process.platform === 'darwin'){
+                    libPath = path.join(process.cwd(),'Contents', 'Resources', 'libraries', 'java', 'PackXZExtract.jar')
+                } else {
+                    libPath = path.join(process.cwd(), 'resources', 'libraries', 'java', 'PackXZExtract.jar')
+                }
+            }
+            
             const filePath = filePaths.join(',')
             const child = child_process.spawn(javaExecutable, ['-jar', libPath, '-packxz', filePath])
             child.stdout.on('data', (data) => {

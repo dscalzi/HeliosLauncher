@@ -95,6 +95,9 @@
     "files": [
       "!{target,logs,.vscode,docs,dev-app-update.yml}"
     ],
+    "extraResources": [
+      "libraries"
+    ],
     "asar": true
   }
 }
