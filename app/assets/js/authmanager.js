@@ -21,7 +21,7 @@ const Mojang = require('./mojang.js')
  * 
  * @param {string} username The account username (email if migrated).
  * @param {string} password The account password.
- * @returns {Promise.<Object>} Promise which resolves to the Mojang authentication response.
+ * @returns {Promise.<Object>} Promise which resolves the resolved authenticated account object.
  */
 exports.addAccount = async function(username, password){
     try{

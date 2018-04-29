@@ -20,6 +20,7 @@ const launch_progress         = document.getElementById('launch_progress')
 const launch_progress_label   = document.getElementById('launch_progress_label')
 const launch_details_text     = document.getElementById('launch_details_text')
 const server_selection_button = document.getElementById('server_selection_button')
+const user_text               = document.getElementById('user_text')
 
 /* Launch Progress Wrapper Functions */
 
@@ -102,6 +103,16 @@ document.getElementById('launch_button').addEventListener('click', function(e){
         })
     }
 })
+
+// Bind selected account
+function updateSelectedAccount(authUser){
+    let username = 'No Account Selected'
+    if(authUser != null && authUser.username != null){
+        username = authUser.displayName
+    }
+    user_text.innerHTML = username
+}
+updateSelectedAccount(ConfigManager.getSelectedAccount())
 
 // Bind selected server
 function updateSelectedServer(serverName){

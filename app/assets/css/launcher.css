@@ -911,12 +911,12 @@ p {
 }
 #landingContainer > #upper > #content {
     display: inline-flex;
-    width: 59%;
+    width: 70%;
     height: 100%;
 }
 #landingContainer > #upper > #right {
     display: inline-flex;
-    width: 26%;
+    width: 15%;
     height: 100%;
 }
 
@@ -1128,7 +1128,7 @@ p {
     flex-direction: column;
     position: relative;
     top: 50px;
-    align-items: flex-end;
+    align-items: flex-start;
     height: calc(100% - 50px);
 }
 
@@ -1139,18 +1139,22 @@ p {
     justify-content: center;
     box-sizing: border-box;
     height: 75px;
+    position: relative;
 }
 
 /* User profile avatar container. */
 #avatarContainer {
     border-radius: 50%;
     border: 2px solid #cad7e1;
+    box-sizing: border-box;
     background: rgba(1, 2, 1, 0.5);
     height: 70px;
     width: 70px;
     box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
     overflow: hidden;
     position: relative;
+    background-image: url('https://cdn.discordapp.com/avatars/169197209630277642/6650b5a50e1cb3d00a79b9b88b9a0cd4.png');
+    background-size: contain;
 }
 
 /* Avatar edit overlay. */
@@ -1158,10 +1162,6 @@ p {
     opacity: 0;
     position: absolute;
     z-index: 1;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1173,28 +1173,25 @@ p {
     background: linear-gradient(65deg, rgba(0, 0, 0, 0.4), rgba(136, 77, 77, 0.4) 60%);
     -webkit-user-select: none;
     cursor: pointer;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
 }
 #avatarOverlay:hover {
     opacity: 1;
-}
-
-/* User profile avater image. */
-#avatarImage {
-    height: 100%;
-    width: auto;
 }
 
 /* User profile name text. */
 #user_text {
     font-family: 'Avenir Book';
     font-size: 12px;
-    min-width: 112px;
+    min-width: 135px;
     font-weight: 900;
     letter-spacing: 1px;
     color: white;
     text-shadow: 0px 0px 20px black;
-    position: relative;
-    right: 25px;
+    position: absolute;
+    right: 95px;
     text-align: right;
 }
 
@@ -1203,10 +1200,9 @@ p {
     position: relative;
     display: flex;
     flex-direction: column;
-    right: 25px;
-    align-items: flex-end;
-    margin-top: 40px;
-    height: 100%;
+    margin-top: 25px;
+    height: calc(100% - 95px);
+    width: 70px;
     align-items: center;
 }
 

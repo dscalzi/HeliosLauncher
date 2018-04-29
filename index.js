@@ -68,7 +68,8 @@ function createWindow() {
         frame: false,
         webPreferences: {
             preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js')
-        }
+        },
+        backgroundColor: '#2e2c29'
     })
 
     ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))
@@ -78,6 +79,10 @@ function createWindow() {
         protocol: 'file:',
         slashes: true
     }))
+
+    /*win.once('ready-to-show', () => {
+        win.show()
+    })*/
 
     win.setMenu(null)
 
