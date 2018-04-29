@@ -20,6 +20,8 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
     }
     if(toggleState){
         document.getElementById('main').setAttribute('overlay', true)
+        // Make things tabbable.
+        $("#main *").attr('tabindex', '-1')
         $('#' + content).parent().children().hide()
         $('#' + content).show()
         if(dismissable){
@@ -30,6 +32,8 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
         $('#overlayContainer').fadeIn(250)
     } else {
         document.getElementById('main').removeAttribute('overlay')
+        // Make things tabbable.
+        $("#main *").removeAttr('tabindex')
         $('#overlayContainer').fadeOut(250, () => {
             $('#' + content).parent().children().hide()
             $('#' + content).show()

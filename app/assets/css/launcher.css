@@ -1138,7 +1138,6 @@ p {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    height: 75px;
     position: relative;
 }
 
@@ -1341,12 +1340,36 @@ p {
     background: none;
     border: none;
     cursor: pointer;
+    outline: none;
+}
+#menu_button:hover #menu_text,
+#menu_button:focus #menu_text {
+    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
+}
+#menu_button:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+}
+
+#menu_button:hover #menu_img,
+#menu_button:focus #menu_img {
+    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+}
+#menu_button:active #menu_img .arrowLine {
+    stroke: #c7c7c7;
+}
+#menu_button:active #menu_img {
+    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+}
+#menu_button:disabled #menu_img .arrowLine {
+    stroke: rgba(255, 255, 255, 0.75);
 }
 
 /* Arrow image which floats above the menu button. */
 #menu_img {
     height: 11px;
     margin-left: -2px;
+    transition: 0.25s ease;
 }
 
 /* Span which contains the menu button text. */
@@ -1358,6 +1381,7 @@ p {
     font-size: 11px;
     line-height: 30px;
     display: flex;
+    transition: 0.25s ease;
 }
 
 /* * *

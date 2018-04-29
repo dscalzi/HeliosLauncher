@@ -127,6 +127,7 @@ server_selection_button.addEventListener('click', (e) => {
     toggleServerSelection(true)
 })
 
+let menuActive = false
 // Test menu transform.
 function slide_(up){
     const lCUpper = document.querySelector('#landingContainer > #upper')
@@ -141,19 +142,24 @@ function slide_(up){
         lCLCenter.style.top = '-200vh'
         lCLRight.style.top = '-200vh'
         menuBtn.style.top = '130vh'
-        setTimeout(() => {
+        /*setTimeout(() => {
             lCLCenter.style.transition = 'none'
             menuBtn.style.transition = 'none'
-        }, 2000)
+        }, 2000)*/
     } else {
-        lCLCenter.style.transition = null
-        menuBtn.style.transition = null
+        //lCLCenter.style.transition = null
+        //menuBtn.style.transition = null
         lCUpper.style.top = '0px'
         lCLLeft.style.top = '0px'
         lCLCenter.style.top = '0px'
         lCLRight.style.top = '0px'
         menuBtn.style.top = '10px'
     }
+}
+
+document.getElementById('menu_button').onclick = () => {
+    slide_(!menuActive)
+    menuActive = !menuActive
 }
 
 // Update Mojang Status Color
