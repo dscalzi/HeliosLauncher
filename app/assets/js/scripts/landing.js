@@ -440,6 +440,11 @@ function dlAsync(login = true){
 
                 setDownloadPercentage(m.value, m.total, m.percent)
 
+            } else if(m.task === 0.7){
+                
+                // Download done, extracting.
+                setLaunchDetails('Extracting libraries..')
+
             } else if(m.task === 1){
 
                 // Download will be at 100%, remove the loading from the OS progress bar.

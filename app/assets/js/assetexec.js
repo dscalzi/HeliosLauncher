@@ -14,6 +14,10 @@ tracker.on('totaldlprogress', (data) => {
     process.send({task: 0, total: data.total, value: data.acc, percent: parseInt((data.acc/data.total)*100), content: 'dl'})
 })
 
+tracker.on('extracting', () => {
+    process.send({task: 0.7, content: 'dl'})
+})
+
 tracker.on('dlcomplete', () => {
     process.send({task: 1, content: 'dl'})
 })

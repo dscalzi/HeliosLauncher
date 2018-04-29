@@ -191,6 +191,7 @@ class AssetGuard extends EventEmitter {
         this.files = new DLTracker([], 0)
         this.forge = new DLTracker([], 0)
         this.java = new DLTracker([], 0)
+        this.extractQueue = []
         this.basePath = basePath
         this.javaexec = javaexec
     }
@@ -1284,12 +1285,10 @@ class AssetGuard extends EventEmitter {
                 }
 
                 self.forge = self._parseDistroModules(serv.modules, serv.mc_version)
-                //Correct our workaround here.
+                // Correct our workaround here.
                 let decompressqueue = self.forge.callback
+                self.extractQueue = decompressqueue
                 self.forge.callback = function(asset, self){
-                    if(asset.to.toLowerCase().endsWith('.pack.xz')){
-                        AssetGuard._extractPackXZ([asset.to], self.javaexec)
-                    }
                     if(asset.type === 'forge-hosted' || asset.type === 'forge'){
                         AssetGuard._finalizeForgeAsset(asset, self.basePath)
                     }
@@ -1315,7 +1314,6 @@ class AssetGuard extends EventEmitter {
     _parseDistroModules(modules, version){
         let alist = []
         let asize = 0;
-        //This may be removed soon, considering the most efficient way to extract.
         let decompressqueue = []
         for(let i=0; i<modules.length; i++){
             let ob = modules[i]
@@ -1576,7 +1574,11 @@ class AssetGuard extends EventEmitter {
                 self.progress -= self[identifier].dlsize
                 self[identifier] = new DLTracker([], 0)
                 if(self.totaldlsize === 0) {
-                    self.emit('dlcomplete')
+                    self.emit('extracting')
+                    AssetGuard._extractPackXZ(self.extractQueue, self.javaexec).then(() => {
+                        self.extractQueue = []
+                        self.emit('dlcomplete')
+                    })
                 }
             })
             return true
