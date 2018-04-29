@@ -216,6 +216,8 @@ let serverStatusListener = setInterval(() => refreshServerStatus(true), 300000)
 let sysAEx
 let scanAt
 
+let extractListener
+
 function asyncSystemScan(launchAfter = true){
 
     setLaunchDetails('Please wait..')
@@ -315,13 +317,28 @@ function asyncSystemScan(launchAfter = true){
                 remote.getCurrentWindow().setProgressBar(-1)
 
                 // Wait for extration to complete.
-                setLaunchDetails('Extracting..')
+                const eLStr = 'Extracting'
+                let dotStr = ''
+                setLaunchDetails(eLStr)
+                extractListener = setInterval(() => {
+                    if(dotStr.length >= 3){
+                        dotStr = ''
+                    } else {
+                        dotStr += '.'
+                    }
+                    setLaunchDetails(eLStr + dotStr)
+                }, 750)
 
             } else if(m.task === 2){
 
                 // Extraction completed successfully.
                 ConfigManager.setJavaExecutable(m.jPath)
                 ConfigManager.save()
+
+                if(extractListener != null){
+                    clearInterval(extractListener)
+                    extractListener = null
+                }
 
                 setLaunchDetails('Java Installed!')
 
@@ -355,6 +372,8 @@ let aEx
 let serv
 let versionData
 let forgeData
+
+let progressListener
 
 function dlAsync(login = true){
 
@@ -443,12 +462,26 @@ function dlAsync(login = true){
             } else if(m.task === 0.7){
                 
                 // Download done, extracting.
-                setLaunchDetails('Extracting libraries..')
+                const eLStr = 'Extracting libraries'
+                let dotStr = ''
+                setLaunchDetails(eLStr)
+                progressListener = setInterval(() => {
+                    if(dotStr.length >= 3){
+                        dotStr = ''
+                    } else {
+                        dotStr += '.'
+                    }
+                    setLaunchDetails(eLStr + dotStr)
+                }, 750)
 
             } else if(m.task === 1){
 
                 // Download will be at 100%, remove the loading from the OS progress bar.
                 remote.getCurrentWindow().setProgressBar(-1)
+                if(progressListener != null){
+                    clearInterval(progressListener)
+                    progressListener = null
+                }
 
                 setLaunchDetails('Preparing to launch..')
                 aEx.send({task: 0, content: 'loadForgeData', argsArr: [serv.id]})

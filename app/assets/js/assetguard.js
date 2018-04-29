@@ -1574,11 +1574,15 @@ class AssetGuard extends EventEmitter {
                 self.progress -= self[identifier].dlsize
                 self[identifier] = new DLTracker([], 0)
                 if(self.totaldlsize === 0) {
-                    self.emit('extracting')
-                    AssetGuard._extractPackXZ(self.extractQueue, self.javaexec).then(() => {
-                        self.extractQueue = []
+                    if(self.extractQueue.length > 0){
+                        self.emit('extracting')
+                        AssetGuard._extractPackXZ(self.extractQueue, self.javaexec).then(() => {
+                            self.extractQueue = []
+                            self.emit('dlcomplete')
+                        })
+                    } else {
                         self.emit('dlcomplete')
-                    })
+                    }
                 }
             })
             return true
