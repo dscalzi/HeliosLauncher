@@ -1236,8 +1236,15 @@ p {
     height: 12px;
     width: 25px;
 }
-.mediaSVG:hover, .mediaSVG:active {
+.mediaSVG:hover,
+.mediaURL:focus .mediaSVG,
+.mediaSVG:active {
     height: 20px;
+}
+
+/* Social media URL shared styles. */
+.mediaURL {
+    outline: none;
 }
 
 /* News icon colors. */
@@ -1246,7 +1253,8 @@ p {
 }
 
 /* Twitter icon colors. */
-#twitterSVG:hover {
+#twitterSVG:hover,
+#twitterURL:focus #twitterSVG {
     fill: #1da1f2;
 }
 #twitterSVG:active {
@@ -1254,7 +1262,8 @@ p {
 }
 
 /* Instagram icon colors. */
-#instagramSVG:hover {
+#instagramSVG:hover,
+#instagramURL:focus #instagramSVG {
     fill: url('#instaFill')
     /*fill: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); */
 }
@@ -1263,7 +1272,8 @@ p {
 }
 
 /* Youtube icon colors. */
-#youtubeSVG:hover {
+#youtubeSVG:hover,
+#youtubeURL:focus #youtubeSVG {
     fill: #f00;
 }
 #youtubeSVG:active {
@@ -1271,7 +1281,8 @@ p {
 }
 
 /* Discord icon colors. */
-#discordSVG:hover {
+#discordSVG:hover,
+#discordURL:focus #discordSVG {
     fill: #7288d9;
 }
 #discordSVG:active {

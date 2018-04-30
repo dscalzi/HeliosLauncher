@@ -20,7 +20,7 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
     }
     if(toggleState){
         document.getElementById('main').setAttribute('overlay', true)
-        // Make things tabbable.
+        // Make things untabbable.
         $("#main *").attr('tabindex', '-1')
         $('#' + content).parent().children().hide()
         $('#' + content).show()
