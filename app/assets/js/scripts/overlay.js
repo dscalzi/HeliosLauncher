@@ -160,7 +160,7 @@ function setServerListingHandlers(){
 }
 
 function populateServerListings(){
-    const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getGameDirectory())
+    const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getLauncherDirectory())
     const giaSel = ConfigManager.getSelectedServer()
     const servers = distro.servers
     let htmlString = ``

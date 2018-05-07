@@ -179,10 +179,11 @@ class AssetGuard extends EventEmitter {
      * values. Each identifier is resolved to an empty DLTracker.
      * 
      * @param {string} basePath The base path for asset validation (game root).
+     * @param {string} launcherPath The root launcher directory.
      * @param {string} javaexec The path to a java executable which will be used
      * to finalize installation.
      */
-    constructor(basePath, javaexec){
+    constructor(basePath, launcherPath, javaexec){
         super()
         this.totaldlsize = 0
         this.progress = 0
@@ -193,6 +194,7 @@ class AssetGuard extends EventEmitter {
         this.java = new DLTracker([], 0)
         this.extractQueue = []
         this.basePath = basePath
+        this.launcherPath = launcherPath
         this.javaexec = javaexec
     }
 
@@ -373,41 +375,51 @@ class AssetGuard extends EventEmitter {
     /**
      * Statically retrieve the distribution data.
      * 
-     * @param {string} basePath The base path for asset validation (game root).
+     * @param {string} launcherPath The root launcher directory.
      * @param {boolean} cached Optional. False if the distro should be freshly downloaded, else
      * a cached copy will be returned.
      * @returns {Promise.<Object>} A promise which resolves to the distribution data object.
      */
-    static retrieveDistributionData(basePath, cached = true){
-        return new Promise(function(fulfill, reject){
+    static retrieveDistributionData(launcherPath, cached = true){
+        return new Promise(function(resolve, reject){
             if(!cached || distributionData == null){
                 // TODO Download file from upstream.
-                //const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
-                // TODO Save file to path.join(basePath, 'westeroscraft.json')
+                const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
+                const distroDest = path.join(launcherPath, 'westeroscraft.json')
                 // TODO Fulfill with JSON.parse()
+                request(distroURL, (error, resp, body) => {
+                    distributionData = JSON.parse(body)
 
+                    fs.writeFile(distroDest, body, 'utf-8', (err) => {
+                        if(!err){
+                            resolve(distributionData)
+                        } else {
+                            reject(err)
+                        }
+                    })
+                })
                 // Workaround while file is not hosted.
-                fs.readFile(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8', (err, data) => {
+                /*fs.readFile(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8', (err, data) => {
                     distributionData = JSON.parse(data)
                     fulfill(distributionData)
-                })
+                })*/
             } else {
-                fulfill(distributionData)
+                resolve(distributionData)
             }
         })
     }
 
     /**
-     * Statically retrieve the distribution data.
+     * Recieved a cached version of the distribution index.
      * 
-     * @param {string} basePath The base path for asset validation (game root).
+     * @param {string} launcherPath The root launcher directory.
      * @param {boolean} cached Optional. False if the distro should be freshly downloaded, else
      * a cached copy will be returned.
      * @returns {Object} The distribution data object.
      */
-    static retrieveDistributionDataSync(basePath, cached = true){
+    static retrieveDistributionDataSync(launcherPath, cached = true){
         if(!cached || distributionData == null){
-            distributionData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8'))
+            distributionData = JSON.parse(fs.readFileSync(path.join(launcherPath, 'westeroscraft.json'), 'utf-8'))
         }
         return distributionData
     }
@@ -415,11 +427,11 @@ class AssetGuard extends EventEmitter {
     /**
      * Resolve the default selected server from the distribution index.
      * 
-     * @param {string} basePath The base path for asset validation (game root).
+     * @param {string} launcherPath The root launcher directory.
      * @returns {Object} An object resolving to the default selected server.
      */
-    static resolveSelectedServer(basePath){
-        const distro = AssetGuard.retrieveDistributionDataSync(basePath)
+    static resolveSelectedServer(launcherPath){
+        const distro = AssetGuard.retrieveDistributionDataSync(launcherPath)
         const servers = distro.servers
         for(let i=0; i<servers.length; i++){
             if(servers[i].default_selected){
@@ -435,13 +447,13 @@ class AssetGuard extends EventEmitter {
      * Returns null if the ID could not be found or the distro index has
      * not yet been loaded.
      * 
-     * @param {string} basePath The base path for asset validation (game root).
+     * @param {string} launcherPath The root launcher directory.
      * @param {string} serverID The id of the server to retrieve.
      * @returns {Object} The server object whose id matches the parameter.
      */
-    static getServerById(basePath, serverID){
+    static getServerById(launcherPath, serverID){
         if(distributionData == null){
-            AssetGuard.retrieveDistributionDataSync(basePath, false)
+            AssetGuard.retrieveDistributionDataSync(launcherPath, false)
         }
         const servers = distributionData.servers
         let serv = null
@@ -465,7 +477,7 @@ class AssetGuard extends EventEmitter {
      * @returns {Promise.<void>} An empty promise to indicate the extraction has completed.
      */
     static _extractPackXZ(filePaths, javaExecutable){
-        return new Promise(function(fulfill, reject){
+        return new Promise(function(resolve, reject){
             let libPath
             if(isDev){
                 libPath = path.join(process.cwd(), 'libraries', 'java', 'PackXZExtract.jar')
@@ -480,14 +492,14 @@ class AssetGuard extends EventEmitter {
             const filePath = filePaths.join(',')
             const child = child_process.spawn(javaExecutable, ['-jar', libPath, '-packxz', filePath])
             child.stdout.on('data', (data) => {
-                //console.log('PackXZExtract:', data.toString('utf8'))
+                console.log('PackXZExtract:', data.toString('utf8'))
             })
             child.stderr.on('data', (data) => {
-                //console.log('PackXZExtract:', data.toString('utf8'))
+                console.log('PackXZExtract:', data.toString('utf8'))
             })
             child.on('close', (code, signal) => {
-                //console.log('PackXZExtract: Exited with code', code)
-                fulfill()
+                console.log('PackXZExtract: Exited with code', code)
+                resolve()
             })
         })
     }
@@ -503,7 +515,7 @@ class AssetGuard extends EventEmitter {
      * @returns {Promise.<Object>} A promise which resolves to the contents of forge's version.json.
      */
     static _finalizeForgeAsset(asset, basePath){
-        return new Promise(function(fulfill, reject){
+        return new Promise(function(resolve, reject){
             fs.readFile(asset.to, (err, data) => {
                 const zip = new AdmZip(data)
                 const zipEntries = zip.getEntries()
@@ -516,10 +528,10 @@ class AssetGuard extends EventEmitter {
                         if(!fs.existsSync(versionFile)){
                             mkpath.sync(versionPath)
                             fs.writeFileSync(path.join(versionPath, forgeVersion.id + '.json'), zipEntries[i].getData())
-                            fulfill(forgeVersion)
+                            resolve(forgeVersion)
                         } else {
                             //Read the saved file to allow for user modifications.
-                            fulfill(JSON.parse(fs.readFileSync(versionFile, 'utf-8')))
+                            resolve(JSON.parse(fs.readFileSync(versionFile, 'utf-8')))
                         }
                         return
                     }
@@ -1269,7 +1281,7 @@ class AssetGuard extends EventEmitter {
     validateDistribution(serverpackid){
         const self = this
         return new Promise(function(fulfill, reject){
-            AssetGuard.retrieveDistributionData(self.basePath, false).then((value) => {
+            AssetGuard.retrieveDistributionData(self.launcherPath, false).then((value) => {
                 /*const servers = value.servers
                 let serv = null
                 for(let i=0; i<servers.length; i++){
@@ -1278,7 +1290,7 @@ class AssetGuard extends EventEmitter {
                         break
                     }
                 }*/
-                const serv = AssetGuard.getServerById(self.basePath, serverpackid)
+                const serv = AssetGuard.getServerById(self.launcherPath, serverpackid)
 
                 if(serv == null) {
                     console.error('Invalid server pack id:', serverpackid)
@@ -1367,7 +1379,7 @@ class AssetGuard extends EventEmitter {
     loadForgeData(serverpack){
         const self = this
         return new Promise(async function(fulfill, reject){
-            let distro = AssetGuard.retrieveDistributionDataSync(self.basePath)
+            let distro = AssetGuard.retrieveDistributionDataSync(self.launcherPath)
             
             const servers = distro.servers
             let serv = null

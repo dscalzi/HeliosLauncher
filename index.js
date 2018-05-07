@@ -1,5 +1,5 @@
 const {app, BrowserWindow, ipcMain} = require('electron')
-const autoUpdater = require("electron-updater").autoUpdater
+const autoUpdater = require('electron-updater').autoUpdater
 const isDev = require('electron-is-dev')
 const path = require('path')
 const url = require('url')
@@ -49,6 +49,10 @@ ipcMain.on('autoUpdateAction', (event, arg) => {
             console.log('Unknown argument', arg)
             break
     }
+})
+// Redirect distribution index event from preloader to renderer.
+ipcMain.on('distributionIndexDone', (event, arg) => {
+    event.sender.send('distributionIndexDone', arg)
 })
 
 // Disable hardware acceleration.

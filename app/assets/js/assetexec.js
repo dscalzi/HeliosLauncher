@@ -1,6 +1,6 @@
 const {AssetGuard} = require('./assetguard.js')
 
-const tracker = new AssetGuard(process.argv[2], process.argv[3])
+const tracker = new AssetGuard(process.argv[2], process.argv[3], process.argv[4])
 console.log('AssetExec Started')
 
 // Temporary for debug purposes.

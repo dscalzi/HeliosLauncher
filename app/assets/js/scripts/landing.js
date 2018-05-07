@@ -132,7 +132,8 @@ function updateSelectedServer(serverName){
     }
     server_selection_button.innerHTML = '\u2022 ' + serverName
 }
-updateSelectedServer(AssetGuard.getServerById(ConfigManager.getGameDirectory(), ConfigManager.getSelectedServer()).name)
+// Real text is set in uibinder.js on distributionIndexDone.
+updateSelectedServer('Loading..')
 server_selection_button.addEventListener('click', (e) => {
     e.target.blur()
     toggleServerSelection(true)
@@ -198,7 +199,7 @@ const refreshServerStatus = async function(fade = false){
 }
 
 refreshMojangStatuses()
-refreshServerStatus()
+// Server Status is refreshed in uibinder.js on distributionIndexDone.
 
 // Set refresh rate to once every 5 minutes.
 let mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 300000)
@@ -220,6 +221,7 @@ function asyncSystemScan(launchAfter = true){
     // Fork a process to run validations.
     sysAEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
         ConfigManager.getGameDirectory(),
+        ConfigManager.getLauncherDirectory(),
         ConfigManager.getJavaExecutable()
     ])
     
@@ -388,6 +390,7 @@ function dlAsync(login = true){
     // Start AssetExec to run validations and downloads in a forked process.
     aEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
         ConfigManager.getGameDirectory(),
+        ConfigManager.getLauncherDirectory(),
         ConfigManager.getJavaExecutable()
     ])
 
@@ -542,7 +545,7 @@ function dlAsync(login = true){
                     proc.stdout.on('data', gameStateChange)
 
                     // Init Discord Hook
-                    const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getGameDirectory)
+                    const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getLauncherDirectory())
                     if(distro.discord != null && serv.discord != null){
                         DiscordWrapper.initRPC(distro.discord, serv.discord)
                         hasRPC = true
