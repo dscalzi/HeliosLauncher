@@ -8,12 +8,12 @@
     "java": {
         "oracle": "http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html"
     },
+    "news_feed": "https://westeroscraft.com/articles/index.rss",
     "servers": [
         {
             "id": "WesterosCraft-1.11.2",
             "name": "WesterosCraft Production Server",
             "description": "Main WesterosCraft server. Connect to enter the Realm.",
-            "news_feed": "http://www.westeroscraft.com/api/rss.php?preset_id=12700544",
             "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-prod.png",
             "revision": "3.4.17",
             "server_ip": "mc.westeroscraft.com",
@@ -415,9 +415,8 @@
             "id": "WesterosCraftTest-1.11.2",
             "name": "WesterosCraft Test Server",
             "description": "Main testing server. Experimental changes are live here.",
-            "news_feed": "http://www.westeroscraft.com/api/rss.php?preset_id=12700544",
             "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-test.png",
-            "revision": "3.6.0",
+            "revision": "3.7.0",
             "server_ip": "mc.westeroscraft.com:4444",
             "mc_version": "1.11.2",
             "discord": {
@@ -769,23 +768,23 @@
                     ]
                 },
                 {
-                    "id": "com.westeroscraft:westerosblocks:3.1.0-alpha-2-134",
-                    "name": "WesterosBlocks (3.1.0-alpha-2-134)",
+                    "id": "com.westeroscraft:westerosblocks:3.1.0-alpha-2-135",
+                    "name": "WesterosBlocks (3.1.0-alpha-2-135)",
                     "type": "forgemod",
                     "artifact": {
-                        "size": 16665319,
-                         "MD5": "263cc5fb775763c811b02cef441b1471",
+                        "size": 16854431,
+                         "MD5": "ed5b2349d1ce2496895a5e8839b77f74",
                         "extension": ".jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/WesterosBlocks.jar"
                     }
                 },
                 {
-                    "id": "com.westeroscraft:westeroscraftrp:2018-03-10",
-                    "name": "WesterosCraft Resource Pack (2018-03-10)",
+                    "id": "com.westeroscraft:westeroscraftrp:2018-05-05",
+                    "name": "WesterosCraft Resource Pack (2018-05-05)",
                     "type": "file",
                     "artifact": {
-                        "size": 46048737,
-                        "MD5": "ecb7ea884ab99a629e123d2c1ebe4467",
+                        "size": 46067606,
+                        "MD5": "0e08b0bcf44c9d266bfe067d865ffc1e",
                         "path": "resourcepacks/WesterosCraft.zip",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/resourcepacks/WesterosCraft.zip"
                     }
@@ -817,9 +816,8 @@
             "id": "WesterosCraftTest-1.12.2",
             "name": "WesterosCraft 1.12.2 Test Server",
             "description": "Tests for our version change to 1.12.2 are live here.",
-            "news_feed": "http://www.westeroscraft.com/api/rss.php?preset_id=12700544",
             "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-test.png",
-            "revision": "4.0.1",
+            "revision": "4.1.0",
             "server_ip": "mc.westeroscraft.com:4445",
             "mc_version": "1.12.2",
             "discord": {
@@ -1168,23 +1166,23 @@
                     ]
                 },
                 {
-                    "id": "com.westeroscraft:westerosblocks:3.1.0-alpha-2-4",
-                    "name": "WesterosBlocks (3.1.0-alpha-2-4)",
+                    "id": "com.westeroscraft:westerosblocks:3.1.0-alpha-2-8",
+                    "name": "WesterosBlocks (3.1.0-alpha-2-8)",
                     "type": "forgemod",
                     "artifact": {
-                        "size": 16588650,
-                         "MD5": "d7821ea6ee4ba3d4e620bbb95109f1da",
+                        "size": 16771714,
+                         "MD5": "bb5f1d262c0fd96f1bddea40a69da956",
                         "extension": ".jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/mods/WesterosBlocks.jar"
                     }
                 },
                 {
-                    "id": "com.westeroscraft:westeroscraftrp:2018-04-03",
-                    "name": "WesterosCraft Resource Pack (2018-04-03)",
+                    "id": "com.westeroscraft:westeroscraftrp:2018-05-05",
+                    "name": "WesterosCraft Resource Pack (2018-05-05)",
                     "type": "file",
                     "artifact": {
-                        "size": 46051213,
-                        "MD5": "2a3f5e68e9e27e037675d9ed56c73e50",
+                        "size": 46070075,
+                        "MD5": "e23288afd457ca56ee744c76b0e2dbed",
                         "path": "resourcepacks/WesterosCraft.zip",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/resourcepacks/WesterosCraft.zip"
                     }

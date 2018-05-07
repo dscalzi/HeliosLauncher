@@ -39,13 +39,13 @@
     "mkdirp": "^0.5.1",
     "request": "^2.85.0",
     "rimraf": "^2.6.2",
-    "tar-fs": "^1.16.0",
+    "tar-fs": "^1.16.2",
     "uuid": "^3.2.1",
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^1.8.5",
-    "electron-builder": "^20.10.0"
+    "electron": "^2.0.0",
+    "electron-builder": "^20.11.0"
   },
   "build": {
     "appId": "westeroscraftlauncher",

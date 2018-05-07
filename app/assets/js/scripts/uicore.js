@@ -164,7 +164,7 @@ $(document).on('click', 'a[href^="http"]', function(event) {
  * DevTools, for example the chrome debugger in VS Code. 
  */
 document.addEventListener('keydown', function (e) {
-    if(e.key === 'I' && e.ctrlKey && e.shiftKey){
+    if((e.key === 'I' || e.key === 'i') && e.ctrlKey && e.shiftKey){
         let window = remote.getCurrentWindow()
         window.toggleDevTools()
     }

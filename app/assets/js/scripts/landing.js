@@ -22,6 +22,17 @@ const launch_details_text     = document.getElementById('launch_details_text')
 const server_selection_button = document.getElementById('server_selection_button')
 const user_text               = document.getElementById('user_text')
 
+// News Elements
+const newsContent             = document.getElementById('newsContent')
+const newsArticleTitle        = document.getElementById('newsArticleTitle')
+const newsArticleDate         = document.getElementById('newsArticleDate')
+const newsArticleAuthor       = document.getElementById('newsArticleAuthor')
+const newsArticleComments     = document.getElementById('newsArticleComments')
+const newsNavigationStatus    = document.getElementById('newsNavigationStatus')
+const newsArticleContent      = document.getElementById('newsArticleContentScrollable')
+const newsErrorContainer      = document.getElementById('newsErrorContainer')
+const nELoadSpan              = document.getElementById('nELoadSpan')
+
 /* Launch Progress Wrapper Functions */
 
 /**
@@ -126,41 +137,6 @@ server_selection_button.addEventListener('click', (e) => {
     e.target.blur()
     toggleServerSelection(true)
 })
-
-let menuActive = false
-// Test menu transform.
-function slide_(up){
-    const lCUpper = document.querySelector('#landingContainer > #upper')
-    const lCLLeft = document.querySelector('#landingContainer > #lower > #left')
-    const lCLCenter = document.querySelector('#landingContainer > #lower > #center')
-    const lCLRight = document.querySelector('#landingContainer > #lower > #right')
-    const menuBtn = document.querySelector('#landingContainer > #lower > #center #content')
-
-    if(up){
-        lCUpper.style.top = '-200vh'
-        lCLLeft.style.top = '-200vh'
-        lCLCenter.style.top = '-200vh'
-        lCLRight.style.top = '-200vh'
-        menuBtn.style.top = '130vh'
-        /*setTimeout(() => {
-            lCLCenter.style.transition = 'none'
-            menuBtn.style.transition = 'none'
-        }, 2000)*/
-    } else {
-        //lCLCenter.style.transition = null
-        //menuBtn.style.transition = null
-        lCUpper.style.top = '0px'
-        lCLLeft.style.top = '0px'
-        lCLCenter.style.top = '0px'
-        lCLRight.style.top = '0px'
-        menuBtn.style.top = '10px'
-    }
-}
-
-document.getElementById('menu_button').onclick = () => {
-    slide_(!menuActive)
-    menuActive = !menuActive
-}
 
 // Update Mojang Status Color
 const refreshMojangStatuses = async function(){
@@ -491,6 +467,18 @@ function dlAsync(login = true){
                     setLaunchDetails(eLStr + dotStr)
                 }, 750)
 
+            } else if(m.task === 0.9) {
+                
+                if(m.err.code === 'ENOENT'){
+                    setLaunchDetails('Download error.. internet?')
+                } else {
+                    setLaunchDetails('Download error.. try again.')
+                }
+
+                setTimeout(() => {
+                    toggleLaunchArea(false)
+                }, 5000)
+
             } else if(m.task === 1){
 
                 // Download will be at 100%, remove the loading from the OS progress bar.
@@ -592,3 +580,248 @@ function dlAsync(login = true){
     setLaunchDetails('Loading server information..')
     aEx.send({task: 0, content: 'validateDistribution', argsArr: [ConfigManager.getSelectedServer()]})
 }
+
+/**
+ * News Loading Functions
+ */
+
+// News slide caches.
+let newsActive = false
+let newsGlideCount = 0
+
+/**
+ * Show the news UI via a slide animation.
+ * 
+ * @param {boolean} up True to slide up, otherwise false. 
+ */
+function slide_(up){
+    const lCUpper = document.querySelector('#landingContainer > #upper')
+    const lCLLeft = document.querySelector('#landingContainer > #lower > #left')
+    const lCLCenter = document.querySelector('#landingContainer > #lower > #center')
+    const lCLRight = document.querySelector('#landingContainer > #lower > #right')
+    const newsBtn = document.querySelector('#landingContainer > #lower > #center #content')
+    const landingContainer = document.getElementById('landingContainer')
+    const newsContainer = document.querySelector('#landingContainer > #newsContainer')
+
+    newsGlideCount++
+
+    if(up){
+        lCUpper.style.top = '-200vh'
+        lCLLeft.style.top = '-200vh'
+        lCLCenter.style.top = '-200vh'
+        lCLRight.style.top = '-200vh'
+        newsBtn.style.top = '130vh'
+        newsContainer.style.top = '0px'
+        //date.toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
+        //landingContainer.style.background = 'rgba(29, 29, 29, 0.55)'
+        landingContainer.style.background = 'rgba(0, 0, 0, 0.50)'
+        setTimeout(() => {
+            if(newsGlideCount === 1){
+                lCLCenter.style.transition = 'none'
+                newsBtn.style.transition = 'none'
+            }
+            newsGlideCount--
+        }, 2000)
+    } else {
+        setTimeout(() => {
+            newsGlideCount--
+        }, 2000)
+        landingContainer.style.background = null
+        lCLCenter.style.transition = null
+        newsBtn.style.transition = null
+        newsContainer.style.top = '100%'
+        lCUpper.style.top = '0px'
+        lCLLeft.style.top = '0px'
+        lCLCenter.style.top = '0px'
+        lCLRight.style.top = '0px'
+        newsBtn.style.top = '10px'
+    }
+}
+
+// Bind news button.
+document.getElementById('newsButton').onclick = () => {
+    slide_(!newsActive)
+    newsActive = !newsActive
+}
+
+// Array to store article meta.
+let newsArr = null
+
+// News load animation listener.
+let newsLoadingListener = null
+
+/**
+ * Set the news loading animation.
+ * 
+ * @param {boolean} val True to set loading animation, otherwise false.
+ */
+function setNewsLoading(val){
+    if(val){
+        const nLStr = 'Checking for News'
+        let dotStr = '..'
+        nELoadSpan.innerHTML = nLStr + dotStr
+        newsLoadingListener = setInterval(() => {
+            if(dotStr.length >= 3){
+                dotStr = ''
+            } else {
+                dotStr += '.'
+            }
+            nELoadSpan.innerHTML = nLStr + dotStr
+        }, 750)
+    } else {
+        if(newsLoadingListener != null){
+            clearInterval(newsLoadingListener)
+            newsLoadingListener = null
+        }
+    }
+}
+
+// Bind retry button.
+newsErrorRetry.onclick = () => {
+    $('#newsErrorFailed').fadeOut(250, () => {
+        initNews()
+        $('#newsErrorLoading').fadeIn(250)
+    })
+}
+
+/**
+ * Reload the news without restarting.
+ */
+async function reloadNews(){
+    $('#newsContent').fadeOut(250, () => {
+        $('#newsErrorLoading').fadeIn(250)
+    })
+    await initNews()
+}
+
+/**
+ * Initialize News UI. This will load the news and prepare
+ * the UI accordingly.
+ */
+async function initNews(){
+    setNewsLoading(true)
+
+    let news = {}
+
+    try {
+        news = await loadNews()
+    } catch (err) {
+        // Empty
+    }
+
+    newsArr = news.articles || null
+
+    if(newsArr == null){
+        // News Loading Failed
+        setNewsLoading(false)
+
+        $('#newsErrorLoading').fadeOut(250, () => {
+            $('#newsErrorFailed').fadeIn(250)
+        })
+    } else if(newsArr.length === 0) {
+        // No News Articles
+        setNewsLoading(false)
+
+        $('#newsErrorLoading').fadeOut(250, () => {
+            $('#newsErrorNone').fadeIn(250)
+        })
+    } else {
+        // Success
+        setNewsLoading(false)
+
+        $('#newsErrorContainer').fadeOut(250, () => {
+            displayArticle(newsArr[0], 1)
+            $('#newsContent').fadeIn(250)
+        })
+
+        const switchHandler = (forward) => {
+            let cArt = parseInt(newsContent.getAttribute('article'))
+            let nxtArt = forward ? (cArt >= newsArr.length-1 ? 0 : cArt + 1) : (cArt <= 0 ? newsArr.length-1 : cArt - 1)
+    
+            displayArticle(newsArr[nxtArt], nxtArt+1)
+        }
+    
+        document.getElementById('newsNavigateRight').onclick = () => { switchHandler(true) }
+        document.getElementById('newsNavigateLeft').onclick = () => { switchHandler(false) }
+    }
+}
+
+/**
+ * Display a news article on the UI.
+ * 
+ * @param {Object} articleObject The article meta object.
+ * @param {number} index The article index.
+ */
+function displayArticle(articleObject, index){
+    newsArticleTitle.innerHTML = articleObject.title
+    newsArticleTitle.href = articleObject.link
+    newsArticleAuthor.innerHTML = 'by ' + articleObject.author
+    newsArticleDate.innerHTML = articleObject.date
+    newsArticleComments.innerHTML = articleObject.comments
+    newsArticleComments.href = articleObject.commentsLink
+    newsArticleContent.innerHTML = articleObject.content
+    newsNavigationStatus.innerHTML = index + ' of ' + newsArr.length
+    newsContent.setAttribute('article', index-1)
+}
+
+/**
+ * Load news information from the RSS feed specified in the
+ * distribution index.
+ */
+function loadNews(){
+    return new Promise((resolve, reject) => {
+        AssetGuard.retrieveDistributionData(ConfigManager.getLauncherDirectory(), true).then((v) => {
+            const newsFeed = v['news_feed']
+            const newsHost = new URL(newsFeed).origin + '/'
+            $.get(newsFeed, (data) => {
+                const items = $(data).find('item')
+                const articles = []
+
+                for(let i=0; i<items.length; i++){
+                    // JQuery Element
+                    const el = $(items[i])
+
+                    // Resolve date.
+                    const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
+
+                    // Resolve comments.
+                    let comments = el.find('slash\\:comments').text() || '0'
+                    comments = comments + ' Comment' + (comments === '1' ? '' : 's')
+
+                    // Fix relative links in content.
+                    let content = el.find('content\\:encoded').text()
+                    let regex = /src="(?!http:\/\/|https:\/\/)(.+)"/g
+                    let matches
+                    while(matches = regex.exec(content)){
+                        content = content.replace(matches[1], newsHost + matches[1])
+                    }
+
+                    let link   = el.find('link').text()
+                    let title  = el.find('title').text()
+                    let author = el.find('dc\\:creator').text()
+
+                    // Generate article.
+                    articles.push(
+                        {
+                            link,
+                            title,
+                            date,
+                            author,
+                            content,
+                            comments,
+                            commentsLink: link + '#comments'
+                        }
+                    )
+                }
+                resolve({
+                    articles
+                })
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    })
+}
+
+// Load News
+initNews()

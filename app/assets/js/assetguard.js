@@ -1555,6 +1555,9 @@ class AssetGuard extends EventEmitter {
                         cb()
                     }
                 })
+                req.on('error', (err) => {
+                    self.emit('dlerror', err)
+                })
                 req.on('data', function(chunk){
                     count += chunk.length
                     self.progress += chunk.length

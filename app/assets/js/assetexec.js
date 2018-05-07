@@ -26,6 +26,10 @@ tracker.on('jExtracted', (jPath) => {
     process.send({task: 2, content: 'dl', jPath})
 })
 
+tracker.on('dlerror', (err) => {
+    process.send({task: 0.9, content: 'dl', err})
+})
+
 process.on('message', (msg) => {
     if(msg.task === 0){
         const func = msg.content

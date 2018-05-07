@@ -893,6 +893,8 @@ p {
 #landingContainer {
     height: 100%;
     position: relative;
+    transition: background 2s ease;
+    overflow-y: hidden;
 }
 
 /* Upper content container. */
@@ -953,6 +955,7 @@ p {
 }
 #landingContainer > #lower > #center #content {
     position: relative;
+    z-index: 500;
     transition: top 2s ease;
     top: 10px;
 }
@@ -967,6 +970,262 @@ p {
 
 /*******************************************************************************
  *                                                                             *
+ * Landing View (News Styles)                                                  *
+ *                                                                             *
+ ******************************************************************************/
+
+/* Main container. */
+#newsContainer {
+    position: absolute;
+    top: 100%;
+    height: 100%;
+    width: 100%;
+    transition: top 2s ease;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+/* News content container. */
+#newsContent {
+    height: 82vh;
+    width: 82vw;
+    display: flex;
+}
+
+/* News article status container (left). */
+#newsStatusContainer {
+    width: 25%;
+    height: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* News status content. */
+#newsStatusContent {
+    display: flex;
+    flex-direction: column;
+}
+
+/* News article title styles. */
+#newsArticleTitle {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Avenir Medium';
+}
+#newsArticleTitle {
+    color: white;
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+#newsArticleTitle:hover,
+#newsArticleTitle:focus {
+    text-shadow: 0px 0px 20px white;
+}
+#newsArticleTitle:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7;
+}
+
+/* News meta container. */
+#newsMetaContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Date and author shared styles. */
+#newsArticleDate,
+#newsArticleAuthor {
+    display: inline-block;
+    font-size: 10px;
+    color: rgb(255, 255, 255);
+    font-family: 'Avenir Book';
+    padding: 0px 5px;
+    font-weight: bold;
+    border-radius: 2px;
+}
+
+/* Date styles. */
+#newsArticleDate {
+    background: white;
+    color: black;
+    margin-top: 5px;
+}
+
+/* Author styles. */
+#newsArticleAuthor {
+    background: #a02d2a;
+}
+
+/* News article comments styles. */
+#newsArticleComments {
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 10px;
+    color: rgb(255, 255, 255);
+    font-family: 'Avenir Book';
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+#newsArticleComments:focus,
+#newsArticleComments:hover {
+    color: #e0e0e0;
+}
+#newsArticleComments:active {
+    color: #c7c7c7;
+}
+
+/* Article content container (right). */
+#newsArticleContainer {
+    width: 75%;
+    height: 100%;
+}
+
+/* Article content styles. */
+#newsArticleContentScrollable {
+    color: white;
+    font-family: 'Avenir Book';
+    font-size: 12px;
+    max-width: 80%;
+    margin: 25px 35px 0px 25px;
+    overflow-y: scroll;
+    height: calc(100% - 25px);
+    padding: 0px 15px 0px 15px;
+}
+#newsArticleContentScrollable img {
+    max-width: 95%;
+    display: block;
+    margin: 0 auto;
+}
+#newsArticleContentScrollable a {
+    color: rgba(202, 202, 202, 0.75);
+    transition: 0.25s ease;
+}
+#newsArticleContentScrollable a:hover,
+#newsArticleContentScrollable a:focus {
+    color: rgba(255, 255, 255, 0.75);
+}
+#newsArticleContentScrollable a:active {
+    color: rgba(165, 165, 165, 0.75);
+}
+#newsArticleContentScrollable::-webkit-scrollbar {
+    width: 2px;
+}
+#newsArticleContentScrollable::-webkit-scrollbar-track {
+    display: none;
+}
+#newsArticleContentScrollable::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
+}
+
+/* News navigation container. */
+#newsNavigationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+/* Navigation status span. */
+#newsNavigationStatus {
+    color: white;
+    font-family: 'Avenir Book';
+    font-size: 12px;
+    margin: 0px 15px;
+}
+
+/* Left and right navigation button styles. */
+#newsNavigateLeft,
+#newsNavigateRight {
+    color: white;
+    font-family: 'Avenir Book';
+    background: none;
+    border: none;
+    outline: none;
+    height: 20px;
+    cursor: pointer;
+}
+#newsNavigateLeft:hover #newsNavigationLeftSVG,
+#newsNavigateLeft:focus #newsNavigationLeftSVG,
+#newsNavigateRight:hover #newsNavigationRightSVG,
+#newsNavigateRight:focus #newsNavigationRightSVG {
+    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+}
+#newsNavigateLeft:active #newsNavigationLeftSVG .arrowLine,
+#newsNavigateRight:active #newsNavigationRightSVG .arrowLine {
+    stroke: #c7c7c7;
+}
+#newsNavigateLeft:active #newsNavigationLeftSVG,
+#newsNavigateRight:active #newsNavigationRightSVG {
+    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+}
+#newsNavigateLeft:disabled #newsNavigationLeftSVG .arrowLine,
+#newsNavigateRight:disabled #newsNavigationRightSVG .arrowLine {
+    stroke: rgba(255, 255, 255, 0.75);
+}
+#newsNavigationLeftSVG {
+    transform: rotate(-90deg);
+    width: 15px;
+}
+#newsNavigationRightSVG {
+    transform: rotate(90deg);
+    width: 15px;
+}
+
+/* News error (message) container. */
+#newsErrorContainer {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+#newsErrorFailed {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* News error content (message). */
+.newsErrorContent {
+    color: white;
+    font-size: 20px;
+    font-family: 'Avenir Book';
+}
+#newsErrorLoading {
+    display: flex;
+    width: 168.92px;
+}
+#nELoadSpan {
+    white-space: pre;
+}
+/* News error retry button styles. */
+#newsErrorRetry {
+    color: #ffffff;
+    font-family: 'Avenir Book';
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    transition: 0.25s ease;
+}
+#newsErrorRetry:focus,
+#newsErrorRetry:hover {
+    text-shadow: 0px 0px 20px white;
+}
+#newsErrorRetry:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7;
+}
+
+/*******************************************************************************
+ *                                                                             *
  * Landing View (Top Styles)                                                   *
  *                                                                             *
  ******************************************************************************/
@@ -976,16 +1235,6 @@ p {
 * * */
 
 /* Logo image. */
-/*#image_seal {
-    height: 70px;
-    width: auto;
-    position: relative;
-    margin-top: 50px;
-    border: 2px solid white;
-    border-radius: 50%;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
-}*/
-
 #image_seal {
     height: 70px;
     width: auto;
@@ -995,6 +1244,7 @@ p {
     border-radius: 50%;
 }
 
+/* Logo container styles. */
 #image_seal_container {
     position: relative;
     height: 70px;
@@ -1002,6 +1252,8 @@ p {
     border-radius: 50%;
     margin-top: 50px;
 }
+
+/* Logo container styles w/ update. */
 #image_seal_container[update]{
     cursor: pointer
 }
@@ -1023,6 +1275,7 @@ p {
     animation-delay: 2s;
 }
 
+/* Update available tooltip styles. */
 #updateAvailableTooltip {
     cursor: pointer;
     visibility: hidden;
@@ -1058,6 +1311,7 @@ p {
     transition-delay: 0s;
 }
 
+/* Update available animation. */
 @keyframes glow-grow {
     0% {
         opacity: 0;
@@ -1071,53 +1325,7 @@ p {
         opacity: 0;
     }
 }
-/*
-#image_seal {
-    height: 70px;
-    width: auto;
-    position: relative;
-    border-radius: 50%;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
-}
 
-#image_seal_container {
-    position: relative;
-    height: 70px;
-    width: 70px;
-    border-radius: 50%;
-    border: 2px solid white;
-    margin-top: 50px;
-}
-#image_seal_container:before,
-#image_seal_container:after {
-    position: absolute;
-    content: '';
-    height: 100%;
-    width: 100%;
-    top: 0%;
-    left: 0%;
-    border-radius: 50%;
-    box-shadow: 0 0 15px #43c628;
-    animation: glow-grow 3.25s ease-out infinite;
-}
-#image_seal_container{
-    animation-delay: 0s;
-}
-@keyframes glow-grow {
-    0% {
-        opacity: 0.8;
-        transform: scale(1.02);
-    }
-    50% {
-        opacity: 1;
-        transform: scale(1.07);
-    }
-    100% {
-        transform: scale(1.02);
-        opacity: 0.8;
-    }
-}
-*/
 /* * *
 * Landing View (Bottom Styles) | Right Content
 * * */
@@ -1247,9 +1455,13 @@ p {
     outline: none;
 }
 
-/* News icon colors. */
-#newsSVG {
+/* Settings icon colors. */
+#settingsSVG {
     stroke: #ffffff;
+    height: 15px;
+}
+#settingsSVG:hover {
+    height: 23px;
 }
 
 /* Twitter icon colors. */
@@ -1345,46 +1557,46 @@ p {
 * Landing View (Bottom Styles) | Center Content
 * * */
 
-/* Button which opens the menu view. */
-#menu_button {
+/* Button which opens the news view. */
+#newsButton {
     font-family: 'Avenir Book';
     background: none;
     border: none;
     cursor: pointer;
     outline: none;
 }
-#menu_button:hover #menu_text,
-#menu_button:focus #menu_text {
+#newsButton:hover #newsButtonText,
+#newsButton:focus #newsButtonText {
     text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
 }
-#menu_button:active {
+#newsButton:active {
     color: #c7c7c7;
     text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
 }
 
-#menu_button:hover #menu_img,
-#menu_button:focus #menu_img {
+#newsButton:hover #newsButtonSVG,
+#newsButton:focus #newsButtonSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
 }
-#menu_button:active #menu_img .arrowLine {
+#newsButton:active #newsButtonSVG .arrowLine {
     stroke: #c7c7c7;
 }
-#menu_button:active #menu_img {
+#newsButton:active #newsButtonSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
-#menu_button:disabled #menu_img .arrowLine {
+#newsButton:disabled #newsButtonSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
 }
 
-/* Arrow image which floats above the menu button. */
-#menu_img {
+/* Arrow image which floats above the news button. */
+#newsButtonSVG {
     height: 11px;
     margin-left: -2px;
     transition: 0.25s ease;
 }
 
-/* Span which contains the menu button text. */
-#menu_text {
+/* Span which contains the news button text. */
+#newsButtonText {
     color: white;
     font-weight: 900;
     letter-spacing: 2px;
@@ -1552,11 +1764,12 @@ p {
     transition: 0.25s ease;
 }
 #overlayContent a:hover,
-#overlayDismiss {
+#overlayContent a:focus,
+#overlayDismiss:focus {
     color: rgba(255, 255, 255, 0.75);
 }
 #overlayContent a:active,
-#overlayDismiss {
+#overlayDismiss:active {
     color: rgba(165, 165, 165, 0.75);
 }
 
@@ -1872,7 +2085,8 @@ p {
     outline: none;
     cursor: pointer;
 }
-#serverSelectCancel:hover {
+#serverSelectCancel:hover,
+#serverSelectCancel:focus {
     color: rgba(255, 255, 255, 0.75);
 }
 #serverSelectCancel:active {
