@@ -6,12 +6,12 @@ const cp                      = require('child_process')
 const {URL}                   = require('url')
 
 // Internal Requirements
-const {AssetGuard}            = require(path.join(__dirname, 'assets', 'js', 'assetguard.js'))
-const AuthManager             = require(path.join(__dirname, 'assets', 'js', 'authmanager.js'))
-const DiscordWrapper          = require(path.join(__dirname, 'assets', 'js', 'discordwrapper.js'))
-const Mojang                  = require(path.join(__dirname, 'assets', 'js', 'mojang.js'))
-const ProcessBuilder          = require(path.join(__dirname, 'assets', 'js', 'processbuilder.js'))
-const ServerStatus            = require(path.join(__dirname, 'assets', 'js', 'serverstatus.js'))
+const {AssetGuard}            = require('./assets/js/assetguard.js')
+const AuthManager             = require('./assets/js/authmanager.js')
+const DiscordWrapper          = require('./assets/js/discordwrapper.js')
+const Mojang                  = require('./assets/js/mojang.js')
+const ProcessBuilder          = require('./assets/js/processbuilder.js')
+const ServerStatus            = require('./assets/js/serverstatus.js')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -223,7 +223,17 @@ function asyncSystemScan(launchAfter = true){
         ConfigManager.getGameDirectory(),
         ConfigManager.getLauncherDirectory(),
         ConfigManager.getJavaExecutable()
-    ])
+    ], {
+        stdio: 'pipe'
+    })
+    // Stdout
+    sysAEx.stdio[1].on('data', (data) => {
+        console.log('%c[SysAEx]', 'color: #353232; font-weight: bold', data.toString('utf-8'))
+    })
+    // Stderr
+    sysAEx.stdio[2].on('data', (data) => {
+        console.log('%c[SysAEx]', 'color: #353232; font-weight: bold', data.toString('utf-8'))
+    })
     
     sysAEx.on('message', (m) => {
         if(m.content === 'validateJava'){
@@ -392,7 +402,17 @@ function dlAsync(login = true){
         ConfigManager.getGameDirectory(),
         ConfigManager.getLauncherDirectory(),
         ConfigManager.getJavaExecutable()
-    ])
+    ], {
+        stdio: 'pipe'
+    })
+    // Stdout
+    aEx.stdio[1].on('data', (data) => {
+        console.log('%c[AEx]', 'color: #353232; font-weight: bold', data.toString('utf-8'))
+    })
+    // Stderr
+    aEx.stdio[2].on('data', (data) => {
+        console.log('%c[AEx]', 'color: #353232; font-weight: bold', data.toString('utf-8'))
+    })
 
     // Establish communications between the AssetExec and current process.
     aEx.on('message', (m) => {

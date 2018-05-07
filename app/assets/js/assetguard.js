@@ -98,7 +98,7 @@ class Library extends Asset {
         if(rules == null) return true
 
         let result = true
-        rules.forEach(function(rule){
+        rules.forEach((rule) => {
             const action = rule['action']
             const osProp = rule['os']
             if(action != null){
@@ -381,7 +381,7 @@ class AssetGuard extends EventEmitter {
      * @returns {Promise.<Object>} A promise which resolves to the distribution data object.
      */
     static retrieveDistributionData(launcherPath, cached = true){
-        return new Promise(function(resolve, reject){
+        return new Promise((resolve, reject) => {
             if(!cached || distributionData == null){
                 // TODO Download file from upstream.
                 const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
@@ -401,7 +401,7 @@ class AssetGuard extends EventEmitter {
                 // Workaround while file is not hosted.
                 /*fs.readFile(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8', (err, data) => {
                     distributionData = JSON.parse(data)
-                    fulfill(distributionData)
+                    resolve(distributionData)
                 })*/
             } else {
                 resolve(distributionData)
@@ -477,7 +477,11 @@ class AssetGuard extends EventEmitter {
      * @returns {Promise.<void>} An empty promise to indicate the extraction has completed.
      */
     static _extractPackXZ(filePaths, javaExecutable){
-        return new Promise(function(resolve, reject){
+        console.log('[PackXZExtract] Starting')
+        return new Promise((resolve, reject) => {
+
+            
+
             let libPath
             if(isDev){
                 libPath = path.join(process.cwd(), 'libraries', 'java', 'PackXZExtract.jar')
@@ -488,17 +492,17 @@ class AssetGuard extends EventEmitter {
                     libPath = path.join(process.cwd(), 'resources', 'libraries', 'java', 'PackXZExtract.jar')
                 }
             }
-            
+
             const filePath = filePaths.join(',')
             const child = child_process.spawn(javaExecutable, ['-jar', libPath, '-packxz', filePath])
             child.stdout.on('data', (data) => {
-                console.log('PackXZExtract:', data.toString('utf8'))
+                console.log('[PackXZExtract]', data.toString('utf8'))
             })
             child.stderr.on('data', (data) => {
-                console.log('PackXZExtract:', data.toString('utf8'))
+                console.log('[PackXZExtract]', data.toString('utf8'))
             })
             child.on('close', (code, signal) => {
-                console.log('PackXZExtract: Exited with code', code)
+                console.log('[PackXZExtract]', 'Exited with code', code)
                 resolve()
             })
         })
@@ -515,7 +519,7 @@ class AssetGuard extends EventEmitter {
      * @returns {Promise.<Object>} A promise which resolves to the contents of forge's version.json.
      */
     static _finalizeForgeAsset(asset, basePath){
-        return new Promise(function(resolve, reject){
+        return new Promise((resolve, reject) => {
             fs.readFile(asset.to, (err, data) => {
                 const zip = new AdmZip(data)
                 const zipEntries = zip.getEntries()
@@ -1066,9 +1070,9 @@ class AssetGuard extends EventEmitter {
      */
     validateAssets(versionData, force = false){
         const self = this
-        return new Promise(function(fulfill, reject){
+        return new Promise((resolve, reject) => {
             self._assetChainIndexData(versionData, force).then(() => {
-                fulfill()
+                resolve()
             })
         })
     }
@@ -1083,7 +1087,7 @@ class AssetGuard extends EventEmitter {
      */
     _assetChainIndexData(versionData, force = false){
         const self = this
-        return new Promise(function(fulfill, reject){
+        return new Promise((resolve, reject) => {
             //Asset index constants.
             const assetIndex = versionData.assetIndex
             const name = assetIndex.id + '.json'
@@ -1095,16 +1099,16 @@ class AssetGuard extends EventEmitter {
                 console.log('Downloading ' + versionData.id + ' asset index.')
                 mkpath.sync(indexPath)
                 const stream = request(assetIndex.url).pipe(fs.createWriteStream(assetIndexLoc))
-                stream.on('finish', function() {
+                stream.on('finish', () => {
                     data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
                     self._assetChainValidateAssets(versionData, data).then(() => {
-                        fulfill()
+                        resolve()
                     })
                 })
             } else {
                 data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
                 self._assetChainValidateAssets(versionData, data).then(() => {
-                    fulfill()
+                    resolve()
                 })
             }
         })
@@ -1119,7 +1123,7 @@ class AssetGuard extends EventEmitter {
      */
     _assetChainValidateAssets(versionData, indexData){
         const self = this
-        return new Promise(function(fulfill, reject){
+        return new Promise((resolve, reject) => {
 
             //Asset constants
             const resourceURL = 'http://resources.download.minecraft.net/'
@@ -1132,7 +1136,7 @@ class AssetGuard extends EventEmitter {
             let acc = 0
             const total = Object.keys(indexData.objects).length
             //const objKeys = Object.keys(data.objects)
-            async.forEachOfLimit(indexData.objects, 10, function(value, key, cb){
+            async.forEachOfLimit(indexData.objects, 10, (value, key, cb) => {
                 acc++
                 self.emit('assetVal', {acc, total})
                 const hash = value.hash
@@ -1144,9 +1148,9 @@ class AssetGuard extends EventEmitter {
                     assetDlQueue.push(ast)
                 }
                 cb()
-            }, function(err){
+            }, (err) => {
                 self.assets = new DLTracker(assetDlQueue, dlSize)
-                fulfill()
+                resolve()
             })
         })
     }
@@ -1167,7 +1171,7 @@ class AssetGuard extends EventEmitter {
      */
     validateLibraries(versionData){
         const self = this
-        return new Promise(function(fulfill, reject){
+        return new Promise((resolve, reject) => {
 
             const libArr = versionData.libraries
             const libPath = path.join(self.basePath, 'libraries')
@@ -1176,7 +1180,7 @@ class AssetGuard extends EventEmitter {
             let dlSize = 0
 
             //Check validity of each library. If the hashs don't match, download the library.
-            async.eachLimit(libArr, 5, function(lib, cb){
+            async.eachLimit(libArr, 5, (lib, cb) => {
                 if(Library.validateRules(lib.rules)){
                     let artifact = (lib.natives == null) ? lib.downloads.artifact : lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()]]
                     const libItm = new Library(lib.name, artifact.sha1, artifact.size, artifact.url, path.join(libPath, artifact.path))
@@ -1186,9 +1190,9 @@ class AssetGuard extends EventEmitter {
                     }
                 }
                 cb()
-            }, function(err){
+            }, (err) => {
                 self.libraries = new DLTracker(libDlQueue, dlSize)
-                fulfill()
+                resolve()
             })
         })
     }
@@ -1207,10 +1211,10 @@ class AssetGuard extends EventEmitter {
      */
     validateMiscellaneous(versionData){
         const self = this
-        return new Promise(async function(fulfill, reject){
+        return new Promise(async (resolve, reject) => {
             await self.validateClient(versionData)
             await self.validateLogConfig(versionData)
-            fulfill()
+            resolve()
         })
     }
 
@@ -1223,7 +1227,7 @@ class AssetGuard extends EventEmitter {
      */
     validateClient(versionData, force = false){
         const self = this
-        return new Promise(function(fulfill, reject){
+        return new Promise((resolve, reject) => {
             const clientData = versionData.downloads.client
             const version = versionData.id
             const targetPath = path.join(self.basePath, 'versions', version)
@@ -1234,9 +1238,9 @@ class AssetGuard extends EventEmitter {
             if(!AssetGuard._validateLocal(client.to, 'sha1', client.hash) || force){
                 self.files.dlqueue.push(client)
                 self.files.dlsize += client.size*1
-                fulfill()
+                resolve()
             } else {
-                fulfill()
+                resolve()
             }
         })
     }
@@ -1250,7 +1254,7 @@ class AssetGuard extends EventEmitter {
      */
     validateLogConfig(versionData){
         const self = this
-        return new Promise(function(fulfill, reject){
+        return new Promise((resolve, reject) => {
             const client = versionData.logging.client
             const file = client.file
             const targetPath = path.join(self.basePath, 'assets', 'log_configs')
@@ -1260,9 +1264,9 @@ class AssetGuard extends EventEmitter {
             if(!AssetGuard._validateLocal(logConfig.to, 'sha1', logConfig.hash)){
                 self.files.dlqueue.push(logConfig)
                 self.files.dlsize += logConfig.size*1
-                fulfill()
+                resolve()
             } else {
-                fulfill()
+                resolve()
             }
         })
     }
@@ -1280,7 +1284,7 @@ class AssetGuard extends EventEmitter {
      */
     validateDistribution(serverpackid){
         const self = this
-        return new Promise(function(fulfill, reject){
+        return new Promise((resolve, reject) => {
             AssetGuard.retrieveDistributionData(self.launcherPath, false).then((value) => {
                 /*const servers = value.servers
                 let serv = null
@@ -1300,28 +1304,15 @@ class AssetGuard extends EventEmitter {
                 // Correct our workaround here.
                 let decompressqueue = self.forge.callback
                 self.extractQueue = decompressqueue
-                self.forge.callback = function(asset, self){
+                self.forge.callback = (asset, self) => {
                     if(asset.type === 'forge-hosted' || asset.type === 'forge'){
                         AssetGuard._finalizeForgeAsset(asset, self.basePath)
                     }
                 }
-                fulfill(serv)
+                resolve(serv)
             })
         })
     }
-
-    /*//TODO The file should be hosted, the following code is for local testing.
-    _chainValidateDistributionIndex(basePath){
-        return new Promise(function(fulfill, reject){
-            //const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
-            //const targetFile = path.join(basePath, 'westeroscraft.json')
-
-            //TEMP WORKAROUND TO TEST WHILE THIS IS NOT HOSTED
-            fs.readFile(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8', (err, data) => {
-                fulfill(JSON.parse(data))
-            })
-        })
-    }*/
 
     _parseDistroModules(modules, version){
         let alist = []
@@ -1378,7 +1369,7 @@ class AssetGuard extends EventEmitter {
      */
     loadForgeData(serverpack){
         const self = this
-        return new Promise(async function(fulfill, reject){
+        return new Promise(async (resolve, reject) => {
             let distro = AssetGuard.retrieveDistributionDataSync(self.launcherPath)
             
             const servers = distro.servers
@@ -1398,7 +1389,7 @@ class AssetGuard extends EventEmitter {
                     let obPath = obArtifact.path == null ? path.join(self.basePath, 'libraries', AssetGuard._resolvePath(ob.id, obArtifact.extension)) : obArtifact.path
                     let asset = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, ob.type)
                     let forgeData = await AssetGuard._finalizeForgeAsset(asset, self.basePath)
-                    fulfill(forgeData)
+                    resolve(forgeData)
                     return
                 }
             }
@@ -1541,7 +1532,7 @@ class AssetGuard extends EventEmitter {
         if(concurrentDlQueue.length === 0){
             return false
         } else {
-            async.eachLimit(concurrentDlQueue, limit, function(asset, cb){
+            async.eachLimit(concurrentDlQueue, limit, (asset, cb) => {
                 let count = 0;
                 mkpath.sync(path.join(asset.to, ".."))
                 let req = request(asset.from)
@@ -1570,14 +1561,14 @@ class AssetGuard extends EventEmitter {
                 req.on('error', (err) => {
                     self.emit('dlerror', err)
                 })
-                req.on('data', function(chunk){
+                req.on('data', (chunk) => {
                     count += chunk.length
                     self.progress += chunk.length
                     acc += chunk.length
                     self.emit(identifier + 'dlprogress', acc)
                     self.emit('totaldlprogress', {acc: self.progress, total: self.totaldlsize})
                 })
-            }, function(err){
+            }, (err) => {
                 if(err){
                     self.emit(identifier + 'dlerror')
                     console.log('An item in ' + identifier + ' failed to process');

@@ -80,7 +80,7 @@ exports.statusToHex = function(status){
  * @see http://wiki.vg/Mojang_API#API_Status
  */
 exports.status = function(){
-    return new Promise(function(fulfill, reject) {
+    return new Promise((resolve, reject) => {
         request.get('https://status.mojang.com/check',
         {
             json: true
@@ -102,7 +102,7 @@ exports.status = function(){
                         }
                     }
                 }
-                fulfill(statuses)
+                resolve(statuses)
             }
         })
     })
@@ -120,7 +120,7 @@ exports.status = function(){
  * @see http://wiki.vg/Authentication#Authenticate
  */
 exports.authenticate = function(username, password, clientToken, requestUser = true, agent = minecraftAgent){
-    return new Promise(function(fulfill, reject){
+    return new Promise((resolve, reject) => {
         request.post(authpath + '/authenticate',
         {
             json: true,
@@ -138,7 +138,7 @@ exports.authenticate = function(username, password, clientToken, requestUser = t
                 reject(error)
             } else {
                 if(response.statusCode === 200){
-                    fulfill(body)
+                    resolve(body)
                 } else {
                     reject(body || {code: 'ENOTFOUND'})
                 }
@@ -157,7 +157,7 @@ exports.authenticate = function(username, password, clientToken, requestUser = t
  * @see http://wiki.vg/Authentication#Validate
  */
 exports.validate = function(accessToken, clientToken){
-    return new Promise(function(fulfill, reject){
+    return new Promise((resolve, reject) => {
         request.post(authpath + '/validate',
         {
             json: true,
@@ -172,10 +172,10 @@ exports.validate = function(accessToken, clientToken){
                 reject(error)
             } else {
                 if(response.statusCode === 403){
-                    fulfill(false)
+                    resolve(false)
                 } else {
                     // 204 if valid
-                    fulfill(true)
+                    resolve(true)
                 }
             }
         })
@@ -192,7 +192,7 @@ exports.validate = function(accessToken, clientToken){
  * @see http://wiki.vg/Authentication#Invalidate
  */
 exports.invalidate = function(accessToken, clientToken){
-    return new Promise(function(fulfill, reject){
+    return new Promise((resolve, reject) => {
         request.post(authpath + '/invalidate',
         {
             json: true,
@@ -207,7 +207,7 @@ exports.invalidate = function(accessToken, clientToken){
                 reject(error)
             } else {
                 if(response.statusCode === 204){
-                    fulfill()
+                    resolve()
                 } else {
                     reject(body)
                 }
@@ -228,7 +228,7 @@ exports.invalidate = function(accessToken, clientToken){
  * @see http://wiki.vg/Authentication#Refresh
  */
 exports.refresh = function(accessToken, clientToken, requestUser = true){
-    return new Promise(function(fulfill, reject){
+    return new Promise((resolve, reject) => {
         request.post(authpath + '/refresh',
         {
             json: true,
@@ -244,7 +244,7 @@ exports.refresh = function(accessToken, clientToken, requestUser = true){
                 reject(error)
             } else {
                 if(response.statusCode === 200){
-                    fulfill(body)
+                    resolve(body)
                 } else {
                     reject(body)
                 }

@@ -4,7 +4,7 @@
  */
 // Requirements
 const path          = require('path')
-const ConfigManager = require(path.join(__dirname, 'assets', 'js', 'configmanager.js'))
+const ConfigManager = require('./assets/js/configmanager.js')
 
 let rscShouldLoad = false
 
