@@ -41,6 +41,8 @@ process.on('message', (msg) => {
             if(res instanceof Promise){
                 res.then((v) => {
                     process.send({result: v, content: msg.content})
+                }).catch((err) => {
+                    process.send({result: v, content: msg.content})
                 })
             } else {
                 process.send({result: res, content: msg.content})

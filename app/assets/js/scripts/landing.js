@@ -418,13 +418,30 @@ function dlAsync(login = true){
     aEx.on('message', (m) => {
         if(m.content === 'validateDistribution'){
 
-            setLaunchPercentage(20, 100)
-            serv = m.result
-            console.log('Forge Validation Complete.')
+            if(m.result instanceof Error){
 
-            // Begin version load.
-            setLaunchDetails('Loading version information..')
-            aEx.send({task: 0, content: 'loadVersionData', argsArr: [serv.mc_version]})
+                setOverlayContent(
+                    'Fatal Error',
+                    'Could not load a copy of the distribution index. See the console for more details.',
+                    'Okay'
+                )
+                setOverlayHandler(null)
+
+                toggleOverlay(true)
+                toggleLaunchArea(false)
+
+                // Disconnect from AssetExec
+                aEx.disconnect()
+
+            } else {
+                setLaunchPercentage(20, 100)
+                serv = m.result
+                console.log('Forge Validation Complete.')
+
+                // Begin version load.
+                setLaunchDetails('Loading version information..')
+                aEx.send({task: 0, content: 'loadVersionData', argsArr: [serv.mc_version]})
+            }
 
         } else if(m.content === 'loadVersionData'){
 
@@ -491,16 +508,30 @@ function dlAsync(login = true){
                 }, 750)
 
             } else if(m.task === 0.9) {
+
+                console.error(m.err)
                 
                 if(m.err.code === 'ENOENT'){
-                    setLaunchDetails('Download error.. internet?')
+                    setOverlayContent(
+                        'Download Error',
+                        'Could not connect to the file server. Ensure that you are connected to the internet and try again.',
+                        'Okay'
+                    )
+                    setOverlayHandler(null)
                 } else {
-                    setLaunchDetails('Download error.. try again.')
+                    setOverlayContent(
+                        'Download Error',
+                        'Check the console for more details. Please try again.',
+                        'Okay'
+                    )
+                    setOverlayHandler(null)
                 }
 
-                setTimeout(() => {
-                    toggleLaunchArea(false)
-                }, 5000)
+                toggleOverlay(true)
+                toggleLaunchArea(false)
+
+                // Disconnect from AssetExec
+                aEx.disconnect()
 
             } else if(m.task === 1){
 
@@ -565,7 +596,7 @@ function dlAsync(login = true){
                     proc.stdout.on('data', gameStateChange)
 
                     // Init Discord Hook
-                    const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getLauncherDirectory())
+                    const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getLauncherDirectory(), true)
                     if(distro.discord != null && serv.discord != null){
                         DiscordWrapper.initRPC(distro.discord, serv.discord)
                         hasRPC = true
@@ -579,14 +610,15 @@ function dlAsync(login = true){
 
                 } catch(err) {
 
-                    // Show that there was an error then hide the
-                    // progress area. Maybe switch this to an error
-                    // alert in the future. TODO
-                    setLaunchDetails('Error: See log for details..')
-                    console.log(err)
-                    setTimeout(function(){
-                        toggleLaunchArea(false)
-                    }, 5000)
+                    console.error('Error during launch', err)
+                    setOverlayContent(
+                        'Error During Launch',
+                        'Please check the console for more details.',
+                        'Okay'
+                    )
+                    setOverlayHandler(null)
+                    toggleOverlay(true)
+                    toggleLaunchArea(false)
 
                 }
             }
@@ -842,9 +874,8 @@ function loadNews(){
             }).catch(err => {
                 reject(err)
             })
+        }).catch((err) => {
+            console.log('Error Loading News', err)
         })
     })
 }
-
-// Load News
-initNews()

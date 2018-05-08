@@ -17,6 +17,7 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
     }
     if(typeof dismissable === 'string'){
         content = dismissable
+        dismissable = false
     }
     if(toggleState){
         document.getElementById('main').setAttribute('overlay', true)

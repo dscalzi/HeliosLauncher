@@ -373,21 +373,17 @@ class AssetGuard extends EventEmitter {
     // #region
 
     /**
-     * Statically retrieve the distribution data.
+     * Retrieve a new copy of the distribution index from our servers.
      * 
      * @param {string} launcherPath The root launcher directory.
-     * @param {boolean} cached Optional. False if the distro should be freshly downloaded, else
-     * a cached copy will be returned.
      * @returns {Promise.<Object>} A promise which resolves to the distribution data object.
      */
-    static retrieveDistributionData(launcherPath, cached = true){
+    static retrieveDistributionDataFresh(launcherPath){
         return new Promise((resolve, reject) => {
-            if(!cached || distributionData == null){
-                // TODO Download file from upstream.
-                const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
-                const distroDest = path.join(launcherPath, 'westeroscraft.json')
-                // TODO Fulfill with JSON.parse()
-                request(distroURL, (error, resp, body) => {
+            const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
+            const distroDest = path.join(launcherPath, 'westeroscraft.json')
+            request(distroURL, (error, resp, body) => {
+                if(!error){
                     distributionData = JSON.parse(body)
 
                     fs.writeFile(distroDest, body, 'utf-8', (err) => {
@@ -397,12 +393,32 @@ class AssetGuard extends EventEmitter {
                             reject(err)
                         }
                     })
+                } else {
+                    reject(error)
+                }
+            })
+        })
+    }
+
+    /**
+     * Retrieve a local copy of the distribution index asynchronously.
+     * 
+     * @param {string} launcherPath The root launcher directory.
+     * @param {boolean} cached Optional. False if the distro file should be read from the
+     * disk and re-cached, otherwise a cached copy will be returned.
+     * @returns {Promise.<Object>} A promise which resolves to the distribution data object.
+     */
+    static retrieveDistributionData(launcherPath, cached = true){
+        return new Promise((resolve, reject) => {
+            if(!cached || distributionData == null){
+                fs.readFile(path.join(launcherPath, 'westeroscraft.json'), 'utf-8', (err, data) => {
+                    if(!err){
+                        distributionData = JSON.parse(data)
+                        resolve(distributionData)
+                    } else {
+                        reject(err)
+                    }
                 })
-                // Workaround while file is not hosted.
-                /*fs.readFile(path.join(__dirname, '..', 'westeroscraft.json'), 'utf-8', (err, data) => {
-                    distributionData = JSON.parse(data)
-                    resolve(distributionData)
-                })*/
             } else {
                 resolve(distributionData)
             }
@@ -410,11 +426,11 @@ class AssetGuard extends EventEmitter {
     }
 
     /**
-     * Recieved a cached version of the distribution index.
+     * Retrieve a local copy of the distribution index synchronously.
      * 
      * @param {string} launcherPath The root launcher directory.
-     * @param {boolean} cached Optional. False if the distro should be freshly downloaded, else
-     * a cached copy will be returned.
+     * @param {boolean} cached Optional. False if the distro file should be read from the
+     * disk and re-cached, otherwise a cached copy will be returned.
      * @returns {Object} The distribution data object.
      */
     static retrieveDistributionDataSync(launcherPath, cached = true){
@@ -453,7 +469,7 @@ class AssetGuard extends EventEmitter {
      */
     static getServerById(launcherPath, serverID){
         if(distributionData == null){
-            AssetGuard.retrieveDistributionDataSync(launcherPath, false)
+            AssetGuard.retrieveDistributionDataSync(launcherPath, true)
         }
         const servers = distributionData.servers
         let serv = null
@@ -1285,15 +1301,8 @@ class AssetGuard extends EventEmitter {
     validateDistribution(serverpackid){
         const self = this
         return new Promise((resolve, reject) => {
-            AssetGuard.retrieveDistributionData(self.launcherPath, false).then((value) => {
-                /*const servers = value.servers
-                let serv = null
-                for(let i=0; i<servers.length; i++){
-                    if(servers[i].id === serverpackid){
-                        serv = servers[i]
-                        break
-                    }
-                }*/
+
+            const cbFunc = function(){
                 const serv = AssetGuard.getServerById(self.launcherPath, serverpackid)
 
                 if(serv == null) {
@@ -1310,6 +1319,32 @@ class AssetGuard extends EventEmitter {
                     }
                 }
                 resolve(serv)
+            }
+
+            AssetGuard.retrieveDistributionDataFresh(self.launcherPath).then((value) => {
+
+                console.log('Loaded fresh copy of the distribution index.')
+
+                cbFunc()
+
+            }).catch((err) => {
+
+                console.log('Failed to load fresh copy of the distribution index.')
+                console.log('Attempting to load an older copy of the distribution index.')
+
+                AssetGuard.retrieveDistributionData(self.launcherPath, false).then((value) => {
+
+                    console.log('Successfully loaded an older copy of the distribution index.')
+
+                    cbFunc()
+
+                }).catch((err) => {
+
+                    console.log('Failed to load an older copy of the distribution index. Cannot launch.')
+
+                    reject(err)
+
+                })
             })
         })
     }
@@ -1370,7 +1405,7 @@ class AssetGuard extends EventEmitter {
     loadForgeData(serverpack){
         const self = this
         return new Promise(async (resolve, reject) => {
-            let distro = AssetGuard.retrieveDistributionDataSync(self.launcherPath)
+            let distro = AssetGuard.retrieveDistributionDataSync(self.launcherPath, true)
             
             const servers = distro.servers
             let serv = null

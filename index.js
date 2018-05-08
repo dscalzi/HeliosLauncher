@@ -51,8 +51,8 @@ ipcMain.on('autoUpdateAction', (event, arg) => {
     }
 })
 // Redirect distribution index event from preloader to renderer.
-ipcMain.on('distributionIndexDone', (event, arg) => {
-    event.sender.send('distributionIndexDone', arg)
+ipcMain.on('distributionIndexDone', (event, data) => {
+    event.sender.send('distributionIndexDone', data)
 })
 
 // Disable hardware acceleration.
@@ -73,7 +73,7 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js')
         },
-        backgroundColor: '#2e2c29'
+        backgroundColor: '#171614'
     })
 
     ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))

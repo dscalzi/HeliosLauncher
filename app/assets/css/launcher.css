@@ -55,7 +55,8 @@ p {
     z-index: 100;
     display: flex;
     flex-direction: column;
-    background: rgba(1, 2, 1, 0.5);
+    transition: background-color 1s ease;
+    /*background-color: rgba(1, 2, 1, 0.5);*/
     -webkit-user-select: none;
 }
 
@@ -808,67 +809,6 @@ p {
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
-
-/* * *
-* Login View | Loader
-* * */
-/* Will reuse this elsewhere down the line.
-#loginLoading {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.80);
-}
-
-#loginLoadingContent {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-#loadSpinnerContainer {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#loadCenterImage {
-    position: absolute;
-    width: 200px;
-    height: auto;
-}
-
-#loadSpinnerImage {
-    width: 280px;
-    height: auto;
-}
-
-#loadDescText {
-    color: #f1eada;
-    font-family: 'Avenir Medium';
-    font-weight: bold;
-    letter-spacing: 1px;
-    font-size: 16px;
-}
-
-@keyframes rotating {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.rotating {
-    animation: rotating 10s linear infinite;
-}*/
 
 /*
 #login_filter {
@@ -2091,4 +2031,66 @@ p {
 }
 #serverSelectCancel:active {
     color: rgba(165, 165, 165, 0.75);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Loading Element (app.ejs)                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+/* Loading container, placed above everything. */
+#loadingContainer {
+    position: absolute;
+    z-index: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100% - 22px);
+}
+
+/* Loading content container. */
+#loadingContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Spinner container. */
+#loadSpinnerContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Stationary image for the spinner. */
+#loadCenterImage {
+    position: absolute;
+    width: 200px;
+    height: auto;
+}
+
+/* Rotating image for the spinner. */
+#loadSpinnerImage {
+    width: 280px;
+    height: auto;
+}
+
+/* Rotating animation for the spinner. */
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Class which is applied when the spinner image is spinning. */
+.rotating {
+    animation: rotating 10s linear infinite;
 }

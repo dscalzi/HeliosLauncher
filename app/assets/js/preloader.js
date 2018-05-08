@@ -10,22 +10,47 @@ console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Loading..')
 // Load ConfigManager
 ConfigManager.load()
 
+function onDistroLoad(data){
+    if(data != null){
+        
+         // Resolve the selected server if its value has yet to be set.
+        if(ConfigManager.getSelectedServer() == null || AssetGuard.getServerById(ConfigManager.getLauncherDirectory(), ConfigManager.getSelectedServer()) == null){
+            console.log('Determining default selected server..')
+            ConfigManager.setSelectedServer(AssetGuard.resolveSelectedServer(ConfigManager.getLauncherDirectory()).id)
+            ConfigManager.save()
+        }
+    }
+    ipcRenderer.send('distributionIndexDone', data)
+}
+
 // Ensure Distribution is downloaded and cached.
-AssetGuard.retrieveDistributionData(ConfigManager.getLauncherDirectory(), false).then((data) => {
+AssetGuard.retrieveDistributionDataFresh(ConfigManager.getLauncherDirectory()).then((data) => {
     console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Loaded distribution index.')
 
-    // Resolve the selected server if its value has yet to be set.
-    if(ConfigManager.getSelectedServer() == null){
-        console.log('Determining default selected server..')
-        ConfigManager.setSelectedServer(AssetGuard.resolveSelectedServer(ConfigManager.getLauncherDirectory()).id)
-        ConfigManager.save()
-    }
+   onDistroLoad(data)
 
-    ipcRenderer.send('distributionIndexDone', data)
-
-}).catch(err => {
+}).catch((err) => {
     console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Failed to load distribution index.')
-    console.err(err)
+    console.error(err)
+
+    console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Attempting to load an older version of the distribution index.')
+    // Try getting a local copy, better than nothing.
+    AssetGuard.retrieveDistributionData(ConfigManager.getLauncherDirectory(), false).then((data) => {
+        console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Successfully loaded an older version of the distribution index.')
+
+        onDistroLoad(data)
+
+
+    }).catch((err) => {
+
+        console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Failed to load an older version of the distribution index.')
+        console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Application cannot run.')
+        console.error(err)
+
+        onDistroLoad(null)
+
+    })
+
 })
 
 // Clean up temp dir incase previous launches ended unexpectedly. 
