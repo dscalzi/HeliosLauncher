@@ -162,6 +162,7 @@ class DLTracker {
 }
 
 let distributionData = null
+let launchWithLocal = false
 
 /**
  * Central object class used for control flow. This object stores data about
@@ -378,7 +379,7 @@ class AssetGuard extends EventEmitter {
      * @param {string} launcherPath The root launcher directory.
      * @returns {Promise.<Object>} A promise which resolves to the distribution data object.
      */
-    static retrieveDistributionDataFresh(launcherPath){
+    static refreshDistributionDataRemote(launcherPath){
         return new Promise((resolve, reject) => {
             const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
             const distroDest = path.join(launcherPath, 'westeroscraft.json')
@@ -404,24 +405,18 @@ class AssetGuard extends EventEmitter {
      * Retrieve a local copy of the distribution index asynchronously.
      * 
      * @param {string} launcherPath The root launcher directory.
-     * @param {boolean} cached Optional. False if the distro file should be read from the
-     * disk and re-cached, otherwise a cached copy will be returned.
      * @returns {Promise.<Object>} A promise which resolves to the distribution data object.
      */
-    static retrieveDistributionData(launcherPath, cached = true){
+    static refreshDistributionDataLocal(launcherPath){
         return new Promise((resolve, reject) => {
-            if(!cached || distributionData == null){
-                fs.readFile(path.join(launcherPath, 'westeroscraft.json'), 'utf-8', (err, data) => {
-                    if(!err){
-                        distributionData = JSON.parse(data)
-                        resolve(distributionData)
-                    } else {
-                        reject(err)
-                    }
-                })
-            } else {
-                resolve(distributionData)
-            }
+            fs.readFile(path.join(launcherPath, 'westeroscraft.json'), 'utf-8', (err, data) => {
+                if(!err){
+                    distributionData = JSON.parse(data)
+                    resolve(distributionData)
+                } else {
+                    reject(err)
+                }
+            })
         })
     }
 
@@ -429,25 +424,27 @@ class AssetGuard extends EventEmitter {
      * Retrieve a local copy of the distribution index synchronously.
      * 
      * @param {string} launcherPath The root launcher directory.
-     * @param {boolean} cached Optional. False if the distro file should be read from the
-     * disk and re-cached, otherwise a cached copy will be returned.
      * @returns {Object} The distribution data object.
      */
-    static retrieveDistributionDataSync(launcherPath, cached = true){
-        if(!cached || distributionData == null){
-            distributionData = JSON.parse(fs.readFileSync(path.join(launcherPath, 'westeroscraft.json'), 'utf-8'))
-        }
+    static refreshDistributionDataLocalSync(launcherPath){
+        distributionData = JSON.parse(fs.readFileSync(path.join(launcherPath, 'westeroscraft.json'), 'utf-8'))
+        return distributionData
+    }
+
+    /**
+     * Get a cached copy of the distribution index.
+     */
+    static getDistributionData(){
         return distributionData
     }
 
     /**
      * Resolve the default selected server from the distribution index.
      * 
-     * @param {string} launcherPath The root launcher directory.
      * @returns {Object} An object resolving to the default selected server.
      */
-    static resolveSelectedServer(launcherPath){
-        const distro = AssetGuard.retrieveDistributionDataSync(launcherPath)
+    static resolveSelectedServer(){
+        const distro = AssetGuard.getDistributionData()
         const servers = distro.servers
         for(let i=0; i<servers.length; i++){
             if(servers[i].default_selected){
@@ -463,15 +460,12 @@ class AssetGuard extends EventEmitter {
      * Returns null if the ID could not be found or the distro index has
      * not yet been loaded.
      * 
-     * @param {string} launcherPath The root launcher directory.
      * @param {string} serverID The id of the server to retrieve.
      * @returns {Object} The server object whose id matches the parameter.
      */
-    static getServerById(launcherPath, serverID){
-        if(distributionData == null){
-            AssetGuard.retrieveDistributionDataSync(launcherPath, true)
-        }
-        const servers = distributionData.servers
+    static getServerById(serverID){
+        const distro = AssetGuard.getDistributionData()
+        const servers = distro.servers
         let serv = null
         for(let i=0; i<servers.length; i++){
             if(servers[i].id === serverID){
@@ -479,6 +473,34 @@ class AssetGuard extends EventEmitter {
             }
         }
         return serv
+    }
+
+    /**
+     * Set whether or not we should launch with a local copy of the distribution
+     * index. This is useful for testing experimental changes to the distribution index.
+     * 
+     * @param {boolean} value True if we should launch with a local copy. Otherwise false. 
+     */
+    static launchWithLocal(value, silent = false){
+        if(!silent){
+            if(value){
+                console.log('%c[AssetGuard]', 'color: #a02d2a; font-weight: bold', 'Will now launch using a local copy of the distribution index.')
+                console.log('%c[AssetGuard]', 'color: #a02d2a; font-weight: bold', 'Unless you are a developer, revert this change immediately.')
+            } else {
+                console.log('%c[AssetGuard]', 'color: #a02d2a; font-weight: bold', 'Will now retrieve a fresh copy of the distribution index on launch.')
+            }
+        }
+        launchWithLocal = value
+    }
+
+    /**
+     * Check if AssetGuard is configured to launch with a local copy
+     * of the distribution index.
+     * 
+     * @returns {boolean} True if launching with local, otherwise false.
+     */
+    static isLocalLaunch(){
+        return launchWithLocal
     }
 
     // #endregion
@@ -1301,9 +1323,8 @@ class AssetGuard extends EventEmitter {
     validateDistribution(serverpackid){
         const self = this
         return new Promise((resolve, reject) => {
-
-            const cbFunc = function(){
-                const serv = AssetGuard.getServerById(self.launcherPath, serverpackid)
+            AssetGuard.refreshDistributionDataLocal(self.launcherPath).then((v) => {
+                const serv = AssetGuard.getServerById(serverpackid)
 
                 if(serv == null) {
                     console.error('Invalid server pack id:', serverpackid)
@@ -1319,32 +1340,6 @@ class AssetGuard extends EventEmitter {
                     }
                 }
                 resolve(serv)
-            }
-
-            AssetGuard.retrieveDistributionDataFresh(self.launcherPath).then((value) => {
-
-                console.log('Loaded fresh copy of the distribution index.')
-
-                cbFunc()
-
-            }).catch((err) => {
-
-                console.log('Failed to load fresh copy of the distribution index.')
-                console.log('Attempting to load an older copy of the distribution index.')
-
-                AssetGuard.retrieveDistributionData(self.launcherPath, false).then((value) => {
-
-                    console.log('Successfully loaded an older copy of the distribution index.')
-
-                    cbFunc()
-
-                }).catch((err) => {
-
-                    console.log('Failed to load an older copy of the distribution index. Cannot launch.')
-
-                    reject(err)
-
-                })
             })
         })
     }
@@ -1405,7 +1400,7 @@ class AssetGuard extends EventEmitter {
     loadForgeData(serverpack){
         const self = this
         return new Promise(async (resolve, reject) => {
-            let distro = AssetGuard.retrieveDistributionDataSync(self.launcherPath, true)
+            let distro = AssetGuard.getDistributionData()
             
             const servers = distro.servers
             let serv = null

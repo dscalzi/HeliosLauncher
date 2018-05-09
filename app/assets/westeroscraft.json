@@ -15,7 +15,7 @@
             "name": "WesterosCraft Production Server",
             "description": "Main WesterosCraft server. Connect to enter the Realm.",
             "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-prod.png",
-            "revision": "3.4.17",
+            "revision": "3.7.1",
             "server_ip": "mc.westeroscraft.com",
             "mc_version": "1.11.2",
             "discord": {
@@ -347,8 +347,8 @@
                             "name": "DynamicSurroundings General Configuration File",
                             "type": "file",
                             "artifact": {
-                                "size": 19736,
-                                "MD5": "4c64fc6cbbb83b18012ed4820b0b496e",
+                                "size": 20258,
+                                "MD5": "3df81248db151750b7d0a0193b327b47",
                                 "path": "/config/dsurround/dsurround.cfg",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/config/dsurround/dsurround.cfg"
                             }
@@ -367,23 +367,23 @@
                     ]
                 },
                 {
-                    "id": "com.westeroscraft:westerosblocks:3.0.0-beta-6-133",
-                    "name": "WesterosBlocks (3.0.0-beta-6-133)",
+                    "id": "com.westeroscraft:westerosblocks:3.1.0-alpha-2-135",
+                    "name": "WesterosBlocks (3.1.0-alpha-2-135)",
                     "type": "forgemod",
                     "artifact": {
-                        "size": 16321712,
-                         "MD5": "5a89e2ab18916c18965fc93a0766cc6e",
+                        "size": 16854431,
+                         "MD5": "ed5b2349d1ce2496895a5e8839b77f74",
                         "extension": ".jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/WesterosBlocks.jar"
                     }
                 },
                 {
-                    "id": "com.westeroscraft:westeroscraftrp:2017-08-16",
-                    "name": "WesterosCraft Resource Pack (2017-08-16)",
+                    "id": "com.westeroscraft:westeroscraftrp:2018-05-05",
+                    "name": "WesterosCraft Resource Pack (2018-05-05)",
                     "type": "file",
                     "artifact": {
-                        "size": 45241339,
-                        "MD5": "ec2d9fdb14d5c2eafe5975a240202f1a",
+                        "size": 46067606,
+                        "MD5": "0e08b0bcf44c9d266bfe067d865ffc1e",
                         "path": "resourcepacks/WesterosCraft.zip",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/resourcepacks/WesterosCraft.zip"
                     }
@@ -416,7 +416,7 @@
             "name": "WesterosCraft Test Server",
             "description": "Main testing server. Experimental changes are live here.",
             "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-test.png",
-            "revision": "3.7.0",
+            "revision": "3.7.1",
             "server_ip": "mc.westeroscraft.com:4444",
             "mc_version": "1.11.2",
             "discord": {
@@ -748,8 +748,8 @@
                             "name": "DynamicSurroundings General Configuration File",
                             "type": "file",
                             "artifact": {
-                                "size": 19736,
-                                "MD5": "4c64fc6cbbb83b18012ed4820b0b496e",
+                                "size": 20849,
+                                "MD5": "8d6c08c158aa846162e2a179d6228181",
                                 "path": "/config/dsurround/dsurround.cfg",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/config/dsurround/dsurround.cfg"
                             }
@@ -817,7 +817,7 @@
             "name": "WesterosCraft 1.12.2 Test Server",
             "description": "Tests for our version change to 1.12.2 are live here.",
             "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-test.png",
-            "revision": "4.1.0",
+            "revision": "4.1.1",
             "server_ip": "mc.westeroscraft.com:4445",
             "mc_version": "1.12.2",
             "discord": {
@@ -1146,8 +1146,8 @@
                             "name": "DynamicSurroundings General Configuration File",
                             "type": "file",
                             "artifact": {
-                                "size": 19736,
-                                "MD5": "4c64fc6cbbb83b18012ed4820b0b496e",
+                                "size": 21195,
+                                "MD5": "850f1103765f45698954b4e3b0b0369d",
                                 "path": "/config/dsurround/dsurround.cfg",
                                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.12.2/config/dsurround/dsurround.cfg"
                             }

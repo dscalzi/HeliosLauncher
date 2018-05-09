@@ -42,7 +42,7 @@ process.on('message', (msg) => {
                 res.then((v) => {
                     process.send({result: v, content: msg.content})
                 }).catch((err) => {
-                    process.send({result: v, content: msg.content})
+                    process.send({result: err, content: msg.content})
                 })
             } else {
                 process.send({result: res, content: msg.content})

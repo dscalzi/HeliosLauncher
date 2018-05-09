@@ -6,7 +6,6 @@ const cp                      = require('child_process')
 const {URL}                   = require('url')
 
 // Internal Requirements
-const {AssetGuard}            = require('./assets/js/assetguard.js')
 const AuthManager             = require('./assets/js/authmanager.js')
 const DiscordWrapper          = require('./assets/js/discordwrapper.js')
 const Mojang                  = require('./assets/js/mojang.js')
@@ -168,7 +167,7 @@ const refreshMojangStatuses = async function(){
 
 const refreshServerStatus = async function(fade = false){
     console.log('Refreshing Server Status')
-    const serv = AssetGuard.getServerById(ConfigManager.getGameDirectory(), ConfigManager.getSelectedServer())
+    const serv = AssetGuard.getServerById(ConfigManager.getSelectedServer())
 
     let pLabel = 'SERVER'
     let pVal = 'OFFLINE'
@@ -418,30 +417,13 @@ function dlAsync(login = true){
     aEx.on('message', (m) => {
         if(m.content === 'validateDistribution'){
 
-            if(m.result instanceof Error){
+            setLaunchPercentage(20, 100)
+            serv = m.result
+            console.log('Validated distibution index.')
 
-                setOverlayContent(
-                    'Fatal Error',
-                    'Could not load a copy of the distribution index. See the console for more details.',
-                    'Okay'
-                )
-                setOverlayHandler(null)
-
-                toggleOverlay(true)
-                toggleLaunchArea(false)
-
-                // Disconnect from AssetExec
-                aEx.disconnect()
-
-            } else {
-                setLaunchPercentage(20, 100)
-                serv = m.result
-                console.log('Forge Validation Complete.')
-
-                // Begin version load.
-                setLaunchDetails('Loading version information..')
-                aEx.send({task: 0, content: 'loadVersionData', argsArr: [serv.mc_version]})
-            }
+            // Begin version load.
+            setLaunchDetails('Loading version information..')
+            aEx.send({task: 0, content: 'loadVersionData', argsArr: [serv.mc_version]})
 
         } else if(m.content === 'loadVersionData'){
 
@@ -596,7 +578,7 @@ function dlAsync(login = true){
                     proc.stdout.on('data', gameStateChange)
 
                     // Init Discord Hook
-                    const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getLauncherDirectory(), true)
+                    const distro = AssetGuard.getDistributionData()
                     if(distro.discord != null && serv.discord != null){
                         DiscordWrapper.initRPC(distro.discord, serv.discord)
                         hasRPC = true
@@ -633,7 +615,62 @@ function dlAsync(login = true){
 
     // Validate Forge files.
     setLaunchDetails('Loading server information..')
-    aEx.send({task: 0, content: 'validateDistribution', argsArr: [ConfigManager.getSelectedServer()]})
+
+    if(AssetGuard.isLocalLaunch()){
+
+        refreshDistributionIndex(false, (data) => {
+            onDistroRefresh(data)
+            aEx.send({task: 0, content: 'validateDistribution', argsArr: [ConfigManager.getSelectedServer()]})
+        }, (err) => {
+            console.error('Unable to refresh distribution index.', err)
+            if(AssetGuard.getDistributionData() == null){
+                setOverlayContent(
+                    'Fatal Error',
+                    'Could not load a copy of the distribution index. See the console for more details.',
+                    'Okay'
+                )
+                setOverlayHandler(null)
+
+                toggleOverlay(true)
+                toggleLaunchArea(false)
+
+                // Disconnect from AssetExec
+                aEx.disconnect()
+            } else {
+                aEx.send({task: 0, content: 'validateDistribution', argsArr: [ConfigManager.getSelectedServer()]})
+            }
+        })
+
+    } else {
+
+        refreshDistributionIndex(true, (data) => {
+            onDistroRefresh(data)
+            aEx.send({task: 0, content: 'validateDistribution', argsArr: [ConfigManager.getSelectedServer()]})
+        }, (err) => {
+            refreshDistributionIndex(false, (data) => {
+                onDistroRefresh(data)
+            }, (err) => {
+                console.error('Unable to refresh distribution index.', err)
+                if(AssetGuard.getDistributionData() == null){
+                    setOverlayContent(
+                        'Fatal Error',
+                        'Could not load a copy of the distribution index. See the console for more details.',
+                        'Okay'
+                    )
+                    setOverlayHandler(null)
+    
+                    toggleOverlay(true)
+                    toggleLaunchArea(false)
+    
+                    // Disconnect from AssetExec
+                    aEx.disconnect()
+                } else {
+                    aEx.send({task: 0, content: 'validateDistribution', argsArr: [ConfigManager.getSelectedServer()]})
+                }
+            })
+        })
+
+    }
 }
 
 /**
@@ -825,57 +862,54 @@ function displayArticle(articleObject, index){
  */
 function loadNews(){
     return new Promise((resolve, reject) => {
-        AssetGuard.retrieveDistributionData(ConfigManager.getLauncherDirectory(), true).then((v) => {
-            const newsFeed = v['news_feed']
-            const newsHost = new URL(newsFeed).origin + '/'
-            $.get(newsFeed, (data) => {
-                const items = $(data).find('item')
-                const articles = []
+        const distroData = AssetGuard.getDistributionData()
+        const newsFeed = distroData['news_feed']
+        const newsHost = new URL(newsFeed).origin + '/'
+        $.get(newsFeed, (data) => {
+            const items = $(data).find('item')
+            const articles = []
 
-                for(let i=0; i<items.length; i++){
-                    // JQuery Element
-                    const el = $(items[i])
+            for(let i=0; i<items.length; i++){
+                // JQuery Element
+                const el = $(items[i])
 
-                    // Resolve date.
-                    const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
+                // Resolve date.
+                const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
 
-                    // Resolve comments.
-                    let comments = el.find('slash\\:comments').text() || '0'
-                    comments = comments + ' Comment' + (comments === '1' ? '' : 's')
+                // Resolve comments.
+                let comments = el.find('slash\\:comments').text() || '0'
+                comments = comments + ' Comment' + (comments === '1' ? '' : 's')
 
-                    // Fix relative links in content.
-                    let content = el.find('content\\:encoded').text()
-                    let regex = /src="(?!http:\/\/|https:\/\/)(.+)"/g
-                    let matches
-                    while(matches = regex.exec(content)){
-                        content = content.replace(matches[1], newsHost + matches[1])
-                    }
-
-                    let link   = el.find('link').text()
-                    let title  = el.find('title').text()
-                    let author = el.find('dc\\:creator').text()
-
-                    // Generate article.
-                    articles.push(
-                        {
-                            link,
-                            title,
-                            date,
-                            author,
-                            content,
-                            comments,
-                            commentsLink: link + '#comments'
-                        }
-                    )
+                // Fix relative links in content.
+                let content = el.find('content\\:encoded').text()
+                let regex = /src="(?!http:\/\/|https:\/\/)(.+)"/g
+                let matches
+                while(matches = regex.exec(content)){
+                    content = content.replace(matches[1], newsHost + matches[1])
                 }
-                resolve({
-                    articles
-                })
-            }).catch(err => {
-                reject(err)
+
+                let link   = el.find('link').text()
+                let title  = el.find('title').text()
+                let author = el.find('dc\\:creator').text()
+
+                // Generate article.
+                articles.push(
+                    {
+                        link,
+                        title,
+                        date,
+                        author,
+                        content,
+                        comments,
+                        commentsLink: link + '#comments'
+                    }
+                )
+            }
+            resolve({
+                articles
             })
-        }).catch((err) => {
-            console.log('Error Loading News', err)
+        }).catch(err => {
+            reject(err)
         })
     })
 }

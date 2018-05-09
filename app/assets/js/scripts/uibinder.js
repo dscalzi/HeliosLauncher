@@ -4,13 +4,14 @@
  */
 // Requirements
 const path          = require('path')
+const {AssetGuard}  = require('./assets/js/assetguard.js')
 const ConfigManager = require('./assets/js/configmanager.js')
 
 let rscShouldLoad = false
 let fatalStartupError = false
 
 function showMainUI(){
-    updateSelectedServer(AssetGuard.getServerById(ConfigManager.getLauncherDirectory(), ConfigManager.getSelectedServer()).name)
+    updateSelectedServer(AssetGuard.getServerById(ConfigManager.getSelectedServer()).name)
     refreshServerStatus()
     setTimeout(() => {
         document.getElementById('frameBar').style.backgroundColor = 'rgba(1, 2, 1, 0.5)'
@@ -49,6 +50,24 @@ function showFatalStartupError(){
             toggleOverlay(true)
         })
     }, 750)
+}
+
+function onDistroRefresh(data){
+    updateSelectedServer(AssetGuard.getServerById(ConfigManager.getSelectedServer()).name)
+    refreshServerStatus()
+    initNews()
+}
+
+function refreshDistributionIndex(remote, onSuccess, onError){
+    if(remote){
+        AssetGuard.refreshDistributionDataRemote(ConfigManager.getLauncherDirectory())
+        .then(onSuccess)
+        .catch(onError)
+    } else {
+        AssetGuard.refreshDistributionDataLocal(ConfigManager.getLauncherDirectory())
+        .then(onSuccess)
+        .catch(onError)
+    }
 }
 
 // Synchronous Listener

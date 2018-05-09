@@ -14,9 +14,9 @@ function onDistroLoad(data){
     if(data != null){
         
          // Resolve the selected server if its value has yet to be set.
-        if(ConfigManager.getSelectedServer() == null || AssetGuard.getServerById(ConfigManager.getLauncherDirectory(), ConfigManager.getSelectedServer()) == null){
-            console.log('Determining default selected server..')
-            ConfigManager.setSelectedServer(AssetGuard.resolveSelectedServer(ConfigManager.getLauncherDirectory()).id)
+        if(ConfigManager.getSelectedServer() == null || AssetGuard.getServerById(ConfigManager.getSelectedServer()) == null){
+            console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Determining default selected server..')
+            ConfigManager.setSelectedServer(AssetGuard.resolveSelectedServer().id)
             ConfigManager.save()
         }
     }
@@ -24,7 +24,7 @@ function onDistroLoad(data){
 }
 
 // Ensure Distribution is downloaded and cached.
-AssetGuard.retrieveDistributionDataFresh(ConfigManager.getLauncherDirectory()).then((data) => {
+AssetGuard.refreshDistributionDataRemote(ConfigManager.getLauncherDirectory()).then((data) => {
     console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Loaded distribution index.')
 
    onDistroLoad(data)
@@ -35,7 +35,7 @@ AssetGuard.retrieveDistributionDataFresh(ConfigManager.getLauncherDirectory()).t
 
     console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Attempting to load an older version of the distribution index.')
     // Try getting a local copy, better than nothing.
-    AssetGuard.retrieveDistributionData(ConfigManager.getLauncherDirectory(), false).then((data) => {
+    AssetGuard.refreshDistributionDateLocal(ConfigManager.getLauncherDirectory()).then((data) => {
         console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Successfully loaded an older version of the distribution index.')
 
         onDistroLoad(data)

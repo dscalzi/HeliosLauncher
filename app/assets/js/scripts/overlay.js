@@ -118,7 +118,7 @@ document.getElementById('serverSelectConfirm').addEventListener('click', () => {
     const listings = document.getElementsByClassName('serverListing')
     for(let i=0; i<listings.length; i++){
         if(listings[i].hasAttribute('selected')){
-            const serv = AssetGuard.getServerById(ConfigManager.getGameDirectory(), listings[i].getAttribute('servid'))
+            const serv = AssetGuard.getServerById(listings[i].getAttribute('servid'))
             ConfigManager.setSelectedServer(serv != null ? serv.id : null)
             ConfigManager.save()
             updateSelectedServer(serv != null ? serv.name : null)
@@ -161,7 +161,7 @@ function setServerListingHandlers(){
 }
 
 function populateServerListings(){
-    const distro = AssetGuard.retrieveDistributionDataSync(ConfigManager.getLauncherDirectory())
+    const distro = AssetGuard.getDistributionData()
     const giaSel = ConfigManager.getSelectedServer()
     const servers = distro.servers
     let htmlString = ``
