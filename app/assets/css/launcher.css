@@ -937,7 +937,7 @@ p {
 /* News article status container (left). */
 #newsStatusContainer {
     width: 25%;
-    height: 100%;
+    height: calc(100% - 30px);
     padding: 15px;
     display: flex;
     flex-direction: column;
@@ -960,6 +960,7 @@ p {
     color: white;
     text-decoration: none;
     transition: 0.25s ease;
+    outline: none;
 }
 #newsArticleTitle:hover,
 #newsArticleTitle:focus {
@@ -1009,6 +1010,7 @@ p {
     font-family: 'Avenir Book';
     text-decoration: none;
     transition: 0.25s ease;
+    outline: none;
 }
 #newsArticleComments:focus,
 #newsArticleComments:hover {
@@ -1043,6 +1045,7 @@ p {
 #newsArticleContentScrollable a {
     color: rgba(202, 202, 202, 0.75);
     transition: 0.25s ease;
+    outline: none;
 }
 #newsArticleContentScrollable a:hover,
 #newsArticleContentScrollable a:focus {
@@ -1062,12 +1065,17 @@ p {
     box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
 }
 
+/* Div to add spacing at the end of a news article. */
+.newsArticleSpacer {
+    height: 30px;
+}
+
 /* News navigation container. */
 #newsNavigationContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
 }
 
 /* Navigation status span. */

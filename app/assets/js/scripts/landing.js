@@ -731,6 +731,14 @@ function slide_(up){
 
 // Bind news button.
 document.getElementById('newsButton').onclick = () => {
+    // Toggle tabbing.
+    if(newsActive){
+        $("#landingContainer *").removeAttr('tabindex')
+        $("#newsContainer *").attr('tabindex', '-1')
+    } else {
+        $("#landingContainer *").attr('tabindex', '-1')
+        $("#newsContainer, #newsContainer *").removeAttr('tabindex')
+    }
     slide_(!newsActive)
     newsActive = !newsActive
 }
@@ -777,64 +785,81 @@ newsErrorRetry.onclick = () => {
 
 /**
  * Reload the news without restarting.
+ * 
+ * @returns {Promise.<void>} A promise which resolves when the news
+ * content has finished loading and transitioning.
  */
-async function reloadNews(){
-    $('#newsContent').fadeOut(250, () => {
-        $('#newsErrorLoading').fadeIn(250)
+function reloadNews(){
+    return new Promise((resolve, reject) => {
+        $('#newsContent').fadeOut(250, () => {
+            $('#newsErrorLoading').fadeIn(250)
+            initNews().then(() => {
+                resolve()
+            })
+        })
     })
-    await initNews()
 }
 
 /**
  * Initialize News UI. This will load the news and prepare
  * the UI accordingly.
+ * 
+ * @returns {Promise.<void>} A promise which resolves when the news
+ * content has finished loading and transitioning.
  */
-async function initNews(){
-    setNewsLoading(true)
+function initNews(){
 
-    let news = {}
+    return new Promise((resolve, reject) => {
+        setNewsLoading(true)
 
-    try {
-        news = await loadNews()
-    } catch (err) {
-        // Empty
-    }
+        let news = {}
+        loadNews().then(news => {
 
-    newsArr = news.articles || null
+            newsArr = news.articles || null
 
-    if(newsArr == null){
-        // News Loading Failed
-        setNewsLoading(false)
+            if(newsArr == null){
+                // News Loading Failed
+                setNewsLoading(false)
 
-        $('#newsErrorLoading').fadeOut(250, () => {
-            $('#newsErrorFailed').fadeIn(250)
+                $('#newsErrorLoading').fadeOut(250, () => {
+                    $('#newsErrorFailed').fadeIn(250, () => {
+                        resolve()
+                    })
+                })
+            } else if(newsArr.length === 0) {
+                // No News Articles
+                setNewsLoading(false)
+
+                $('#newsErrorLoading').fadeOut(250, () => {
+                    $('#newsErrorNone').fadeIn(250, () => {
+                        resolve()
+                    })
+                })
+            } else {
+                // Success
+                setNewsLoading(false)
+
+                const switchHandler = (forward) => {
+                    let cArt = parseInt(newsContent.getAttribute('article'))
+                    let nxtArt = forward ? (cArt >= newsArr.length-1 ? 0 : cArt + 1) : (cArt <= 0 ? newsArr.length-1 : cArt - 1)
+            
+                    displayArticle(newsArr[nxtArt], nxtArt+1)
+                }
+            
+                document.getElementById('newsNavigateRight').onclick = () => { switchHandler(true) }
+                document.getElementById('newsNavigateLeft').onclick = () => { switchHandler(false) }
+
+                $('#newsErrorContainer').fadeOut(250, () => {
+                    displayArticle(newsArr[0], 1)
+                    $('#newsContent').fadeIn(250, () => {
+                        resolve()
+                    })
+                })
+            }
+
         })
-    } else if(newsArr.length === 0) {
-        // No News Articles
-        setNewsLoading(false)
-
-        $('#newsErrorLoading').fadeOut(250, () => {
-            $('#newsErrorNone').fadeIn(250)
-        })
-    } else {
-        // Success
-        setNewsLoading(false)
-
-        $('#newsErrorContainer').fadeOut(250, () => {
-            displayArticle(newsArr[0], 1)
-            $('#newsContent').fadeIn(250)
-        })
-
-        const switchHandler = (forward) => {
-            let cArt = parseInt(newsContent.getAttribute('article'))
-            let nxtArt = forward ? (cArt >= newsArr.length-1 ? 0 : cArt + 1) : (cArt <= 0 ? newsArr.length-1 : cArt - 1)
-    
-            displayArticle(newsArr[nxtArt], nxtArt+1)
-        }
-    
-        document.getElementById('newsNavigateRight').onclick = () => { switchHandler(true) }
-        document.getElementById('newsNavigateLeft').onclick = () => { switchHandler(false) }
-    }
+        
+    })
 }
 
 /**
@@ -850,7 +875,7 @@ function displayArticle(articleObject, index){
     newsArticleDate.innerHTML = articleObject.date
     newsArticleComments.innerHTML = articleObject.comments
     newsArticleComments.href = articleObject.commentsLink
-    newsArticleContent.innerHTML = articleObject.content
+    newsArticleContent.innerHTML = articleObject.content + '<div class="newsArticleSpacer"></div>'
     newsNavigationStatus.innerHTML = index + ' of ' + newsArr.length
     newsContent.setAttribute('article', index-1)
 }
