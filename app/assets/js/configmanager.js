@@ -38,7 +38,8 @@ const DEFAULT_CONFIG = {
             resWidth: 1280,
             resHeight: 720,
             fullscreen: false,
-            autoConnect: true
+            autoConnect: true,
+            launchDetached: true
         },
         launcher: {}
     },
@@ -78,7 +79,34 @@ exports.load = function(){
         exports.save()
     } else {
         config = JSON.parse(fs.readFileSync(filePath, 'UTF-8'))
+        config = validateKeySet(DEFAULT_CONFIG, config)
+        exports.save()
     }
+}
+
+/**
+ * Validate that the destination object has at least every field
+ * present in the source object. Assign a default value otherwise.
+ * 
+ * @param {Object} srcObj The source object to reference against.
+ * @param {Object} destObj The destination object.
+ * @returns {Object} A validated destination object.
+ */
+function validateKeySet(srcObj, destObj){
+    if(srcObj == null){
+        srcObj = {}
+    }
+    const validationBlacklist = ['authenticationDatabase']
+    const keys = Object.keys(srcObj)
+    console.log(keys)
+    for(let i=0; i<keys.length; i++){
+        if(typeof destObj[keys[i]] === 'undefined'){
+            destObj[keys[i]] = srcObj[keys[i]]
+        } else if(typeof srcObj[keys[i]] === 'object' && srcObj[keys[i]] != null && !(srcObj[keys[i]] instanceof Array) && validationBlacklist.indexOf(keys[i]) === -1){
+            destObj[keys[i]] = validateKeySet(srcObj[keys[i]], destObj[keys[i]])
+        }
+    }
+    return destObj
 }
 
 /**
@@ -443,4 +471,23 @@ exports.isAutoConnect = function(def = false){
  */
 exports.setAutoConnect = function(autoConnect){
     config.settings.game.autoConnect = autoConnect
+}
+
+/**
+ * Check if the game should launch as a detached process.
+ * 
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {boolean} Whether or not the game will launch as a detached process.
+ */
+exports.isLaunchDetached = function(def = false){
+    return !def ? config.settings.game.launchDetached : DEFAULT_CONFIG.settings.game.launchDetached
+}
+
+/**
+ * Change the status of whether or not the game should launch as a detached process.
+ * 
+ * @param {boolean} launchDetached Whether or not the game should launch as a detached process.
+ */
+exports.setLaunchDetached = function(launchDetached){
+    config.settings.game.launchDetached = launchDetached
 }

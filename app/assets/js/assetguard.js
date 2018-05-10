@@ -1562,6 +1562,7 @@ class AssetGuard extends EventEmitter {
         if(concurrentDlQueue.length === 0){
             return false
         } else {
+            console.debug('DLQueue', concurrentDlQueue)
             async.eachLimit(concurrentDlQueue, limit, (asset, cb) => {
                 let count = 0;
                 mkpath.sync(path.join(asset.to, ".."))

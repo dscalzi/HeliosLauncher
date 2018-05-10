@@ -15,7 +15,7 @@
             "name": "WesterosCraft Production Server",
             "description": "Main WesterosCraft server. Connect to enter the Realm.",
             "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-prod.png",
-            "revision": "3.7.1",
+            "revision": "3.7.2",
             "server_ip": "mc.westeroscraft.com",
             "mc_version": "1.11.2",
             "discord": {
@@ -238,12 +238,12 @@
                     ]
                 },
                 {
-                    "id": "net.optifine:optifine:1.11.2_HD_U_C3",
-                    "name": "Optifine (1.11.2_HD_U_C3)",
+                    "id": "net.optifine:optifine:1.11.2_HD_U_C7",
+                    "name": "Optifine (1.11.2_HD_U_C7)",
                     "type": "forgemod",
                     "artifact": {
-                        "size": 2106193,
-                        "MD5": "82f495594cd50e1fda7a8aa0246239fc",
+                        "size": 2254712,
+                        "MD5": "0dd7761e908f9b245bb0dc0fac5649f5",
                         "extension": ".jar",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/OptiFine.jar"
                     }

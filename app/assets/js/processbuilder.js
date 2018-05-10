@@ -44,8 +44,13 @@ class ProcessBuilder {
         console.log(args)
 
         const child = child_process.spawn(ConfigManager.getJavaExecutable(), args, {
-            cwd: ConfigManager.getGameDirectory()
+            cwd: ConfigManager.getGameDirectory(),
+            detached: ConfigManager.isLaunchDetached()
         })
+
+        if(ConfigManager.isLaunchDetached()){
+            child.unref()
+        }
 
         child.stdout.on('data', (data) => {
             console.log('Minecraft:', data.toString('utf8'))

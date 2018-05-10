@@ -72,7 +72,7 @@ function showMainUI(){
             $('#loadingContainer').fadeOut(500, () => {
                 $('#loadSpinnerImage').removeClass('rotating')
             })
-        }, 500)
+        }, 250)
         
     }, 750)
     initNews()
@@ -160,6 +160,12 @@ async function validateSelectedAccount(){
     }
 }
 
+/**
+ * Temporary function to update the selected account along
+ * with the relevent UI elements.
+ * 
+ * @param {string} uuid The UUID of the account.
+ */
 function setSelectedAccount(uuid){
     const authAcc = ConfigManager.setSelectedAccount(uuid)
     ConfigManager.save()
