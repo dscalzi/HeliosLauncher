@@ -238,6 +238,22 @@ exports.getSelectedAccount = function(){
     return config.authenticationDatabase[config.selectedAccount]
 }
 
+/**
+ * Set the selected authenticated account.
+ * 
+ * @param {string} uuid The UUID of the account which is to be set
+ * as the selected account.
+ * 
+ * @returns {Object} The selected authenticated account.
+ */
+exports.setSelectedAccount = function(uuid){
+    const authAcc = config.authenticationDatabase[uuid]
+    if(authAcc != null) {
+        config.selectedAccount = uuid
+    }
+    return authAcc
+}
+
 // User Configurable Settings
 
 // Java Settings

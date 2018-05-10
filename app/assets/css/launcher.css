@@ -395,6 +395,7 @@ p {
     height: 100%;
     width: 100%;
     transition: filter 0.25s ease;
+    background: rgba(0, 0, 0, 0.50);
 }
 
 /* Login content wrapper. */
@@ -1790,11 +1791,12 @@ p {
 }
 
 /* * *
-* Overlay View (Server Selection Content)
+* Overlay View (Server + Account Selection Content)
 * * */
 
 /* Server selection content container. */
-#serverSelectContent {
+#serverSelectContent,
+#accountSelectContent {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1803,7 +1805,8 @@ p {
 }
 
 /* Server selection header. */
-#serverSelectHeader {
+#serverSelectHeader,
+#accountSelectHeader {
     font-family: 'Avenir Medium';
     font-size: 20px;
     font-weight: bold;
@@ -1812,7 +1815,8 @@ p {
 }
 
 /* Wrapper div for the list of available servers. */
-#serverSelectList {
+#serverSelectList,
+#accountSelectList {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1822,17 +1826,21 @@ p {
 }
 
 /* Scrollable div which lists the available servers. */
-#serverSelectListScrollable {
+#serverSelectListScrollable,
+#accountSelectListScrollable {
     padding: 0px 5px;
     overflow-y: scroll;
 }
-#serverSelectListScrollable::-webkit-scrollbar {
+#serverSelectListScrollable::-webkit-scrollbar,
+#accountSelectListScrollable::-webkit-scrollbar {
     width: 2px;
 }
-#serverSelectListScrollable::-webkit-scrollbar-track {
+#serverSelectListScrollable::-webkit-scrollbar-track,
+#accountSelectListScrollable::-webkit-scrollbar-track {
     display: none;
 }
-#serverSelectListScrollable::-webkit-scrollbar-thumb {
+#serverSelectListScrollable::-webkit-scrollbar-thumb,
+#accountSelectListScrollable::-webkit-scrollbar-thumb {
     border-radius: 10px;
     box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
 }
@@ -1862,14 +1870,49 @@ p {
     opacity: 1.0;
 }
 
+.accountListing {
+    color: white;
+    border: 1px solid rgba(170, 170, 170, 0.5);
+    border-radius: 4px;
+    padding: 5px 45px;
+    width: 250px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    opacity: 0.6;
+    transition: 0.25s ease;
+    cursor: pointer;
+    position: relative;
+    background: rgba(255, 255, 255, 0.25);
+}
+.accountListing[selected] {
+    cursor: default;
+    opacity: 1.0;
+}
+.accountListing:hover,
+.accountListing:focus {
+    outline: none;
+    opacity: 1.0;
+}
+
+.accountListingName {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    padding-left: 10px;
+}
+
 /* Add spacing between server listings. */
-#serverSelectListScrollable > .serverListing:not(:first-child):not(:last-child) {
+#serverSelectListScrollable > .serverListing:not(:first-child):not(:last-child),
+#accountSelectListScrollable > .accountListing:not(:first-child):not(:last-child) {
     margin: 5px 0px;
 }
-#serverSelectListScrollable > .serverListing:first-child {
+#serverSelectListScrollable > .serverListing:first-child,
+#accountSelectListScrollable > .accountListing:first-child {
     margin-bottom: 5px;
 }
-#serverSelectListScrollable > .serverListing:last-child {
+#serverSelectListScrollable > .serverListing:last-child,
+#accountSelectListScrollable > .accountListing:last-child {
     margin-top: 5px;
 }
 
@@ -1980,7 +2023,8 @@ p {
 }
 
 /* Content container which contains the server select actions. */
-#serverSelectActions {
+#serverSelectActions,
+#accountSelectActions {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1989,7 +2033,8 @@ p {
 }
 
 /* Server selection confirm button styles. */
-#serverSelectConfirm {
+#serverSelectConfirm,
+#accountSelectConfirm {
     background: none;
     border: 1px solid #ffffff;
     color: white;
@@ -2002,17 +2047,21 @@ p {
     min-height: 20.67px;
 }
 #serverSelectConfirm:hover,
-#serverSelectConfirm:focus {
+#serverSelectConfirm:focus,
+#accountSelectConfirm:hover,
+#accountSelectConfirm:focus {
     box-shadow: 0px 0px 10px 0px #fff;
     outline: none;
 }
-#serverSelectConfirm:active {
+#serverSelectConfirm:active,
+#accountSelectConfirm:active {
     border-color: rgba(255, 255, 255, 0.75);
     color: rgba(255, 255, 255, 0.75);
 }
 
 /* Server selection cancel button styles. */
-#serverSelectCancel {
+#serverSelectCancel,
+#accountSelectCancel {
     font-family: 'Avenir Book';
     font-weight: bold;
     font-size: 10px;
@@ -2026,10 +2075,13 @@ p {
     cursor: pointer;
 }
 #serverSelectCancel:hover,
-#serverSelectCancel:focus {
+#serverSelectCancel:focus,
+#accountSelectCancel:hover,
+#accountSelectCancel:focus {
     color: rgba(255, 255, 255, 0.75);
 }
-#serverSelectCancel:active {
+#serverSelectCancel:active,
+#accountSelectCancel:active {
     color: rgba(165, 165, 165, 0.75);
 }
 

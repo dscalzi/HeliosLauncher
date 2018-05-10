@@ -6,7 +6,6 @@ const cp                      = require('child_process')
 const {URL}                   = require('url')
 
 // Internal Requirements
-const AuthManager             = require('./assets/js/authmanager.js')
 const DiscordWrapper          = require('./assets/js/discordwrapper.js')
 const Mojang                  = require('./assets/js/mojang.js')
 const ProcessBuilder          = require('./assets/js/processbuilder.js')

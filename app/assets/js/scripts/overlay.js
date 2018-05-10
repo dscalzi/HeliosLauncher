@@ -109,10 +109,15 @@ document.addEventListener('keydown', (e) => {
         } else if(e.key === 'Enter'){
             document.getElementById('serverSelectConfirm').click()
         }
+    } else if(document.getElementById('accountSelectContent').style.display !== 'none'){
+        console.debug('ServSelLi Keydown Called:', document.getElementById('accountSelectContent').style.display)
+        if(e.key === 'Escape'){
+            document.getElementById('accountSelectCancel').click()
+        } else if(e.key === 'Enter'){
+            document.getElementById('accountSelectConfirm').click()
+        }
     }
 })
-
-document.getElementById('serverSelectActions').onsubmit = () => { return false }
 
 document.getElementById('serverSelectConfirm').addEventListener('click', () => {
     const listings = document.getElementsByClassName('serverListing')
@@ -131,14 +136,43 @@ document.getElementById('serverSelectConfirm').addEventListener('click', () => {
     // None are selected? Not possible right? Meh, handle it.
     if(listings.length > 0){
         ConfigManager.setSelectedServer(listings[0].getAttribute('servid'))
+        ConfigManager.save()
         updateSelectedServer()
         toggleOverlay(false)
+    }
+})
+
+document.getElementById('accountSelectConfirm').addEventListener('click', () => {
+    const listings = document.getElementsByClassName('accountListing')
+    for(let i=0; i<listings.length; i++){
+        if(listings[i].hasAttribute('selected')){
+            const authAcc = ConfigManager.setSelectedAccount(listings[i].getAttribute('uuid'))
+            ConfigManager.save()
+            updateSelectedAccount(authAcc)
+            toggleOverlay(false)
+            validateSelectedAccount()
+            return
+        }
+    }
+    // None are selected? Not possible right? Meh, handle it.
+    if(listings.length > 0){
+        const authAcc = ConfigManager.setSelectedAccount(listings[0].getAttribute('uuid'))
+        ConfigManager.save()
+        updateSelectedAccount(authAcc)
+        toggleOverlay(false)
+        validateSelectedAccount()
     }
 })
 
 // Bind server select cancel button.
 document.getElementById('serverSelectCancel').addEventListener('click', () => {
     toggleOverlay(false)
+})
+
+document.getElementById('accountSelectCancel').addEventListener('click', () => {
+    $('#accountSelectContent').fadeOut(250, () => {
+        $('#overlayContent').fadeIn(250)
+    })
 })
 
 function setServerListingHandlers(){
@@ -149,6 +183,25 @@ function setServerListingHandlers(){
                 return
             }
             const cListings = document.getElementsByClassName('serverListing')
+            for(let i=0; i<cListings.length; i++){
+                if(cListings[i].hasAttribute('selected')){
+                    cListings[i].removeAttribute('selected')
+                }
+            }
+            val.setAttribute('selected', '')
+            document.activeElement.blur()
+        }
+    })
+}
+
+function setAccountListingHandlers(){
+    const listings = Array.from(document.getElementsByClassName('accountListing'))
+    listings.map((val) => {
+        val.onclick = e => {
+            if(val.hasAttribute('selected')){
+                return
+            }
+            const cListings = document.getElementsByClassName('accountListing')
             for(let i=0; i<cListings.length; i++){
                 if(cListings[i].hasAttribute('selected')){
                     cListings[i].removeAttribute('selected')
@@ -192,7 +245,30 @@ function populateServerListings(){
 
 }
 
+function populateAccountListings(){
+    const accountsObj = ConfigManager.getAuthAccounts()
+    const accounts = Array.from(Object.keys(accountsObj), v=>accountsObj[v]);
+    const selectedUUID = ConfigManager.getSelectedAccount().uuid
+    let htmlString = ``
+    for(let i=0; i<accounts.length; i++){
+        if(accounts[i].uuid === selectedUUID) {
+            continue
+        }
+        htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${i===0 ? 'selected' : ''}>
+            <img src="https://crafatar.com/renders/head/${accounts[i].uuid}?scale=2&default=MHF_Steve&overlay">
+            <div class="accountListingName">${accounts[i].displayName}</div>
+        </button>`
+    }
+    document.getElementById('accountSelectListScrollable').innerHTML = htmlString
+
+}
+
 function prepareServerSelectionList(){
     populateServerListings()
     setServerListingHandlers()
+}
+
+function prepareAccountSelectionList(){
+    populateAccountListings()
+    setAccountListingHandlers()
 }

@@ -2,7 +2,5 @@
  * Script for welcome.ejs
  */
 document.getElementById('welcomeButton').addEventListener('click', e => {
-    $('#welcomeContainer').fadeOut(500, () => {
-        $('#loginContainer').fadeIn(500)
-    })
+    switchView(VIEWS.welcome, VIEWS.login)
 })

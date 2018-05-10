@@ -233,8 +233,12 @@ loginButton.addEventListener('click', () => {
         $('.checkmark').toggle()
         //console.log(value)
         setTimeout(() => {
-            $('#loginContainer').fadeOut(500, () => {
-                $('#landingContainer').fadeIn(500)
+            switchView(VIEWS.login, VIEWS.landing, 500, 500, () => {
+                loginUsername.value = ''
+                loginPassword.value = ''
+                loginLoading(false)
+                loginButton.innerHTML = loginButton.innerHTML.replace('SUCCESS', 'LOGIN')
+                formDisabled(false)
             })
         }, 1000)
     }).catch((err) => {
