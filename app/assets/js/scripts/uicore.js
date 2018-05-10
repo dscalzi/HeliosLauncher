@@ -130,6 +130,13 @@ document.addEventListener('readystatechange', function () {
             })
         })
 
+        // Remove focus from social media buttons once they're clicked.
+        Array.from(document.getElementsByClassName('mediaURL')).map(val => {
+            val.addEventListener('click', e => {
+                document.activeElement.blur()
+            })
+        })
+
     } else if(document.readyState === 'complete'){
 
         //266.01

@@ -854,14 +854,13 @@ class AssetGuard extends EventEmitter {
             // 'SOFTWARE\\JavaSoft\\JDK'
             // Forge does not yet support Java 9, therefore we do not.
 
-            let cbTracker = 0
-            let cbAcc = 0
-
             // Keys for Java 1.8 and prior:
             const regKeys = [
                 '\\SOFTWARE\\JavaSoft\\Java Runtime Environment',
                 '\\SOFTWARE\\JavaSoft\\Java Development Kit'
             ]
+
+            let keysDone = 0
 
             const candidates = new Set()
 
@@ -875,15 +874,26 @@ class AssetGuard extends EventEmitter {
                     if(exists) {
                         key.keys((err, javaVers) => {
                             if(err){
+                                keysDone++
                                 console.error(err)
-                                if(i === regKeys.length-1 && cbAcc === cbTracker){
+
+                                // REG KEY DONE
+                                // DUE TO ERROR
+                                if(keysDone === regKeys.length){
                                     resolve(candidates)
                                 }
                             } else {
-                                cbTracker += javaVers.length
-                                if(i === regKeys.length-1 && cbTracker === cbAcc){
-                                    resolve(candidates)
+                                if(javaVers.length === 0){
+                                    // REG KEY DONE
+                                    // NO SUBKEYS
+                                    keysDone++
+                                    if(keysDone === regKeys.length){
+                                        resolve(candidates)
+                                    }
                                 } else {
+
+                                    let numDone = 0
+
                                     for(let j=0; j<javaVers.length; j++){
                                         const javaVer = javaVers[j]
                                         const vKey = javaVer.key.substring(javaVer.key.lastIndexOf('\\')+1)
@@ -893,17 +903,29 @@ class AssetGuard extends EventEmitter {
                                                 const jHome = res.value
                                                 if(jHome.indexOf('(x86)') === -1){
                                                     candidates.add(jHome)
-                                                    
                                                 }
-                                                cbAcc++
-                                                if(i === regKeys.length-1 && cbAcc === cbTracker){
-                                                    resolve(candidates)
+
+                                                // SUBKEY DONE
+
+                                                numDone++
+                                                if(numDone === javaVers.length){
+                                                    keysDone++
+                                                    if(keysDone === regKeys.length){
+                                                        resolve(candidates)
+                                                    }
                                                 }
                                             })
                                         } else {
-                                            cbAcc++
-                                            if(i === regKeys.length-1 && cbAcc === cbTracker){
-                                                resolve(candidates)
+
+                                            // SUBKEY DONE
+                                            // NOT JAVA 8
+
+                                            numDone++
+                                            if(numDone === javaVers.length){
+                                                keysDone++
+                                                if(keysDone === regKeys.length){
+                                                    resolve(candidates)
+                                                }
                                             }
                                         }
                                     }
@@ -911,7 +933,12 @@ class AssetGuard extends EventEmitter {
                             }
                         })
                     } else {
-                        if(i === regKeys.length-1 && cbAcc === cbTracker){
+
+                        // REG KEY DONE
+                        // DUE TO NON-EXISTANCE
+
+                        keysDone++
+                        if(keysDone === regKeys.length){
                             resolve(candidates)
                         }
                     }
