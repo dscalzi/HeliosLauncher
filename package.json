@@ -32,7 +32,7 @@
     "async": "^2.6.0",
     "discord-rpc": "^3.0.0-beta.10",
     "ejs": "^2.6.1",
-    "ejs-electron": "^2.0.2",
+    "ejs-electron": "^2.0.3",
     "electron-is-dev": "^0.3.0",
     "electron-updater": "^2.21.10",
     "jquery": "^3.3.1",
