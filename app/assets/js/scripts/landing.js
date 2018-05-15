@@ -737,7 +737,7 @@ document.getElementById('newsButton').onclick = () => {
         $("#newsContainer *").attr('tabindex', '-1')
     } else {
         $("#landingContainer *").attr('tabindex', '-1')
-        $("#newsContainer, #newsContainer *").removeAttr('tabindex')
+        $("#newsContainer, #newsContainer *, #lower, #lower #center *").removeAttr('tabindex')
     }
     slide_(!newsActive)
     newsActive = !newsActive

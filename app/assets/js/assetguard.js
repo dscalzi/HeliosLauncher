@@ -1019,22 +1019,22 @@ class AssetGuard extends EventEmitter {
                         // Same version, give priority to JRE.
 
                         if(a.execPath.toLowerCase().indexOf('jdk') > -1){
-                            return 1
+                            return b.execPath.toLowerCase().indexOf('jdk') > -1 ? 0 : 1
                         } else {
-                            return b.execPath.toLowerCase().indexOf('jdk') > -1 ? 0 : -1
+                            return -1
                         }
 
 
                     } else {
-                        return a.version.build > b.version.build ? 1 : -1
+                        return a.version.build > b.version.build ? -1 : 1
                     }
 
                 } else {
-                    return  a.version.update > b.version.update ? 1 : -1
+                    return  a.version.update > b.version.update ? -1 : 1
                 }
 
             } else {
-                return a.version.major > b.version.major ? 1 : -1
+                return a.version.major > b.version.major ? -1 : 1
             }
 
         })
