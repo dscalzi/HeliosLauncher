@@ -104,7 +104,8 @@ document.getElementById('launch_button').addEventListener('click', function(e){
         setLaunchPercentage(0, 100)
 
         AssetGuard._validateJavaBinary(jExe).then((v) => {
-            if(v){
+            console.log(v)
+            if(v.valid){
                 dlAsync()
             } else {
                 asyncSystemScan()

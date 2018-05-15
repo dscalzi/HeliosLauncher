@@ -98,7 +98,6 @@ function validateKeySet(srcObj, destObj){
     }
     const validationBlacklist = ['authenticationDatabase']
     const keys = Object.keys(srcObj)
-    console.log(keys)
     for(let i=0; i<keys.length; i++){
         if(typeof destObj[keys[i]] === 'undefined'){
             destObj[keys[i]] = srcObj[keys[i]]

@@ -1,6 +1,6 @@
 {
   "name": "westeroscraftlauncher",
-  "version": "0.0.1-alpha.3",
+  "version": "0.0.1-alpha.4",
   "description": "Custom modded launcher for Westeroscraft",
   "productName": "WesterosCraft Launcher",
   "main": "index.js",
@@ -28,7 +28,7 @@
   },
   "homepage": "http://www.westeroscraft.com/",
   "dependencies": {
-    "adm-zip": "^0.4.9",
+    "adm-zip": "^0.4.11",
     "async": "^2.6.0",
     "discord-rpc": "^3.0.0-beta.10",
     "ejs": "^2.6.1",
