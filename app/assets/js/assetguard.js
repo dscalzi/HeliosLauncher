@@ -702,8 +702,8 @@ class AssetGuard extends EventEmitter {
      * 
      * @param {string} stderr The output to validate.
      * 
-     * @returns {Promise.<boolean>} A promise which resolves to true if the properties are valid.
-     * Otherwise false.
+     * @returns {Promise.<Object>} A promise which resolves to a meta object about the JVM.
+     * The validity is stored inside the `valid` property.
      */
     static _validateJVMProperties(stderr){
         const res = stderr
@@ -712,14 +712,18 @@ class AssetGuard extends EventEmitter {
         const goal = 2
         let checksum = 0
 
+        const meta = {}
+
         for(let i=0; i<props.length; i++){
             if(props[i].indexOf('sun.arch.data.model') > -1){
                 let arch = props[i].split('=')[1].trim()
+                arch = parseInt(arch)
                 console.log(props[i].trim())
-                if(parseInt(arch) === 64){
+                if(arch === 64){
+                    meta.arch = arch
                     ++checksum
                     if(checksum === goal){
-                        return true
+                        break
                     }
                 }
             } else if(props[i].indexOf('java.runtime.version') > -1){
@@ -727,15 +731,18 @@ class AssetGuard extends EventEmitter {
                 console.log(props[i].trim())
                 const verOb = AssetGuard.parseJavaRuntimeVersion(verString)
                 if(verOb.major === 8 && verOb.update > 52){
+                    meta.version = verOb
                     ++checksum
                     if(checksum === goal){
-                        return true
+                        break
                     }
                 }
             }
         }
+
+        meta.valid = checksum === goal
         
-        return checksum === goal
+        return meta
     }
 
     /**
@@ -748,8 +755,8 @@ class AssetGuard extends EventEmitter {
      * 
      * @param {string} binaryExecPath Path to the java executable we wish to validate.
      * 
-     * @returns {Promise.<boolean>} Resolves to false only if the test is successful and the result
-     * is less than 64.
+     * @returns {Promise.<Object>} A promise which resolves to a meta object about the JVM.
+     * The validity is stored inside the `valid` property.
      */
     static _validateJavaBinary(binaryExecPath){
 
@@ -761,35 +768,15 @@ class AssetGuard extends EventEmitter {
                         resolve(this._validateJVMProperties(stderr))
                     } catch (err){
                         // Output format might have changed, validation cannot be completed.
-                        resolve(false)
+                        resolve({valid: false})
                     }
                 })
             } else {
-                resolve(false)
+                resolve({valid: false})
             }
         })
         
     }
-
-    /*static _validateJavaBinaryDarwin(binaryPath){
-
-        return new Promise((resolve, reject) => {
-            if(fs.existsSync(binaryExecPath)){
-                child_process.exec('export JAVA_HOME="' + binaryPath + '"; java -XshowSettings:properties', (err, stdout, stderr) => {
-                    try {
-                        // Output is stored in stderr?
-                        resolve(this._validateJVMProperties(stderr))
-                    } catch (err){
-                        // Output format might have changed, validation cannot be completed.
-                        resolve(false)
-                    }
-                })
-            } else {
-                resolve(false)
-            }
-        })
-
-    }*/
 
     /**
      * Checks for the presence of the environment variable JAVA_HOME. If it exits, we will check
@@ -806,37 +793,6 @@ class AssetGuard extends EventEmitter {
             // Malformed JAVA_HOME property.
             return null
         }
-    }
-
-    /**
-     * Scans the data folder's runtime directory for suitable JRE candidates.
-     * 
-     * @param {string} dataDir The base launcher directory.
-     * @returns {Promise.<Set.<string>>} A set containing suitable JRE candidates found
-     * in the runtime directory.
-     */
-    static _scanDataFolder(dataDir){
-        return new Promise((resolve, reject) => {
-            const x64RuntimeDir = path.join(dataDir, 'runtime', 'x64')
-            fs.exists(x64RuntimeDir, (e) => {
-                let res = new Set()
-                if(e){
-                    fs.readdir(x64RuntimeDir, (err, files) => {
-                        if(err){
-                            resolve(res)
-                            console.log(err)
-                        } else {
-                            for(let i=0; i<files.length; i++){
-                                res.add(path.join(x64RuntimeDir, files[i]))
-                            }
-                            resolve(res)
-                        }
-                    })
-                } else {
-                    resolve(res)
-                }
-            })
-        })
     }
 
     /**
@@ -950,6 +906,143 @@ class AssetGuard extends EventEmitter {
     }
 
     /**
+     * See if JRE exists in the Internet Plug-Ins folder.
+     * 
+     * @returns {string} The path of the JRE if found, otherwise null.
+     */
+    static _scanInternetPlugins(){
+        // /Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java
+        const pth = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin'
+        const res = fs.existsSync(AssetGuard.javaExecFromRoot(pth))
+        return res ? pth : null
+    }
+
+    /**
+     * Scan a directory for root JVM folders.
+     * 
+     * @param {string} scanDir The directory to scan.
+     * @returns {Promise.<Set.<string>>} A promise which resolves to a set of the discovered
+     * root JVM folders.
+     */
+    static _scanFileSystem(scanDir){
+        return new Promise((resolve, reject) => {
+
+            fs.exists(scanDir, (e) => {
+
+                let res = new Set()
+                
+                if(e){
+                    fs.readdir(scanDir, (err, files) => {
+                        if(err){
+                            resolve(res)
+                            console.log(err)
+                        } else {
+                            let pathsDone = 0
+
+                            for(let i=0; i<files.length; i++){
+
+                                const combinedPath = path.join(scanDir, files[i])
+                                const execPath = AssetGuard.javaExecFromRoot(combinedPath)
+
+                                fs.exists(execPath, (v) => {
+
+                                    if(v){
+                                        res.add(combinedPath)
+                                    }
+
+                                    ++pathsDone
+
+                                    if(pathsDone === files.length){
+                                        resolve(res)
+                                    }
+
+                                })
+                            }
+                            if(pathsDone === files.length){
+                                resolve(res)
+                            }
+                        }
+                    })
+                } else {
+                    resolve(res)
+                }
+            })
+
+        })
+    }
+
+    /**
+     * 
+     * @param {Set.<string>} rootSet A set of JVM root strings to validate.
+     * @returns {Promise.<Object[]>} A promise which resolves to an array of meta objects
+     * for each valid JVM root directory.
+     */
+    static async _validateJavaRootSet(rootSet){
+
+        const rootArr = Array.from(rootSet)
+        const validArr = []
+
+        for(let i=0; i<rootArr.length; i++){
+
+            const execPath = AssetGuard.javaExecFromRoot(rootArr[i])
+            const metaOb = await AssetGuard._validateJavaBinary(execPath)
+
+            if(metaOb.valid){
+                metaOb.execPath = execPath
+                validArr.push(metaOb)
+            }
+
+        }
+
+        return validArr
+
+    }
+
+    /**
+     * Sort an array of JVM meta objects. Best candidates are placed before all others.
+     * Sorts based on version and gives priority to JREs over JDKs if versions match.
+     * 
+     * @param {Object[]} validArr An array of JVM meta objects.
+     * @returns {Object[]} A sorted array of JVM meta objects.
+     */
+    static _sortValidJavaArray(validArr){
+        const retArr = validArr.sort((a, b) => {
+            // Note that Java 9+ uses semver and that will need to be accounted for in
+            // the future.
+
+            if(a.version.major === b.version.major){
+
+                if(a.version.update === b.version.update){
+
+                    if(a.version.build === b.version.build){
+
+                        // Same version, give priority to JRE.
+
+                        if(a.execPath.toLowerCase().indexOf('jdk') > -1){
+                            return 1
+                        } else {
+                            return b.execPath.toLowerCase().indexOf('jdk') > -1 ? 0 : -1
+                        }
+
+
+                    } else {
+                        return a.version.build > b.version.build ? 1 : -1
+                    }
+
+                } else {
+                    return  a.version.update > b.version.update ? 1 : -1
+                }
+
+            } else {
+                return a.version.major > b.version.major ? 1 : -1
+            }
+
+        })
+
+        return retArr
+    }
+
+    /**
      * Attempts to find a valid x64 installation of Java on Windows machines.
      * Possible paths will be pulled from the registry and the JAVA_HOME environment
      * variable. The paths will be sorted with higher versions preceeding lower, and
@@ -966,78 +1059,59 @@ class AssetGuard extends EventEmitter {
     static async _win32JavaValidate(dataDir){
 
         // Get possible paths from the registry.
-        const pathSet = await AssetGuard._scanRegistry()
-
-        //console.log(Array.from(pathSet)) // DEBUGGING
+        let pathSet1 = await AssetGuard._scanRegistry()
+        if(pathSet1.length === 0){
+            // Do a manual file system scan of program files.
+            pathSet1 = AssetGuard._scanFileSystem('C:\\Program Files\\Java')
+        }
 
         // Get possible paths from the data directory.
-        const pathSet2 = await AssetGuard._scanDataFolder(dataDir)
+        const pathSet2 = await AssetGuard._scanFileSystem(path.join(dataDir, 'runtime', 'x64'))
 
-        // Validate JAVA_HOME
+        // Merge the results.
+        const uberSet = new Set([...pathSet1, ...pathSet2])
+
+        // Validate JAVA_HOME.
         const jHome = AssetGuard._scanJavaHome()
         if(jHome != null && jHome.indexOf('(x86)') === -1){
-            pathSet.add(jHome)
+            uberSet.add(jHome)
         }
 
-        const mergedSet = new Set([...pathSet, ...pathSet2])
+        let pathArr = await AssetGuard._validateJavaRootSet(uberSet)
+        pathArr = AssetGuard._sortValidJavaArray(pathArr)
 
-        // Convert path set to an array for processing.
-        let pathArr = Array.from(mergedSet)
-
-        //console.log(pathArr) // DEBUGGING
-
-        // Sorts array. Higher version numbers preceed lower. JRE preceeds JDK.
-        pathArr = pathArr.sort((a, b) => {
-            // Note that Java 9+ uses semver and that will need to be accounted for in
-            // the future.
-            const aVer = parseInt(a.split('_')[1])
-            const bVer = parseInt(b.split('_')[1])
-            if(bVer === aVer){
-                return a.indexOf('jdk') > -1 ? 1 : 0
-            } else {
-                return bVer - aVer
-            }
-        })
-
-        //console.log(pathArr) // DEBUGGING
-
-        // Validate that the binary is actually x64.
-        for(let i=0; i<pathArr.length; i++) {
-            const execPath = AssetGuard.javaExecFromRoot(pathArr[i])
-            let res = await AssetGuard._validateJavaBinary(execPath)
-            if(res){
-                return execPath
-            }
+        if(pathArr.length > 0){
+            return pathArr[0].execPath
+        } else {
+            return null
         }
-
-        // No suitable candidates found.
-        return null;
 
     }
 
     /**
-     * See if JRE exists in the Internet Plug-Ins folder.
+     * Attempts to find a valid x64 installation of Java on MacOS.
+     * The system JVM directory is scanned for possible installations.
+     * The JAVA_HOME enviroment variable and internet plugins directory
+     * are also scanned and validated.
      * 
-     * @returns {string} The path of the JRE if found, otherwise null.
-     */
-    static _scanInternetPlugins(){
-        // /Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java
-        const pth = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin'
-        const res = fs.existsSync(AssetGuard.javaExecFromRoot(pth))
-        return res ? pth : null
-    }
-
-    /**
-     * WIP ->  get a valid x64 Java path on macOS.
+     * Higher versions > Lower versions
+     * If versions are equal, JRE > JDK.
+     * 
+     * @param {string} dataDir The base launcher directory.
+     * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
+     * x64 Java installation. If none are found, null is returned.
      */
     static async _darwinJavaValidate(dataDir){
 
-        const pathSet = new Set()
+        const pathSet1 = await AssetGuard._scanFileSystem('/Library/Java/JavaVirtualMachines')
+        const pathSet2 = await AssetGuard._scanFileSystem(path.join(dataDir, 'runtime', 'x64'))
+
+        const uberSet = new Set([...pathSet1, ...pathSet2])
 
         // Check Internet Plugins folder.
         const iPPath = AssetGuard._scanInternetPlugins()
         if(iPPath != null){
-            pathSet.add(iPPath)
+            uberSet.add(iPPath)
         }
 
         // Check the JAVA_HOME environment variable.
@@ -1047,31 +1121,52 @@ class AssetGuard extends EventEmitter {
             if(jHome.contains('/Contents/Home')){
                 jHome = jHome.substring(0, jHome.indexOf('/Contents/Home'))
             }
-            pathSet.add(jHome)
+            uberSet.add(jHome)
         }
 
-        // Get possible paths from the data directory.
-        const pathSet2 = await AssetGuard._scanDataFolder(dataDir)
+        let pathArr = await AssetGuard._validateJavaRootSet(uberSet)
+        pathArr = AssetGuard._sortValidJavaArray(pathArr)
 
-        // TODO Sort by highest version.
-
-        let pathArr = Array.from(pathSet2).concat(Array.from(pathSet))
-        for(let i=0; i<pathArr.length; i++) {
-            const execPath = AssetGuard.javaExecFromRoot(pathArr[i])
-            let res = await AssetGuard._validateJavaBinary(execPath)
-            if(res){
-                return execPath
-            }
+        if(pathArr.length > 0){
+            return pathArr[0].execPath
+        } else {
+            return null
         }
-
-        return null
     }
 
     /**
-     * WIP ->  get a valid x64 Java path on linux.
+     * Attempts to find a valid x64 installation of Java on Linux.
+     * The system JVM directory is scanned for possible installations.
+     * The JAVA_HOME enviroment variable is also scanned and validated.
+     * 
+     * Higher versions > Lower versions
+     * If versions are equal, JRE > JDK.
+     * 
+     * @param {string} dataDir The base launcher directory.
+     * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
+     * x64 Java installation. If none are found, null is returned.
      */
     static async _linuxJavaValidate(dataDir){
-        return null
+
+        const pathSet1 = await AssetGuard._scanFileSystem('/usr/lib/jvm')
+        const pathSet2 = await AssetGuard._scanFileSystem(path.join(dataDir, 'runtime', 'x64'))
+        
+        const uberSet = new Set([...pathSet1, ...pathSet2])
+
+        // Validate JAVA_HOME
+        const jHome = AssetGuard._scanJavaHome()
+        if(jHome != null){
+            uberSet.add(jHome)
+        }
+        
+        let pathArr = await AssetGuard._validateJavaRootSet(uberSet)
+        pathArr = AssetGuard._sortValidJavaArray(pathArr)
+
+        if(pathArr.length > 0){
+            return pathArr[0].execPath
+        } else {
+            return null
+        }
     }
 
     /**
