@@ -141,27 +141,52 @@ server_selection_button.addEventListener('click', (e) => {
 // Update Mojang Status Color
 const refreshMojangStatuses = async function(){
     console.log('Refreshing Mojang Statuses..')
+
     let status = 'grey'
+    let tooltipEssentialHTML = ``
+    let tooltipNonEssentialHTML = ``
+
     try {
         const statuses = await Mojang.status()
         greenCount = 0
+
         for(let i=0; i<statuses.length; i++){
-            if(statuses[i].status === 'yellow' && status !== 'red'){
+            const service = statuses[i]
+
+            if(service.essential){
+                tooltipEssentialHTML += `<div class="mojangStatusContainer">
+                    <span class="mojangStatusIcon" style="color: ${Mojang.statusToHex(service.status)};">&#8226;</span>
+                    <span class="mojangStatusName">${service.name}</span>
+                </div>`
+            } else {
+                tooltipNonEssentialHTML += `<div class="mojangStatusContainer">
+                    <span class="mojangStatusIcon" style="color: ${Mojang.statusToHex(service.status)};">&#8226;</span>
+                    <span class="mojangStatusName">${service.name}</span>
+                </div>`
+            }
+
+            if(service.status === 'yellow' && status !== 'red'){
                 status = 'yellow'
                 continue
-            } else if(statuses[i].status === 'red'){
+            } else if(service.status === 'red'){
                 status = 'red'
                 break
             }
+
             ++greenCount
         }
+
         if(greenCount == statuses.length){
             status = 'green'
         }
+
     } catch (err) {
         console.warn('Unable to refresh Mojang service status.')
         console.debug(err)
     }
+    
+    document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML
+    document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML
     document.getElementById('mojang_status_icon').style.color = Mojang.statusToHex(status)
 }
 
