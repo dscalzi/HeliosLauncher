@@ -382,8 +382,12 @@ class AssetGuard extends EventEmitter {
     static refreshDistributionDataRemote(launcherPath){
         return new Promise((resolve, reject) => {
             const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/westeroscraft.json'
+            const opts = {
+                url: distroURL,
+                timeout: 2500
+            }
             const distroDest = path.join(launcherPath, 'westeroscraft.json')
-            request(distroURL, (error, resp, body) => {
+            request(opts, (error, resp, body) => {
                 if(!error){
                     distributionData = JSON.parse(body)
 

@@ -35,7 +35,7 @@ AssetGuard.refreshDistributionDataRemote(ConfigManager.getLauncherDirectory()).t
 
     console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Attempting to load an older version of the distribution index.')
     // Try getting a local copy, better than nothing.
-    AssetGuard.refreshDistributionDateLocal(ConfigManager.getLauncherDirectory()).then((data) => {
+    AssetGuard.refreshDistributionDataLocal(ConfigManager.getLauncherDirectory()).then((data) => {
         console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Successfully loaded an older version of the distribution index.')
 
         onDistroLoad(data)

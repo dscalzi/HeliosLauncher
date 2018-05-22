@@ -29,7 +29,7 @@
   "homepage": "http://www.westeroscraft.com/",
   "dependencies": {
     "adm-zip": "^0.4.11",
-    "async": "^2.6.0",
+    "async": "^2.6.1",
     "discord-rpc": "^3.0.0-beta.10",
     "ejs": "^2.6.1",
     "ejs-electron": "^2.0.3",

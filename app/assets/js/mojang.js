@@ -89,14 +89,19 @@ exports.status = function(){
     return new Promise((resolve, reject) => {
         request.get('https://status.mojang.com/check',
         {
-            json: true
+            json: true,
+            timeout: 2500
         },
         function(error, response, body){
 
             if(error || response.statusCode !== 200){
                 console.warn('Unable to retrieve Mojang status.')
                 console.debug('Error while retrieving Mojang statuses:', error)
-                reject(error || response.statusCode)
+                //reject(error || response.statusCode)
+                for(let i=0; i<statuses.length; i++){
+                    statuses[i].status = 'grey'
+                }
+                resolve(statuses)
             } else {
                 for(let i=0; i<body.length; i++){
                     const key = Object.keys(body[i])[0]
