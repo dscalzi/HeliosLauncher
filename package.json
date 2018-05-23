@@ -37,15 +37,15 @@
     "electron-updater": "^2.21.10",
     "jquery": "^3.3.1",
     "mkdirp": "^0.5.1",
-    "request": "^2.86.0",
+    "request": "^2.87.0",
     "rimraf": "^2.6.2",
     "tar-fs": "^1.16.2",
     "uuid": "^3.2.1",
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^2.0.1",
-    "electron-builder": "^20.13.5"
+    "electron": "^2.0.2",
+    "electron-builder": "^20.14.7"
   },
   "build": {
     "appId": "westeroscraftlauncher",

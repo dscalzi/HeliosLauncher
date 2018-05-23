@@ -15,6 +15,7 @@ let fatalStartupError = false
 const VIEWS = {
     landing: 'landingContainer',
     login: 'loginContainer',
+    settings: 'settingsContainer',
     welcome: 'welcomeContainer'
 }
 
