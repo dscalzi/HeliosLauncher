@@ -30,8 +30,6 @@ exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting 
             console.log('Unable to initialize Discord Rich Presence: ' + error.message, error)
         }
     })
-
-    return rpc
 }
 
 exports.updateDetails = function(details){

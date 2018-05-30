@@ -37,6 +37,11 @@ p {
     -webkit-margin-after: 0em;
 }
 
+/* Set default font and color. */
+body, button {
+    font-family: 'Avenir Book';
+    color: white;
+}
 
 /*body {
     background: url('./../images/backgrounds/0.jpg') no-repeat center center fixed;
@@ -217,7 +222,6 @@ p {
     align-items: center;
     height: 100%;
     width: 100%;
-    transition: 0.25s ease;
 }
 
 #welcomeContent {
@@ -289,18 +293,14 @@ p {
 }
 
 #welcomeDescription {
-    font-family: 'Avenir Book';
     text-align: justify;
-    color: white;
     font-size: 13px;
     font-weight: 100;
     text-shadow: rgba(255, 255, 255, 0.75) 0px 0px 20px
 }
 
 #welcomeDescCTA {
-    font-family: 'Avenir Book';
     text-align: center;
-    color: white;
     font-size: 14px;
     font-weight: 100;
     text-shadow: rgba(255, 255, 255, 0.75) 0px 0px 20px
@@ -309,9 +309,7 @@ p {
 /* Login button styles. */
 #welcomeButton {
     background: none;
-    color: #fff;
     font-weight: bold;
-    font-family: 'Avenir Book';
     letter-spacing: 2px;
     border: none;
     padding: 15px 5px;
@@ -370,17 +368,8 @@ p {
  *                                                                             *
  ******************************************************************************/
 
-/* Login span styles. */
-.loginSpan {
-    font-family: 'Avenir Book';
-    font-size: 14px;
-    color: #fff;
-    font-weight: bold;
-}
-
 /* Styles for dimmer login span. */
 .loginSpanDim {
-    font-family: 'Avenir Book';
     font-size: 12px;
     color: #848484;
     font-weight: bold;
@@ -417,7 +406,6 @@ p {
 
 /* Login form anchor styles. */
 #loginForm a {
-    font-family: 'Avenir Book';
     font-size: 12px;
     color: #848484;
     font-weight: bold;
@@ -450,6 +438,7 @@ p {
     margin-bottom: 25px;
     font-size: 12px;
     letter-spacing: 1px;
+    font-weight: bold;
 }
 
 /* Container to organize login field elements. */
@@ -559,9 +548,7 @@ p {
 /* Login button styles. */
 #loginButton {
     background: none;
-    color: #fff;
     font-weight: bold;
-    font-family: 'Avenir Book';
     letter-spacing: 2px;
     border: none;
     padding: 15px 5px;
@@ -736,7 +723,6 @@ p {
 
 /* Disclaimer text styles. */
 .loginDisclaimerText {
-    font-family: 'Avenir Book';
     font-size: 7px;
     color: #848484;
     font-weight: bold;
@@ -833,7 +819,23 @@ p {
 #settingsContainer {
     position: relative;
     height: 100%;
+    display: flex;
     background: rgba(0, 0, 0, 0.50);
+}
+
+#settingsContainerLeft {
+    height: 100%;
+    width: 25%;
+}
+
+#settingsNavContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+#settingsContainerRight {
+    height: 100%;
+    width: 75%;
 }
 
 /*******************************************************************************
@@ -994,8 +996,6 @@ p {
 #newsArticleAuthor {
     display: inline-block;
     font-size: 10px;
-    color: rgb(255, 255, 255);
-    font-family: 'Avenir Book';
     padding: 0px 5px;
     font-weight: bold;
     border-radius: 2px;
@@ -1018,8 +1018,7 @@ p {
     margin-top: 5px;
     display: inline-block;
     font-size: 10px;
-    color: rgb(255, 255, 255);
-    font-family: 'Avenir Book';
+    color: #ffffff;
     text-decoration: none;
     transition: 0.25s ease;
     outline: none;
@@ -1040,8 +1039,6 @@ p {
 
 /* Article content styles. */
 #newsArticleContentScrollable {
-    color: white;
-    font-family: 'Avenir Book';
     font-size: 12px;
     max-width: 80%;
     margin: 25px 35px 0px 25px;
@@ -1092,8 +1089,6 @@ p {
 
 /* Navigation status span. */
 #newsNavigationStatus {
-    color: white;
-    font-family: 'Avenir Book';
     font-size: 12px;
     margin: 0px 15px;
 }
@@ -1101,8 +1096,6 @@ p {
 /* Left and right navigation button styles. */
 #newsNavigateLeft,
 #newsNavigateRight {
-    color: white;
-    font-family: 'Avenir Book';
     background: none;
     border: none;
     outline: none;
@@ -1153,9 +1146,7 @@ p {
 
 /* News error content (message). */
 .newsErrorContent {
-    color: white;
     font-size: 20px;
-    font-family: 'Avenir Book';
 }
 #newsErrorLoading {
     display: flex;
@@ -1166,8 +1157,6 @@ p {
 }
 /* News error retry button styles. */
 #newsErrorRetry {
-    color: #ffffff;
-    font-family: 'Avenir Book';
     font-size: 12px;
     font-weight: bold;
     cursor: pointer;
@@ -1333,8 +1322,6 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Avenir Book';
-    color: #fff;
     transition: 0.25s ease;
     font-weight: bold;
     letter-spacing: 2px;
@@ -1351,12 +1338,10 @@ p {
 
 /* User profile name text. */
 #user_text {
-    font-family: 'Avenir Book';
     font-size: 12px;
     min-width: 135px;
     font-weight: 900;
     letter-spacing: 1px;
-    color: white;
     text-shadow: 0px 0px 20px black;
     position: absolute;
     right: 95px;
@@ -1470,8 +1455,6 @@ p {
 
 /* Style for a general label on the bottom of the landing view. */
 .bot_label {
-    color: white;
-    font-family: 'Avenir Book';
     font-size: 9px;
     letter-spacing: 1px;
     font-weight: bold;
@@ -1500,7 +1483,6 @@ p {
 /* Span which displays the player count of the selected server. */
 #player_count {
     color: #949494;
-    font-family: 'Avenir Book';
     font-size: 8px;
     font-weight: 900;
     text-shadow: 0px 0px 20px #949494;
@@ -1519,6 +1501,7 @@ p {
     font-size: 30px;
     color: #848484;
     margin-left: 15px;
+    font-family: 'sans-serif';
 }
 
 /* Tooltip which displays more details about the mojang statuses. */
@@ -1615,7 +1598,6 @@ p {
 
 /* Button which opens the news view. */
 #newsButton {
-    font-family: 'Avenir Book';
     background: none;
     border: none;
     cursor: pointer;
@@ -1676,11 +1658,9 @@ p {
 
 /* The launch button. */
 #launch_button {
-    font-family: 'Avenir Book';
     background: none;
     border: none;
     cursor: pointer;
-    color: #fff;
     font-weight: 900;
     letter-spacing: 2px;
     text-shadow: 0px 0px 0px #bebcbb;
@@ -1717,8 +1697,6 @@ p {
 
 /* Span which displays percentage complete. */
 #launch_progress_label {
-    color: white;
-    font-family: 'Avenir Book';
     font-weight: 900;
     letter-spacing: 1px;
     text-shadow: 0px 0px 0px #bebcbb;
@@ -1844,16 +1822,13 @@ p {
 #overlayTitle {
     font-family: 'Avenir Medium';
     font-size: 20px;
-    color: #fff;
     font-weight: bold;
     letter-spacing: 1px;
 }
 
 /* Overlay description styles. */
 #overlayDesc {
-    font-family: 'Avenir Book';
     font-size: 12px;
-    color: #fff;
     font-weight: bold;
 }
 
@@ -1888,7 +1863,6 @@ p {
 
 /* Overlay dismiss option styles. */
 #overlayDismiss {
-    font-family: 'Avenir Book';
     font-weight: bold;
     font-size: 10px;
     text-decoration: none;
@@ -2050,19 +2024,15 @@ p {
 
 /* The name of the server listing. */
 .serverListingName {
-    font-family: 'Avenir Book';
     font-size: 14px;
     font-weight: bold;
-    color: #fff;
 }
 
 /* Description for the server listing. */
 .serverListingDescription {
-    font-family: 'Avenir Book';
     font-size: 10px;
     line-height: 10px;
     font-weight: bold;
-    color: #fff;
 }
 
 /* Content container for the server listing's information. */
@@ -2075,8 +2045,6 @@ p {
 /* The minecraft version of the server listing. */
 .serverListingVersion {
     font-size: 10px;
-    color: #fff;
-    font-family: 'Avenir Book';
     text-align: center;
     display: flex;
     justify-content: center;
@@ -2090,7 +2058,6 @@ p {
 
 /* The revision version of the server's manifest. */
 .serverListingRevision {
-    font-family: 'Avenir Book';
     color: #969696;
     font-size: 10px;
     line-height: 12px;
@@ -2111,13 +2078,11 @@ p {
     opacity: 0;
     width: 65px;
     background-color: rgba(0, 0, 0, 0.40);
-    color: #fff;
     text-align: center;
     border-radius: 4px;
     position: absolute;
     z-index: 1;
     left: 130%;
-    font-family: 'Avenir Book';
     font-size: 10px;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
 }
@@ -2177,7 +2142,6 @@ p {
 /* Server selection cancel button styles. */
 #serverSelectCancel,
 #accountSelectCancel {
-    font-family: 'Avenir Book';
     font-weight: bold;
     font-size: 10px;
     text-decoration: none;
