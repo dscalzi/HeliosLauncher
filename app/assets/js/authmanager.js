@@ -25,7 +25,7 @@ const Mojang = require('./mojang.js')
  */
 exports.addAccount = async function(username, password){
     try {
-        const session = await Mojang.authenticate(username, password, ConfigManager.getClientToken)
+        const session = await Mojang.authenticate(username, password, ConfigManager.getClientToken())
         const ret = ConfigManager.addAuthAccount(session.selectedProfile.id, session.accessToken, username, session.selectedProfile.name)
         ConfigManager.save()
         return ret

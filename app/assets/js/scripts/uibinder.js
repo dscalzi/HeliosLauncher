@@ -13,10 +13,10 @@ let fatalStartupError = false
 
 // Mapping of each view to their container IDs.
 const VIEWS = {
-    landing: 'landingContainer',
-    login: 'loginContainer',
-    settings: 'settingsContainer',
-    welcome: 'welcomeContainer'
+    landing: '#landingContainer',
+    login: '#loginContainer',
+    settings: '#settingsContainer',
+    welcome: '#welcomeContainer'
 }
 
 // The currently shown view container.
@@ -35,10 +35,10 @@ let currentView = VIEWS.landing
  * fades in.
  */
 function switchView(current, next, currentFadeTime = 500, nextFadeTime = 500, onCurrentFade = () => {}, onNextFade = () => {}){
-    currentView = current
-    $(`#${current}`).fadeOut(currentFadeTime, () => {
+    currentView = next
+    $(`${current}`).fadeOut(currentFadeTime, () => {
         onCurrentFade()
-        $(`#${next}`).fadeIn(nextFadeTime, () => {
+        $(`${next}`).fadeIn(nextFadeTime, () => {
             onNextFade()
         })
     })
@@ -61,12 +61,22 @@ function showMainUI(){
         document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
         $('#main').show()
 
-        //validateSelectedAccount()
+        // If this is enabled in a development environment we'll get ratelimited.
+        // The relaunch frequency is usually far too high.
+        if(!isDev){
+            validateSelectedAccount().then((v) => {
+                if(v){
+                    console.log('%c[AuthManager]', 'color: #209b07; font-weight: bold', 'Account access token validated.')
+                } else {
+                    console.log('%c[AuthManager]', 'color: #a02d2a; font-weight: bold', 'Account access token  is invalid.')
+                }
+            })
+        }
 
         if(ConfigManager.isFirstLaunch()){
-            $('#welcomeContainer').fadeIn(1000)
+            $(VIEWS.welcome).fadeIn(1000)
         } else {
-            $('#landingContainer').fadeIn(1000)
+            $(VIEWS.landing).fadeIn(1000)
         }
 
         setTimeout(() => {
@@ -123,10 +133,12 @@ async function validateSelectedAccount(){
     if(selectedAcc != null){
         const val = await AuthManager.validateSelected()
         if(!val){
+            ConfigManager.removeAuthAccount(selectedAcc.uuid)
+            ConfigManager.save()
             const accLen = Object.keys(ConfigManager.getAuthAccounts()).length
             setOverlayContent(
                 'Failed to Refresh Login',
-                `We were unable to refresh the login for <strong>${selectedAcc.displayName}</strong>. Please ${accLen > 1 ? 'select another account or ' : ''} login again.`,
+                `We were unable to refresh the login for <strong>${selectedAcc.displayName}</strong>. Please ${accLen > 0 ? 'select another account or ' : ''} login again.`,
                 'Login',
                 'Select Another Account'
             )
@@ -137,25 +149,20 @@ async function validateSelectedAccount(){
                 toggleOverlay(false)
             })
             setDismissHandler(() => {
-                if(accLen > 2){
+                if(accLen > 1){
                     prepareAccountSelectionList()
                     $('#overlayContent').fadeOut(250, () => {
                         $('#accountSelectContent').fadeIn(250)
                     })
                 } else {
                     const accountsObj = ConfigManager.getAuthAccounts()
-                    const accounts = Array.from(Object.keys(accountsObj), v=>accountsObj[v]);
-                    const selectedUUID = ConfigManager.getSelectedAccount().uuid
-                    for(let i=0; i<accounts.length; i++){
-                        if(accounts[i].uuid !== selectedUUID){
-                            setSelectedAccount(accounts[i].uuid)
-                            toggleOverlay(false)
-                            validateSelectedAccount()
-                        }
-                    }
+                    const accounts = Array.from(Object.keys(accountsObj), v => accountsObj[v]);
+                    // This function validates the account switch.
+                    setSelectedAccount(accounts[0].uuid)
+                    toggleOverlay(false)
                 }
             })
-            toggleOverlay(true, accLen > 1)
+            toggleOverlay(true, accLen > 0)
         } else {
             return true
         }
@@ -174,7 +181,7 @@ function setSelectedAccount(uuid){
     const authAcc = ConfigManager.setSelectedAccount(uuid)
     ConfigManager.save()
     updateSelectedAccount(authAcc)
-    //validateSelectedAccount()
+    validateSelectedAccount()
 }
 
 // Synchronous Listener

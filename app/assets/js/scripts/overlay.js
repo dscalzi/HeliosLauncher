@@ -248,12 +248,8 @@ function populateServerListings(){
 function populateAccountListings(){
     const accountsObj = ConfigManager.getAuthAccounts()
     const accounts = Array.from(Object.keys(accountsObj), v=>accountsObj[v]);
-    const selectedUUID = ConfigManager.getSelectedAccount().uuid
     let htmlString = ``
     for(let i=0; i<accounts.length; i++){
-        if(accounts[i].uuid === selectedUUID) {
-            continue
-        }
         htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${i===0 ? 'selected' : ''}>
             <img src="https://crafatar.com/renders/head/${accounts[i].uuid}?scale=2&default=MHF_Steve&overlay">
             <div class="accountListingName">${accounts[i].displayName}</div>

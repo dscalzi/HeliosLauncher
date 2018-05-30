@@ -236,6 +236,8 @@ loginButton.addEventListener('click', () => {
             switchView(VIEWS.login, VIEWS.landing, 500, 500, () => {
                 loginUsername.value = ''
                 loginPassword.value = ''
+                $('.circle-loader').toggleClass('load-complete')
+                $('.checkmark').toggle()
                 loginLoading(false)
                 loginButton.innerHTML = loginButton.innerHTML.replace('SUCCESS', 'LOGIN')
                 formDisabled(false)
