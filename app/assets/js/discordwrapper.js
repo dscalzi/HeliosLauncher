@@ -30,6 +30,8 @@ exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting 
             console.log('Unable to initialize Discord Rich Presence: ' + error.message, error)
         }
     })
+
+    return rpc
 }
 
 exports.updateDetails = function(details){
@@ -42,7 +44,8 @@ exports.updateDetails = function(details){
 
 exports.shutdownRPC = function(){
     if(!rpc) return
-    rpc.setActivity({})
+    // Workaround until discord rpc releases clearActivity()
+    rpc.request('SET_ACTIVITY', {pid: process.pid})
     rpc.destroy()
     rpc = null
     activity = null
