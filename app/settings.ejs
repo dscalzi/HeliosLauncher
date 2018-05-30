@@ -4,12 +4,41 @@
             <div id="settingsNavHeader">
                 <span id="settingsNavHeaderText">Settings</span>
             </div>
-            <div id="settingsNavItems">
-                <div class="settingsNavItem">
-
+            <div id="settingsNavItemsContainer">
+                <div id="settingsNavItemsContent">
+                    <button class="settingsNavItem" rSc="settingsTabAccount" selected>Account</button>
+                    <button class="settingsNavItem" rSc="settingsTabMinecraft">Minecraft</button>
+                    <button class="settingsNavItem" rSc="settingsTabJava">Java</button>
+                    <button class="settingsNavItem" rSc="settingsTabLauncher">Launcher</button>
                 </div>
             </div>
         </div>
     </div>
-    <div id="settingsContainerRight"></div>
+    <div id="settingsContainerRight">
+        <div id="settingsTabAccount" class="settingsTab">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Account Settings</span>
+                <span class="settingsTabHeaderDesc">Add new accounts or manage existing ones.</span>
+            </div>
+        </div>
+        <div id="settingsTabMinecraft" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Minecraft Settings</span>
+                <span class="settingsTabHeaderDesc">Options related to game launch.</span>
+            </div>
+        </div>
+        <div id="settingsTabJava" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Java Settings</span>
+                <span class="settingsTabHeaderDesc">Manage the Java configuration (advanced).</span>
+            </div>
+        </div>
+        <div id="settingsTabLauncher" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Launcher Settings</span>
+                <span class="settingsTabHeaderDesc">Options related to the launcher itself.</span>
+            </div>
+        </div>
+    </div>
+    <script src="./assets/js/scripts/settings.js"></script>
 </div>

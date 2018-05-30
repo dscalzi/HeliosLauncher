@@ -826,6 +826,8 @@ body, button {
 #settingsContainerLeft {
     height: 100%;
     width: 25%;
+    padding: 5% 0px;
+    box-sizing: border-box;
 }
 
 #settingsNavContainer {
@@ -833,9 +835,74 @@ body, button {
     flex-direction: column;
 }
 
+#settingsNavHeader {
+    display: flex;
+    justify-content: center;
+}
+
+#settingsNavHeaderText {
+    font-size: 20px;
+}
+
+#settingsNavItemsContainer {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 25%;
+    box-sizing: border-box;
+}
+
+#settingsNavItemsContent {
+    display: flex;
+    flex-direction: column;
+}
+
+.settingsNavItem {
+    background: none;
+    border: none;
+    border-radius: 7px;
+    text-align: left;
+    margin: 5px 0px;
+    padding: 0px 20px;
+    color: grey;
+    cursor: pointer;
+    outline: none;
+    transition: 0.25s ease;
+}
+.settingsNavItem:hover,
+.settingsNavItem:focus {
+    color: #c1c1c1;
+    text-shadow: 0px 0px 20px #c1c1c1;
+}
+.settingsNavItem[selected] {
+    cursor: default;
+    color: white;
+    text-shadow: none;
+}
+
 #settingsContainerRight {
     height: 100%;
     width: 75%;
+    padding: 5% 0%;
+    box-sizing: border-box;
+}
+
+.settingsTab {
+    width: 100%;
+    height: 100%;
+}
+
+.settingsTabHeader {
+    display: flex;
+    flex-direction: column;
+}
+
+.settingsTabHeaderText {
+    font-size: 20px;
+    font-family: 'Avenir Medium';
+}
+.settingsTabHeaderDesc {
+    font-size: 12px;
 }
 
 /*******************************************************************************
@@ -1401,13 +1468,63 @@ body, button {
     outline: none;
 }
 
+/* Internal media button shared styles. */
+.mediaButton {
+    background: none;
+    border: none;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    outline: none;
+}
+
+#settingsMediaContainer {
+    position: relative;
+}
+
 /* Settings icon colors. */
 #settingsSVG {
     stroke: #ffffff;
     height: 15px;
 }
-#settingsSVG:hover {
+.mediaButton:hover #settingsSVG,
+.mediaButton:focus #settingsSVG,
+.mediaButton:active #settingsSVG {
     height: 23px;
+}
+
+/* Settings tooltip styles. */
+#settingsTooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: 75px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.75);
+    text-align: center;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 1;
+    right: 130%;
+    font-size: 12px;
+    line-height: 20px;
+    transition: visibility 0s linear 0.25s, opacity 0.25s ease;
+}
+#settingsTooltip::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent transparent rgba(0, 0, 0, 0.75);
+}
+.mediaButton:hover #settingsTooltip,
+.mediaButton:focus #settingsTooltip,
+.mediaButton:active #settingsTooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay:0s;
 }
 
 /* Twitter icon colors. */

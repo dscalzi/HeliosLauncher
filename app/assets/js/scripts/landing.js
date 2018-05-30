@@ -114,6 +114,11 @@ document.getElementById('launch_button').addEventListener('click', function(e){
     }
 })
 
+// Bind settings button
+document.getElementById('settingsMediaButton').onclick = (e) => {
+    switchView(getCurrentView(), VIEWS.settings)
+}
+
 // Bind selected account
 function updateSelectedAccount(authUser){
     let username = 'No Account Selected'
