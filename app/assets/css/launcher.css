@@ -387,6 +387,68 @@ body, button {
     background: rgba(0, 0, 0, 0.50);
 }
 
+/* Login cancel button styles. */
+#loginCancelContainer {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+}
+
+/* Login cancel button styles. */
+#loginCancelButton {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+#loginCancelButton:hover #loginCancelIcon,
+#loginCancelButton:hover #loginCancelText,
+#loginCancelButton:focus #loginCancelIcon,
+#loginCancelButton:focus #loginCancelText {
+    text-shadow: 0px 0px 20px white;
+}
+#loginCancelButton:hover #loginCancelIcon,
+#loginCancelButton:focus #loginCancelIcon {
+    box-shadow: 0px 0px 20px white;
+}
+#loginCancelButton:active #loginCancelIcon,
+#loginCancelButton:active #loginCancelText {
+    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+    border-color: rgba(255, 255, 255, 0.75);
+}
+#loginCancelButton:active #loginCancelIcon {
+    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+}
+#loginCancelButton:disabled {
+    pointer-events: none;
+}
+#loginCancelButton:disabled #loginCancelIcon,
+#loginCancelButton:disabled #loginCancelText {
+    color: rgba(255, 255, 255, 0.75);
+    border-color: rgba(255, 255, 255, 0.75);
+}
+
+/* The X in a circle icon for the cancel button. */
+#loginCancelIcon {
+    border-radius: 50%;
+    border: 1px solid white;
+    box-sizing: border-box;
+    height: 30px;
+    width: 30px;
+    font-size: 19px;
+    line-height: 30px;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    transition: 0.25s ease;
+}
+/* Text for the login cancel button. */
+#loginCancelText {
+    font-size: 15px;
+    transition: 0.25s ease;
+}
+
 /* Login content wrapper. */
 #loginContent {
     display: flex;
@@ -816,6 +878,7 @@ body, button {
  *                                                                             *
  ******************************************************************************/
 
+/* Main settings container. */
 #settingsContainer {
     position: relative;
     height: 100%;
@@ -823,6 +886,7 @@ body, button {
     background: rgba(0, 0, 0, 0.50);
 }
 
+/* Left hand side of the settings UI, for navigation. */
 #settingsContainerLeft {
     height: 100%;
     width: 25%;
@@ -830,20 +894,22 @@ body, button {
     box-sizing: border-box;
 }
 
+/* Settings navigation container. */
 #settingsNavContainer {
     display: flex;
     flex-direction: column;
 }
 
+/* Navigation header styles. */
 #settingsNavHeader {
     display: flex;
     justify-content: center;
 }
-
 #settingsNavHeaderText {
     font-size: 20px;
 }
 
+/* Navigation items outer container. */
 #settingsNavItemsContainer {
     height: 100%;
     display: flex;
@@ -852,11 +918,13 @@ body, button {
     box-sizing: border-box;
 }
 
+/* Navigation items content container. */
 #settingsNavItemsContent {
     display: flex;
     flex-direction: column;
 }
 
+/* Navigation item shared styles. */
 .settingsNavItem {
     background: none;
     border: none;
@@ -880,29 +948,199 @@ body, button {
     text-shadow: none;
 }
 
+/* Right hand side of the settings container, for tabs. */
 #settingsContainerRight {
     height: 100%;
     width: 75%;
-    padding: 5% 0%;
+    padding-top: 5%;
     box-sizing: border-box;
 }
 
+/* Settings tab shared styles. */
 .settingsTab {
     width: 100%;
     height: 100%;
+    overflow-y: auto;
+}
+.settingsTab::-webkit-scrollbar {
+    width: 2px;
+}
+.settingsTab::-webkit-scrollbar-track {
+    display: none;
+}
+.settingsTab::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
 }
 
+/* Tab header shared styles. */
 .settingsTabHeader {
     display: flex;
     flex-direction: column;
 }
-
 .settingsTabHeaderText {
     font-size: 20px;
     font-family: 'Avenir Medium';
 }
 .settingsTabHeaderDesc {
     font-size: 12px;
+}
+
+/* * *
+* Settings View (Account Tab)
+* * */
+
+/* Add account button styles. */
+#settingsAddAccountContainer {
+    margin-top: 20px;
+}
+#settingsAddAccount {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(126, 126, 126, 0.57);
+    border-radius: 3px;
+    height: 50px;
+    width: 75%;
+    text-align: left;
+    padding: 0px 50px;
+    cursor: pointer;
+    outline: none;
+    transition: 0.25s ease;
+}
+#settingsAddAccount:hover,
+#settingsAddAccount:focus {
+    background: rgba(54, 54, 54, 0.25);
+    text-shadow: 0px 0px 20px white;
+}
+
+/* Settings auth accounts header. */
+#settingsCurrentAccountsHeader {
+    margin: 20px 0px;
+}
+#settingsCurrentAccountsHeaderText {
+    font-size: 16px;
+}
+
+/* Auth account list container styles. */
+#settingsCurrentAccounts {
+    margin-bottom: 5%;
+}
+#settingsCurrentAccounts > .settingsAuthAccount:not(:last-child) {
+    margin-bottom: 10px;
+}
+#settingsCurrentAccounts > .settingsAuthAccount:not(:first-child) {
+    margin-top: 10px;
+}
+
+/* Auth account shared styles. */
+.settingsAuthAccount {
+    display: flex;
+    width: 75%;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 3px;
+    border: 1px solid rgba(126, 126, 126, 0.57);
+}
+
+/* Left hand side of an auth account element, for the skin image. */
+.settingsAuthAccountLeft {
+    padding: 5px 5px 5px 20px;
+}
+
+/* Image of the auth account's skin. */
+.settingsAuthAccountImage {
+    height: 115px;
+}
+
+/* Right hand side of the auth account, for info + actions. */
+.settingsAuthAccountRight {
+    display: flex;
+    width: 100%;
+}
+
+/* Account details container. */
+.settingsAuthAccountDetails {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 20px;
+    width: 100%;
+}
+.settingsAuthAccountDetails > *:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+/* Account detail element styles. */
+.settingsAuthAccountDetailPane {
+    display: flex;
+    flex-direction: column;
+}
+.settingsAuthAccountDetailTitle {
+    font-size: 12px;
+    color: grey;
+    font-weight: bold;
+    font-family: 'Avenir Medium';
+}
+.settingsAuthAccountDetailValue {
+    font-size: 14px;
+}
+
+/* Account actions container. */
+.settingsAuthAccountActions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 10px;
+}
+
+/* Account select button shared styles. */
+.settingsAuthAccountSelect {
+    opacity: 0;
+    border: none;
+    white-space: nowrap;
+    background: none;
+    font-family: 'Avenir Medium';
+    outline: none;
+    transition: 0.25s ease;
+}
+.settingsAuthAccountSelect:hover:not([selected]),
+.settingsAuthAccountSelect:focus:not([selected]) {
+    text-shadow: 0px 0px 20px white, 0px 0px 20px white;
+    cursor: pointer;
+}
+.settingsAuthAccount:hover .settingsAuthAccountSelect:not([selected]),
+.settingsAuthAccountSelect[selected] {
+    opacity: 1;
+}
+.settingsAuthAccountSelect[selected] {
+    pointer-events: none;
+}
+
+/* Account logout button shared styles. */
+.settingsAuthAccountLogOut {
+    opacity: 0;
+    border: 1px solid rgb(241, 55, 55);
+    color: rgb(241, 55, 55);
+    background: none;
+    font-size: 12px;
+    border-radius: 3px;
+    font-family: 'Avenir Medium';
+    transition: 0.25s ease;
+    cursor: pointer;
+    outline: none;
+}
+.settingsAuthAccountLogOut:hover,
+.settingsAuthAccountLogOut:focus {
+    box-shadow: 0px 0px 20px rgb(241, 55, 55);
+    background: rgba(241, 55, 55, 0.25);
+}
+.settingsAuthAccountLogOut:active {
+    box-shadow: 0px 0px 20px rgb(185, 47, 47);
+    background: rgba(185, 47, 47, 0.25);
+    border: 1px solid rgb(185, 47, 47);
+    color: rgb(185, 47, 47);
+}
+.settingsAuthAccount:hover .settingsAuthAccountLogOut {
+    opacity: 1;
 }
 
 /*******************************************************************************

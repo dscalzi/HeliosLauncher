@@ -7,6 +7,8 @@ const basicEmail            = /^\S+@\S+\.\S+$/
 //const validEmail          = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 
 // Login Elements
+const loginCancelContainer  = document.getElementById('loginCancelContainer')
+const loginCancelButton     = document.getElementById('loginCancelButton')
 const loginEmailError       = document.getElementById('loginEmailError')
 const loginUsername         = document.getElementById('loginUsername')
 const loginPasswordError    = document.getElementById('loginPasswordError')
@@ -139,6 +141,7 @@ function loginLoading(v){
  */
 function formDisabled(v){
     loginDisabled(v)
+    loginCancelButton.disabled = v
     loginUsername.disabled = v
     loginPassword.disabled = v
     if(v){
@@ -215,6 +218,23 @@ function resolveError(err){
     }
 }
 
+let loginViewOnSuccess = VIEWS.landing
+let loginViewOnCancel = VIEWS.settings
+
+function loginCancelEnabled(val){
+    if(val){
+        $(loginCancelContainer).show()
+    } else {
+        $(loginCancelContainer).hide()
+    }
+}
+
+loginCancelButton.onclick = (e) => {
+    switchView(getCurrentView(), loginViewOnCancel, 500, 500, () => {
+        loginCancelEnabled(false)
+    })
+}
+
 // Disable default form behavior.
 loginForm.onsubmit = () => { return false }
 
@@ -233,7 +253,13 @@ loginButton.addEventListener('click', () => {
         $('.checkmark').toggle()
         //console.log(value)
         setTimeout(() => {
-            switchView(VIEWS.login, VIEWS.landing, 500, 500, () => {
+            switchView(VIEWS.login, loginViewOnSuccess, 500, 500, () => {
+                // Temporary workaround
+                if(loginViewOnSuccess === VIEWS.settings){
+                    prepareSettings()
+                }
+                loginViewOnSuccess = VIEWS.landing // Reset this for good measure.
+                loginCancelEnabled(false) // Reset this for good measure.
                 loginUsername.value = ''
                 loginPassword.value = ''
                 $('.circle-loader').toggleClass('load-complete')

@@ -116,6 +116,7 @@ document.getElementById('launch_button').addEventListener('click', function(e){
 
 // Bind settings button
 document.getElementById('settingsMediaButton').onclick = (e) => {
+    prepareSettings()
     switchView(getCurrentView(), VIEWS.settings)
 }
 

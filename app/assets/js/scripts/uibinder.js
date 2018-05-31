@@ -145,6 +145,7 @@ async function validateSelectedAccount(){
             setOverlayHandler(() => {
                 document.getElementById('loginUsername').value = selectedAcc.username
                 validateEmail(selectedAcc.username)
+                loginViewOnSuccess = getCurrentView()
                 switchView(getCurrentView(), VIEWS.login)
                 toggleOverlay(false)
             })
