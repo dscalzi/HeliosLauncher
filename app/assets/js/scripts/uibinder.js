@@ -61,9 +61,11 @@ function showMainUI(){
         document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
         $('#main').show()
 
+        const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
+
         // If this is enabled in a development environment we'll get ratelimited.
         // The relaunch frequency is usually far too high.
-        if(!isDev){
+        if(!isDev && isLoggedIn){
             validateSelectedAccount().then((v) => {
                 if(v){
                     console.log('%c[AuthManager]', 'color: #209b07; font-weight: bold', 'Account access token validated.')
@@ -76,7 +78,11 @@ function showMainUI(){
         if(ConfigManager.isFirstLaunch()){
             $(VIEWS.welcome).fadeIn(1000)
         } else {
-            $(VIEWS.landing).fadeIn(1000)
+            if(isLoggedIn){
+                $(VIEWS.landing).fadeIn(1000)
+            } else {
+                $(VIEWS.login).fadeIn(1000)
+            }
         }
 
         setTimeout(() => {

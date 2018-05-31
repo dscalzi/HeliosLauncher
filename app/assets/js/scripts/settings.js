@@ -1,3 +1,4 @@
+const settingsNavDone         = document.getElementById('settingsNavDone')
 const settingsAddAccount      = document.getElementById('settingsAddAccount')
 const settingsCurrentAccounts = document.getElementById('settingsCurrentAccounts')
 
@@ -32,6 +33,11 @@ function setupSettingsTabs(){
     })
 }
 
+/* Closes the settings view and saves all data. */
+settingsNavDone.onclick = () => {
+    switchView(getCurrentView(), VIEWS.landing)
+}
+
 /**
  * Account Management Tab
  */
@@ -64,9 +70,7 @@ function bindAuthAccountSelect(){
             }
             val.setAttribute('selected', '')
             val.innerHTML = 'Selected Account &#10004;'
-            ConfigManager.setSelectedAccount(val.closest('.settingsAuthAccount').getAttribute('uuid'))
-            ConfigManager.save()
-            updateSelectedAccount(ConfigManager.getSelectedAccount())
+            setSelectedAccount(val.closest('.settingsAuthAccount').getAttribute('uuid'))
         }
     })
 }
@@ -79,20 +83,52 @@ function bindAuthAccountSelect(){
 function bindAuthAccountLogOut(){
     Array.from(document.getElementsByClassName('settingsAuthAccountLogOut')).map((val) => {
         val.onclick = (e) => {
-            const parent = val.closest('.settingsAuthAccount')
-            const uuid = parent.getAttribute('uuid')
-            const prevSelAcc = ConfigManager.getSelectedAccount()
-            AuthManager.removeAccount(uuid).then(() => {
-                if(uuid === prevSelAcc.uuid){
-                    const selAcc = ConfigManager.getSelectedAccount()
-                    refreshAuthAccountSelected(selAcc.uuid)
-                    updateSelectedAccount(selAcc)
-                }
-            })
-            $(parent).fadeOut(250, () => {
-                parent.remove()
-            })
+            let isLastAccount = false
+            if(Object.keys(ConfigManager.getAuthAccounts()).length === 1){
+                isLastAccount = true
+                setOverlayContent(
+                    'Warning<br>This is Your Last Account',
+                    'In order to use the launcher you must be logged into at least one account. You will need to login again after.<br><br>Are you sure you want to log out?',
+                    'I\'m Sure',
+                    'Cancel'
+                )
+                setOverlayHandler(() => {
+                    processLogOut(val, isLastAccount)
+                    switchView(getCurrentView(), VIEWS.login)
+                    toggleOverlay(false)
+                })
+                setDismissHandler(() => {
+                    toggleOverlay(false)
+                })
+                toggleOverlay(true, true)
+            } else {
+                processLogOut(val, isLastAccount)
+            }
+            
         }
+    })
+}
+
+/**
+ * Process a log out.
+ * 
+ * @param {Element} val The log out button element.
+ * @param {boolean} isLastAccount If this logout is on the last added account.
+ */
+function processLogOut(val, isLastAccount){
+    const parent = val.closest('.settingsAuthAccount')
+    const uuid = parent.getAttribute('uuid')
+    const prevSelAcc = ConfigManager.getSelectedAccount()
+    AuthManager.removeAccount(uuid).then(() => {
+        if(!isLastAccount && uuid === prevSelAcc.uuid){
+            const selAcc = ConfigManager.getSelectedAccount()
+            refreshAuthAccountSelected(selAcc.uuid)
+            updateSelectedAccount(selAcc)
+            validateSelectedAccount()
+        }
+    })
+    $(parent).fadeOut(250, () => {
+        parent.remove()
     })
 }
 

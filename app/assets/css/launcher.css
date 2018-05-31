@@ -922,13 +922,13 @@ body, button {
 #settingsNavItemsContent {
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 /* Navigation item shared styles. */
 .settingsNavItem {
     background: none;
     border: none;
-    border-radius: 7px;
     text-align: left;
     margin: 5px 0px;
     padding: 0px 20px;
@@ -946,6 +946,46 @@ body, button {
     cursor: default;
     color: white;
     text-shadow: none;
+}
+
+/* Content container for the done button. */
+#settingsNavContentBottom {
+    position: absolute;
+    bottom: 20%;
+}
+
+/* Settings navigational divider. */
+.settingsNavDivider {
+    width: 75%;
+    height: 0.5px;
+    background: rgba(255, 255, 255, 0.75);
+    margin-left: auto;
+    margin-bottom: 25px;
+}
+
+/* Settings done button styles. */
+#settingsNavDone {
+    background: none;
+    border: none;
+    text-align: left;
+    margin: 5px 0px;
+    padding: 0px 20px;
+    color: white;
+    cursor: pointer;
+    outline: none;
+    transition: 0.25s ease;
+}
+#settingsNavDone:hover,
+#settingsNavDone:focus {
+    text-shadow: 0px 0px 20px white, 0px 0px 20px white, 0px 0px 20px white;
+}
+#settingsNavDone:active {
+    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75), 0px 0px 20px rgba(255, 255, 255, 0.75), 0px 0px 20px rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+}
+#settingsNavDone:disabled {
+    color: rgba(255, 255, 255, 0.75);
+    pointer-events: none;
 }
 
 /* Right hand side of the settings container, for tabs. */
