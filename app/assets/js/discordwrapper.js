@@ -42,8 +42,7 @@ exports.updateDetails = function(details){
 
 exports.shutdownRPC = function(){
     if(!rpc) return
-    // Workaround until discord rpc releases clearActivity()
-    rpc.request('SET_ACTIVITY', {pid: process.pid})
+    rpc.clearActivity()
     rpc.destroy()
     rpc = null
     activity = null
