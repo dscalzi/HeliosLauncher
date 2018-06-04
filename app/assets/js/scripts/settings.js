@@ -1,10 +1,96 @@
 const settingsNavDone         = document.getElementById('settingsNavDone')
+
+// Account Management Tab
 const settingsAddAccount      = document.getElementById('settingsAddAccount')
 const settingsCurrentAccounts = document.getElementById('settingsCurrentAccounts')
+
+// Minecraft Tab
+const settingsGameWidth       = document.getElementById('settingsGameWidth')
+const settingsGameHeight      = document.getElementById('settingsGameHeight')
+
+const settingsState = {
+    invalid: new Set()
+}
 
 /**
  * General Settings Functions
  */
+
+ /**
+  * Bind value validators to the settings UI elements. These will
+  * validate against the criteria defined in the ConfigManager (if
+  * and). If the value is invalid, the UI will reflect this and saving
+  * will be disabled until the value is corrected. This is an automated
+  * process. More complex UI may need to be bound separately.
+  */
+function initSettingsValidators(){
+    const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
+    Array.from(sEls).map((v, index, arr) => {
+        const vFn = ConfigManager['validate' + v.getAttribute('cValue')]
+        if(typeof vFn === 'function'){
+            if(v.tagName === 'INPUT'){
+                if(v.type === 'number' || v.type === 'text'){
+                    v.addEventListener('keyup', (e) => {
+                        const v = e.target
+                        if(!vFn(v.value)){
+                            settingsState.invalid.add(v.id)
+                            v.setAttribute('error', '')
+                            settingsSaveDisabled(true)
+                        } else {
+                            if(v.hasAttribute('error')){
+                                v.removeAttribute('error')
+                                settingsState.invalid.delete(v.id)
+                                if(settingsState.invalid.size === 0){
+                                    settingsSaveDisabled(false)
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        }
+
+    })
+}
+
+/**
+ * Load configuration values onto the UI. This is an automated process.
+ */
+function initSettingsValues(){
+    const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
+    Array.from(sEls).map((v, index, arr) => {
+        const gFn = ConfigManager['get' + v.getAttribute('cValue')]
+        if(typeof gFn === 'function'){
+            if(v.tagName === 'INPUT'){
+                if(v.type === 'number' || v.type === 'text'){
+                   v.value = gFn()
+                } else if(v.type === 'checkbox'){
+                    v.checked = gFn()
+                }
+            }
+        }
+
+    })
+}
+
+/**
+ * Save the settings values.
+ */
+function saveSettingsValues(){
+    const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
+    Array.from(sEls).map((v, index, arr) => {
+        const sFn = ConfigManager['set' + v.getAttribute('cValue')]
+        if(typeof sFn === 'function'){
+            if(v.tagName === 'INPUT'){
+                if(v.type === 'number' || v.type === 'text'){
+                   sFn(v.value)
+                } else if(v.type === 'checkbox'){
+                    sFn(v.checked)
+                }
+            }
+        }
+    })
+}
 
 let selectedTab = 'settingsTabAccount'
 
@@ -33,8 +119,19 @@ function setupSettingsTabs(){
     })
 }
 
+/**
+ * Set if the settings save (done) button is disabled.
+ * 
+ * @param {boolean} v True to disable, false to enable.
+ */
+function settingsSaveDisabled(v){
+    settingsNavDone.disabled = v
+}
+
 /* Closes the settings view and saves all data. */
 settingsNavDone.onclick = () => {
+    saveSettingsValues()
+    ConfigManager.save()
     switchView(getCurrentView(), VIEWS.landing)
 }
 
@@ -200,16 +297,40 @@ function prepareAccountsTab() {
 }
 
 /**
+ * Minecraft Tab
+ */
+
+ /**
+  * Disable decimals, negative signs, and scientific notation.
+  */
+settingsGameWidth.addEventListener('keydown', (e) => {
+    if(/[-\.eE]/.test(e.key)){
+        e.preventDefault()
+    }
+})
+settingsGameHeight.addEventListener('keydown', (e) => {
+    if(/[-\.eE]/.test(e.key)){
+        e.preventDefault()
+    }
+})
+
+/**
  * Settings preparation functions.
  */
 
  /**
   * Prepare the entire settings UI.
+  * 
+  * @param {boolean} first Whether or not it is the first load.
   */
-function prepareSettings() {
-    setupSettingsTabs()
+function prepareSettings(first = false) {
+    if(first){
+        setupSettingsTabs()
+        initSettingsValidators()
+    }
+    initSettingsValues()
     prepareAccountsTab()
 }
 
 // Prepare the settings UI on startup.
-prepareSettings()
+prepareSettings(true)

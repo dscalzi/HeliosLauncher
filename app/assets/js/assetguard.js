@@ -1488,11 +1488,9 @@ class AssetGuard extends EventEmitter {
                     obPath = path.join(this.commonPath, 'libraries', obPath)
                     break
                 case 'forgemod':
-                    //obPath = path.join(this.basePath, 'mods', obPath)
                     obPath = path.join(this.commonPath, 'modstore', obPath)
                     break
                 case 'litemod':
-                    //obPath = path.join(this.basePath, 'mods', version, obPath)
                     obPath = path.join(this.commonPath, 'modstore', obPath)
                     break
                 case 'file':

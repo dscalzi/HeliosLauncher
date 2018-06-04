@@ -395,25 +395,6 @@ exports.setJVMOptions = function(jvmOptions){
 // Game Settings
 
 /**
- * Retrieve the absolute path of the game directory.
- * 
- * @param {boolean} def Optional. If true, the default value will be returned.
- * @returns {string} The absolute path of the game directory.
- */
-exports.getGameDirectory = function(def = false){
-    return !def ? config.settings.game.directory : DEFAULT_CONFIG.settings.game.directory
-}
-
-/**
- * Set the absolute path of the game directory.
- * 
- * @param {string} directory The absolute path of the new game directory.
- */
-exports.setGameDirectory = function(directory){
-    config.settings.game.directory = directory
-}
-
-/**
  * Retrieve the width of the game window.
  * 
  * @param {boolean} def Optional. If true, the default value will be returned.
@@ -429,7 +410,17 @@ exports.getGameWidth = function(def = false){
  * @param {number} resWidth The new width of the game window.
  */
 exports.setGameWidth = function(resWidth){
-    config.settings.game.resWidth = resWidth
+    config.settings.game.resWidth = Number.parseInt(resWidth)
+}
+
+/**
+ * Validate a potential new width value.
+ * 
+ * @param {*} resWidth The width value to validate.
+ */
+exports.validateGameWidth = function(resWidth){
+    const nVal = Number.parseInt(resWidth)
+    return Number.isInteger(nVal) && nVal >= 0
 }
 
 /**
@@ -448,7 +439,17 @@ exports.getGameHeight = function(def = false){
  * @param {number} resHeight The new height of the game window.
  */
 exports.setGameHeight = function(resHeight){
-    config.settings.game.resHeight = resHeight
+    config.settings.game.resHeight = Number.parseInt(resHeight)
+}
+
+/**
+ * Validate a potential new height value.
+ * 
+ * @param {*} resHeight The height value to validate.
+ */
+exports.validateGameHeight = function(resHeight){
+    const nVal = Number.parseInt(resHeight)
+    return Number.isInteger(nVal) && nVal >= 0
 }
 
 /**
@@ -457,7 +458,7 @@ exports.setGameHeight = function(resHeight){
  * @param {boolean} def Optional. If true, the default value will be returned.
  * @returns {boolean} Whether or not the game is set to launch in fullscreen mode.
  */
-exports.isFullscreen = function(def = false){
+exports.getFullscreen = function(def = false){
     return !def ? config.settings.game.fullscreen : DEFAULT_CONFIG.settings.game.fullscreen
 }
 
@@ -476,7 +477,7 @@ exports.setFullscreen = function(fullscreen){
  * @param {boolean} def Optional. If true, the default value will be returned.
  * @returns {boolean} Whether or not the game should auto connect to servers.
  */
-exports.isAutoConnect = function(def = false){
+exports.getAutoConnect = function(def = false){
     return !def ? config.settings.game.autoConnect : DEFAULT_CONFIG.settings.game.autoConnect
 }
 
@@ -495,7 +496,7 @@ exports.setAutoConnect = function(autoConnect){
  * @param {boolean} def Optional. If true, the default value will be returned.
  * @returns {boolean} Whether or not the game will launch as a detached process.
  */
-exports.isLaunchDetached = function(def = false){
+exports.getLaunchDetached = function(def = false){
     return !def ? config.settings.game.launchDetached : DEFAULT_CONFIG.settings.game.launchDetached
 }
 

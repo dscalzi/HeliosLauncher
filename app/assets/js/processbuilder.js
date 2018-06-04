@@ -47,10 +47,10 @@ class ProcessBuilder {
 
         const child = child_process.spawn(ConfigManager.getJavaExecutable(), args, {
             cwd: this.gameDir,
-            detached: ConfigManager.isLaunchDetached()
+            detached: ConfigManager.getLaunchDetached()
         })
 
-        if(ConfigManager.isLaunchDetached()){
+        if(ConfigManager.getLaunchDetached()){
             child.unref()
         }
 
@@ -188,7 +188,7 @@ class ProcessBuilder {
         mcArgs.push('absolute:' + this.fmlDir)
 
         // Prepare game resolution
-        if(ConfigManager.isFullscreen()){
+        if(ConfigManager.getFullscreen()){
             mcArgs.unshift('--fullscreen')
         } else {
             mcArgs.unshift(ConfigManager.getGameWidth())
@@ -198,7 +198,7 @@ class ProcessBuilder {
         }
 
         // Prepare autoconnect
-        if(ConfigManager.isAutoConnect() && this.server.autoconnect){
+        if(ConfigManager.getAutoConnect() && this.server.autoconnect){
             const serverURL = new URL('my://' + this.server.server_ip)
             mcArgs.unshift(serverURL.hostname)
             mcArgs.unshift('--server')

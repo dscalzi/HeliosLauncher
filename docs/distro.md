@@ -99,16 +99,16 @@ type = forgemod
 id = com.westeroscraft:westerosblocks:1.0.0
 extension = .jar
 
-resolved_path = {base}/modstore/com/westeroscraft/westerosblocks/1.0.0/westerosblocks-1.0.0.jar
+resolved_path = {commonDirectory}/modstore/com/westeroscraft/westerosblocks/1.0.0/westerosblocks-1.0.0.jar
 ```
 
 The resolved path depends on the type. Currently, there are several recognized module types:
 
-- `forge-hosted` ({base}/libraries/{path OR resolved})
-- `library` ({base}/libraries/{path OR resolved})
-- `forgemod` ({base}/modstore/{path OR resolved})
-- `litemod` ({base}/modstore/{path OR resolved})
-- `file` ({base}/{path OR resolved})
+- `forge-hosted` ({commonDirectory}/libraries/{path OR resolved})
+- `library` ({commonDirectory}/common/libraries/{path OR resolved})
+- `forgemod` ({commonDirectory}/common/modstore/{path OR resolved})
+- `litemod` ({commonDirectory}/common/modstore/{path OR resolved})
+- `file` ({instanceDirectory}/{serverID}/{path OR resolved})
 
 ---
 
@@ -204,7 +204,7 @@ This module type is being actively considered and changed, until finalized there
 
 ### file
 
-The module type `file` represents a generic file required by the client, another module, etc.
+The module type `file` represents a generic file required by the client, another module, etc. These files are stored in the server's instance directory.
 
 Ex.
 

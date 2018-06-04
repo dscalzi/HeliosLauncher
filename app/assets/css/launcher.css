@@ -1026,6 +1026,101 @@ body, button {
     font-size: 12px;
 }
 
+/* Remove spin button from number inputs. */
+#settingsContainer input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+/* Default styles for text/number inputs. */
+#settingsContainer input[type=number],
+#settingsContainer input[type=text] {
+    color: white;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 3px;
+    border: 1px solid rgba(126, 126, 126, 0.57);
+    font-family: 'Avenir Book';
+    transition: 0.25s ease;
+}
+#settingsContainer input[type=number]:focus,
+#settingsContainer input[type=text]:focus {
+    outline: none;
+    border-color: rgba(126, 126, 126, 0.87);
+}
+#settingsContainer input[type=number][error] {
+    border-color: rgb(255, 27, 12);
+    background: rgba(236, 0, 0, 0.25);
+    color: rgb(255, 27, 12);
+}
+
+/* Styles for a generic settings entry. */
+.settingsFieldContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 0px;
+    width: 75%;
+}
+.settingsFieldLeft {
+    display: flex;
+    flex-direction: column;
+}
+.settingsFieldTitle {
+    font-size: 14px;
+    font-family: 'Avenir Medium';
+    color: rgba(255, 255, 255, 0.95);
+}
+.settingsFieldDesc {
+    font-size: 12px;
+    color: rgba(255, 255, 255, .95);
+}
+.settingsDivider {
+    height: 1px;
+    width: 75%;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Toggle Switch */
+.toggleSwitch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+.toggleSwitch input {
+    display:none;
+}
+.toggleSwitchSlider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+    transition: .4s;
+    border-radius: 3px;
+    border: 1px solid rgba(126, 126, 126, 0.57);
+}
+.toggleSwitchSlider:before {
+    position: absolute;
+    content: "";
+    height: 17px;
+    width: 21px;
+    left: 3px;
+    bottom: 3px;
+    background-color: rgb(202, 202, 202);
+    border-radius: 3px;
+    transition: .4s;
+}
+input:checked + .toggleSwitchSlider {
+    background-color: rgba(36, 255, 0, 0.25);
+}
+input:checked + .toggleSwitchSlider:before {
+    transform: translateX(21px);
+}
+
 /* * *
 * Settings View (Account Tab)
 * * */
@@ -1055,9 +1150,6 @@ body, button {
 /* Settings auth accounts header. */
 #settingsCurrentAccountsHeader {
     margin: 20px 0px;
-}
-#settingsCurrentAccountsHeaderText {
-    font-size: 16px;
 }
 
 /* Auth account list container styles. */
@@ -1181,6 +1273,31 @@ body, button {
 }
 .settingsAuthAccount:hover .settingsAuthAccountLogOut {
     opacity: 1;
+}
+
+/* * *
+* Settings View (Minecraft Tab)
+* * */
+
+/* Game resolution UI elements. */
+#settingsGameResolutionContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0px;
+}
+#settingsGameResolutionContent {
+    display: flex;
+    align-items: center;
+    padding-top: 10px;
+}
+#settingsGameResolutionCross {
+    color: grey;
+    padding: 0px 15px;
+}
+#settingsGameWidth,
+#settingsGameHeight {
+    padding: 7.5px 5px;
+    width: 75px;
 }
 
 /*******************************************************************************
