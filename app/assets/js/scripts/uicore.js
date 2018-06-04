@@ -28,7 +28,6 @@ webFrame.setVisualZoomLevelLimits(1, 1)
 webFrame.setLayoutZoomLevelLimits(0, 0)
 
 // Initialize auto updates in production environments.
-// TODO Make this the case after implementation is done.
 let updateCheckListener
 if(!isDev){
     ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
@@ -69,6 +68,18 @@ if(!isDev){
         }
     })
     ipcRenderer.send('autoUpdateAction', 'initAutoUpdater')
+}
+
+/**
+ * Send a notification to the main process changing the value of
+ * allowPrerelease. If we are running a prerelease version, then
+ * this will always be set to true, regardless of the current value
+ * of val.
+ * 
+ * @param {boolean} val The new allow prerelease value.
+ */
+function changeAllowPrerelease(val){
+    ipcRenderer.send('autoUpdateAction', 'allowPrereleaseChange', val)
 }
 
 function showUpdateUI(info){

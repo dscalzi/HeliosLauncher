@@ -40,7 +40,9 @@ const DEFAULT_CONFIG = {
             autoConnect: true,
             launchDetached: true
         },
-        launcher: {}
+        launcher: {
+            allowPrerelease: false
+        }
     },
     commonDirectory: path.join(dataPath, 'common'),
     instanceDirectory: path.join(dataPath, 'instances'),
@@ -507,4 +509,25 @@ exports.getLaunchDetached = function(def = false){
  */
 exports.setLaunchDetached = function(launchDetached){
     config.settings.game.launchDetached = launchDetached
+}
+
+// Launcher Settings
+
+/**
+ * Check if the launcher should download prerelease versions.
+ * 
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {boolean} Whether or not the launcher should download prerelease versions.
+ */
+exports.getAllowPrerelease = function(def = false){
+    return !def ? config.settings.launcher.allowPrerelease : DEFAULT_CONFIG.settings.launcher.allowPrerelease
+}
+
+/**
+ * Change the status of Whether or not the launcher should download prerelease versions.
+ * 
+ * @param {boolean} launchDetached Whether or not the launcher should download prerelease versions.
+ */
+exports.setAllowPrerelease = function(allowPrerelease){
+    config.settings.launcher.allowPrerelease = allowPrerelease
 }

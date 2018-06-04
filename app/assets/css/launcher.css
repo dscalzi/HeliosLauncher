@@ -1017,6 +1017,7 @@ body, button {
 .settingsTabHeader {
     display: flex;
     flex-direction: column;
+    margin-bottom: 20px;
 }
 .settingsTabHeaderText {
     font-size: 20px;
@@ -1126,9 +1127,6 @@ input:checked + .toggleSwitchSlider:before {
 * * */
 
 /* Add account button styles. */
-#settingsAddAccountContainer {
-    margin-top: 20px;
-}
 #settingsAddAccount {
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(126, 126, 126, 0.57);
@@ -1283,7 +1281,7 @@ input:checked + .toggleSwitchSlider:before {
 #settingsGameResolutionContainer {
     display: flex;
     flex-direction: column;
-    margin: 20px 0px;
+    margin-bottom: 20px;
 }
 #settingsGameResolutionContent {
     display: flex;

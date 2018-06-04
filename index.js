@@ -1,15 +1,24 @@
+// Requirements
 const {app, BrowserWindow, ipcMain} = require('electron')
-const autoUpdater = require('electron-updater').autoUpdater
-const isDev = require('electron-is-dev')
-const path = require('path')
-const url = require('url')
-const fs = require('fs')
-const ejse = require('ejs-electron')
+const autoUpdater                   = require('electron-updater').autoUpdater
+const ConfigManager                 = require('./app/assets/js/configmanager.js')
+const ejse                          = require('ejs-electron')
+const fs                            = require('fs')
+const isDev                         = require('electron-is-dev')
+const path                          = require('path')
+const semver                        = require('semver')
+const url                           = require('url')
 
 // Setup auto updater.
 function initAutoUpdater(event) {
-    // Defaults to true if application version contains prerelease components (e.g. 0.12.1-alpha.1)
-    // autoUpdater.allowPrerelease = true
+    
+    if(ConfigManager.getAllowPrerelease()){
+        autoUpdater.allowPrerelease = true
+    } else {
+        // Defaults to true if application version contains prerelease components (e.g. 0.12.1-alpha.1)
+        // autoUpdater.allowPrerelease = true
+    }
+    
     if(isDev){
         autoUpdater.autoInstallOnAppQuit = false
         autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml')
@@ -29,7 +38,7 @@ function initAutoUpdater(event) {
 }
 
 // Open channel to listen for update actions.
-ipcMain.on('autoUpdateAction', (event, arg) => {
+ipcMain.on('autoUpdateAction', (event, arg, data) => {
     switch(arg){
         case 'initAutoUpdater':
             console.log('Initializing auto updater.')
@@ -41,6 +50,18 @@ ipcMain.on('autoUpdateAction', (event, arg) => {
                 .catch(err => {
                     event.sender.send('autoUpdateNotification', 'realerror', err)
                 })
+            break
+        case 'allowPrereleaseChange':
+            if(!data){
+                const preRelComp = semver.prerelease(app.getVersion())
+                if(preRelComp != null && preRelComp.length > 0){
+                    autoUpdater.allowPrerelease = true
+                } else {
+                    autoUpdater.allowPrerelease = data
+                }
+            } else {
+                autoUpdater.allowPrerelease = data
+            }
             break
         case 'installUpdateNow':
             autoUpdater.quitAndInstall()

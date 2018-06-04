@@ -86,6 +86,11 @@ function saveSettingsValues(){
                    sFn(v.value)
                 } else if(v.type === 'checkbox'){
                     sFn(v.checked)
+                    // Special Conditions
+                    const cVal = v.getAttribute('cValue')
+                    if(cVal === 'AllowPrerelease'){
+                        changeAllowPrerelease(v.checked)
+                    }
                 }
             }
         }

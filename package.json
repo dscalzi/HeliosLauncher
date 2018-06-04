@@ -1,6 +1,6 @@
 {
   "name": "westeroscraftlauncher",
-  "version": "0.0.1-alpha.8",
+  "version": "0.0.1-alpha.9",
   "description": "Custom modded launcher for Westeroscraft",
   "productName": "WesterosCraft Launcher",
   "main": "index.js",
@@ -39,6 +39,7 @@
     "mkdirp": "^0.5.1",
     "request": "^2.87.0",
     "rimraf": "^2.6.2",
+    "semver": "^5.5.0",
     "tar-fs": "^1.16.2",
     "uuid": "^3.2.1",
     "winreg": "^1.2.4"
