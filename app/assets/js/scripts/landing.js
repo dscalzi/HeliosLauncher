@@ -257,9 +257,10 @@ function asyncSystemScan(launchAfter = true){
 
     // Fork a process to run validations.
     sysAEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
-        ConfigManager.getGameDirectory(),
+        ConfigManager.getCommonDirectory(),
         ConfigManager.getLauncherDirectory(),
-        ConfigManager.getJavaExecutable()
+        ConfigManager.getJavaExecutable(),
+        ConfigManager.getInstanceDirectory()
     ], {
         stdio: 'pipe'
     })
@@ -436,9 +437,10 @@ function dlAsync(login = true){
 
     // Start AssetExec to run validations and downloads in a forked process.
     aEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
-        ConfigManager.getGameDirectory(),
+        ConfigManager.getCommonDirectory(),
         ConfigManager.getLauncherDirectory(),
-        ConfigManager.getJavaExecutable()
+        ConfigManager.getJavaExecutable(),
+        ConfigManager.getInstanceDirectory()
     ], {
         stdio: 'pipe'
     })
@@ -581,7 +583,7 @@ function dlAsync(login = true){
                 //}
                 const authUser = ConfigManager.getSelectedAccount()
                 console.log('authu', authUser)
-                let pb = new ProcessBuilder(ConfigManager.getGameDirectory(), serv, versionData, forgeData, authUser)
+                let pb = new ProcessBuilder(serv, versionData, forgeData, authUser)
                 setLaunchDetails('Launching game..')
                 try {
                     // Build Minecraft process.

@@ -16,14 +16,15 @@ const {URL} = require('url')
 
 class ProcessBuilder {
 
-    constructor(gameDirectory, distroServer, versionData, forgeData, authUser){
-        this.dir = gameDirectory
+    constructor(distroServer, versionData, forgeData, authUser){
+        this.gameDir = path.join(ConfigManager.getInstanceDirectory(), distroServer.id)
+        this.commonDir = ConfigManager.getCommonDirectory()
         this.server = distroServer
         this.versionData = versionData
         this.forgeData = forgeData
         this.authUser = authUser
-        this.fmlDir = path.join(this.dir, 'versions', this.server.id + '.json')
-        this.libPath = path.join(this.dir, 'libraries')
+        this.fmlDir = path.join(this.commonDir, 'versions', this.server.id + '.json')
+        this.libPath = path.join(this.commonDir, 'libraries')
     }
 
     static shouldInclude(mdle){
@@ -35,6 +36,7 @@ class ProcessBuilder {
      * Convienence method to run the functions typically used to build a process.
      */
     build(){
+        mkpath.sync(this.gameDir)
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         const mods = this.resolveDefaultMods()
@@ -44,7 +46,7 @@ class ProcessBuilder {
         console.log(args)
 
         const child = child_process.spawn(ConfigManager.getJavaExecutable(), args, {
-            cwd: ConfigManager.getGameDirectory(),
+            cwd: this.gameDir,
             detached: ConfigManager.isLaunchDetached()
         })
 
@@ -90,7 +92,7 @@ class ProcessBuilder {
 
     constructFMLModList(mods, save = false){
         const modList = {}
-        modList.repositoryRoot = path.join(this.dir, 'modstore')
+        modList.repositoryRoot = path.join(this.commonDir, 'modstore')
         const ids = []
         for(let i=0; i<mods.length; ++i){
             ids.push(mods[i].id)
@@ -156,10 +158,10 @@ class ProcessBuilder {
                         val = this.server.id
                         break
                     case 'game_directory':
-                        val = this.dir
+                        val = this.gameDir
                         break
                     case 'assets_root':
-                        val = path.join(this.dir, 'assets')
+                        val = path.join(this.commonDir, 'assets')
                         break
                     case 'assets_index_name':
                         val = this.versionData.assets
@@ -223,7 +225,7 @@ class ProcessBuilder {
 
         // Add the version.jar to the classpath.
         const version = this.versionData.id
-        cpArgs.push(path.join(this.dir, 'versions', version, version + '.jar'))
+        cpArgs.push(path.join(this.commonDir, 'versions', version, version + '.jar'))
 
         // Resolve the Mojang declared libraries.
         const mojangLibs = this._resolveMojangLibraries(tempNativePath)

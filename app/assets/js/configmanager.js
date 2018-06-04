@@ -34,7 +34,6 @@ const DEFAULT_CONFIG = {
             ],
         },
         game: {
-            directory: path.join(dataPath, 'game'),
             resWidth: 1280,
             resHeight: 720,
             fullscreen: false,
@@ -43,6 +42,8 @@ const DEFAULT_CONFIG = {
         },
         launcher: {}
     },
+    commonDirectory: path.join(dataPath, 'common'),
+    instanceDirectory: path.join(dataPath, 'instances'),
     clientToken: uuidV4().replace(/-/g, ''),
     selectedServer: null, // Resolved
     selectedAccount: null,
@@ -138,6 +139,22 @@ exports.getTempNativeFolder = function(){
 }
 
 // System Settings (Unconfigurable on UI)
+
+/**
+ * Retrieve the common directory for shared
+ * game files (assets, libraries, etc).
+ */
+exports.getCommonDirectory = function(){
+    return config.commonDirectory
+}
+
+/**
+ * Retrieve the instance directory for the per
+ * server game directories.
+ */
+exports.getInstanceDirectory = function(){
+    return config.instanceDirectory
+}
 
 /**
  * Retrieve the launcher's Client Token.

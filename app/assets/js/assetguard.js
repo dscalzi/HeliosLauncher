@@ -179,12 +179,13 @@ class AssetGuard extends EventEmitter {
      * On creation the object's properties are never-null default
      * values. Each identifier is resolved to an empty DLTracker.
      * 
-     * @param {string} basePath The base path for asset validation (game root).
+     * @param {string} commonPath The common path for shared game files.
      * @param {string} launcherPath The root launcher directory.
      * @param {string} javaexec The path to a java executable which will be used
      * to finalize installation.
+     * @param {string} instancePath The path to the instances directory.
      */
-    constructor(basePath, launcherPath, javaexec){
+    constructor(commonPath, launcherPath, javaexec, instancePath){
         super()
         this.totaldlsize = 0
         this.progress = 0
@@ -194,9 +195,10 @@ class AssetGuard extends EventEmitter {
         this.forge = new DLTracker([], 0)
         this.java = new DLTracker([], 0)
         this.extractQueue = []
-        this.basePath = basePath
+        this.commonPath = commonPath
         this.launcherPath = launcherPath
         this.javaexec = javaexec
+        this.instancePath = instancePath
     }
 
     // Static Utility Functions
@@ -557,10 +559,10 @@ class AssetGuard extends EventEmitter {
      * in a promise.
      * 
      * @param {Asset} asset The Asset object representing Forge.
-     * @param {string} basePath Base path for asset validation (game root).
+     * @param {string} commonPath The common path for shared game files.
      * @returns {Promise.<Object>} A promise which resolves to the contents of forge's version.json.
      */
-    static _finalizeForgeAsset(asset, basePath){
+    static _finalizeForgeAsset(asset, commonPath){
         return new Promise((resolve, reject) => {
             fs.readFile(asset.to, (err, data) => {
                 const zip = new AdmZip(data)
@@ -569,7 +571,7 @@ class AssetGuard extends EventEmitter {
                 for(let i=0; i<zipEntries.length; i++){
                     if(zipEntries[i].entryName === 'version.json'){
                         const forgeVersion = JSON.parse(zip.readAsText(zipEntries[i]))
-                        const versionPath = path.join(basePath, 'versions', forgeVersion.id)
+                        const versionPath = path.join(commonPath, 'versions', forgeVersion.id)
                         const versionFile = path.join(versionPath, forgeVersion.id + '.json')
                         if(!fs.existsSync(versionFile)){
                             mkpath.sync(versionPath)
@@ -1202,7 +1204,7 @@ class AssetGuard extends EventEmitter {
         return new Promise((resolve, reject) => {
             const name = version + '.json'
             const url = 'https://s3.amazonaws.com/Minecraft.Download/versions/' + version + '/' + name
-            const versionPath = path.join(self.basePath, 'versions', version)
+            const versionPath = path.join(self.commonPath, 'versions', version)
             const versionFile = path.join(versionPath, name)
             if(!fs.existsSync(versionFile) || force){
                 //This download will never be tracked as it's essential and trivial.
@@ -1255,7 +1257,7 @@ class AssetGuard extends EventEmitter {
             //Asset index constants.
             const assetIndex = versionData.assetIndex
             const name = assetIndex.id + '.json'
-            const indexPath = path.join(self.basePath, 'assets', 'indexes')
+            const indexPath = path.join(self.commonPath, 'assets', 'indexes')
             const assetIndexLoc = path.join(indexPath, name)
 
             let data = null
@@ -1291,7 +1293,7 @@ class AssetGuard extends EventEmitter {
 
             //Asset constants
             const resourceURL = 'http://resources.download.minecraft.net/'
-            const localPath = path.join(self.basePath, 'assets')
+            const localPath = path.join(self.commonPath, 'assets')
             const indexPath = path.join(localPath, 'indexes')
             const objectPath = path.join(localPath, 'objects')
 
@@ -1338,7 +1340,7 @@ class AssetGuard extends EventEmitter {
         return new Promise((resolve, reject) => {
 
             const libArr = versionData.libraries
-            const libPath = path.join(self.basePath, 'libraries')
+            const libPath = path.join(self.commonPath, 'libraries')
 
             const libDlQueue = []
             let dlSize = 0
@@ -1394,7 +1396,7 @@ class AssetGuard extends EventEmitter {
         return new Promise((resolve, reject) => {
             const clientData = versionData.downloads.client
             const version = versionData.id
-            const targetPath = path.join(self.basePath, 'versions', version)
+            const targetPath = path.join(self.commonPath, 'versions', version)
             const targetFile = version + '.jar'
 
             let client = new Asset(version + ' client', clientData.sha1, clientData.size, clientData.url, path.join(targetPath, targetFile))
@@ -1421,7 +1423,7 @@ class AssetGuard extends EventEmitter {
         return new Promise((resolve, reject) => {
             const client = versionData.logging.client
             const file = client.file
-            const targetPath = path.join(self.basePath, 'assets', 'log_configs')
+            const targetPath = path.join(self.commonPath, 'assets', 'log_configs')
 
             let logConfig = new Asset(file.id, file.sha1, file.size, file.url, path.join(targetPath, file.id))
 
@@ -1456,13 +1458,13 @@ class AssetGuard extends EventEmitter {
                     console.error('Invalid server pack id:', serverpackid)
                 }
 
-                self.forge = self._parseDistroModules(serv.modules, serv.mc_version)
+                self.forge = self._parseDistroModules(serv.modules, serv.mc_version, serv.id)
                 // Correct our workaround here.
                 let decompressqueue = self.forge.callback
                 self.extractQueue = decompressqueue
                 self.forge.callback = (asset, self) => {
                     if(asset.type === 'forge-hosted' || asset.type === 'forge'){
-                        AssetGuard._finalizeForgeAsset(asset, self.basePath)
+                        AssetGuard._finalizeForgeAsset(asset, self.commonPath)
                     }
                 }
                 resolve(serv)
@@ -1470,7 +1472,7 @@ class AssetGuard extends EventEmitter {
         })
     }
 
-    _parseDistroModules(modules, version){
+    _parseDistroModules(modules, version, servid){
         let alist = []
         let asize = 0;
         let decompressqueue = []
@@ -1483,19 +1485,19 @@ class AssetGuard extends EventEmitter {
                 case 'forge-hosted':
                 case 'forge':
                 case 'library':
-                    obPath = path.join(this.basePath, 'libraries', obPath)
+                    obPath = path.join(this.commonPath, 'libraries', obPath)
                     break
                 case 'forgemod':
                     //obPath = path.join(this.basePath, 'mods', obPath)
-                    obPath = path.join(this.basePath, 'modstore', obPath)
+                    obPath = path.join(this.commonPath, 'modstore', obPath)
                     break
                 case 'litemod':
                     //obPath = path.join(this.basePath, 'mods', version, obPath)
-                    obPath = path.join(this.basePath, 'modstore', obPath)
+                    obPath = path.join(this.commonPath, 'modstore', obPath)
                     break
                 case 'file':
                 default: 
-                    obPath = path.join(this.basePath, obPath)
+                    obPath = path.join(this.instancePath, servid, obPath)
             }
             let artifact = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, obType)
             const validationPath = obPath.toLowerCase().endsWith('.pack.xz') ? obPath.substring(0, obPath.toLowerCase().lastIndexOf('.pack.xz')) : obPath
@@ -1506,7 +1508,7 @@ class AssetGuard extends EventEmitter {
             }
             //Recursively process the submodules then combine the results.
             if(ob.sub_modules != null){
-                let dltrack = this._parseDistroModules(ob.sub_modules, version)
+                let dltrack = this._parseDistroModules(ob.sub_modules, version, servid)
                 asize += dltrack.dlsize*1
                 alist = alist.concat(dltrack.dlqueue)
                 decompressqueue = decompressqueue.concat(dltrack.callback)
@@ -1542,9 +1544,9 @@ class AssetGuard extends EventEmitter {
                 const ob = modules[i]
                 if(ob.type === 'forge-hosted' || ob.type === 'forge'){
                     let obArtifact = ob.artifact
-                    let obPath = obArtifact.path == null ? path.join(self.basePath, 'libraries', AssetGuard._resolvePath(ob.id, obArtifact.extension)) : obArtifact.path
+                    let obPath = obArtifact.path == null ? path.join(self.commonPath, 'libraries', AssetGuard._resolvePath(ob.id, obArtifact.extension)) : obArtifact.path
                     let asset = new DistroModule(ob.id, obArtifact.MD5, obArtifact.size, obArtifact.url, obPath, ob.type)
-                    let forgeData = await AssetGuard._finalizeForgeAsset(asset, self.basePath)
+                    let forgeData = await AssetGuard._finalizeForgeAsset(asset, self.commonPath)
                     resolve(forgeData)
                     return
                 }
