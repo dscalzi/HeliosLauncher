@@ -54,6 +54,12 @@ function getCurrentView(){
 }
 
 function showMainUI(){
+
+    if(!isDev){
+        console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Initializing..')
+        ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
+    }
+
     updateSelectedServer(AssetGuard.getServerById(ConfigManager.getSelectedServer()).name)
     refreshServerStatus()
     setTimeout(() => {

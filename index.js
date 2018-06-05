@@ -1,7 +1,6 @@
 // Requirements
 const {app, BrowserWindow, ipcMain} = require('electron')
 const autoUpdater                   = require('electron-updater').autoUpdater
-const ConfigManager                 = require('./app/assets/js/configmanager.js')
 const ejse                          = require('ejs-electron')
 const fs                            = require('fs')
 const isDev                         = require('electron-is-dev')
@@ -10,9 +9,9 @@ const semver                        = require('semver')
 const url                           = require('url')
 
 // Setup auto updater.
-function initAutoUpdater(event) {
-    
-    if(ConfigManager.getAllowPrerelease()){
+function initAutoUpdater(event, data) {
+
+    if(data){
         autoUpdater.allowPrerelease = true
     } else {
         // Defaults to true if application version contains prerelease components (e.g. 0.12.1-alpha.1)
@@ -42,7 +41,7 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
     switch(arg){
         case 'initAutoUpdater':
             console.log('Initializing auto updater.')
-            initAutoUpdater(event)
+            initAutoUpdater(event, data)
             event.sender.send('autoUpdateNotification', 'ready')
             break
         case 'checkForUpdate':

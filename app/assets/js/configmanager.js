@@ -85,6 +85,7 @@ exports.load = function(){
         config = validateKeySet(DEFAULT_CONFIG, config)
         exports.save()
     }
+    console.log('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold', 'Successfully Loaded')
 }
 
 /**

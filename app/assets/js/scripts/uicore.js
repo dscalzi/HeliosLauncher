@@ -67,7 +67,6 @@ if(!isDev){
                 break
         }
     })
-    ipcRenderer.send('autoUpdateAction', 'initAutoUpdater')
 }
 
 /**
