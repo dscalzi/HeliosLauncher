@@ -3,6 +3,7 @@
  */
 // Requirements
 const cp                      = require('child_process')
+const crypto                  = require('crypto')
 const {URL}                   = require('url')
 
 // Internal Requirements
@@ -774,11 +775,17 @@ function slide_(up){
 document.getElementById('newsButton').onclick = () => {
     // Toggle tabbing.
     if(newsActive){
-        $("#landingContainer *").removeAttr('tabindex')
-        $("#newsContainer *").attr('tabindex', '-1')
+        $('#landingContainer *').removeAttr('tabindex')
+        $('#newsContainer *').attr('tabindex', '-1')
     } else {
-        $("#landingContainer *").attr('tabindex', '-1')
-        $("#newsContainer, #newsContainer *, #lower, #lower #center *").removeAttr('tabindex')
+        $('#landingContainer *').attr('tabindex', '-1')
+        $('#newsContainer, #newsContainer *, #lower, #lower #center *').removeAttr('tabindex')
+        if(newsAlertShown){
+            $('#newsButtonAlert').fadeOut(2000)
+            newsAlertShown = false
+            ConfigManager.setNewsCacheDismissed(true)
+            ConfigManager.save()
+        }
     }
     slide_(!newsActive)
     newsActive = !newsActive
@@ -841,6 +848,16 @@ function reloadNews(){
     })
 }
 
+let newsAlertShown = false
+
+/**
+ * Show the news alert indicating there is new news.
+ */
+function showNewsAlert(){
+    newsAlertShown = true
+    $(newsButtonAlert).fadeIn(250)
+}
+
 /**
  * Initialize News UI. This will load the news and prepare
  * the UI accordingly.
@@ -871,6 +888,13 @@ function initNews(){
                 // No News Articles
                 setNewsLoading(false)
 
+                ConfigManager.setNewsCache({
+                    date: null,
+                    content: null,
+                    dismissed: false
+                })
+                ConfigManager.save()
+
                 $('#newsErrorLoading').fadeOut(250, () => {
                     $('#newsErrorNone').fadeIn(250, () => {
                         resolve()
@@ -879,6 +903,46 @@ function initNews(){
             } else {
                 // Success
                 setNewsLoading(false)
+
+                const lN = newsArr[0]
+                const cached = ConfigManager.getNewsCache()
+                let newHash = crypto.createHash('sha1').update(lN.content).digest('hex')
+                let newDate = new Date(lN.date)
+                let isNew = false
+
+                if(cached.date != null && cached.content != null){
+
+                    if(new Date(cached.date) >= newDate){
+
+                        // Compare Content
+                        if(cached.content !== newHash){
+                            isNew = true
+                            showNewsAlert()
+                        } else {
+                            if(!cached.dismissed){
+                                isNew = true
+                                showNewsAlert()
+                            }
+                        }
+
+                    } else {
+                        isNew = true
+                        showNewsAlert()
+                    }
+
+                } else {
+                    isNew = true
+                    showNewsAlert()
+                }
+
+                if(isNew){
+                    ConfigManager.setNewsCache({
+                        date: newDate.getTime(),
+                        content: newHash,
+                        dismissed: false
+                    })
+                    ConfigManager.save()
+                }
 
                 const switchHandler = (forward) => {
                     let cArt = parseInt(newsContent.getAttribute('article'))

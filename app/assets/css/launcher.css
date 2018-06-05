@@ -2136,6 +2136,17 @@ input:checked + .toggleSwitchSlider:before {
     stroke: rgba(255, 255, 255, 0.75);
 }
 
+/* Icon which indicates there is new news. */
+#newsButtonAlert {
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    border-radius: 50%;
+    background: red;
+    right: -1px;
+    top: 50%;
+}
+
 /* Arrow image which floats above the news button. */
 #newsButtonSVG {
     height: 11px;

@@ -44,6 +44,11 @@ const DEFAULT_CONFIG = {
             allowPrerelease: false
         }
     },
+    newsCache: {
+        date: null,
+        content: null,
+        dismissed: false
+    },
     commonDirectory: path.join(dataPath, 'common'),
     instanceDirectory: path.join(dataPath, 'instances'),
     clientToken: uuidV4().replace(/-/g, ''),
@@ -144,8 +149,38 @@ exports.getTempNativeFolder = function(){
 // System Settings (Unconfigurable on UI)
 
 /**
+ * Retrieve the news cache to determine
+ * whether or not there is newer news.
+ * 
+ * @returns {Object} The news cache object.
+ */
+exports.getNewsCache = function(){
+    return config.newsCache
+}
+
+/**
+ * Set the new news cache object.
+ * 
+ * @param {Object} newsCache The new news cache object.
+ */
+exports.setNewsCache = function(newsCache){
+    config.newsCache = newsCache
+}
+
+/**
+ * Set whether or not the news has been dismissed (checked)
+ * 
+ * @param {boolean} dismissed Whether or not the news has been dismissed (checked).
+ */
+exports.setNewsCacheDismissed = function(dismissed){
+    config.newsCache.dismissed = dismissed
+}
+
+/**
  * Retrieve the common directory for shared
  * game files (assets, libraries, etc).
+ * 
+ * @returns {string} The launcher's common directory.
  */
 exports.getCommonDirectory = function(){
     return config.commonDirectory
@@ -154,6 +189,8 @@ exports.getCommonDirectory = function(){
 /**
  * Retrieve the instance directory for the per
  * server game directories.
+ * 
+ * @returns {string} The launcher's instance directory.
  */
 exports.getInstanceDirectory = function(){
     return config.instanceDirectory
@@ -419,7 +456,8 @@ exports.setGameWidth = function(resWidth){
 /**
  * Validate a potential new width value.
  * 
- * @param {*} resWidth The width value to validate.
+ * @param {number} resWidth The width value to validate.
+ * @returns {boolean} Whether or not the value is valid.
  */
 exports.validateGameWidth = function(resWidth){
     const nVal = Number.parseInt(resWidth)
@@ -448,7 +486,8 @@ exports.setGameHeight = function(resHeight){
 /**
  * Validate a potential new height value.
  * 
- * @param {*} resHeight The height value to validate.
+ * @param {number} resHeight The height value to validate.
+ * @returns {boolean} Whether or not the value is valid.
  */
 exports.validateGameHeight = function(resHeight){
     const nVal = Number.parseInt(resHeight)

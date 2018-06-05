@@ -22,19 +22,19 @@
  * @module assetguard
  */
 // Requirements
-const AdmZip = require('adm-zip')
-const async = require('async')
+const AdmZip        = require('adm-zip')
+const async         = require('async')
 const child_process = require('child_process')
-const crypto = require('crypto')
-const EventEmitter = require('events')
-const fs = require('fs')
-const isDev = require('electron-is-dev')
-const mkpath = require('mkdirp');
-const path = require('path')
-const Registry = require('winreg')
-const request = require('request')
-const tar = require('tar-fs')
-const zlib = require('zlib')
+const crypto        = require('crypto')
+const EventEmitter  = require('events')
+const fs            = require('fs')
+const isDev         = require('electron-is-dev')
+const mkpath        = require('mkdirp');
+const path          = require('path')
+const Registry      = require('winreg')
+const request       = require('request')
+const tar           = require('tar-fs')
+const zlib          = require('zlib')
 
 // Constants
 const PLATFORM_MAP = {
