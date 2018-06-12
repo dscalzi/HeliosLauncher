@@ -8,6 +8,10 @@ const settingsCurrentAccounts = document.getElementById('settingsCurrentAccounts
 const settingsGameWidth       = document.getElementById('settingsGameWidth')
 const settingsGameHeight      = document.getElementById('settingsGameHeight')
 
+// Java Tab
+const settingsMaxRAMRange     = document.getElementById('settingsMaxRAMRange')
+const settingsMinRAMRange     = document.getElementById('settingsMinRAMRange')
+
 const settingsState = {
     invalid: new Set()
 }
@@ -66,6 +70,10 @@ function initSettingsValues(){
                    v.value = gFn()
                 } else if(v.type === 'checkbox'){
                     v.checked = gFn()
+                }
+            } else if(v.tagName === 'DIV'){
+                if(v.classList.contains('rangeSlider')){
+                    v.setAttribute('value', Number.parseFloat(gFn()))
                 }
             }
         }
@@ -320,6 +328,101 @@ settingsGameHeight.addEventListener('keydown', (e) => {
 })
 
 /**
+ * Java Tab
+ */
+
+settingsMaxRAMRange.setAttribute('max', ConfigManager.getAbsoluteMaxRAM())
+settingsMaxRAMRange.setAttribute('min', ConfigManager.getAbsoluteMinRAM())
+settingsMinRAMRange.setAttribute('max', ConfigManager.getAbsoluteMaxRAM())
+settingsMinRAMRange.setAttribute('min', ConfigManager.getAbsoluteMinRAM())
+
+settingsMinRAMRange.onchange = (e) => {
+    const sMaxV = Number(settingsMaxRAMRange.getAttribute('value'))
+    const sMinV = Number(settingsMinRAMRange.getAttribute('value'))
+    if(sMaxV < sMinV){
+        const sliderMeta = calculateRangeSliderMeta(settingsMaxRAMRange)
+        updateRangedSlider(settingsMaxRAMRange, sMinV,
+        (1+(sMinV-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
+    }
+}
+settingsMaxRAMRange.onchange = (e) => {
+    const sMaxV = Number(settingsMaxRAMRange.getAttribute('value'))
+    const sMinV = Number(settingsMinRAMRange.getAttribute('value'))
+    if(sMaxV < sMinV){
+        e.preventDefault()
+    }
+}
+
+function calculateRangeSliderMeta(v){
+    const val = {
+        max: Number(v.getAttribute('max')),
+        min: Number(v.getAttribute('min')),
+        step: Number(v.getAttribute('step')),
+    }
+    val.ticks = 1+(val.max-val.min)/val.step
+    val.inc = 100/val.ticks
+    return val
+}
+
+function bindRangeSlider(){
+    Array.from(document.getElementsByClassName('rangeSlider')).map((v) => {
+        const track = v.getElementsByClassName('rangeSliderTrack')[0]
+
+        const value = v.getAttribute('value')
+        const sliderMeta = calculateRangeSliderMeta(v)
+        updateRangedSlider(v, value, 
+            (1+(value-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
+
+        track.onmousedown = (e) => {
+
+            document.onmouseup = (e) => {
+                document.onmousemove = null
+                document.onmouseup = null
+            }
+
+            document.onmousemove = (e) => {
+                const diff = e.pageX - v.offsetLeft - track.offsetWidth/2
+                
+                if(diff >= 0 && diff <= v.offsetWidth-track.offsetWidth/2){
+
+                    const perc = (diff/v.offsetWidth)*100
+                    const notch = Number(perc/sliderMeta.inc).toFixed(0)*sliderMeta.inc
+
+                    if(Math.abs(perc-notch) < sliderMeta.inc/2){
+                        updateRangedSlider(v, sliderMeta.min+(sliderMeta.step*((notch/sliderMeta.inc)-1)), notch)
+                    }
+                }
+            }
+        }
+    }) 
+}
+
+function updateRangedSlider(element, value, notch){
+    const oldVal = element.getAttribute('value')
+    const bar = element.getElementsByClassName('rangeSliderBar')[0]
+    const track = element.getElementsByClassName('rangeSliderTrack')[0]
+    element.setAttribute('value', value)
+    const event = new MouseEvent('change', {
+        target: element,
+        type: 'change',
+        bubbles: false,
+        cancelable: true
+    })
+    let cancelled = !element.dispatchEvent(event)
+    if(!cancelled){
+        track.style.left = notch + '%'
+        bar.style.width = notch + '%'
+    } else {
+        element.setAttribute('value', oldVal)
+    }
+}
+
+function prepareJavaTab(){
+    bindRangeSlider()
+}
+
+
+/**
  * Settings preparation functions.
  */
 
@@ -335,6 +438,7 @@ function prepareSettings(first = false) {
     }
     initSettingsValues()
     prepareAccountsTab()
+    prepareJavaTab()
 }
 
 // Prepare the settings UI on startup.

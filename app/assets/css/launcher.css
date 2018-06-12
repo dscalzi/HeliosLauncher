@@ -948,6 +948,11 @@ body, button {
     text-shadow: none;
 }
 
+/* Div to add some space between nav items. */
+.settingsNavSpacer {
+    height: 25px;
+}
+
 /* Content container for the done button. */
 #settingsNavContentBottom {
     position: absolute;
@@ -1120,6 +1125,33 @@ input:checked + .toggleSwitchSlider {
 }
 input:checked + .toggleSwitchSlider:before {
     transform: translateX(21px);
+}
+
+/* Range Slider styles. */
+.rangeSlider {
+    width: 35%;
+    height: 5px;
+    margin: 15px 0px;
+    background: grey;
+    border-radius: 3px;
+    position: relative;
+}
+.rangeSliderBar {
+    position: absolute;
+    background: #8be88b;
+    width: 50%;
+    height: 5px;
+    border-radius: 3px 0px 0px 3px;
+}
+.rangeSliderTrack {
+    position: absolute;
+    top: -7.5px;
+    width: 7px;
+    height: 20px;
+    background: white;
+    border-radius: 3px;
+    left: 50%;
+    cursor: ew-resize;
 }
 
 /* * *

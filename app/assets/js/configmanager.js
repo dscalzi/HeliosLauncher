@@ -9,9 +9,24 @@ const dataPath = path.join(sysRoot, '.westeroscraft')
 
 const firstLaunch = !fs.existsSync(dataPath)
 
+exports.getAbsoluteMinRAM = function(){
+    const mem = os.totalmem()
+    return mem >= 6000000000 ? 3 : 2
+}
+
+exports.getAbsoluteMaxRAM = function(){
+    const mem = os.totalmem()
+    const gT16 = mem-16000000000
+    return Math.floor((mem-1000000000-(gT16 > 0 ? (Number.parseInt(gT16/8) + 16000000000/4) : mem/4))/1000000000)
+}
+
 function resolveMaxRAM(){
     const mem = os.totalmem()
     return mem >= 8000000000 ? '4G' : (mem >= 6000000000 ? '3G' : '2G')
+}
+
+function resolveMinRAM(){
+    return exports.getAbsoluteMinRAM() + 'G'
 }
 
 /**
@@ -23,7 +38,7 @@ function resolveMaxRAM(){
 const DEFAULT_CONFIG = {
     settings: {
         java: {
-            minRAM: '2G',
+            minRAM: resolveMinRAM(),
             maxRAM: resolveMaxRAM(), // Dynamic
             executable: null,
             jvmOptions: [

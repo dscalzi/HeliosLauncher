@@ -10,6 +10,9 @@
                     <button class="settingsNavItem" rSc="settingsTabMinecraft">Minecraft</button>
                     <button class="settingsNavItem" rSc="settingsTabJava">Java</button>
                     <button class="settingsNavItem" rSc="settingsTabLauncher">Launcher</button>
+                    <div class="settingsNavSpacer"></div>
+                    <button class="settingsNavItem" rSc="settingsTabAbout">About</button>
+                    <button class="settingsNavItem" rSc="settingsTabUpdates">Updates</button>
                     <div id="settingsNavContentBottom">
                         <div class="settingsNavDivider"></div>
                         <button id="settingsNavDone">Done</button>
@@ -92,6 +95,14 @@
                 <span class="settingsTabHeaderText">Java Settings</span>
                 <span class="settingsTabHeaderDesc">Manage the Java configuration (advanced).</span>
             </div>
+            <div id="settingsMaxRAMRange" class="rangeSlider" cValue="MaxRAM" min="3" max="8" value="8" step="0.5">
+                <div class="rangeSliderBar"></div>
+                <div class="rangeSliderTrack"></div>
+            </div>
+            <div id="settingsMinRAMRange" class="rangeSlider" cValue="MinRAM" min="3" max="8" value="8" step="0.5">
+                <div class="rangeSliderBar"></div>
+                <div class="rangeSliderTrack"></div>
+            </div>
         </div>
         <div id="settingsTabLauncher" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
@@ -109,6 +120,18 @@
                         <span class="toggleSwitchSlider"></span>
                     </label>
                 </div>
+            </div>
+        </div>
+        <div id="settingsTabAbout" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">About</span>
+                <span class="settingsTabHeaderDesc">Lorem ipsum dolor sit amet.</span>
+            </div>
+        </div>
+        <div id="settingsTabUpdates" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Software Updates</span>
+                <span class="settingsTabHeaderDesc">Manage and review application updates.</span>
             </div>
         </div>
     </div>
