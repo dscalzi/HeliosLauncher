@@ -1245,6 +1245,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 .settingsAuthAccountDetailValue {
     font-size: 14px;
+    -webkit-user-select: initial;
 }
 
 /* Account actions container. */
@@ -1520,6 +1521,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 82vh;
     width: 82vw;
     display: flex;
+    -webkit-user-select: initial;
 }
 
 /* News article status container (left). */
@@ -1543,8 +1545,6 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 20px;
     font-weight: bold;
     font-family: 'Avenir Medium';
-}
-#newsArticleTitle {
     color: white;
     text-decoration: none;
     transition: 0.25s ease;
@@ -1659,6 +1659,7 @@ input:checked + .toggleSwitchSlider:before {
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;
+    -webkit-user-select: none;
 }
 
 /* Navigation status span. */
@@ -1920,6 +1921,7 @@ input:checked + .toggleSwitchSlider:before {
     position: absolute;
     right: 95px;
     text-align: right;
+    -webkit-user-select: initial;
 }
 
 /* Social media icon content container. */
@@ -2459,12 +2461,14 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 20px;
     font-weight: bold;
     letter-spacing: 1px;
+    -webkit-user-select: initial;
 }
 
 /* Overlay description styles. */
 #overlayDesc {
     font-size: 12px;
     font-weight: bold;
+    -webkit-user-select: initial;
 }
 
 /* Div which contains action buttons. */
@@ -2596,8 +2600,8 @@ input:checked + .toggleSwitchSlider:before {
 
 .accountListing {
     color: white;
-    border: 1px solid rgba(170, 170, 170, 0.5);
-    border-radius: 4px;
+    border: 1px solid rgba(126, 126, 126, 0.57);
+    border-radius: 3px;
     padding: 5px 45px;
     width: 250px;
     display: flex;
@@ -2607,7 +2611,7 @@ input:checked + .toggleSwitchSlider:before {
     transition: 0.25s ease;
     cursor: pointer;
     position: relative;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.25);
 }
 .accountListing[selected] {
     cursor: default;
