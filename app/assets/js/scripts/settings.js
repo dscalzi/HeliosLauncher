@@ -1,3 +1,5 @@
+const os                      = require('os')
+
 const settingsNavDone         = document.getElementById('settingsNavDone')
 
 // Account Management Tab
@@ -11,6 +13,10 @@ const settingsGameHeight      = document.getElementById('settingsGameHeight')
 // Java Tab
 const settingsMaxRAMRange     = document.getElementById('settingsMaxRAMRange')
 const settingsMinRAMRange     = document.getElementById('settingsMinRAMRange')
+const settingsMaxRAMLabel     = document.getElementById('settingsMaxRAMLabel')
+const settingsMinRAMLabel     = document.getElementById('settingsMinRAMLabel')
+const settingsMemoryTotal     = document.getElementById('settingsMemoryTotal')
+const settingsMemoryAvail     = document.getElementById('settingsMemoryAvail')
 
 const settingsState = {
     invalid: new Set()
@@ -73,7 +79,20 @@ function initSettingsValues(){
                 }
             } else if(v.tagName === 'DIV'){
                 if(v.classList.contains('rangeSlider')){
-                    v.setAttribute('value', Number.parseFloat(gFn()))
+                    // Special Conditions
+                    const cVal = v.getAttribute('cValue')
+                    if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
+                        let val = gFn()
+                        if(val.endsWith('M')){
+                            val = Number(val.substring(0, val.length-1))/1000
+                        } else {
+                            val = Number.parseFloat(val)
+                        }
+
+                        v.setAttribute('value', val)
+                    } else {
+                        v.setAttribute('value', Number.parseFloat(gFn()))
+                    }
                 }
             }
         }
@@ -98,6 +117,23 @@ function saveSettingsValues(){
                     const cVal = v.getAttribute('cValue')
                     if(cVal === 'AllowPrerelease'){
                         changeAllowPrerelease(v.checked)
+                    }
+                }
+            } else if(v.tagName === 'DIV'){
+                if(v.classList.contains('rangeSlider')){
+                    // Special Conditions
+                    const cVal = v.getAttribute('cValue')
+                    if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
+                        let val = Number(v.getAttribute('value'))
+                        if(val%1 > 0){
+                            val = val*1000 + 'M'
+                        } else {
+                            val = val + 'G'
+                        }
+
+                        sFn(val)
+                    } else {
+                        sFn(v.getAttribute('value'))
                     }
                 }
             }
@@ -343,14 +379,21 @@ settingsMinRAMRange.onchange = (e) => {
         const sliderMeta = calculateRangeSliderMeta(settingsMaxRAMRange)
         updateRangedSlider(settingsMaxRAMRange, sMinV,
         (1+(sMinV-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
+        settingsMaxRAMLabel.innerHTML = sMinV.toFixed(1) + 'G'
     }
+    settingsMinRAMLabel.innerHTML = sMinV.toFixed(1) + 'G'
 }
+
 settingsMaxRAMRange.onchange = (e) => {
     const sMaxV = Number(settingsMaxRAMRange.getAttribute('value'))
     const sMinV = Number(settingsMinRAMRange.getAttribute('value'))
     if(sMaxV < sMinV){
-        e.preventDefault()
+        const sliderMeta = calculateRangeSliderMeta(settingsMaxRAMRange)
+        updateRangedSlider(settingsMinRAMRange, sMaxV,
+        (1+(sMaxV-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
+        settingsMinRAMLabel.innerHTML = sMaxV.toFixed(1) + 'G'
     }
+    settingsMaxRAMLabel.innerHTML = sMaxV.toFixed(1) + 'G'
 }
 
 function calculateRangeSliderMeta(v){
@@ -387,7 +430,7 @@ function bindRangeSlider(){
 
                     const perc = (diff/v.offsetWidth)*100
                     const notch = Number(perc/sliderMeta.inc).toFixed(0)*sliderMeta.inc
-
+                    console.log(notch, perc)
                     if(Math.abs(perc-notch) < sliderMeta.inc/2){
                         updateRangedSlider(v, sliderMeta.min+(sliderMeta.step*((notch/sliderMeta.inc)-1)), notch)
                     }
@@ -417,8 +460,14 @@ function updateRangedSlider(element, value, notch){
     }
 }
 
+function bindMemoryStatus(){
+    settingsMemoryTotal.innerHTML = Number((os.totalmem()-1000000000)/1000000000).toFixed(1) + 'G'
+    settingsMemoryAvail.innerHTML = Number(os.freemem()/1000000000).toFixed(1) + 'G'
+}
+
 function prepareJavaTab(){
     bindRangeSlider()
+    bindMemoryStatus()
 }
 
 

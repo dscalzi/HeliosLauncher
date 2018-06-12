@@ -95,13 +95,45 @@
                 <span class="settingsTabHeaderText">Java Settings</span>
                 <span class="settingsTabHeaderDesc">Manage the Java configuration (advanced).</span>
             </div>
-            <div id="settingsMaxRAMRange" class="rangeSlider" cValue="MaxRAM" min="3" max="8" value="8" step="0.5">
-                <div class="rangeSliderBar"></div>
-                <div class="rangeSliderTrack"></div>
-            </div>
-            <div id="settingsMinRAMRange" class="rangeSlider" cValue="MinRAM" min="3" max="8" value="8" step="0.5">
-                <div class="rangeSliderBar"></div>
-                <div class="rangeSliderTrack"></div>
+            <div id="settingsMemoryContainer">
+                <div id="settingsMemoryTitle">Memory</div>
+                <div id="settingsMemoryContent">
+                    <div id="settingsMemoryContentLeft">
+                        <div class="settingsMemoryContentItem">
+                            <span class="settingsMemoryHeader">Maximum RAM</span>
+                            <div class="settingsMemoryActionContainer">
+                                <div id="settingsMaxRAMRange" class="rangeSlider" cValue="MaxRAM" min="3" max="8" value="3" step="0.5">
+                                    <div class="rangeSliderBar"></div>
+                                    <div class="rangeSliderTrack"></div>
+                                </div>
+                                <span id="settingsMaxRAMLabel" class="settingsMemoryLabel">3G</span>
+                            </div>
+                        </div>
+                        <div class="settingsMemoryContentItem">
+                            <span class="settingsMemoryHeader">Minimum RAM</span>
+                            <div class="settingsMemoryActionContainer">
+                                <div id="settingsMinRAMRange" class="rangeSlider" cValue="MinRAM" min="3" max="8" value="3" step="0.5">
+                                    <div class="rangeSliderBar"></div>
+                                    <div class="rangeSliderTrack"></div>
+                                </div>
+                                <span id="settingsMinRAMLabel" class="settingsMemoryLabel">3G</span>
+                            </div>
+                        </div>
+                        <div id="settingsMemoryDesc">The recommended minimum RAM is 3 gigabytes. Setting the minimum and maximum values to the same value may reduce lag.</div>
+                    </div>
+                    <div id="settingsMemoryContentRight">
+                        <div id="settingsMemoryStatus">
+                            <div class="settingsMemoryStatusContainer">
+                                <span class="settingsMemoryStatusTitle">Total</span>
+                                <span id="settingsMemoryTotal" class="settingsMemoryStatusValue">16G</span>
+                            </div>
+                            <div class="settingsMemoryStatusContainer">
+                                <span class="settingsMemoryStatusTitle">Available</span>
+                                <span id="settingsMemoryAvail" class="settingsMemoryStatusValue">7.3G</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="settingsTabLauncher" class="settingsTab" style="display: none;">
