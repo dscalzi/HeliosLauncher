@@ -94,7 +94,7 @@
     },
     "compression": "maximum",
     "files": [
-      "!{target,logs,.vscode,docs,dev-app-update.yml}"
+      "!{target,logs,.vscode,docs,dev-app-update.yml,.nvmrc}"
     ],
     "extraResources": [
       "libraries"
