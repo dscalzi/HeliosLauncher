@@ -1143,6 +1143,7 @@ input:checked + .toggleSwitchSlider:before {
     width: 50%;
     height: 5px;
     border-radius: 3px 0px 0px 3px;
+    transition: background 0.25s ease;
 }
 .rangeSliderTrack {
     position: absolute;

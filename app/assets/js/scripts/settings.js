@@ -375,10 +375,19 @@ settingsMinRAMRange.setAttribute('min', ConfigManager.getAbsoluteMinRAM())
 settingsMinRAMRange.onchange = (e) => {
     const sMaxV = Number(settingsMaxRAMRange.getAttribute('value'))
     const sMinV = Number(settingsMinRAMRange.getAttribute('value'))
+    const bar = e.target.getElementsByClassName('rangeSliderBar')[0]
+    const max = (os.totalmem()-1000000000)/1000000000
+    if(sMinV >= max/2){
+        bar.style.background = '#e86060'
+    } else if(sMinV >= max/4) {
+        bar.style.background = '#e8e18b'
+    } else {
+        bar.style.background = null
+    }
     if(sMaxV < sMinV){
         const sliderMeta = calculateRangeSliderMeta(settingsMaxRAMRange)
         updateRangedSlider(settingsMaxRAMRange, sMinV,
-        (1+(sMinV-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
+        ((sMinV-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
         settingsMaxRAMLabel.innerHTML = sMinV.toFixed(1) + 'G'
     }
     settingsMinRAMLabel.innerHTML = sMinV.toFixed(1) + 'G'
@@ -387,10 +396,19 @@ settingsMinRAMRange.onchange = (e) => {
 settingsMaxRAMRange.onchange = (e) => {
     const sMaxV = Number(settingsMaxRAMRange.getAttribute('value'))
     const sMinV = Number(settingsMinRAMRange.getAttribute('value'))
+    const bar = e.target.getElementsByClassName('rangeSliderBar')[0]
+    const max = (os.totalmem()-1000000000)/1000000000
+    if(sMaxV >= max/2){
+        bar.style.background = '#e86060'
+    } else if(sMaxV >= max/4) {
+        bar.style.background = '#e8e18b'
+    } else {
+        bar.style.background = null
+    }
     if(sMaxV < sMinV){
         const sliderMeta = calculateRangeSliderMeta(settingsMaxRAMRange)
         updateRangedSlider(settingsMinRAMRange, sMaxV,
-        (1+(sMaxV-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
+        ((sMaxV-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
         settingsMinRAMLabel.innerHTML = sMaxV.toFixed(1) + 'G'
     }
     settingsMaxRAMLabel.innerHTML = sMaxV.toFixed(1) + 'G'
@@ -402,7 +420,7 @@ function calculateRangeSliderMeta(v){
         min: Number(v.getAttribute('min')),
         step: Number(v.getAttribute('step')),
     }
-    val.ticks = 1+(val.max-val.min)/val.step
+    val.ticks = (val.max-val.min)/val.step
     val.inc = 100/val.ticks
     return val
 }
@@ -414,7 +432,7 @@ function bindRangeSlider(){
         const value = v.getAttribute('value')
         const sliderMeta = calculateRangeSliderMeta(v)
         updateRangedSlider(v, value, 
-            (1+(value-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
+            ((value-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
 
         track.onmousedown = (e) => {
 
@@ -430,9 +448,9 @@ function bindRangeSlider(){
 
                     const perc = (diff/v.offsetWidth)*100
                     const notch = Number(perc/sliderMeta.inc).toFixed(0)*sliderMeta.inc
-                    console.log(notch, perc)
+
                     if(Math.abs(perc-notch) < sliderMeta.inc/2){
-                        updateRangedSlider(v, sliderMeta.min+(sliderMeta.step*((notch/sliderMeta.inc)-1)), notch)
+                        updateRangedSlider(v, sliderMeta.min+(sliderMeta.step*(notch/sliderMeta.inc)), notch)
                     }
                 }
             }
