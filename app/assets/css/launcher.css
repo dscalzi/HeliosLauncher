@@ -1337,6 +1337,21 @@ input:checked + .toggleSwitchSlider:before {
 * Settings View (Java Tab)
 * * */
 
+/* Style links on the Java tab. */
+#settingsTabJava a {
+    color: rgba(202, 202, 202, 0.75);
+    transition: 0.25s ease;
+    outline: none;
+}
+#settingsTabJava a:hover,
+#settingsTabJava a:focus {
+    color: rgba(255, 255, 255, 0.75);
+}
+#settingsTabJava a:active {
+    color: rgba(165, 165, 165, 0.75);
+}
+
+/* Main container for memory management. */
 #settingsMemoryContainer {
     width: 75%;
     display: flex;
@@ -1345,12 +1360,14 @@ input:checked + .toggleSwitchSlider:before {
     margin-bottom: 20px;
 }
 
+/* Memory management title. */
 #settingsMemoryTitle {
     margin-bottom: 10px;
     padding-bottom: 5px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 }
 
+/* Memory management content. */
 #settingsMemoryContent {
     display: flex;
     justify-content: space-between;
@@ -1365,33 +1382,31 @@ input:checked + .toggleSwitchSlider:before {
     margin-right: 10%;
 }
 
+/* Header for memory sliders. */
 .settingsMemoryHeader {
     font-size: 14px;
 }
 
+/* Wrapper container for a memory slider and label. */
 .settingsMemoryActionContainer {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
+/* Label which displays a memory slider's value. */
 .settingsMemoryLabel {
     font-size: 14px;
     margin-right: 3%;
 }
 
-#settingsMemoryDesc {
-    font-size: 10px;
-    margin: 20px 0px;
-    color: lightgrey;
-    font-weight: bold;
-}
-
+/* Range sliders for min and max memory settings. */
 #settingsMaxRAMRange,
 #settingsMinRAMRange {
     width: 85%;
 }
 
+/* Memory status elements. */
 #settingsMemoryStatus {
     display: flex;
     flex-direction: column;
@@ -1414,6 +1429,15 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 16px;
 }
 
+/* Description for memory management. */
+#settingsMemoryDesc {
+    font-size: 10px;
+    margin: 20px 0px;
+    color: lightgrey;
+    font-weight: bold;
+}
+
+/* Main container for the Java executable setting. */
 #settingsJavaExecContainer {
     display: flex;
     flex-direction: column;
@@ -1422,40 +1446,48 @@ input:checked + .toggleSwitchSlider:before {
     width: 75%;
 }
 
+/* Java executable setting title. */
 #settingsJavaExecTitle {
     margin-bottom: 10px;
 }
 
+/* Status text which displays details on the selected executable. */
 #settingsJavaExecDetails {
     font-weight: bold;
     color: grey;
     font-size: 12px;
 }
 
+/* Wrapper container for the actionable elements. */
 #settingsJavaExecActions {
     display: flex;
+    width: 90%;
 }
 
-#settingsJavaExecIcon {
+/* Java icon settings. */
+.settingsJavaIcon {
     display: flex;
     align-items: center;
     background: rgba(126, 126, 126, 0.57);
     border-radius: 3px 0px 0px 3px;
     padding: 5px;
+    transition: 0.25s ease;
 }
-#settingsJavaExecSVG {
+.settingsJavaIconSVG {
     width: 20px;
     height: 20px;
     fill: white;
 }
 
+/* Disabled text field which stores the selected executable path. */
 #settingsJavaExecVal {
     border-radius: 0px !important;
-    width: 70%;
+    width: 100%;
     padding: 5px 10px;
     font-size: 12px;
 }
 
+/* File input for executable selection. */
 #settingsJavaExecSel {
     width: 0px;
     height: 0px;
@@ -1465,6 +1497,7 @@ input:checked + .toggleSwitchSlider:before {
     display: none;
 }
 
+/* Wrapper label to add a custom style to the file input. */
 #settingsJavaExecLabel {
     border-left: 0px;
     border-radius: 0px 3px 3px 0px;
@@ -1475,6 +1508,7 @@ input:checked + .toggleSwitchSlider:before {
     align-items: center;
     background: rgba(126, 126, 126, 0.57);
     transition: 0.25s ease;
+    white-space: nowrap;
 }
 #settingsJavaExecLabel:hover,
 #settingsJavaExecLabel:focus,
@@ -1482,6 +1516,7 @@ input:checked + .toggleSwitchSlider:before {
     text-shadow: 0px 0px 20px white;
 }
 
+/* Description for the Java executable setting. */
 #settingsJavaExecDesc {
     font-size: 10px;
     margin: 20px 0px;
@@ -1491,6 +1526,42 @@ input:checked + .toggleSwitchSlider:before {
 }
 #settingsJavaExecDesc strong {
     font-family: 'Avenir Medium';
+}
+
+/* Main container for the JVM options setting. */
+#settingsJVMOptsContainer {
+    width: 75%;
+}
+
+/* JVM options title. */
+#settingsJVMOptsTitle {
+    margin-bottom: 10px;
+}
+
+/* Wrapper container for the actionable elements. */
+#settingsJVMOptsContent {
+    display: flex;
+    width: 90%;
+}
+
+/* Text field to input the JVM options. */
+#settingsJVMOptsVal {
+    border-radius: 0px 3px 3px 0px !important;
+    width: 100%;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+#settingsJVMOptsContent:focus-within > .settingsJavaIcon {
+    background: rgba(126, 126, 126, 0.87);
+}
+
+/* Description for the JVM options setting. */
+#settingsJVMOptsDesc {
+    font-size: 10px;
+    margin: 20px 0px;
+    color: lightgrey;
+    font-weight: bold;
+    width: 89%;
 }
 
 /*******************************************************************************
