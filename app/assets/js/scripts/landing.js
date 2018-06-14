@@ -313,12 +313,16 @@ function asyncSystemScan(launchAfter = true){
                 })
                 toggleOverlay(true, true)
 
-                // TODO Add option to not install Java x64.
-
             } else {
                 // Java installation found, use this to launch the game.
                 ConfigManager.setJavaExecutable(m.result)
                 ConfigManager.save()
+
+                // We need to make sure that the updated value is on the settings UI.
+                // Just incase the settings UI is already open.
+                settingsJavaExecVal.value = m.result
+                populateJavaExecDetails(settingsJavaExecVal.value)
+
                 if(launchAfter){
                     dlAsync()
                 }

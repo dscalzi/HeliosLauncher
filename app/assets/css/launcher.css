@@ -1342,6 +1342,7 @@ input:checked + .toggleSwitchSlider:before {
     display: flex;
     flex-direction: column;
     border-bottom: 1px solid rgba(255, 255, 255, 0.50);
+    margin-bottom: 20px;
 }
 
 #settingsMemoryTitle {
@@ -1411,6 +1412,85 @@ input:checked + .toggleSwitchSlider:before {
 .settingsMemoryStatusValue {
     color: lightgrey;
     font-size: 16px;
+}
+
+#settingsJavaExecContainer {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.50);
+    margin-bottom: 20px;
+    width: 75%;
+}
+
+#settingsJavaExecTitle {
+    margin-bottom: 10px;
+}
+
+#settingsJavaExecDetails {
+    font-weight: bold;
+    color: grey;
+    font-size: 12px;
+}
+
+#settingsJavaExecActions {
+    display: flex;
+}
+
+#settingsJavaExecIcon {
+    display: flex;
+    align-items: center;
+    background: rgba(126, 126, 126, 0.57);
+    border-radius: 3px 0px 0px 3px;
+    padding: 5px;
+}
+#settingsJavaExecSVG {
+    width: 20px;
+    height: 20px;
+    fill: white;
+}
+
+#settingsJavaExecVal {
+    border-radius: 0px !important;
+    width: 70%;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+#settingsJavaExecSel {
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+}
+#settingsJavaExecSel::-webkit-file-upload-button {
+    display: none;
+}
+
+#settingsJavaExecLabel {
+    border-left: 0px;
+    border-radius: 0px 3px 3px 0px;
+    font-size: 12px;
+    padding: 0px 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background: rgba(126, 126, 126, 0.57);
+    transition: 0.25s ease;
+}
+#settingsJavaExecLabel:hover,
+#settingsJavaExecLabel:focus,
+#settingsJavaExecSel:focus ~ #settingsJavaExecLabel {
+    text-shadow: 0px 0px 20px white;
+}
+
+#settingsJavaExecDesc {
+    font-size: 10px;
+    margin: 20px 0px;
+    color: lightgrey;
+    font-weight: bold;
+    width: 89%;
+}
+#settingsJavaExecDesc strong {
+    font-family: 'Avenir Medium';
 }
 
 /*******************************************************************************

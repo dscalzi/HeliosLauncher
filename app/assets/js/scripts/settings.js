@@ -17,6 +17,9 @@ const settingsMaxRAMLabel     = document.getElementById('settingsMaxRAMLabel')
 const settingsMinRAMLabel     = document.getElementById('settingsMinRAMLabel')
 const settingsMemoryTotal     = document.getElementById('settingsMemoryTotal')
 const settingsMemoryAvail     = document.getElementById('settingsMemoryAvail')
+const settingsJavaExecDetails  = document.getElementById('settingsJavaExecDetails')
+const settingsJavaExecVal      = document.getElementById('settingsJavaExecVal')
+const settingsJavaExecSel      = document.getElementById('settingsJavaExecSel')
 
 const settingsState = {
     invalid: new Set()
@@ -74,6 +77,12 @@ function initSettingsValues(){
             if(v.tagName === 'INPUT'){
                 if(v.type === 'number' || v.type === 'text'){
                    v.value = gFn()
+
+                   // Special Conditions
+                   const cVal = v.getAttribute('cValue')
+                    if(cVal === 'JavaExecutable'){
+                        populateJavaExecDetails(v.value)
+                    }
                 } else if(v.type === 'checkbox'){
                     v.checked = gFn()
                 }
@@ -412,6 +421,21 @@ settingsMaxRAMRange.onchange = (e) => {
         settingsMinRAMLabel.innerHTML = sMaxV.toFixed(1) + 'G'
     }
     settingsMaxRAMLabel.innerHTML = sMaxV.toFixed(1) + 'G'
+}
+
+settingsJavaExecSel.onchange = (e) => {
+    settingsJavaExecVal.value = settingsJavaExecSel.files[0].path
+    populateJavaExecDetails(settingsJavaExecVal.value)
+}
+
+function populateJavaExecDetails(execPath){
+    AssetGuard._validateJavaBinary(execPath).then(v => {
+        if(v.valid){
+            settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major} Update ${v.version.update} (x${v.arch})`
+        } else {
+            settingsJavaExecDetails.innerHTML = 'Invalid Selection'
+        }
+    })
 }
 
 function calculateRangeSliderMeta(v){

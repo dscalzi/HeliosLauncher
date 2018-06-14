@@ -767,7 +767,9 @@ class AssetGuard extends EventEmitter {
     static _validateJavaBinary(binaryExecPath){
 
         return new Promise((resolve, reject) => {
-            if(fs.existsSync(binaryExecPath)){
+            if(!AssetGuard.isJavaExecPath(binaryExecPath)){
+                resolve({valid: false})
+            } else if(fs.existsSync(binaryExecPath)){
                 child_process.exec('"' + binaryExecPath + '" -XshowSettings:properties', (err, stdout, stderr) => {
                     try {
                         // Output is stored in stderr?
