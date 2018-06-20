@@ -1,26 +1,6 @@
-const os                      = require('os')
-
-const settingsNavDone         = document.getElementById('settingsNavDone')
-
-// Account Management Tab
-const settingsAddAccount      = document.getElementById('settingsAddAccount')
-const settingsCurrentAccounts = document.getElementById('settingsCurrentAccounts')
-
-// Minecraft Tab
-const settingsGameWidth       = document.getElementById('settingsGameWidth')
-const settingsGameHeight      = document.getElementById('settingsGameHeight')
-
-// Java Tab
-const settingsMaxRAMRange     = document.getElementById('settingsMaxRAMRange')
-const settingsMinRAMRange     = document.getElementById('settingsMinRAMRange')
-const settingsMaxRAMLabel     = document.getElementById('settingsMaxRAMLabel')
-const settingsMinRAMLabel     = document.getElementById('settingsMinRAMLabel')
-const settingsMemoryTotal     = document.getElementById('settingsMemoryTotal')
-const settingsMemoryAvail     = document.getElementById('settingsMemoryAvail')
-const settingsJavaExecDetails = document.getElementById('settingsJavaExecDetails')
-const settingsJavaExecVal     = document.getElementById('settingsJavaExecVal')
-const settingsJavaExecSel     = document.getElementById('settingsJavaExecSel')
-const settingsJVMOptsVal      = document.getElementById('settingsJVMOptsVal')
+// Requirements
+const os     = require('os')
+const semver = require('semver')
 
 const settingsState = {
     invalid: new Set()
@@ -187,6 +167,8 @@ function setupSettingsTabs(){
     })
 }
 
+const settingsNavDone = document.getElementById('settingsNavDone')
+
 /**
  * Set if the settings save (done) button is disabled.
  * 
@@ -208,7 +190,7 @@ settingsNavDone.onclick = () => {
  */
 
 // Bind the add account button.
-settingsAddAccount.onclick = (e) => {
+document.getElementById('settingsAddAccount').onclick = (e) => {
     switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
         loginViewOnCancel = VIEWS.settings
         loginViewOnSuccess = VIEWS.settings
@@ -318,6 +300,8 @@ function refreshAuthAccountSelected(uuid){
     })
 }
 
+const settingsCurrentAccounts = document.getElementById('settingsCurrentAccounts')
+
 /**
  * Add auth account elements for each one stored in the authentication database.
  */
@@ -374,12 +358,12 @@ function prepareAccountsTab() {
  /**
   * Disable decimals, negative signs, and scientific notation.
   */
-settingsGameWidth.addEventListener('keydown', (e) => {
+ document.getElementById('settingsGameWidth').addEventListener('keydown', (e) => {
     if(/[-\.eE]/.test(e.key)){
         e.preventDefault()
     }
 })
-settingsGameHeight.addEventListener('keydown', (e) => {
+document.getElementById('settingsGameHeight').addEventListener('keydown', (e) => {
     if(/[-\.eE]/.test(e.key)){
         e.preventDefault()
     }
@@ -388,6 +372,17 @@ settingsGameHeight.addEventListener('keydown', (e) => {
 /**
  * Java Tab
  */
+
+// DOM Cache
+const settingsMaxRAMRange     = document.getElementById('settingsMaxRAMRange')
+const settingsMinRAMRange     = document.getElementById('settingsMinRAMRange')
+const settingsMaxRAMLabel     = document.getElementById('settingsMaxRAMLabel')
+const settingsMinRAMLabel     = document.getElementById('settingsMinRAMLabel')
+const settingsMemoryTotal     = document.getElementById('settingsMemoryTotal')
+const settingsMemoryAvail     = document.getElementById('settingsMemoryAvail')
+const settingsJavaExecDetails = document.getElementById('settingsJavaExecDetails')
+const settingsJavaExecVal     = document.getElementById('settingsJavaExecVal')
+const settingsJavaExecSel     = document.getElementById('settingsJavaExecSel')
 
 // Store maximum memory values.
 const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM()
@@ -597,6 +592,80 @@ function prepareJavaTab(){
     populateMemoryStatus()
 }
 
+/**
+ * About Tab
+ */
+
+const settingsAboutCurrentVersionCheck = document.getElementById('settingsAboutCurrentVersionCheck')
+const settingsAboutCurrentVersionTitle = document.getElementById('settingsAboutCurrentVersionTitle')
+const settingsAboutCurrentVersionValue = document.getElementById('settingsAboutCurrentVersionValue')
+const settingsChangelogTitle           = document.getElementById('settingsChangelogTitle')
+const settingsChangelogText            = document.getElementById('settingsChangelogText')
+const settingsChangelogButton          = document.getElementById('settingsChangelogButton')
+
+// Bind the devtools toggle button.
+document.getElementById('settingsAboutDevToolsButton').onclick = (e) => {
+    let window = remote.getCurrentWindow()
+    window.toggleDevTools()
+}
+
+/**
+ * Retrieve the version information and display it on the UI.
+ */
+function populateVersionInformation(){
+    const version = remote.app.getVersion()
+
+    settingsAboutCurrentVersionValue.innerHTML = version
+    const preRelComp = semver.prerelease(version)
+    if(preRelComp != null && preRelComp.length > 0){
+        settingsAboutCurrentVersionTitle.innerHTML = 'Pre-release'
+        settingsAboutCurrentVersionTitle.style.color = '#ff886d'
+        settingsAboutCurrentVersionCheck.style.background = '#ff886d'
+    } else {
+        settingsAboutCurrentVersionTitle.innerHTML = 'Stable Release'
+        settingsAboutCurrentVersionTitle.style.color = null
+        settingsAboutCurrentVersionCheck.style.background = null
+    }
+}
+
+/**
+ * Fetches the GitHub atom release feed and parses it for the release notes
+ * of the current version. This value is displayed on the UI.
+ */
+function populateReleaseNotes(){
+    $.ajax({
+        url: 'https://github.com/WesterosCraftCode/ElectronLauncher/releases.atom',
+        success: (data) => {
+            const version = 'v' + remote.app.getVersion()
+            const entries = $(data).find('entry')
+            
+            for(let i=0; i<entries.length; i++){
+                const entry = $(entries[i])
+                let id = entry.find('id').text()
+                id = id.substring(id.lastIndexOf('/')+1)
+
+                if(id === version){
+                    settingsChangelogTitle.innerHTML = entry.find('title').text()
+                    settingsChangelogText.innerHTML = entry.find('content').text()
+                    settingsChangelogButton.href = entry.find('link').attr('href')
+                }
+            }
+
+        },
+        timeout: 2500
+    }).catch(err => {
+        settingsChangelogText.innerHTML = 'Failed to load release notes.'
+    })
+}
+
+/**
+ * Prepare account tab for display.
+ */
+function prepareAboutTab(){
+    populateVersionInformation()
+    populateReleaseNotes()
+}
+
 
 /**
  * Settings preparation functions.
@@ -615,6 +684,7 @@ function prepareSettings(first = false) {
     initSettingsValues()
     prepareAccountsTab()
     prepareJavaTab()
+    prepareAboutTab()
 }
 
 // Prepare the settings UI on startup.

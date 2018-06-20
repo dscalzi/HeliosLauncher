@@ -1564,6 +1564,196 @@ input:checked + .toggleSwitchSlider:before {
     width: 89%;
 }
 
+/* * *
+* Settings View (About Tab)
+* * */
+
+/* Main about content container. */
+#settingsAboutCurrentContainer {
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(126, 126, 126, 0.57);
+    border-radius: 3px;
+    width: 75%;
+    margin-bottom: 20px;
+}
+
+/* About content. */
+#settingsAboutCurrentContent {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+/* About header elements. */
+#settingsAboutCurrentHeadline {
+    display: flex;
+    align-items: center;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(126, 126, 126, 0.57);
+}
+#settingsAboutLogo {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+}
+#settingsAboutTitle {
+    font-size: 23px;
+    padding-left: 10px;
+}
+
+/* Current version container. */
+#settingsAboutCurrentVersion {
+    display: flex;
+    align-items: center;
+    padding-top: 10px;
+}
+
+/* Checkmark next to the version information. */
+#settingsAboutCurrentVersionCheck {
+    border-radius: 50%;
+    background: #23aa23;
+    text-align: center;
+    font-weight: bold;
+    margin: 11px 12px;
+    color: white;
+    height: 15px;
+    width: 15px;
+    font-size: 12px;
+    line-height: 17px;
+}
+
+/* Current version details container. */
+#settingsAboutCurrentVersionDetails {
+    margin-left: 10px;
+}
+
+/* Release type text. */
+#settingsAboutCurrentVersionTitle {
+    font-size: 12px;
+    font-family: 'Avenir Medium';
+    color: #23aa23;
+    font-weight: bold;
+}
+
+/* Current version text. */
+#settingsAboutCurrentVersionLine {
+    font-size: 10px;
+    color: grey;
+    font-weight: bold;
+}
+
+/* About information links. */
+#settingsAboutButtons {
+    display: flex;
+    padding: 0px 15px;
+    margin-bottom: 5px;
+}
+.settingsAboutButton {
+    background: none;
+    border: none;
+    font-size: 10px;
+    color: grey;
+    padding: 0px 5px;
+    transition: 0.25s ease;
+    outline: none;
+    text-decoration: none;
+}
+.settingsAboutButton:hover,
+.settingsAboutButton:focus {
+    color: rgb(165, 165, 165);
+}
+.settingsAboutButton:active {
+    color: rgba(124, 124, 124, 0.75);
+}
+
+/* Main changelog container. */
+#settingsChangelogContainer {
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(126, 126, 126, 0.57);
+    border-radius: 3px;
+    width: 75%;
+    margin-bottom: 20px;
+}
+
+/* Changelog content container. */
+#settingsChangelogContent {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+/* Changelog header container. */
+#settingsChangelogHeadline {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(126, 126, 126, 0.57);
+}
+/* Changelog header label. */
+#settingsChangelogLabel {
+    font-size: 12px;
+    color: grey;
+    font-weight: bold;
+}
+
+/* Changelog text content container. */
+#settingsChangelogText {
+    font-size: 12px;
+}
+
+/* Styles for the changelog elements. */
+#settingsChangelogText p {
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+#settingsChangelogText blockquote {
+    border-left: 0.25em solid rgba(126, 126, 126, 0.95);
+    margin: 0px;
+    padding: 0 0 0 1em;
+    color: rgba(255, 255, 255, 0.85);
+}
+#settingsChangelogText code {
+    padding: 0.1em 0.4em;
+    font-size: 85%;
+    background-color: rgba(255, 255, 255, 0.25);
+    color: white;
+    border-radius: 3px;
+    font-family: 'Avenir Book';
+}
+#settingsChangelogText li+li {
+    margin-top: .25em;
+}
+#settingsChangelogText a.commit-link {
+    font-weight: 400;
+    color: #ffffff;
+    text-decoration: none;
+}
+#settingsChangelogText a.commit-link:hover {
+    text-decoration: underline;
+    text-decoration-color: black;
+}
+#settingsChangelogText tt {
+    padding: 0.1em 0.4em;
+    font-size: 86%;
+    background-color: white;
+    border-radius: 3px;
+    color: black;
+    font-weight: bold;
+}
+
+/* Container for the changelog button. */
+#settingsChangelogActions {
+    padding: 0px 15px 5px 15px;
+}
+
+/* Open changelog on GitHub. */
+#settingsChangelogButton {
+    padding: 0px;
+}
+
 /*******************************************************************************
  *                                                                             *
  * Landing View (Structural Styles)                                            *

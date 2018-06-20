@@ -8,11 +8,11 @@
                 <div id="settingsNavItemsContent">
                     <button class="settingsNavItem" rSc="settingsTabAccount" selected>Account</button>
                     <button class="settingsNavItem" rSc="settingsTabMinecraft">Minecraft</button>
+                    <button class="settingsNavItem" rSc="settingsTabMods">Mods</button>
                     <button class="settingsNavItem" rSc="settingsTabJava">Java</button>
                     <button class="settingsNavItem" rSc="settingsTabLauncher">Launcher</button>
                     <div class="settingsNavSpacer"></div>
                     <button class="settingsNavItem" rSc="settingsTabAbout">About</button>
-                    <button class="settingsNavItem" rSc="settingsTabUpdates">Updates</button>
                     <div id="settingsNavContentBottom">
                         <div class="settingsNavDivider"></div>
                         <button id="settingsNavDone">Done</button>
@@ -88,6 +88,12 @@
                         <span class="toggleSwitchSlider"></span>
                     </label>
                 </div>
+            </div>
+        </div>
+        <div id="settingsTabMods" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Mod Settings</span>
+                <span class="settingsTabHeaderDesc">Enable or disable mods.</span>
             </div>
         </div>
         <div id="settingsTabJava" class="settingsTab" style="display: none;">
@@ -204,13 +210,45 @@
         <div id="settingsTabAbout" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
                 <span class="settingsTabHeaderText">About</span>
-                <span class="settingsTabHeaderDesc">Lorem ipsum dolor sit amet.</span>
+                <span class="settingsTabHeaderDesc">View information and release notes for the current version.</span>
             </div>
-        </div>
-        <div id="settingsTabUpdates" class="settingsTab" style="display: none;">
-            <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText">Software Updates</span>
-                <span class="settingsTabHeaderDesc">Manage and review application updates.</span>
+            <div id="settingsAboutCurrentContainer">
+                <div id="settingsAboutCurrentContent">
+                    <div id="settingsAboutCurrentHeadline">
+                        <img id="settingsAboutLogo" src="./assets/images/WesterosSealSquare.png">
+                        <span id="settingsAboutTitle">WesterosCraft Launcher</span>
+                    </div>
+                    <div id="settingsAboutCurrentVersion">
+                        <div id="settingsAboutCurrentVersionCheck">&#10003;</div>
+                        <div id="settingsAboutCurrentVersionDetails">
+                            <span id="settingsAboutCurrentVersionTitle">Stable Release</span>
+                            <div id="settingsAboutCurrentVersionLine">
+                                <span id="settingsAboutCurrentVersionText">Version </span>
+                                <span id="settingsAboutCurrentVersionValue">0.0.1-alpha.12</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="settingsAboutButtons">
+                    <a href="https://github.com/WesterosCraftCode/ElectronLauncher" id="settingsAboutSourceButton" class="settingsAboutButton">Source (GitHub)</a>
+                    <a href="http://www.westeroscraft.com/forum/support.40/" id="settingsAboutSupportButton" class="settingsAboutButton">Support</a>
+                    <a href="#" id="settingsAboutDevToolsButton" class="settingsAboutButton">DevTools Console</a>
+                </div>
+            </div>
+            <div class="settingsAboutDivider"></div>
+            <div id="settingsChangelogContainer">
+                <div id="settingsChangelogContent">
+                    <div id="settingsChangelogHeadline">
+                        <div id="settingsChangelogLabel">Release Notes</div>
+                        <div id="settingsChangelogTitle">Changelog</div>
+                    </div>
+                    <div id="settingsChangelogText">
+                        No Release Notes
+                    </div>
+                </div>
+                <div id="settingsChangelogActions">
+                    <a id="settingsChangelogButton" class="settingsAboutButton" href="#">View Release Notes on GitHub</a>
+                </div>
             </div>
         </div>
     </div>
