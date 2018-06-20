@@ -1880,36 +1880,60 @@ input:checked + .toggleSwitchSlider:before {
 /* News content container. */
 #newsContent {
     height: 82vh;
-    width: 82vw;
+    width: 100%;
     display: flex;
     -webkit-user-select: initial;
+    position: relative;
+}
+
+/* Drop shadow displayed when content is scrolled out of view. */
+#newsContent:before {
+    content: '';
+    background: linear-gradient(rgba(0, 0, 0, 0.25), transparent);
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+#newsContent[scrolled]:before {
+    opacity: 1;
 }
 
 /* News article status container (left). */
 #newsStatusContainer {
-    width: 25%;
+    width: calc(30% - 60px);
     height: calc(100% - 30px);
-    padding: 15px;
+    padding: 15px 15px 15px 45px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
 }
 
 /* News status content. */
 #newsStatusContent {
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
+}
+
+/* News title wrapper. */
+#newsTitleContainer {
+    display: flex;
+    max-width: 90%;
 }
 
 /* News article title styles. */
 #newsArticleTitle {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     font-family: 'Avenir Medium';
     color: white;
     text-decoration: none;
     transition: 0.25s ease;
     outline: none;
+    text-align: right;
 }
 #newsArticleTitle:hover,
 #newsArticleTitle:focus {
@@ -1924,6 +1948,13 @@ input:checked + .toggleSwitchSlider:before {
 #newsMetaContainer {
     display: flex;
     flex-direction: column;
+}
+
+/* Date and author wrappers. */
+#newsArticleDateWrapper,
+#newsArticleAuthorWrapper {
+    display: flex;
+    justify-content: flex-end;
 }
 
 /* Date and author shared styles. */
@@ -1957,6 +1988,7 @@ input:checked + .toggleSwitchSlider:before {
     text-decoration: none;
     transition: 0.25s ease;
     outline: none;
+    text-align: right;
 }
 #newsArticleComments:focus,
 #newsArticleComments:hover {
@@ -1968,20 +2000,20 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Article content container (right). */
 #newsArticleContainer {
-    width: 75%;
+    width: calc(100% - 25px);
     height: 100%;
+    margin: 0px 0px 0px 25px;
 }
 
 /* Article content styles. */
 #newsArticleContentScrollable {
     font-size: 12px;
-    max-width: 80%;
-    margin: 25px 35px 0px 25px;
     overflow-y: scroll;
-    height: calc(100% - 25px);
+    height: 100%;
     padding: 0px 15px 0px 15px;
 }
-#newsArticleContentScrollable img {
+#newsArticleContentScrollable img,
+#newsArticleContentScrollable iframe {
     max-width: 95%;
     display: block;
     margin: 0 auto;
@@ -2009,8 +2041,16 @@ input:checked + .toggleSwitchSlider:before {
     box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
 }
 
+#newsArticleContentWrapper {
+    width: 80%;
+}
+
+.newsArticleSpacerTop {
+    height: 15px;
+}
+
 /* Div to add spacing at the end of a news article. */
-.newsArticleSpacer {
+.newsArticleSpacerBot {
     height: 30px;
 }
 
@@ -2021,6 +2061,9 @@ input:checked + .toggleSwitchSlider:before {
     align-items: center;
     margin-bottom: 10px;
     -webkit-user-select: none;
+    position: absolute;
+    bottom: 15px;
+    right: 0px;
 }
 
 /* Navigation status span. */

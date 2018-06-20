@@ -21,17 +21,6 @@ const launch_details_text     = document.getElementById('launch_details_text')
 const server_selection_button = document.getElementById('server_selection_button')
 const user_text               = document.getElementById('user_text')
 
-// News Elements
-const newsContent             = document.getElementById('newsContent')
-const newsArticleTitle        = document.getElementById('newsArticleTitle')
-const newsArticleDate         = document.getElementById('newsArticleDate')
-const newsArticleAuthor       = document.getElementById('newsArticleAuthor')
-const newsArticleComments     = document.getElementById('newsArticleComments')
-const newsNavigationStatus    = document.getElementById('newsNavigationStatus')
-const newsArticleContent      = document.getElementById('newsArticleContentScrollable')
-const newsErrorContainer      = document.getElementById('newsErrorContainer')
-const nELoadSpan              = document.getElementById('nELoadSpan')
-
 /* Launch Progress Wrapper Functions */
 
 /**
@@ -722,6 +711,16 @@ function dlAsync(login = true){
  * News Loading Functions
  */
 
+// DOM Cache
+const newsContent                   = document.getElementById('newsContent')
+const newsArticleTitle              = document.getElementById('newsArticleTitle')
+const newsArticleDate               = document.getElementById('newsArticleDate')
+const newsArticleAuthor             = document.getElementById('newsArticleAuthor')
+const newsArticleComments           = document.getElementById('newsArticleComments')
+const newsNavigationStatus          = document.getElementById('newsNavigationStatus')
+const newsArticleContentScrollable  = document.getElementById('newsArticleContentScrollable')
+const nELoadSpan                    = document.getElementById('nELoadSpan')
+
 // News slide caches.
 let newsActive = false
 let newsGlideCount = 0
@@ -833,6 +832,14 @@ newsErrorRetry.onclick = () => {
         initNews()
         $('#newsErrorLoading').fadeIn(250)
     })
+}
+
+newsArticleContentScrollable.onscroll = (e) => {
+    if(e.target.scrollTop > Number.parseFloat($('.newsArticleSpacerTop').css('height'))){
+        newsContent.setAttribute('scrolled', '')
+    } else {
+        newsContent.removeAttribute('scrolled')
+    }
 }
 
 /**
@@ -984,7 +991,7 @@ function displayArticle(articleObject, index){
     newsArticleDate.innerHTML = articleObject.date
     newsArticleComments.innerHTML = articleObject.comments
     newsArticleComments.href = articleObject.commentsLink
-    newsArticleContent.innerHTML = articleObject.content + '<div class="newsArticleSpacer"></div>'
+    newsArticleContentScrollable.innerHTML = '<div id="newsArticleContentWrapper"><div class="newsArticleSpacerTop"></div>' + articleObject.content + '<div class="newsArticleSpacerBot"></div></div>'
     newsNavigationStatus.innerHTML = index + ' of ' + newsArr.length
     newsContent.setAttribute('article', index-1)
 }
