@@ -143,26 +143,53 @@ function saveSettingsValues(){
 let selectedTab = 'settingsTabAccount'
 
 /**
+ * Modify the settings container UI when the scroll threshold reaches
+ * a certain poin.
+ * 
+ * @param {UIEvent} e The scroll event.
+ */
+function settingsTabScrollListener(e){
+    if(e.target.scrollTop > Number.parseFloat(getComputedStyle(e.target.firstElementChild).marginTop)){
+        document.getElementById('settingsContainer').setAttribute('scrolled', '')
+    } else {
+        document.getElementById('settingsContainer').removeAttribute('scrolled')
+    }
+}
+
+/**
  * Bind functionality for the settings navigation items.
  */
 function setupSettingsTabs(){
     Array.from(document.getElementsByClassName('settingsNavItem')).map((val) => {
-        val.onclick = (e) => {
-            if(val.hasAttribute('selected')){
-                return
-            }
-            const navItems = document.getElementsByClassName('settingsNavItem')
-            for(let i=0; i<navItems.length; i++){
-                if(navItems[i].hasAttribute('selected')){
-                    navItems[i].removeAttribute('selected')
+        if(val.hasAttribute('rSc')){
+            val.onclick = (e) => {
+                if(val.hasAttribute('selected')){
+                    return
                 }
+                const navItems = document.getElementsByClassName('settingsNavItem')
+                for(let i=0; i<navItems.length; i++){
+                    if(navItems[i].hasAttribute('selected')){
+                        navItems[i].removeAttribute('selected')
+                    }
+                }
+                val.setAttribute('selected', '')
+                let prevTab = selectedTab
+                selectedTab = val.getAttribute('rSc')
+
+                document.getElementById(prevTab).onscroll = null
+                document.getElementById(selectedTab).onscroll = settingsTabScrollListener
+
+                $(`#${prevTab}`).fadeOut(250, () => {
+                    $(`#${selectedTab}`).fadeIn({
+                        duration: 250,
+                        start: () => {
+                            settingsTabScrollListener({
+                                target: document.getElementById(selectedTab)
+                            })
+                        }
+                    })
+                })
             }
-            val.setAttribute('selected', '')
-            let prevTab = selectedTab
-            selectedTab = val.getAttribute('rSc')
-            $(`#${prevTab}`).fadeOut(250, () => {
-                $(`#${selectedTab}`).fadeIn(250)
-            })
         }
     })
 }
