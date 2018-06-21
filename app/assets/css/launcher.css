@@ -2308,15 +2308,20 @@ input:checked + .toggleSwitchSlider:before {
     transition: 0.25s ease;
     font-weight: bold;
     letter-spacing: 2px;
-    background: linear-gradient(65deg, rgba(0, 0, 0, 0.4), rgba(136, 77, 77, 0.4) 60%);
+    background-color: rgba(0, 0, 0, 0.35);
     -webkit-user-select: none;
+    border: none;
     cursor: pointer;
     width: 100%;
     height: 100%;
     border-radius: 50%;
 }
-#avatarOverlay:hover {
+#avatarOverlay:hover,
+#avatarOverlay:focus {
     opacity: 1;
+}
+#avatarOverlay:active {
+    background-color: rgba(0, 0, 0, 0.45);
 }
 
 /* User profile name text. */

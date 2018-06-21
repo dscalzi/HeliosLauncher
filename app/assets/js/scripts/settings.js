@@ -140,7 +140,7 @@ function saveSettingsValues(){
     })
 }
 
-let selectedTab = 'settingsTabAccount'
+let selectedSettingsTab = 'settingsTabAccount'
 
 /**
  * Modify the settings container UI when the scroll threshold reaches
@@ -162,36 +162,60 @@ function settingsTabScrollListener(e){
 function setupSettingsTabs(){
     Array.from(document.getElementsByClassName('settingsNavItem')).map((val) => {
         if(val.hasAttribute('rSc')){
-            val.onclick = (e) => {
-                if(val.hasAttribute('selected')){
-                    return
-                }
-                const navItems = document.getElementsByClassName('settingsNavItem')
-                for(let i=0; i<navItems.length; i++){
-                    if(navItems[i].hasAttribute('selected')){
-                        navItems[i].removeAttribute('selected')
-                    }
-                }
-                val.setAttribute('selected', '')
-                let prevTab = selectedTab
-                selectedTab = val.getAttribute('rSc')
-
-                document.getElementById(prevTab).onscroll = null
-                document.getElementById(selectedTab).onscroll = settingsTabScrollListener
-
-                $(`#${prevTab}`).fadeOut(250, () => {
-                    $(`#${selectedTab}`).fadeIn({
-                        duration: 250,
-                        start: () => {
-                            settingsTabScrollListener({
-                                target: document.getElementById(selectedTab)
-                            })
-                        }
-                    })
-                })
+            val.onclick = () => {
+                settingsNavItemListener(val)
             }
         }
     })
+}
+
+/**
+ * Settings nav item onclick lisener. Function is exposed so that
+ * other UI elements can quickly toggle to a certain tab from other views.
+ * 
+ * @param {Element} ele The nav item which has been clicked.
+ * @param {boolean} fade Optional. True to fade transition.
+ */
+function settingsNavItemListener(ele, fade = true){
+    if(ele.hasAttribute('selected')){
+        return
+    }
+    const navItems = document.getElementsByClassName('settingsNavItem')
+    for(let i=0; i<navItems.length; i++){
+        if(navItems[i].hasAttribute('selected')){
+            navItems[i].removeAttribute('selected')
+        }
+    }
+    ele.setAttribute('selected', '')
+    let prevTab = selectedSettingsTab
+    selectedSettingsTab = ele.getAttribute('rSc')
+
+    document.getElementById(prevTab).onscroll = null
+    document.getElementById(selectedSettingsTab).onscroll = settingsTabScrollListener
+
+    if(fade){
+        $(`#${prevTab}`).fadeOut(250, () => {
+            $(`#${selectedSettingsTab}`).fadeIn({
+                duration: 250,
+                start: () => {
+                    settingsTabScrollListener({
+                        target: document.getElementById(selectedSettingsTab)
+                    })
+                }
+            })
+        })
+    } else {
+        $(`#${prevTab}`).hide(0, () => {
+            $(`#${selectedSettingsTab}`).show({
+                duration: 0,
+                start: () => {
+                    settingsTabScrollListener({
+                        target: document.getElementById(selectedSettingsTab)
+                    })
+                }
+            })
+        })
+    }
 }
 
 const settingsNavDone = document.getElementById('settingsNavDone')
