@@ -1358,16 +1358,20 @@ input:checked + .toggleSwitchSlider:before {
 * * */
 
 /* Style links on the Java tab. */
-#settingsTabJava a {
+#settingsTabJava a,
+#settingsChangelogText a {
     color: rgba(202, 202, 202, 0.75);
     transition: 0.25s ease;
     outline: none;
 }
 #settingsTabJava a:hover,
-#settingsTabJava a:focus {
+#settingsTabJava a:focus,
+#settingsChangelogText a:hover,
+#settingsChangelogText a:focus {
     color: rgba(255, 255, 255, 0.75);
 }
-#settingsTabJava a:active {
+#settingsTabJava a:active,
+#settingsChangelogText a:active {
     color: rgba(165, 165, 165, 0.75);
 }
 
