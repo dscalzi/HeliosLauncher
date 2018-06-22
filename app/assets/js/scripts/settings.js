@@ -588,6 +588,12 @@ function updateRangedSlider(element, value, notch){
     
     element.setAttribute('value', value)
 
+    if(notch < 0){
+        notch = 0
+    } else if(notch > 100) {
+        notch = 100
+    }
+
     const event = new MouseEvent('change', {
         target: element,
         type: 'change',

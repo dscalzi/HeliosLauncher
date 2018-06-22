@@ -1422,7 +1422,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Label which displays a memory slider's value. */
 .settingsMemoryLabel {
     font-size: 14px;
-    margin-right: 3%;
+    margin-right: 2%;
 }
 
 /* Range sliders for min and max memory settings. */
