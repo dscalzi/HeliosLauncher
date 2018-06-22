@@ -20,7 +20,7 @@ const VIEWS = {
 }
 
 // The currently shown view container.
-let currentView = VIEWS.landing
+let currentView
 
 /**
  * Switch launcher views.
@@ -63,7 +63,7 @@ function showMainUI(){
     updateSelectedServer(AssetGuard.getServerById(ConfigManager.getSelectedServer()).name)
     refreshServerStatus()
     setTimeout(() => {
-        document.getElementById('frameBar').style.backgroundColor = 'rgba(1, 2, 1, 0.5)'
+        document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
         document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
         $('#main').show()
 
@@ -82,11 +82,14 @@ function showMainUI(){
         }
 
         if(ConfigManager.isFirstLaunch()){
+            currentView = VIEWS.welcome
             $(VIEWS.welcome).fadeIn(1000)
         } else {
             if(isLoggedIn){
+                currentView = VIEWS.landing
                 $(VIEWS.landing).fadeIn(1000)
             } else {
+                currentView = VIEWS.login
                 $(VIEWS.login).fadeIn(1000)
             }
         }

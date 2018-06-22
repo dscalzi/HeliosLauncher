@@ -30,18 +30,33 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
         } else {
             $('#overlayDismiss').hide()
         }
-        $('#overlayContainer').fadeIn(250)
+        $('#overlayContainer').fadeIn({
+            duration: 250,
+            start: () => {
+                if(getCurrentView() === VIEWS.settings){
+                    document.getElementById('settingsContainer').style.backgroundColor = 'transparent'
+                }
+            }
+        })
     } else {
         document.getElementById('main').removeAttribute('overlay')
         // Make things tabbable.
         $("#main *").removeAttr('tabindex')
-        $('#overlayContainer').fadeOut(250, () => {
-            $('#' + content).parent().children().hide()
-            $('#' + content).show()
-            if(dismissable){
-                $('#overlayDismiss').show()
-            } else {
-                $('#overlayDismiss').hide()
+        $('#overlayContainer').fadeOut({
+            duration: 250,
+            start: () => {
+                if(getCurrentView() === VIEWS.settings){
+                    document.getElementById('settingsContainer').style.backgroundColor = 'rgba(0, 0, 0, 0.50)'
+                }
+            },
+            complete: () => {
+                $('#' + content).parent().children().hide()
+                $('#' + content).show()
+                if(dismissable){
+                    $('#overlayDismiss').show()
+                } else {
+                    $('#overlayDismiss').hide()
+                }
             }
         })
     }
