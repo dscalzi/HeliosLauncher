@@ -125,10 +125,86 @@ function showFatalStartupError(){
     }, 750)
 }
 
+/**
+ * Common functions to perform after refreshing the distro index.
+ * 
+ * @param {Object} data The distro index object.
+ */
 function onDistroRefresh(data){
     updateSelectedServer(AssetGuard.getServerById(ConfigManager.getSelectedServer()).name)
     refreshServerStatus()
     initNews()
+    syncModConfigurations(data)
+}
+
+/**
+ * Sync the mod configurations with the distro index.
+ * 
+ * @param {Object} data The distro index object.
+ */
+function syncModConfigurations(data){
+
+    const syncedCfgs = []
+
+    const servers = data.servers
+
+    for(let i=0; i<servers.length; i++){
+
+        const id = servers[i].id
+        const mdls = servers[i].modules
+        const cfg = ConfigManager.getModConfiguration(servers[i].id)
+
+        if(cfg != null){
+
+            const modsOld = cfg.mods
+            const mods = {}
+
+            for(let j=0; j<mdls.length; j++){
+                const mdl = mdls[j]
+                if(mdl.type === 'forgemod'){
+                    if(mdl.required != null){
+                        if(mdl.required.value === false){
+                            const mdlID = AssetGuard._resolveWithoutVersion(mdl.id)
+                            if(modsOld[mdlID] == null){
+                                mods[mdlID] = mdl.required.def != null ? mdl.required.def : true
+                            } else {
+                                mods[mdlID] = modsOld[mdlID]
+                            }
+                        }
+                    }
+                }
+            }
+
+            syncedCfgs.push({
+                id,
+                mods
+            })
+
+        } else {
+
+            const mods = {}
+
+            for(let j=0; j<mdls.length; j++){
+                const mdl = mdls[j]
+                if(mdl.type === 'forgemod'){
+                    if(mdl.required != null){
+                        if(mdl.required.value === false){
+                            mods[AssetGuard._resolveWithoutVersion(mdl.id)] = mdl.required.def != null ? mdl.required.def : true
+                        }
+                    }
+                }
+            }
+
+            syncedCfgs.push({
+                id,
+                mods
+            })
+
+        }
+    }
+
+    ConfigManager.setModConfigurations(syncedCfgs)
+    ConfigManager.save()
 }
 
 function refreshDistributionIndex(remote, onSuccess, onError){
@@ -223,6 +299,7 @@ document.addEventListener('readystatechange', function(){
 // Actions that must be performed after the distribution index is downloaded.
 ipcRenderer.on('distributionIndexDone', (event, data) => {
     if(data != null) {
+        syncModConfigurations(data)
         if(document.readyState === 'complete'){
             showMainUI()
         } else {

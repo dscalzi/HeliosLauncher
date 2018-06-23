@@ -247,6 +247,20 @@ class AssetGuard extends EventEmitter {
         return cs.join('/')
     }
 
+    /**
+     * Resolves an artiface id without the version. For example,
+     * 'net.minecraftforge:forge:1.11.2-13.20.0.2282' becomes
+     * 'net.minecraftforge:forge'.
+     * 
+     * @param {string} artifactid The artifact id string.
+     * @returns {string} The resolved identifier without the version.
+     */
+    static _resolveWithoutVersion(artifactid){
+        let ps = artifactid.split(':')
+
+        return ps[0] + ':' + ps[1]
+    }
+
     // #endregion
 
     // Static Hash Validation Functions

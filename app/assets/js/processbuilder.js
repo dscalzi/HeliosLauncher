@@ -1,18 +1,14 @@
-/**
- * The initial iteration of this file will not support optional submodules.
- * Support will be added down the line, only top-level modules will recieve optional support.
- */
-const AdmZip = require('adm-zip')
+const AdmZip                = require('adm-zip')
 const {AssetGuard, Library} = require('./assetguard.js')
-const child_process = require('child_process')
-const ConfigManager = require('./configmanager.js')
-const crypto = require('crypto')
-const fs = require('fs')
-const mkpath = require('mkdirp')
-const os = require('os')
-const path = require('path')
-const rimraf = require('rimraf')
-const {URL} = require('url')
+const child_process         = require('child_process')
+const ConfigManager         = require('./configmanager.js')
+const crypto                = require('crypto')
+const fs                    = require('fs')
+const mkpath                = require('mkdirp')
+const os                    = require('os')
+const path                  = require('path')
+const rimraf                = require('rimraf')
+const {URL}                 = require('url')
 
 class ProcessBuilder {
 
@@ -25,11 +21,6 @@ class ProcessBuilder {
         this.authUser = authUser
         this.fmlDir = path.join(this.commonDir, 'versions', this.server.id + '.json')
         this.libPath = path.join(this.commonDir, 'libraries')
-    }
-
-    static shouldInclude(mdle){
-        //If the module should be included by default
-        return mdle.required == null || mdle.required.value == null || mdle.required.value === true || (mdle.required.value === false && (mdle.required.def == null || mdle.required.def === true))
     }
     
     /**
@@ -77,12 +68,19 @@ class ProcessBuilder {
     resolveDefaultMods(options = {type: 'forgemod'}){
         //Returns array of default forge mods to load.
         const mods = []
-        const mdles = this.server.modules
+        const mdls = this.server.modules
+        const modCfg = ConfigManager.getModConfiguration(this.server.id).mods
     
-        for(let i=0; i<mdles.length; ++i){
-            if(mdles[i].type != null && mdles[i].type === options.type){
-                if(ProcessBuilder.shouldInclude(mdles[i])){
-                    mods.push(mdles[i])
+        for(let i=0; i<mdls.length; ++i){
+            const mdl = mdls[i]
+            if(mdl.type != null && mdl.type === options.type){
+                if(mdl.required != null && mdl.required.value === false){
+                    const val = modCfg[AssetGuard._resolveWithoutVersion(mdl.id)]
+                    if(val === true){
+                        mods.push(mdl)
+                    }
+                } else {
+                    mods.push(mdl)
                 }
             }
         }
