@@ -238,6 +238,38 @@
                     ]
                 },
                 {
+                    "id": "com.mumfrey:liteloader:1.11.2",
+                    "name": "Liteloader (1.11.2)",
+                    "type": "liteloader",
+                    "required": {
+                        "value": false,
+                        "def": false
+                    },
+                    "artifact": {
+                        "size": 1685422,
+                        "MD5": "3a98b5ed95810bf164e71c1a53be568d",
+                        "extension": ".jar",
+                        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/liteloader-1.11.2.jar"
+                    },
+                    "sub_modules": [
+                        {
+                            "id": "com.mumfrey:macrokeybindmod:0.14.4-1.11.2",
+                            "name": "Macro/Keybind Mod (0.14.4-1.11.2)",
+                            "type": "litemod",
+                            "required": {
+                                "value": false,
+                                "def": false
+                            },
+                            "artifact": {
+                                "size": 1670811,
+                                "MD5": "16080785577b391d426c62c8d3138558",
+                                "extension": ".litemod",
+                                "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/macrokeybindmod.litemod"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id": "net.optifine:optifine:1.11.2_HD_U_C7",
                     "name": "Optifine (1.11.2_HD_U_C7)",
                     "type": "forgemod",

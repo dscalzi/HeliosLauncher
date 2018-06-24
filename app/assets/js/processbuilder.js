@@ -19,8 +19,12 @@ class ProcessBuilder {
         this.versionData = versionData
         this.forgeData = forgeData
         this.authUser = authUser
-        this.fmlDir = path.join(this.commonDir, 'versions', this.server.id + '.json')
+        this.fmlDir = path.join(this.gameDir, 'forgeModList.json')
+        this.llDir = path.join(this.gameDir, 'liteloaderModList.json')
         this.libPath = path.join(this.commonDir, 'libraries')
+
+        this.usingLiteLoader = false
+        this.llPath = null
     }
     
     /**
@@ -30,9 +34,14 @@ class ProcessBuilder {
         mkpath.sync(this.gameDir)
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
-        const mods = this.resolveDefaultMods()
-        this.constructFMLModList(mods, true)
-        const args = this.constructJVMArguments(mods, tempNativePath)
+        this.setupLiteLoader()
+        const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.id).mods, this.server.modules)
+        this.constructModList('forge', modObj.fMods, true)
+        if(this.usingLiteLoader){
+            this.constructModList('liteloader', modObj.lMods, true)
+        }
+        const uberModArr = modObj.fMods.concat(modObj.lMods)
+        const args = this.constructJVMArguments(uberModArr, tempNativePath)
 
         console.log(args)
 
@@ -65,41 +74,90 @@ class ProcessBuilder {
         return child
     }
 
-    resolveDefaultMods(options = {type: 'forgemod'}){
-        //Returns array of default forge mods to load.
-        const mods = []
+    static isModEnabled(modCfg, required = null){
+        return modCfg != null ? ((typeof modCfg === 'boolean' && modCfg) || (typeof modCfg === 'object' && modCfg.value)) : required != null && required.def != null ? required.def : true
+    }
+
+    static isModOptional(mdl){
+        mdl.required != null && mdl.required.value != null && mdl.required.value === false
+    }
+
+    setupLiteLoader(){
         const mdls = this.server.modules
-        const modCfg = ConfigManager.getModConfiguration(this.server.id).mods
-    
-        for(let i=0; i<mdls.length; ++i){
-            const mdl = mdls[i]
-            if(mdl.type != null && mdl.type === options.type){
-                if(mdl.required != null && mdl.required.value === false){
-                    const val = modCfg[AssetGuard._resolveWithoutVersion(mdl.id)]
-                    if(val === true){
-                        mods.push(mdl)
+        for(let i=0; i<mdls.length; i++){
+            if(mdls[i].type === 'liteloader'){
+                const ll = mdls[i]
+                if(ProcessBuilder.isModOptional(ll)){
+                    const modCfg = ConfigManager.getModConfiguration(this.server.id).mods
+                    if(ProcessBuilder.isModEnabled(modCfg[AssetGuard._resolveWithoutVersion(ll.id)], ll.required)){
+                        this.usingLiteLoader = true
+                        this.llPath = path.join(this.libPath, ll.artifact.path == null ? AssetGuard._resolvePath(ll.id, ll.artifact.extension) : ll.artifact.path)
                     }
                 } else {
-                    mods.push(mdl)
+                    this.usingLiteLoader = true
+                    this.llPath = path.join(this.libPath, ll.artifact.path == null ? AssetGuard._resolvePath(ll.id, ll.artifact.extension) : ll.artifact.path)
+                }
+            }
+        }
+    }
+
+    resolveModConfiguration(modCfg, mdls){
+        let fMods = []
+        let lMods = []
+
+        for(let i=0; i<mdls.length; i++){
+            const mdl = mdls[i]
+            if(mdl.type != null && (mdl.type === 'forgemod' || mdl.type === 'litemod' || mdl.type === 'liteloader')){
+                if(mdl.sub_modules != null){
+                    const v = this.resolveModConfiguration(modCfg[AssetGuard._resolveWithoutVersion(mdl.id)], mdl.sub_modules)
+                    fMods = fMods.concat(v.fMods)
+                    lMods = lMods.concat(v.lMods)
+                    if(mdl.type === 'liteloader'){
+                        continue
+                    }
+                }
+                if(ProcessBuilder.isModOptional(mdl)){
+                    if(ProcessBuilder.isModEnabled(modCfg[AssetGuard._resolveWithoutVersion(mdl.id)]), mdl.required){
+                        if(mdl.type === 'forgemod'){
+                            fMods.push(mdl)
+                        } else {
+                            lMods.push(mdl)
+                        }
+                    }
+                } else {
+                    if(mdl.type === 'forgemod'){
+                        fMods.push(mdl)
+                    } else {
+                        lMods.push(mdl)
+                    }
                 }
             }
         }
 
-        return mods
+        return {
+            fMods,
+            lMods
+        }
     }
 
-    constructFMLModList(mods, save = false){
-        const modList = {}
-        modList.repositoryRoot = path.join(this.commonDir, 'modstore')
+    constructModList(type, mods, save = false){
+        const modList = {
+            repositoryRoot: path.join(this.commonDir, 'modstore')
+        }
+        
         const ids = []
         for(let i=0; i<mods.length; ++i){
-            ids.push(mods[i].id)
+            if(type === 'forge'){
+                ids.push(mods[i].id)
+            } else {
+                ids.push(mods[i].id + '@' + (mods[i].artifact.extension != null ? mods[i].artifact.extension.substring(1) : 'jar'))
+            }
         }
         modList.modRef = ids
         
         if(save){
             const json = JSON.stringify(modList, null, 4)
-            fs.writeFileSync(this.fmlDir, json, 'UTF-8')
+            fs.writeFileSync(type === 'forge' ? this.fmlDir : this.llDir, json, 'UTF-8')
         }
 
         return modList
@@ -185,6 +243,14 @@ class ProcessBuilder {
         mcArgs.push('--modListFile')
         mcArgs.push('absolute:' + this.fmlDir)
 
+        if(this.usingLiteLoader){
+            mcArgs.push('--modRepo')
+            mcArgs.push(this.llDir)
+
+            mcArgs.unshift('com.mumfrey.liteloader.launch.LiteLoaderTweaker')
+            mcArgs.unshift('--tweakClass')
+        }
+
         // Prepare game resolution
         if(ConfigManager.getFullscreen()){
             mcArgs.unshift('--fullscreen')
@@ -224,6 +290,10 @@ class ProcessBuilder {
         // Add the version.jar to the classpath.
         const version = this.versionData.id
         cpArgs.push(path.join(this.commonDir, 'versions', version, version + '.jar'))
+
+        if(this.usingLiteLoader){
+            cpArgs.push(this.llPath)
+        }
 
         // Resolve the Mojang declared libraries.
         const mojangLibs = this._resolveMojangLibraries(tempNativePath)

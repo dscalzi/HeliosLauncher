@@ -161,15 +161,13 @@ function syncModConfigurations(data){
 
             for(let j=0; j<mdls.length; j++){
                 const mdl = mdls[j]
-                if(mdl.type === 'forgemod'){
-                    if(mdl.required != null){
-                        if(mdl.required.value === false){
-                            const mdlID = AssetGuard._resolveWithoutVersion(mdl.id)
-                            if(modsOld[mdlID] == null){
-                                mods[mdlID] = mdl.required.def != null ? mdl.required.def : true
-                            } else {
-                                mods[mdlID] = modsOld[mdlID]
-                            }
+                if(mdl.type === 'forgemod' || mdl.type === 'litemod' || mdl.type === 'liteloader'){
+                    if(mdl.required != null && mdl.required.value != null && mdl.required.value === false){
+                        const mdlID = AssetGuard._resolveWithoutVersion(mdl.id)
+                        if(modsOld[mdlID] == null){
+                            mods[mdlID] = scanOptionalSubModules(mdl.sub_modules, mdl)
+                        } else {
+                            mods[mdlID] = mergeModConfiguration(modsOld[mdlID], scanOptionalSubModules(mdl.sub_modules, mdl))
                         }
                     }
                 }
@@ -186,11 +184,9 @@ function syncModConfigurations(data){
 
             for(let j=0; j<mdls.length; j++){
                 const mdl = mdls[j]
-                if(mdl.type === 'forgemod'){
-                    if(mdl.required != null){
-                        if(mdl.required.value === false){
-                            mods[AssetGuard._resolveWithoutVersion(mdl.id)] = mdl.required.def != null ? mdl.required.def : true
-                        }
+                if(mdl.type === 'forgemod' || mdl.type === 'litemod' || mdl.type === 'liteloader'){
+                    if(mdl.required != null && mdl.required.value != null && mdl.required.value === false){
+                        mods[AssetGuard._resolveWithoutVersion(mdl.id)] = scanOptionalSubModules(mdl.sub_modules, mdl)
                     }
                 }
             }
@@ -205,6 +201,75 @@ function syncModConfigurations(data){
 
     ConfigManager.setModConfigurations(syncedCfgs)
     ConfigManager.save()
+}
+
+/**
+ * Recursively scan for optional sub modules. If none are found,
+ * this function returns a boolean. If optional sub modules do exist,
+ * a recursive configuration object is returned.
+ * 
+ * @returns {boolean | Object} The resolved mod configuration.
+ */
+function scanOptionalSubModules(mdls, origin){
+    if(mdls != null){
+        const mods = {}
+
+        for(let i=0; i<mdls.length; i++){
+            const mdl = mdls[i]
+            // Optional types.
+            if(mdl.type === 'forgemod' || mdl.type === 'litemod' || mdl.type === 'liteloader'){
+                // It is optional.
+                if(mdl.required != null && mdl.required.value != null && mdl.required.value === false){
+                    mods[AssetGuard._resolveWithoutVersion(mdl.id)] = scanOptionalSubModules(mdl.sub_modules, mdl)
+                }
+            }
+        }
+
+        if(Object.keys(mods).length > 0){
+            return {
+                value: origin.required != null && origin.required.def != null ? origin.required.def : true,
+                mods
+            }
+        }
+    }
+    return origin.required != null && origin.required.def != null ? origin.required.def : true
+}
+
+/**
+ * Recursively merge an old configuration into a new configuration.
+ * 
+ * @param {boolean | Object} o The old configuration value.
+ * @param {boolean | Object} n The new configuration value.
+ * 
+ * @returns {boolean | Object} The merged configuration.
+ */
+function mergeModConfiguration(o, n){
+    if(typeof o === 'boolean'){
+        if(typeof n === 'boolean') return o
+        else if(typeof n === 'object'){
+            n.value = o
+            return n
+        }
+    } else if(typeof o === 'object'){
+        if(typeof n === 'boolean') return o.value
+        else if(typeof n === 'object'){
+            n.value = o.value
+
+            const newMods = Object.keys(n.mods)
+            for(let i=0; i<newMods.length; i++){
+
+                const mod = newMods[i]
+                if(o.mods[mod] != null){
+                    n.mods[mod] = mergeModConfiguration(o.mods[mod], n.mods[mod])
+                }
+            }
+
+            return n
+        }
+    }
+    // If for some reason we haven't been able to merge,
+    // wipe the old value and use the new one. Just to be safe
+    return n
 }
 
 function refreshDistributionIndex(remote, onSuccess, onError){

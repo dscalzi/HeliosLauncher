@@ -1500,12 +1500,11 @@ class AssetGuard extends EventEmitter {
             switch(obType){
                 case 'forge-hosted':
                 case 'forge':
+                case 'liteloader':
                 case 'library':
                     obPath = path.join(this.commonPath, 'libraries', obPath)
                     break
                 case 'forgemod':
-                    obPath = path.join(this.commonPath, 'modstore', obPath)
-                    break
                 case 'litemod':
                     obPath = path.join(this.commonPath, 'modstore', obPath)
                     break
