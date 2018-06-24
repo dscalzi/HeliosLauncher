@@ -74,12 +74,12 @@ A module is a generic representation of a file required to run the minecraft cli
 
 As shown above, modules objects are allowed to declare submodules under the option `sub_modules`. This parameter is completely optional and can be omitted for modules which do not require submodules. Typically, files which require other files are declared as submodules. A quick example would be a mod, and the configuration file for that mod. Submodules can also declare submodules of their own. The file is parsed recursively, so there is no limit.
 
-Modules may also declare a `required` object.
+Modules of type `forgemod`, `litemod`, and `liteloader` may also declare a `required` object.
 
 ```json
 "required": {
-    "value": false, "(if the module is required)"
-    "def": false "(if it's enabled by default, has no effect if value is true)"
+    "value": false, // If the module is required
+    "def": false // If it's enabled by default, has no effect if value is true
 }
 ```
 
@@ -105,9 +105,10 @@ resolved_path = {commonDirectory}/modstore/com/westeroscraft/westerosblocks/1.0.
 The resolved path depends on the type. Currently, there are several recognized module types:
 
 - `forge-hosted` ({commonDirectory}/libraries/{path OR resolved})
-- `library` ({commonDirectory}/common/libraries/{path OR resolved})
-- `forgemod` ({commonDirectory}/common/modstore/{path OR resolved})
-- `litemod` ({commonDirectory}/common/modstore/{path OR resolved})
+- `liteloader` ({commonDirectory}/libraries/{path OR resolved})
+- `library` ({commonDirectory}/libraries/{path OR resolved})
+- `forgemod` ({commonDirectory}/modstore/{path OR resolved})
+- `litemod` ({commonDirectory}/modstore/{path OR resolved})
 - `file` ({instanceDirectory}/{serverID}/{path OR resolved})
 
 ---
@@ -150,6 +151,34 @@ Ex.
 All of forge's required libraries are declared in the `version.json` file found in the root of the forge jar file. These libraries MUST be hosted and declared a submodules or forge will not work.
 
 There were plans to add a `forge` type, in which the required libraries would be resolved by the launcher and downloaded from forge's servers. The forge servers are down at times, however, so this plan was stopped half-implemented.
+
+---
+
+### liteloader
+
+The module type `liteloader` represents liteloader. It is handled as a library and added to the classpath at runtime. Special launch conditions are executed when liteloader is present and enabled. This module can be optional and toggled similarly to `forgemod` and `litemod` modules.
+
+Ex.
+```json
+{
+    "id": "com.mumfrey:liteloader:1.11.2",
+    "name": "Liteloader (1.11.2)",
+    "type": "liteloader",
+    "required": {
+        "value": false,
+        "def": false
+    },
+    "artifact": {
+        "size": 1685422,
+        "MD5": "3a98b5ed95810bf164e71c1a53be568d",
+        "extension": ".jar",
+        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/liteloader-1.11.2.jar"
+    },
+    "sub_modules": [
+        // All litemods should be declared as submodules.
+    ]
+}
+```
 
 ---
 
@@ -198,7 +227,26 @@ Ex.
 
 ### litemod
 
-This module type is being actively considered and changed, until finalized there will be no documentation.
+The module type `litemod` represents a mod loaded by liteloader. These files are stored maven-style and passed to liteloader using forge's [Modlist format](https://github.com/MinecraftForge/FML/wiki/New-JSON-Modlist-format). Documentation for liteloader's implementation of this can be found on [this issue](http://develop.liteloader.com/liteloader/LiteLoader/issues/34).
+
+Ex.
+```json
+{
+    "id": "com.mumfrey:macrokeybindmod:0.14.4-1.11.2",
+    "name": "Macro/Keybind Mod (0.14.4-1.11.2)",
+    "type": "litemod",
+    "required": {
+        "value": false,
+        "def": false
+    },
+    "artifact": {
+        "size": 1670811,
+        "MD5": "16080785577b391d426c62c8d3138558",
+        "extension": ".litemod",
+        "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/macrokeybindmod.litemod"
+    }
+}
+```
 
 ---
 
