@@ -15,7 +15,7 @@
     "dist:all": "npm run dist -- -wl --x64"
   },
   "engines": {
-    "node": "10.0.x"
+    "node": "10.x.x"
   },
   "repository": {
     "type": "git",
