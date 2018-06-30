@@ -74,14 +74,46 @@ class ProcessBuilder {
         return child
     }
 
+    /**
+     * Determine if an optional mod is enabled from its configuration value. If the
+     * configuration value is null, the required object will be used to
+     * determine if it is enabled.
+     * 
+     * A mod is enabled if:
+     *   * The configuration is not null and one of the following:
+     *     * The configuration is a boolean and true.
+     *     * The configuration is an object and its 'value' property is true.
+     *   * The configuration is null and one of the following:
+     *     * The required object is null.
+     *     * The required object's 'def' property is null or true.
+     * 
+     * @param {Object | boolean} modCfg The mod configuration object.
+     * @param {Object} required Optional. The required object from the mod's distro declaration.
+     * @returns {boolean} True if the mod is enabled, false otherwise.
+     */
     static isModEnabled(modCfg, required = null){
         return modCfg != null ? ((typeof modCfg === 'boolean' && modCfg) || (typeof modCfg === 'object' && modCfg.value)) : required != null && required.def != null ? required.def : true
     }
 
+    /**
+     * Determine if a mod is optional.
+     * 
+     * A mod is optional if its required object is not null and its 'value'
+     * property is false.
+     * 
+     * @param {Object} mdl The mod distro module.
+     * @returns {boolean} True if the mod is optional, otherwise false.
+     */
     static isModOptional(mdl){
-        mdl.required != null && mdl.required.value != null && mdl.required.value === false
+        return mdl.required != null && mdl.required.value != null && mdl.required.value === false
     }
 
+    /**
+     * Function which performs a preliminary scan of the top level
+     * mods. If liteloader is present here, we setup the special liteloader
+     * launch options. Note that liteloader is only allowed as a top level
+     * mod. It must not be declared as a submodule.
+     */
     setupLiteLoader(){
         const mdls = this.server.modules
         for(let i=0; i<mdls.length; i++){
@@ -101,6 +133,15 @@ class ProcessBuilder {
         }
     }
 
+    /**
+     * Resolve an array of all enabled mods. These mods will be constructed into
+     * a mod list format and enabled at launch.
+     * 
+     * @param {Object} modCfg The mod configuration object.
+     * @param {Array.<Object>} mdls An array of modules to parse.
+     * @returns {{fMods: Array.<Object>, lMods: Array.<Object>}} An object which contains
+     * a list of enabled forge mods and litemods.
+     */
     resolveModConfiguration(modCfg, mdls){
         let fMods = []
         let lMods = []
@@ -108,23 +149,17 @@ class ProcessBuilder {
         for(let i=0; i<mdls.length; i++){
             const mdl = mdls[i]
             if(mdl.type != null && (mdl.type === 'forgemod' || mdl.type === 'litemod' || mdl.type === 'liteloader')){
-                if(mdl.sub_modules != null){
-                    const v = this.resolveModConfiguration(modCfg[AssetGuard._resolveWithoutVersion(mdl.id)], mdl.sub_modules)
-                    fMods = fMods.concat(v.fMods)
-                    lMods = lMods.concat(v.lMods)
-                    if(mdl.type === 'liteloader'){
-                        continue
-                    }
-                }
-                if(ProcessBuilder.isModOptional(mdl)){
-                    if(ProcessBuilder.isModEnabled(modCfg[AssetGuard._resolveWithoutVersion(mdl.id)]), mdl.required){
-                        if(mdl.type === 'forgemod'){
-                            fMods.push(mdl)
-                        } else {
-                            lMods.push(mdl)
+                const o = ProcessBuilder.isModOptional(mdl)
+                const e = ProcessBuilder.isModEnabled(modCfg[AssetGuard._resolveWithoutVersion(mdl.id)], mdl.required)
+                if(!o || (o && e)){
+                    if(mdl.sub_modules != null){
+                        const v = this.resolveModConfiguration(modCfg[AssetGuard._resolveWithoutVersion(mdl.id)].mods, mdl.sub_modules)
+                        fMods = fMods.concat(v.fMods)
+                        lMods = lMods.concat(v.lMods)
+                        if(mdl.type === 'liteloader'){
+                            continue
                         }
                     }
-                } else {
                     if(mdl.type === 'forgemod'){
                         fMods.push(mdl)
                     } else {
@@ -140,16 +175,25 @@ class ProcessBuilder {
         }
     }
 
+    /**
+     * Construct a mod list json object.
+     * 
+     * @param {'forge' | 'liteloader'} type The mod list type to construct.
+     * @param {Array.<Object>} mods An array of mods to add to the mod list.
+     * @param {boolean} save Optional. Whether or not we should save the mod list file.
+     */
     constructModList(type, mods, save = false){
         const modList = {
             repositoryRoot: path.join(this.commonDir, 'modstore')
         }
         
         const ids = []
-        for(let i=0; i<mods.length; ++i){
-            if(type === 'forge'){
+        if(type === 'forge'){
+            for(let i=0; i<mods.length; ++i){
                 ids.push(mods[i].id)
-            } else {
+            }
+        } else {
+            for(let i=0; i<mods.length; ++i){
                 ids.push(mods[i].id + '@' + (mods[i].artifact.extension != null ? mods[i].artifact.extension.substring(1) : 'jar'))
             }
         }
