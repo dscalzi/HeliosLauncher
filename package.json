@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "electron": "^2.0.3",
-    "electron-builder": "^20.19.0"
+    "electron-builder": "^20.19.1"
   },
   "build": {
     "appId": "westeroscraftlauncher",
