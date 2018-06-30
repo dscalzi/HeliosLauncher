@@ -1,3 +1,6 @@
+/* Github Code Highlighting. */
+@import "../../../node_modules/github-syntax-dark/lib/github-dark.css";
+
 /*******************************************************************************
  *                                                                             *
  * Fonts                                                                       *
@@ -1767,6 +1770,14 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 3px;
     color: black;
     font-weight: bold;
+}
+#settingsChangelogText .highlight {
+    background: rgba(0, 0, 0, 0.30);
+    user-select: initial;
+    padding: 5px 10px;
+}
+#settingsChangelogText .highlight pre {
+    margin: 0px;
 }
 
 /* Container for the changelog button. */
