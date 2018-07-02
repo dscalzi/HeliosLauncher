@@ -363,8 +363,8 @@ function asyncSystemScan(launchAfter = true){
                 // Downloading..
                 setDownloadPercentage(m.value, m.total, m.percent)
             } else if(m.task === 1){
-                // Download will be at 100%, remove the loading from the OS progress bar.
-                remote.getCurrentWindow().setProgressBar(-1)
+                // Show installing progress bar.
+                remote.getCurrentWindow().setProgressBar(2)
 
                 // Wait for extration to complete.
                 const eLStr = 'Extracting'
@@ -380,6 +380,9 @@ function asyncSystemScan(launchAfter = true){
                 }, 750)
 
             } else if(m.task === 2){
+
+                // Download & extraction complete, remove the loading from the OS progress bar.
+                remote.getCurrentWindow().setProgressBar(-1)
 
                 // Extraction completed successfully.
                 ConfigManager.setJavaExecutable(m.jPath)
@@ -523,6 +526,9 @@ function dlAsync(login = true){
 
             } else if(m.task === 0.7){
                 
+                // Show installing progress bar.
+                remote.getCurrentWindow().setProgressBar(2)
+
                 // Download done, extracting.
                 const eLStr = 'Extracting libraries'
                 let dotStr = ''
@@ -556,6 +562,7 @@ function dlAsync(login = true){
                     setOverlayHandler(null)
                 }
 
+                remote.getCurrentWindow().setProgressBar(-1)
                 toggleOverlay(true)
                 toggleLaunchArea(false)
 
@@ -564,7 +571,7 @@ function dlAsync(login = true){
 
             } else if(m.task === 1){
 
-                // Download will be at 100%, remove the loading from the OS progress bar.
+                // Download and extraction complete, remove the loading from the OS progress bar.
                 remote.getCurrentWindow().setProgressBar(-1)
                 if(progressListener != null){
                     clearInterval(progressListener)
