@@ -121,8 +121,13 @@ document.getElementById('avatarOverlay').onclick = (e) => {
 // Bind selected account
 function updateSelectedAccount(authUser){
     let username = 'No Account Selected'
-    if(authUser != null && authUser.username != null){
-        username = authUser.displayName
+    if(authUser != null){
+        if(authUser.displayName != null){
+            username = authUser.displayName
+        }
+        if(authUser.uuid != null){
+            document.getElementById('avatarContainer').style.backgroundImage = `url('https://crafatar.com/renders/body/${authUser.uuid}')`
+        }
     }
     user_text.innerHTML = username
 }

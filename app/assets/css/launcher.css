@@ -2305,7 +2305,9 @@ input:checked + .toggleSwitchSlider:before {
     box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
     overflow: hidden;
     position: relative;
-    background-image: url('https://cdn.discordapp.com/avatars/169197209630277642/6650b5a50e1cb3d00a79b9b88b9a0cd4.png');
+    /*background-image: url('https://cdn.discordapp.com/avatars/169197209630277642/6650b5a50e1cb3d00a79b9b88b9a0cd4.png');*/
+    background-position: center;
+    background-repeat: no-repeat;
     background-size: contain;
 }
 
