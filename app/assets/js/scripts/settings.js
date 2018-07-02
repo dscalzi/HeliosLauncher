@@ -376,8 +376,8 @@ function populateAuthAccounts(){
                         <div class="settingsAuthAccountDetailValue">${acc.displayName}</div>
                     </div>
                     <div class="settingsAuthAccountDetailPane">
-                        <div class="settingsAuthAccountDetailTitle">${acc.displayName === acc.username ? 'UUID' : 'Email'}</div>
-                        <div class="settingsAuthAccountDetailValue">${acc.displayName === acc.username ? acc.uuid : acc.username}</div>
+                        <div class="settingsAuthAccountDetailTitle">UUID</div>
+                        <div class="settingsAuthAccountDetailValue">${acc.uuid}</div>
                     </div>
                 </div>
                 <div class="settingsAuthAccountActions">
