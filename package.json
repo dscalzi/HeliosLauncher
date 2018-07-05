@@ -15,7 +15,7 @@
     "dist:all": "npm run dist -- -wl --x64"
   },
   "engines": {
-    "node": "10.x.x"
+    "node": "10.5.x"
   },
   "repository": {
     "type": "git",
@@ -46,8 +46,8 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^2.0.3",
-    "electron-builder": "^20.19.1"
+    "electron": "^2.0.4",
+    "electron-builder": "^20.19.2"
   },
   "build": {
     "appId": "westeroscraftlauncher",
