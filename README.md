@@ -1,39 +1,127 @@
-# Getting Started #
+<p align="center"><img src="./app/assets/images/WesterosSealCircle.png" width="150px" height="150px" alt="westeroscraft"></p>
 
-System Requirements:
-* [Node.js](https://nodejs.org/en/) v10.5.0
+<h1 align="center"> WesterosCraft Launcher</h1>
 
-This repository is dedicated to the development of the new custom launcher for the [WesterosCraft](http://www.westeroscraft.com/) server. This project is developed primarily with [Node.js](https://nodejs.org/en/) and the [Electron](https://electron.atom.io/) framework. For further reference you may view [the repository of the new launcher written in JavaFX/Java](https://gitlab.com/westeroscraft/WesteroscraftNewLauncher) which was discontinued. You may also view the repository of the [current launcher](https://gitlab.com/westeroscraft/westeroscraftlaunchercore), a modified fork of MCUpdater.
+<p align="center"><img src="https://img.shields.io/travis/WesterosCraftCode/ElectronLauncher.svg?style=for-the-badge" alt="travis"> <img src="https://img.shields.io/github/downloads/WesterosCraftCode/ElectronLauncher/total.svg?style=for-the-badge" alt="downloads"> <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="stark"></p>
 
-For authentication with Mojang, we are currently planning on using [node-mojang](https://github.com/jamen/node-mojang). This will automatically be downloaded if you follow the simple installation instructions below.
+<p align="center">Join WesterosCraft without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
 
-### Recommended IDE ###
+![Screenshot 1](https://i.imgur.com/M8HVW9H.jpg)
+![Screenshot 2](https://i.imgur.com/zDiSoq4.jpg)
 
-The recommended IDE for this project is [VS Code](https://code.visualstudio.com/), an open source code editor by Microsoft. This editor is available on nearly every major platform (Windows, macOS, Linux). If you choose to use another editor, such as [Atom](https://atom.io/), please gitignore the IDE specific settings directory, if it hasn't been already.
+## Features
 
-### Installation ###
+* 🔒 Full account management.
+  * Add multiple accounts and easily switch between them.
+  * Credentials are never stored and transmitted directly to Mojang.
+* 📂 Efficient asset management.
+  * Receive client updates as soon as we release them.
+  * Files are validated before launch. Corrupt or incorrect files will be redownloaded.
+* ☕ **Automatic Java validation.**
+  * If you have an incompatible version of Java installed, we'll install the right one *for you*.
+  * You do not need to have Java installed to run the launcher.
+* 📰 News feed natively built into the launcher.
+* ⚙️ Intuitive settings management, including a Java control panel.
+* Supports all of our servers.
+  * Switch between server configurations with ease.
+  * View the player count of the selected server.
+* Automatic updates. That's right, the launcher updates itself.
+*  View the status of Mojang's services.
 
-To begin working on this project clone the repository and open run the following command on the command line. This will download all of the required dependencies.
+This is not an exhaustive list. Download and install the launcher to gauge all it can do!
 
-```shell
-npm install
+## Alpha Tests
+
+The launcher is currently in alpha. It's very usable, however we are still putting in a lot of work. A lot can change, at this point. For more information and instructions on how to **officially** sign up, check out the [Alpha Thread](https://westeroscraft.com/threads/new-launcher-alpha-tests.1113/).
+
+## Downloads
+
+Go to the [Releases](https://github.com/WesterosCraftCode/ElectronLauncher/releases) tab and download the installer for the latest release.
+
+**Supported Platforms**
+
+Latest Release: ![](https://img.shields.io/github/release/WesterosCraftCode/ElectronLauncher.svg?style=flat-square)
+
+Latest Prerelease: ![](https://img.shields.io/github/release/WesterosCraftCode/ElectronLauncher/all.svg?style=flat-square)
+
+| Platform | File |
+| -------- | ---- |
+| Windows x64 | `westeroscraftlauncher-setup-VERSION.exe` |
+| macOS | `westeroscraftlauncher-VERSION.dmg` |
+| Linux x64 | `westeroscraftlauncher-VERSION-x86_64.AppImage` |
+
+## Console
+
+To open the console, use the following keybind.
+
+```console
+ctrl + shift + i
 ```
 
-# Launching #
+Ensure that you have the console tab selected. Do not paste anything into the console unless you are 100% sure of what it will do. Pasting the wrong thing can expose sensitive information.
 
-### Command Line ###
+#### Export Output to a File
 
-There are several different ways to launch this project. One way is simply to run the following command on the command line.
+If you want to export the console output, simply right click anywhere on the console and click **Save as..**
 
-```shell
-npm start
+![console example](https://i.imgur.com/HazXrgT.png)
+
+
+## Development
+
+### Getting Started
+
+**System Requirements**
+
+* [Node.js][nodejs] v10.5.0+
+
+---
+
+**Clone and Install Dependencies**
+
+```console
+> git clone https://github.com/WesterosCraftCode/ElectronLauncher.git
+> cd ElectronLauncher
+> npm install
 ```
 
-### Visual Studio Code ###
+---
 
-If you use VS Code, you can run this directly from the IDE. Copy the following code into your launch.json file. This will require you to also install [Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome).
+**Launch Application**
 
-```json
+```console
+> npm start
+```
+
+---
+
+**Build Installers**
+
+To build for your current platform.
+
+```console
+> npm run dist
+```
+
+Build for a specific platform.
+
+| Platform    | Command              |
+| ----------- | -------------------- |
+| Windows x64 | `npm run dist:win`   |
+| macOS       | `npm run dist:mac`   |
+| Linux x64   | `npm run dist:linux` |
+
+Builds for macOS may not work on Windows/Linux and vice-versa.
+
+---
+
+### Visual Studio Code
+
+All development of the launcher should be done using [Visual Studio Code][vscode].
+
+Paste the following into `.vscode/launch.json`
+
+```JSON
 {
   "version": "0.2.0",
   "configurations": [
@@ -68,41 +156,39 @@ If you use VS Code, you can run this directly from the IDE. Copy the following c
 }
 ```
 
-This will create two launch configurations from which you can debug the launcher. The first configuration, **Debug Main Process**, will allow you to debug the main Electron process. The second configuration, **Debug Renderer Process**, will allow you to debug the rendering of web pages (ie the UI).
+This adds two debug configurations.
 
-You can find more information [here](http://code.matsu.io/1).
+#### Debug Main Process
 
-### Notes on DevTools Window ###
+This allows you to debug Electron's [main process][mainprocess]. You can debug scripts in the [renderer process][rendererprocess] by opening the DevTools Window.
 
-Once you run the program, you can open the DevTools window by using the following keybind.
+#### Debug Renderer Process
 
-```shell
-ctrl + shift + i
-```
+This allows you to debug Electron's [renderer process][rendererprocess]. This requires you to install the [Debugger for Chrome][chromedebugger] extension.
 
-Please note that if you are debugging the application with VS Code and have launched the program using the **Debug Renderer Process** configuration you cannot open the DevTools window. If you attempt to do so, the program will crash. Remote debugging cannot be  done with multiple DevTools clients.
+Note that you **cannot** open the DevTools window while using this debug configuration. Chromium only allows one debugger, opening another will crash the program.
 
-# Building
+---
 
-Run either of the build scrips noted below. Note that each platform can only be build when running on the specific operating system. Currently investigating ways to run multi-platform builds efficiently.
+## Resources
 
-### Build for Current Platform
+* [WesterosCraft][westeroscraft]
+* [Support Forum][supportforum]
 
-* `npm run dist`
+The best way to contact the developers is on Discord.
 
-### Platforms Specifc Builds
+[![discord](https://discordapp.com/api/guilds/98469309352775680/embed.png?style=banner2)][discord]
 
-* Windows x64 (win32 x64)
-  * `npm run dist:win`
-* MacOS (darwin x64)
-  * `npm run dist:mac`
-* Linux (linux x64)
-  * `npm run dist:linux`
+---
 
-# Issues / Further Support #
+### See you in Westeros.
 
-If you run into any issue which cannot be resolved via a quick google search, create an issue using the tab above.
 
-Much of the discussion regarding this launcher is done on #launcherdev in Discord, feel free to join us there.
-
-[![Discord](https://discordapp.com/api/guilds/98469309352775680/embed.png?style=banner2)](https://discord.gg/hqdjs3m)
+[nodejs]: https://nodejs.org/en/ 'Node.js'
+[vscode]: https://code.visualstudio.com/ 'Visual Studio Code'
+[mainprocess]: https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes 'Main Process'
+[rendererprocess]: https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes 'Renderer Process'
+[chromedebugger]: https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome 'Debugger for Chrome'
+[westeroscraft]: https://westeroscraft.com/ 'WesterosCraft.com'
+[supportforum]: https://westeroscraft.com/forum/support.40/ 'Support Forum'
+[discord]: https://discord.gg/hqdjs3m 'Discord'
