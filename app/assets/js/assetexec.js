@@ -1,38 +1,27 @@
-const {AssetGuard} = require('./assetguard.js')
+const { AssetGuard } = require('./assetguard')
 
-const tracker = new AssetGuard(process.argv[2], process.argv[3], process.argv[4], process.argv[5])
+const tracker = new AssetGuard(process.argv[2], process.argv[3])
 console.log('AssetExec Started')
 
 // Temporary for debug purposes.
 process.on('unhandledRejection', r => console.log(r))
 
-tracker.on('assetVal', (data) => {
-    process.send({task: 0, total: data.total, value: data.acc, content: 'validateAssets'})
+tracker.on('validate', (data) => {
+    process.send({context: 'validate', data})
 })
-
-tracker.on('totaldlprogress', (data) => {
-    process.send({task: 0, total: data.total, value: data.acc, percent: parseInt((data.acc/data.total)*100), content: 'dl'})
+tracker.on('progress', (data, acc, total) => {
+    process.send({context: 'progress', data, value: acc, total, percent: parseInt((acc/total)*100)})
 })
-
-tracker.on('extracting', () => {
-    process.send({task: 0.7, content: 'dl'})
+tracker.on('complete', (data, ...args) => {
+    process.send({context: 'complete', data, args})
 })
-
-tracker.on('dlcomplete', () => {
-    process.send({task: 1, content: 'dl'})
-})
-
-tracker.on('jExtracted', (jPath) => {
-    process.send({task: 2, content: 'dl', jPath})
-})
-
-tracker.on('dlerror', (err) => {
-    process.send({task: 0.9, content: 'dl', err})
+tracker.on('error', (data, error) => {
+    process.send({context: 'error', data, error})
 })
 
 process.on('message', (msg) => {
-    if(msg.task === 0){
-        const func = msg.content
+    if(msg.task === 'execute'){
+        const func = msg.function
         let nS = tracker[func]
         let iS = AssetGuard[func]
         if(typeof nS === 'function' || typeof iS === 'function'){
@@ -40,12 +29,12 @@ process.on('message', (msg) => {
             const res = f.apply(f === nS ? tracker : null, msg.argsArr)
             if(res instanceof Promise){
                 res.then((v) => {
-                    process.send({result: v, content: msg.content})
+                    process.send({result: v, context: func})
                 }).catch((err) => {
-                    process.send({result: err, content: msg.content})
+                    process.send({result: err, context: func})
                 })
             } else {
-                process.send({result: res, content: msg.content})
+                process.send({result: res, context: func})
             }
         }
     }

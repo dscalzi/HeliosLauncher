@@ -1,122 +1,294 @@
-# Documentation of the Launcher Distribution Index
+# Distribution Index
 
 The distribution index is written in JSON. The general format of the index is as posted below.
 
 ```json
 {
-    "version": "1.0",
+    "version": "1.0.0",
     "discord": {
-        "clientID": 12334567890,
+        "clientId": "12334567890123456789",
         "smallImageText": "WesterosCraft",
         "smallImageKey": "seal-circle"
     },
+    "rss": "https://westeroscraft.com/articles/index.rss",
     "servers": [
         {
             "id": "Example_Server",
             "name": "WesterosCraft Example Client",
-            "news_feed": "http://westeroscraft.com/forums/example/index.rss",
-            "icon_url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/example_icon.png",
-            "revision": "0.0.1",
-            "server_ip": "mc.westeroscraft.com:1337",
-            "mc_version": "1.11.2",
+            "description": "Example WesterosCraft server. Connect for fun!",
+            "icon": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/example_icon.png",
+            "version": "0.0.1",
+            "address": "mc.westeroscraft.com:1337",
+            "minecraftVersion": "1.11.2",
             "discord": {
                 "shortId": "Example",
                 "largeImageText": "WesterosCraft Example Server",
                 "largeImageKey": "server-example"
             },
-            "default_selected": true,
+            "mainServer": true,
             "autoconnect": true,
             "modules": [
-                ...
+                "Module Objects Here"
             ]
         }
     ]
 }
 ```
 
-You can declare an unlimited number of servers, however you must provide valid values for the fields listed above. In addition to that, the server can declare modules.
+## Distro Index Object
 
-The discord settings are to enable the use of Rich Presence on the launcher. For more details, see [discord's documentation](https://discordapp.com/developers/docs/rich-presence/how-to#updating-presence-update-presence-payload-fields).
-
-Only one server in the array should have the `default_selected` property enabled. This will tell the launcher that this is the default server to select if either the previously selected server is invalid, or there is no previously selected server. This field is not defined by any server (avoid this), the first server will be selected as the default. If multiple servers have `default_selected` enabled, the first one the launcher finds will be the effective value. Servers which are not the default may omit this property rather than explicitly setting it to false.
-
-## Modules
-
-A module is a generic representation of a file required to run the minecraft client. It takes the general form:
-
-```json
+#### Example
+```JSON
 {
-    "id": "group.id:artifact:version",
-    "name": "Artifact {version}",
-    "type": "{a valid type}",
-    "artifact": {
-        "size": "{file size in bytes}",
-        "MD5": "{MD5 hash for the file, string}",
-        "extension": ".jar",
-        "url": "http://files.site.com/maven/group/id/artifact/version/artifact-version.jar"
+    "version": "1.0.0",
+    "discord": {
+        "clientId": "12334567890123456789",
+        "smallImageText": "WesterosCraft",
+        "smallImageKey": "seal-circle"
     },
-    "sub_modules": [
+    "rss": "https://westeroscraft.com/articles/index.rss",
+    "servers": []
+}
+```
+
+### `DistroIndex.version: string/semver`
+
+The version of the index format. Will be used in the future to gracefully push updates.
+
+### `DistroIndex.discord: object`
+
+Global settings for [Discord Rich Presence](https://discordapp.com/developers/docs/rich-presence/how-to).
+
+**Properties**
+
+* `discord.clientId: string` - Client ID for th Application registered with Discord.
+* `discord.smallImageText: string` - Tootltip for the `smallImageKey`.
+* `discord.smallImageKey: string` - Name of the uploaded image for the small profile artwork.
+
+
+### `DistroIndex.rss: string/url`
+
+A URL to a RSS feed. Used for loading news.
+
+---
+
+## Server Object
+
+#### Example
+```JSON
+{
+    "id": "Example_Server",
+    "name": "WesterosCraft Example Client",
+    "description": "Example WesterosCraft server. Connect for fun!",
+    "icon": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/example_icon.png",
+    "version": "0.0.1",
+    "address": "mc.westeroscraft.com:1337",
+    "minecraftVersion": "1.11.2",
+    "discord": {
+        "shortId": "Example",
+        "largeImageText": "WesterosCraft Example Server",
+        "largeImageKey": "server-example"
+    },
+    "mainServer": true,
+    "autoconnect": true,
+    "modules": []
+}
+```
+
+### `Server.id: string`
+
+The ID of the server. The launcher saves mod configurations and selected servers by ID. If the ID changes, all data related to the old ID **will be wiped**.
+
+### `Server.name: string`
+
+The name of the server. This is what users see on the UI.
+
+### `Server.description: string`
+
+A brief description of the server. Displayed on the UI to provide users more information.
+
+### `Server.icon: string/url`
+
+A URL to the server's icon. Will be displayed on the UI.
+
+### `Server.version: string/semver`
+
+The version of the server configuration.
+
+### `Server.address: string/url`
+
+The server's IP address.
+
+### `Server.minecraftVersion: string`
+
+The version of minecraft that the server is running.
+
+### `Server.discord: object`
+
+Server specific settings used for [Discord Rich Presence](https://discordapp.com/developers/docs/rich-presence/how-to).
+
+**Properties**
+
+* `discord.shortId: string` - Short ID for the server. Displayed on the second status line as `Server: shortId`
+* `discord.largeImageText: string` - Ttooltip for the `largeImageKey`.
+* `discord.largeImageKey: string` - Name of the uploaded image for the large profile artwork.
+
+### `Server.mainServer: boolean`
+
+Only one server in the array should have the `mainServer` property enabled. This will tell the launcher that this is the default server to select if either the previously selected server is invalid, or there is no previously selected server. If this field is not defined by any server (avoid this), the first server will be selected as the default. If multiple servers have `mainServer` enabled, the first one the launcher finds will be the effective value. Servers which are not the default may omit this property rather than explicitly setting it to false.
+
+### `Server.autoconnect: boolean`
+
+Whether or not the server can be autoconnected to. If false, the server will not be autoconnected to even when the user has the autoconnect setting enabled.
+
+### `Server.modules: Module[]`
+
+An array of module objects.
+
+---
+
+## Module Object
+
+A module is a generic representation of a file required to run the minecraft client.
+
+#### Example
+```JSON
+{
+    "id": "com.example:artifact:1.0.0@jar.pack.xz",
+    "name": "Artifact 1.0.0",
+    "type": "Library",
+    "artifact": {
+        "size": 4231234,
+        "MD5": "7f30eefe5c51e1ae0939dab2051db75f",
+        "url": "http://files.site.com/maven/com/example/artifact/1.0.0/artifact-1.0.0.jar.pack.xz"
+    },
+    "subModules": [
         {
             "id": "examplefile",
             "name": "Example File",
-            "type": "file",
+            "type": "File",
             "artifact": {
-                "size": "{file size in bytes}",
-                "MD5": "{MD5 hash for the file, string}",
+                "size": 23423,
+                "MD5": "169a5e6cf30c2cc8649755cdc5d7bad7",
                 "path": "examplefile.txt",
                 "url": "http://files.site.com/examplefile.txt"
             }
-        },
-        ...
+        }
     ]
 }
 ```
 
-As shown above, modules objects are allowed to declare submodules under the option `sub_modules`. This parameter is completely optional and can be omitted for modules which do not require submodules. Typically, files which require other files are declared as submodules. A quick example would be a mod, and the configuration file for that mod. Submodules can also declare submodules of their own. The file is parsed recursively, so there is no limit.
+The parent module will be stored maven style, it's destination path will be resolved by its id. The sub module has a declared `path`, so that value will be used.
 
-Modules of type `forgemod`, `litemod`, and `liteloader` may also declare a `required` object.
+### `Module.id: string`
 
-```json
-"required": {
-    "value": false, // If the module is required
-    "def": false // If it's enabled by default, has no effect if value is true
-}
-```
+The ID of the module. The best practice for an ID is to use a maven identifier. Modules which are stored maven style use the identifier to resolve the destination path. If the `extension` is not provided, it defaults to `jar`.
 
-If a module does not declare this object, both `value` and `def` default to true. Similarly, if a parameter is not included in the `required` object it will default to true. This will be used in the mod selection process down the line.
+**Template**
 
+`my.group:arifact:version@extension`
+
+`my/group/artifact/version/artifact-version.extension`
+
+**Example**
+
+`net.minecraft:launchwrapper:1.12` OR `net.minecraft:launchwrapper:1.12@jar`
+
+`net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar`
+
+If the module's artifact does not declare the `path` property, its path will be resolved from the ID.
+
+### `Module.name: string`
+
+The name of the module. Used on the UI.
+
+### `Module.type: string`
+
+The type of the module.
+
+### `Module.required: Required`
+
+**OPTIONAL**
+
+Defines whether or not the module is required. If omitted, then the module will be required. 
+
+Only applicable for modules of type:
+* `ForgeMod`
+* `LiteMod`
+* `LiteLoader`
+
+
+### `Module.artifact: Artifact`
+
+The download artifact for the module.
+
+### `Module.subModules: Module[]`
+
+**OPTIONAL**
+
+An array of sub modules declared by this module. Typically, files which require other files are declared as submodules. A quick example would be a mod, and the configuration file for that mod. Submodules can also declare submodules of their own. The file is parsed recursively, so there is no limit.
+
+
+## Artifact Object
 
 The format of the module's artifact depends on several things. The most important factor is where the file will be stored. If you are providing a simple file to be placed in the root directory of the client files, you may decided to format the module as the `examplefile` module declared above. This module provides a `path` option, allowing you to directly set where the file will be saved to. Only the `path` will affect the final downloaded file.
 
-Other times, you may want to store the files maven-style, such as with libraries and mods. In this case you must declare the module as the example artifact above. The `id` becomes more important as it will be used to resolve the final path. The `id` must be provided in maven format, that is `group.id.maybemore:artifact:version`. From there, you need to declare the `extension` of the file in the artifact object. This effectively replaces the `path` option we used above.
+Other times, you may want to store the files maven-style, such as with libraries and mods. In this case you must declare the module as the example artifact above. The module `id` will be used to resolve the final path, effectively replacing the `path` property. It must be provided in maven format. More information on this is provided in the documentation for the `id` property.
 
-**It is EXTREMELY IMPORTANT that the file size is CORRECT. The launcher's download queue will not function properly otherwise.**
+The resolved/provided paths are appended to a base path depending on the module's declared type.
 
-Ex.
+| Type | Path |
+| ---- | ---- |
+| `ForgeHosted` | ({`commonDirectory`}/libraries/{`path` OR resolved}) |
+| `LiteLoader` | ({`commonDirectory`}/libraries/{`path` OR resolved}) |
+| `Library` | ({`commonDirectory`}/libraries/{`path` OR resolved}) |
+| `ForgeMod` | ({`commonDirectory`}/modstore/{`path` OR resolved}) |
+| `LiteMod` | ({`commonDirectory`}/modstore/{`path` OR resolved}) |
+| `File` | ({`instanceDirectory`}/{`Server.id`}/{`path` OR resolved}) |
 
-```SHELL
-type = forgemod
-id = com.westeroscraft:westerosblocks:1.0.0
-extension = .jar
+The `commonDirectory` and `instanceDirectory` values are stored in the launcher's config.json.
 
-resolved_path = {commonDirectory}/modstore/com/westeroscraft/westerosblocks/1.0.0/westerosblocks-1.0.0.jar
-```
+### `Artifact.size: number`
 
-The resolved path depends on the type. Currently, there are several recognized module types:
+The size of the artifact.
 
-- `forge-hosted` ({commonDirectory}/libraries/{path OR resolved})
-- `liteloader` ({commonDirectory}/libraries/{path OR resolved})
-- `library` ({commonDirectory}/libraries/{path OR resolved})
-- `forgemod` ({commonDirectory}/modstore/{path OR resolved})
-- `litemod` ({commonDirectory}/modstore/{path OR resolved})
-- `file` ({instanceDirectory}/{serverID}/{path OR resolved})
+### `Artifact.MD5: string`
+
+The MD5 hash of the artifact. This will be used to validate local artifacts.
+
+### `Artifact.path: string`
+
+**OPTIONAL**
+
+A relative path to where the file will be saved. This is appended to the base path for the module's declared type.
+
+If this is not specified, the path will be resolved based on the module's ID.
+
+### `Artifact.url: string/url`
+
+The artifact's download url.
+
+## Required Object
+
+### `Required.value: boolean`
+
+**OPTIONAL**
+
+If the module is required. Defaults to true if this property is omited. 
+
+### `Required.def: boolean`
+
+**OPTIONAL**
+
+If the module is enabled by default. Has no effect unless `Required.value` is false. Defaults to true if this property is omited. 
 
 ---
 
+## Module Types
 
-### forge-hosted
+### ForgeHosted
 
-The module type `forge-hosted` represents forge itself. Currently, the launcher only supports forge servers, as vanilla servers can be connected to via the mojang launcher. The `hosted` part is key, this means that the forge module must declare its required libraries as submodules.
+The module type `ForgeHosted` represents forge itself. Currently, the launcher only supports forge servers, as vanilla servers can be connected to via the mojang launcher. The `Hosted` part is key, this means that the forge module must declare its required libraries as submodules.
 
 Ex.
 
@@ -124,46 +296,43 @@ Ex.
 {
     "id": "net.minecraftforge:forge:1.11.2-13.20.1.2429",
     "name": "Minecraft Forge 1.11.2-13.20.1.2429",
-    "type": "forge-hosted",
+    "type": "ForgeHosted",
     "artifact": {
         "size": 4450992,
         "MD5": "3fcc9b0104f0261397d3cc897e55a1c5",
-        "extension": ".jar",
         "url": "http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.11.2-13.20.1.2429/forge-1.11.2-13.20.1.2429-universal.jar"
     },
-    "sub_modules": [
+    "subModules": [
         {
             "id": "net.minecraft:launchwrapper:1.12",
             "name": "Mojang (LaunchWrapper)",
-            "type": "library",
+            "type": "Library",
             "artifact": {
                 "size": 32999,
                 "MD5": "934b2d91c7c5be4a49577c9e6b40e8da",
-                "extension": ".jar",
                 "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/launchwrapper-1.12.jar"
             }
-        },
-        ...
+        }
     ]
 }
 ```
 
 All of forge's required libraries are declared in the `version.json` file found in the root of the forge jar file. These libraries MUST be hosted and declared a submodules or forge will not work.
 
-There were plans to add a `forge` type, in which the required libraries would be resolved by the launcher and downloaded from forge's servers. The forge servers are down at times, however, so this plan was stopped half-implemented.
+There were plans to add a `Forge` type, in which the required libraries would be resolved by the launcher and downloaded from forge's servers. The forge servers are down at times, however, so this plan was stopped half-implemented.
 
 ---
 
-### liteloader
+### LiteLoader
 
-The module type `liteloader` represents liteloader. It is handled as a library and added to the classpath at runtime. Special launch conditions are executed when liteloader is present and enabled. This module can be optional and toggled similarly to `forgemod` and `litemod` modules.
+The module type `LiteLoader` represents liteloader. It is handled as a library and added to the classpath at runtime. Special launch conditions are executed when liteloader is present and enabled. This module can be optional and toggled similarly to `ForgeMod` and `Litemod` modules.
 
 Ex.
 ```json
 {
     "id": "com.mumfrey:liteloader:1.11.2",
     "name": "Liteloader (1.11.2)",
-    "type": "liteloader",
+    "type": "LiteLoader",
     "required": {
         "value": false,
         "def": false
@@ -171,20 +340,19 @@ Ex.
     "artifact": {
         "size": 1685422,
         "MD5": "3a98b5ed95810bf164e71c1a53be568d",
-        "extension": ".jar",
         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/liteloader-1.11.2.jar"
     },
-    "sub_modules": [
-        // All litemods should be declared as submodules.
+    "subModules": [
+        "All LiteMods go here"
     ]
 }
 ```
 
 ---
 
-### library
+### Library
 
-The module type `library` represents a library file which will be required to start the minecraft process. Each library module will be dynamically added to the `-cp` (classpath) argument while building the game process.
+The module type `Library` represents a library file which will be required to start the minecraft process. Each library module will be dynamically added to the `-cp` (classpath) argument while building the game process.
 
 Ex.
 
@@ -192,11 +360,10 @@ Ex.
 {
     "id": "net.sf.jopt-simple:jopt-simple:4.6",
     "name": "Jopt-simple 4.6",
-    "type": "library",
+    "type": "Library",
     "artifact": {
         "size": 62477,
         "MD5": "13560a58a79b46b82057686543e8d727",
-        "extension": ".jar",
         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.11.2/jopt-simple-4.6.jar"
     }
 }
@@ -204,20 +371,19 @@ Ex.
 
 ---
 
-### forgemod
+### ForgeMod
 
-The module type `forgemod` represents a mod loaded by the Forge Mod Loader (FML). These files are stored maven-style and passed to FML using forge's [Modlist format](https://github.com/MinecraftForge/FML/wiki/New-JSON-Modlist-format).
+The module type `ForgeMod` represents a mod loaded by the Forge Mod Loader (FML). These files are stored maven-style and passed to FML using forge's [Modlist format](https://github.com/MinecraftForge/FML/wiki/New-JSON-Modlist-format).
 
 Ex.
 ```json
 {
     "id": "com.westeroscraft:westerosblocks:3.0.0-beta-6-133",
     "name": "WesterosBlocks (3.0.0-beta-6-133)",
-    "type": "forgemod",
+    "type": "ForgeMod",
     "artifact": {
         "size": 16321712,
         "MD5": "5a89e2ab18916c18965fc93a0766cc6e",
-        "extension": ".jar",
         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/WesterosBlocks.jar"
     }
 }
@@ -225,16 +391,16 @@ Ex.
 
 ---
 
-### litemod
+### LiteMod
 
-The module type `litemod` represents a mod loaded by liteloader. These files are stored maven-style and passed to liteloader using forge's [Modlist format](https://github.com/MinecraftForge/FML/wiki/New-JSON-Modlist-format). Documentation for liteloader's implementation of this can be found on [this issue](http://develop.liteloader.com/liteloader/LiteLoader/issues/34).
+The module type `LiteMod` represents a mod loaded by liteloader. These files are stored maven-style and passed to liteloader using forge's [Modlist format](https://github.com/MinecraftForge/FML/wiki/New-JSON-Modlist-format). Documentation for liteloader's implementation of this can be found on [this issue](http://develop.liteloader.com/liteloader/LiteLoader/issues/34).
 
 Ex.
 ```json
 {
-    "id": "com.mumfrey:macrokeybindmod:0.14.4-1.11.2",
+    "id": "com.mumfrey:macrokeybindmod:0.14.4-1.11.2@litemod",
     "name": "Macro/Keybind Mod (0.14.4-1.11.2)",
-    "type": "litemod",
+    "type": "LiteMod",
     "required": {
         "value": false,
         "def": false
@@ -242,7 +408,6 @@ Ex.
     "artifact": {
         "size": 1670811,
         "MD5": "16080785577b391d426c62c8d3138558",
-        "extension": ".litemod",
         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/macrokeybindmod.litemod"
     }
 }
@@ -250,7 +415,7 @@ Ex.
 
 ---
 
-### file
+### File
 
 The module type `file` represents a generic file required by the client, another module, etc. These files are stored in the server's instance directory.
 
@@ -269,7 +434,3 @@ Ex.
     }
 }
 ```
-
----
-
-This format is actively under development and is likely to change. 

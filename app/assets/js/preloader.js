@@ -1,9 +1,10 @@
-const {AssetGuard} = require('./assetguard.js')
-const ConfigManager = require('./configmanager.js')
 const {ipcRenderer} = require('electron')
 const os = require('os')
 const path = require('path')
 const rimraf = require('rimraf')
+
+const ConfigManager = require('./configmanager')
+const DistroManager = require('./distromanager')
 
 console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Loading..')
 
@@ -14,17 +15,17 @@ function onDistroLoad(data){
     if(data != null){
         
          // Resolve the selected server if its value has yet to be set.
-        if(ConfigManager.getSelectedServer() == null || AssetGuard.getServerById(ConfigManager.getSelectedServer()) == null){
+        if(ConfigManager.getSelectedServer() == null || data.getServer(ConfigManager.getSelectedServer()) == null){
             console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Determining default selected server..')
-            ConfigManager.setSelectedServer(AssetGuard.resolveSelectedServer().id)
+            ConfigManager.setSelectedServer(data.getMainServer().getID())
             ConfigManager.save()
         }
     }
-    ipcRenderer.send('distributionIndexDone', data)
+    ipcRenderer.send('distributionIndexDone', data != null)
 }
 
 // Ensure Distribution is downloaded and cached.
-AssetGuard.refreshDistributionDataRemote(ConfigManager.getLauncherDirectory()).then((data) => {
+DistroManager.pullRemote().then((data) => {
     console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Loaded distribution index.')
 
    onDistroLoad(data)
@@ -35,7 +36,7 @@ AssetGuard.refreshDistributionDataRemote(ConfigManager.getLauncherDirectory()).t
 
     console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Attempting to load an older version of the distribution index.')
     // Try getting a local copy, better than nothing.
-    AssetGuard.refreshDistributionDataLocal(ConfigManager.getLauncherDirectory()).then((data) => {
+    DistroManager.pullLocal().then((data) => {
         console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Successfully loaded an older version of the distribution index.')
 
         onDistroLoad(data)

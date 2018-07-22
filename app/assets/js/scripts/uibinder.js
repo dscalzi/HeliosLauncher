@@ -4,9 +4,10 @@
  */
 // Requirements
 const path          = require('path')
-const AuthManager   = require('./assets/js/authmanager.js')
-const {AssetGuard}  = require('./assets/js/assetguard.js')
-const ConfigManager = require('./assets/js/configmanager.js')
+
+const AuthManager   = require('./assets/js/authmanager')
+const ConfigManager = require('./assets/js/configmanager')
+const DistroManager = require('./assets/js/distromanager')
 
 let rscShouldLoad = false
 let fatalStartupError = false
@@ -53,14 +54,14 @@ function getCurrentView(){
     return currentView
 }
 
-function showMainUI(){
+function showMainUI(data){
 
     if(!isDev){
         console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Initializing..')
         ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
     }
 
-    updateSelectedServer(AssetGuard.getServerById(ConfigManager.getSelectedServer()).name)
+    updateSelectedServer(data.getServer(ConfigManager.getSelectedServer()).getName())
     refreshServerStatus()
     setTimeout(() => {
         document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
@@ -131,7 +132,7 @@ function showFatalStartupError(){
  * @param {Object} data The distro index object.
  */
 function onDistroRefresh(data){
-    updateSelectedServer(AssetGuard.getServerById(ConfigManager.getSelectedServer()).name)
+    updateSelectedServer(data.getServer(ConfigManager.getSelectedServer()).getName())
     refreshServerStatus()
     initNews()
     syncModConfigurations(data)
@@ -146,28 +147,27 @@ function syncModConfigurations(data){
 
     const syncedCfgs = []
 
-    const servers = data.servers
+    for(let serv of data.getServers()){
 
-    for(let i=0; i<servers.length; i++){
-
-        const id = servers[i].id
-        const mdls = servers[i].modules
-        const cfg = ConfigManager.getModConfiguration(servers[i].id)
+        const id = serv.getID()
+        const mdls = serv.getModules()
+        const cfg = ConfigManager.getModConfiguration(id)
 
         if(cfg != null){
 
             const modsOld = cfg.mods
             const mods = {}
 
-            for(let j=0; j<mdls.length; j++){
-                const mdl = mdls[j]
-                if(mdl.type === 'forgemod' || mdl.type === 'litemod' || mdl.type === 'liteloader'){
-                    if(mdl.required != null && mdl.required.value != null && mdl.required.value === false){
-                        const mdlID = AssetGuard._resolveWithoutVersion(mdl.id)
+            for(let mdl of mdls){
+                const type = mdl.getType()
+
+                if(type === DistroManager.Types.ForgeMod || type === DistroManager.Types.LiteMod || type === DistroManager.Types.LiteLoader){
+                    if(!mdl.getRequired().isRequired()){
+                        const mdlID = mdl.getVersionlessID()
                         if(modsOld[mdlID] == null){
-                            mods[mdlID] = scanOptionalSubModules(mdl.sub_modules, mdl)
+                            mods[mdlID] = scanOptionalSubModules(mdl.getSubModules(), mdl)
                         } else {
-                            mods[mdlID] = mergeModConfiguration(modsOld[mdlID], scanOptionalSubModules(mdl.sub_modules, mdl))
+                            mods[mdlID] = mergeModConfiguration(modsOld[mdlID], scanOptionalSubModules(mdl.getSubModules(), mdl))
                         }
                     }
                 }
@@ -182,11 +182,11 @@ function syncModConfigurations(data){
 
             const mods = {}
 
-            for(let j=0; j<mdls.length; j++){
-                const mdl = mdls[j]
-                if(mdl.type === 'forgemod' || mdl.type === 'litemod' || mdl.type === 'liteloader'){
-                    if(mdl.required != null && mdl.required.value != null && mdl.required.value === false){
-                        mods[AssetGuard._resolveWithoutVersion(mdl.id)] = scanOptionalSubModules(mdl.sub_modules, mdl)
+            for(let mdl of mdls){
+                const type = mdl.getType()
+                if(type === DistroManager.Types.ForgeMod || type === DistroManager.Types.LiteMod || type === DistroManager.Types.LiteLoader){
+                    if(!mdl.getRequired().isRequired()){
+                        mods[mdl.getVersionlessID()] = scanOptionalSubModules(mdl.getSubModules(), mdl)
                     }
                 }
             }
@@ -214,25 +214,25 @@ function scanOptionalSubModules(mdls, origin){
     if(mdls != null){
         const mods = {}
 
-        for(let i=0; i<mdls.length; i++){
-            const mdl = mdls[i]
+        for(let mdl of mdls){
+            const type = mdl.getType()
             // Optional types.
-            if(mdl.type === 'forgemod' || mdl.type === 'litemod' || mdl.type === 'liteloader'){
+            if(type === DistroManager.Types.ForgeMod || type === DistroManager.Types.LiteMod || type === DistroManager.Types.LiteLoader){
                 // It is optional.
-                if(mdl.required != null && mdl.required.value != null && mdl.required.value === false){
-                    mods[AssetGuard._resolveWithoutVersion(mdl.id)] = scanOptionalSubModules(mdl.sub_modules, mdl)
+                if(!mdl.getRequired().isRequired()){
+                    mods[mdl.getVersionlessID()] = scanOptionalSubModules(mdl.getSubModules(), mdl)
                 }
             }
         }
 
         if(Object.keys(mods).length > 0){
             return {
-                value: origin.required != null && origin.required.def != null ? origin.required.def : true,
+                value: origin.getRequired().isDefault(),
                 mods
             }
         }
     }
-    return origin.required != null && origin.required.def != null ? origin.required.def : true
+    return origin.getRequired().isDefault()
 }
 
 /**
@@ -274,11 +274,11 @@ function mergeModConfiguration(o, n){
 
 function refreshDistributionIndex(remote, onSuccess, onError){
     if(remote){
-        AssetGuard.refreshDistributionDataRemote(ConfigManager.getLauncherDirectory())
+        DistroManager.pullRemote()
         .then(onSuccess)
         .catch(onError)
     } else {
-        AssetGuard.refreshDistributionDataLocal(ConfigManager.getLauncherDirectory())
+        DistroManager.pullLocal()
         .then(onSuccess)
         .catch(onError)
     }
@@ -347,7 +347,8 @@ document.addEventListener('readystatechange', function(){
     if (document.readyState === 'complete'){
         if(rscShouldLoad){
             if(!fatalStartupError){
-                showMainUI()
+                const data = DistroManager.getDistribution()
+                showMainUI(data)
             } else {
                 showFatalStartupError()
             }
@@ -362,11 +363,12 @@ document.addEventListener('readystatechange', function(){
 }, false)
 
 // Actions that must be performed after the distribution index is downloaded.
-ipcRenderer.on('distributionIndexDone', (event, data) => {
-    if(data != null) {
+ipcRenderer.on('distributionIndexDone', (event, res) => {
+    if(res) {
+        const data = DistroManager.getDistribution()
         syncModConfigurations(data)
         if(document.readyState === 'complete'){
-            showMainUI()
+            showMainUI(data)
         } else {
             rscShouldLoad = true
         }

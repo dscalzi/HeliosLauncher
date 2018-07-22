@@ -1,7 +1,5 @@
 const AdmZip                = require('adm-zip')
-const {AssetGuard, Library} = require('./assetguard.js')
 const child_process         = require('child_process')
-const ConfigManager         = require('./configmanager.js')
 const crypto                = require('crypto')
 const fs                    = require('fs')
 const mkpath                = require('mkdirp')
@@ -10,10 +8,14 @@ const path                  = require('path')
 const rimraf                = require('rimraf')
 const {URL}                 = require('url')
 
+const { Library }             = require('./assetguard')
+const ConfigManager         = require('./configmanager')
+const DistroManager         = require('./distromanager')
+
 class ProcessBuilder {
 
     constructor(distroServer, versionData, forgeData, authUser){
-        this.gameDir = path.join(ConfigManager.getInstanceDirectory(), distroServer.id)
+        this.gameDir = path.join(ConfigManager.getInstanceDirectory(), distroServer.getID())
         this.commonDir = ConfigManager.getCommonDirectory()
         this.server = distroServer
         this.versionData = versionData
@@ -35,7 +37,9 @@ class ProcessBuilder {
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         this.setupLiteLoader()
-        const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.id).mods, this.server.modules)
+        console.log('using liteloader', this.usingLiteLoader)
+        const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
+        console.log(modObj)
         this.constructModList('forge', modObj.fMods, true)
         if(this.usingLiteLoader){
             this.constructModList('liteloader', modObj.lMods, true)
@@ -92,20 +96,7 @@ class ProcessBuilder {
      * @returns {boolean} True if the mod is enabled, false otherwise.
      */
     static isModEnabled(modCfg, required = null){
-        return modCfg != null ? ((typeof modCfg === 'boolean' && modCfg) || (typeof modCfg === 'object' && modCfg.value)) : required != null && required.def != null ? required.def : true
-    }
-
-    /**
-     * Determine if a mod is optional.
-     * 
-     * A mod is optional if its required object is not null and its 'value'
-     * property is false.
-     * 
-     * @param {Object} mdl The mod distro module.
-     * @returns {boolean} True if the mod is optional, otherwise false.
-     */
-    static isModOptional(mdl){
-        return mdl.required != null && mdl.required.value != null && mdl.required.value === false
+        return modCfg != null ? ((typeof modCfg === 'boolean' && modCfg) || (typeof modCfg === 'object' && modCfg.value)) : required != null ? required.isDefault() : true
     }
 
     /**
@@ -115,19 +106,21 @@ class ProcessBuilder {
      * mod. It must not be declared as a submodule.
      */
     setupLiteLoader(){
-        const mdls = this.server.modules
-        for(let i=0; i<mdls.length; i++){
-            if(mdls[i].type === 'liteloader'){
-                const ll = mdls[i]
-                if(ProcessBuilder.isModOptional(ll)){
-                    const modCfg = ConfigManager.getModConfiguration(this.server.id).mods
-                    if(ProcessBuilder.isModEnabled(modCfg[AssetGuard._resolveWithoutVersion(ll.id)], ll.required)){
-                        this.usingLiteLoader = true
-                        this.llPath = path.join(this.libPath, ll.artifact.path == null ? AssetGuard._resolvePath(ll.id, ll.artifact.extension) : ll.artifact.path)
+        for(let ll of this.server.getModules()){
+            if(ll.getType() === DistroManager.Types.LiteLoader){
+                if(!ll.getRequired().isRequired()){
+                    const modCfg = ConfigManager.getModConfiguration(this.server.getID()).mods
+                    if(ProcessBuilder.isModEnabled(modCfg[ll.getVersionlessID()], ll.getRequired())){
+                        if(fs.existsSync(ll.getArtifact().getPath())){
+                            this.usingLiteLoader = true
+                            this.llPath = ll.getArtifact().getPath()
+                        }
                     }
                 } else {
-                    this.usingLiteLoader = true
-                    this.llPath = path.join(this.libPath, ll.artifact.path == null ? AssetGuard._resolvePath(ll.id, ll.artifact.extension) : ll.artifact.path)
+                    if(fs.existsSync(ll.getArtifact().getPath())){
+                        this.usingLiteLoader = true
+                        this.llPath = ll.getArtifact().getPath()
+                    }
                 }
             }
         }
@@ -146,21 +139,21 @@ class ProcessBuilder {
         let fMods = []
         let lMods = []
 
-        for(let i=0; i<mdls.length; i++){
-            const mdl = mdls[i]
-            if(mdl.type != null && (mdl.type === 'forgemod' || mdl.type === 'litemod' || mdl.type === 'liteloader')){
-                const o = ProcessBuilder.isModOptional(mdl)
-                const e = ProcessBuilder.isModEnabled(modCfg[AssetGuard._resolveWithoutVersion(mdl.id)], mdl.required)
+        for(let mdl of mdls){
+            const type = mdl.getType()
+            if(type === DistroManager.Types.ForgeMod || type === DistroManager.Types.LiteMod || type === DistroManager.Types.LiteLoader){
+                const o = !mdl.getRequired().isRequired()
+                const e = ProcessBuilder.isModEnabled(modCfg[mdl.getVersionlessID()], mdl.getRequired())
                 if(!o || (o && e)){
-                    if(mdl.sub_modules != null){
-                        const v = this.resolveModConfiguration(modCfg[AssetGuard._resolveWithoutVersion(mdl.id)].mods, mdl.sub_modules)
+                    if(mdl.hasSubModules()){
+                        const v = this.resolveModConfiguration(modCfg[mdl.getVersionlessID()].mods, mdl.getSubModules())
                         fMods = fMods.concat(v.fMods)
                         lMods = lMods.concat(v.lMods)
-                        if(mdl.type === 'liteloader'){
+                        if(mdl.type === DistroManager.Types.LiteLoader){
                             continue
                         }
                     }
-                    if(mdl.type === 'forgemod'){
+                    if(mdl.type === DistroManager.Types.ForgeMod){
                         fMods.push(mdl)
                     } else {
                         lMods.push(mdl)
@@ -186,15 +179,15 @@ class ProcessBuilder {
         const modList = {
             repositoryRoot: path.join(this.commonDir, 'modstore')
         }
-        
+
         const ids = []
         if(type === 'forge'){
-            for(let i=0; i<mods.length; ++i){
-                ids.push(mods[i].id)
+            for(let mod of mods){
+                ids.push(mod.getIdentifier())
             }
         } else {
-            for(let i=0; i<mods.length; ++i){
-                ids.push(mods[i].id + '@' + (mods[i].artifact.extension != null ? mods[i].artifact.extension.substring(1) : 'jar'))
+            for(let mod of mods){
+                ids.push(mod.getIdentifier() + '@' + mod.getExtension())
             }
         }
         modList.modRef = ids
@@ -255,7 +248,7 @@ class ProcessBuilder {
                         break
                     case 'version_name':
                         //val = versionData.id
-                        val = this.server.id
+                        val = this.server.getID()
                         break
                     case 'game_directory':
                         val = this.gameDir
@@ -306,8 +299,8 @@ class ProcessBuilder {
         }
 
         // Prepare autoconnect
-        if(ConfigManager.getAutoConnect() && this.server.autoconnect){
-            const serverURL = new URL('my://' + this.server.server_ip)
+        if(ConfigManager.getAutoConnect() && this.server.isAutoConnect()){
+            const serverURL = new URL('my://' + this.server.getAddress())
             mcArgs.unshift(serverURL.hostname)
             mcArgs.unshift('--server')
             if(serverURL.port){
@@ -428,16 +421,16 @@ class ProcessBuilder {
      * @returns {Array.<string>} An array containing the paths of each library this server requires.
      */
     _resolveServerLibraries(mods){
-        const mdles = this.server.modules
+        const mdls = this.server.getModules()
         let libs = []
 
         // Locate Forge/Libraries
-        for(let i=0; i<mdles.length; i++){
-            if(mdles[i].type != null && (mdles[i].type === 'forge-hosted' || mdles[i].type === 'library')){
-                let lib = mdles[i]
-                libs.push(path.join(this.libPath, lib.artifact.path == null ? AssetGuard._resolvePath(lib.id, lib.artifact.extension) : lib.artifact.path))
-                if(lib.sub_modules != null){
-                    const res = this._resolveModuleLibraries(lib)
+        for(let mdl of mdls){
+            const type = mdl.getType()
+            if(type === DistroManager.Types.ForgeHosted || type === DistroManager.Types.Library){
+                libs.push(mdl.getArtifact().getPath())
+                if(mdl.hasSubModules()){
+                    const res = this._resolveModuleLibraries(mdl)
                     if(res.length > 0){
                         libs = libs.concat(res)
                     }
@@ -461,22 +454,21 @@ class ProcessBuilder {
     /**
      * Recursively resolve the path of each library required by this module.
      * 
-     * @param {Object} mdle A module object from the server distro index.
+     * @param {Object} mdl A module object from the server distro index.
      * @returns {Array.<string>} An array containing the paths of each library this module requires.
      */
-    _resolveModuleLibraries(mdle){
-        if(mdle.sub_modules == null){
+    _resolveModuleLibraries(mdl){
+        if(!mdl.hasSubModules()){
             return []
         }
         let libs = []
-        for(let i=0; i<mdle.sub_modules.length; i++){
-            const sm = mdle.sub_modules[i]
-            if(sm.type != null && sm.type == 'library'){
-                libs.push(path.join(this.libPath, sm.artifact.path == null ? AssetGuard._resolvePath(sm.id, sm.artifact.extension) : sm.artifact.path))
+        for(let sm of mdl.getSubModules()){
+            if(sm.getType() === DistroManager.Types.Library){
+                libs.push(sm.getArtifact().getPath())
             }
             // If this module has submodules, we need to resolve the libraries for those.
             // To avoid unnecessary recursive calls, base case is checked here.
-            if(mdle.sub_modules != null){
+            if(mdl.hasSubModules()){
                 const res = this._resolveModuleLibraries(sm)
                 if(res.length > 0){
                     libs = libs.concat(res)

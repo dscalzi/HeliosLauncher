@@ -138,10 +138,10 @@ document.getElementById('serverSelectConfirm').addEventListener('click', () => {
     const listings = document.getElementsByClassName('serverListing')
     for(let i=0; i<listings.length; i++){
         if(listings[i].hasAttribute('selected')){
-            const serv = AssetGuard.getServerById(listings[i].getAttribute('servid'))
-            ConfigManager.setSelectedServer(serv != null ? serv.id : null)
+            const serv = DistroManager.getDistribution().getServer(listings[i].getAttribute('servid'))
+            ConfigManager.setSelectedServer(serv != null ? serv.getID() : null)
             ConfigManager.save()
-            updateSelectedServer(serv != null ? serv.name : null)
+            updateSelectedServer(serv != null ? serv.getName() : null)
             setLaunchEnabled(serv != null)
             refreshServerStatus(true)
             toggleOverlay(false)
@@ -229,20 +229,20 @@ function setAccountListingHandlers(){
 }
 
 function populateServerListings(){
-    const distro = AssetGuard.getDistributionData()
+    const distro = DistroManager.getDistribution()
     const giaSel = ConfigManager.getSelectedServer()
-    const servers = distro.servers
+    const servers = distro.getServers()
     let htmlString = ``
-    for(let i=0; i<servers.length; i++){
-        htmlString += `<button class="serverListing" servid="${servers[i].id}" ${servers[i].id === giaSel ? `selected` : ``}>
-            <img class="serverListingImg" src="${servers[i].icon_url}"/>
+    for(const serv of servers){
+        htmlString += `<button class="serverListing" servid="${serv.getID()}" ${serv.getID() === giaSel ? `selected` : ``}>
+            <img class="serverListingImg" src="${serv.getIcon()}"/>
             <div class="serverListingDetails">
-                <span class="serverListingName">${servers[i].name}</span>
-                <span class="serverListingDescription">${servers[i].description}</span>
+                <span class="serverListingName">${serv.getName()}</span>
+                <span class="serverListingDescription">${serv.getDescription()}</span>
                 <div class="serverListingInfo">
-                    <div class="serverListingVersion">${servers[i].mc_version}</div>
-                    <div class="serverListingRevision">${servers[i].revision}</div>
-                    ${servers[i].default_selected ? `<div class="serverListingStarWrapper">
+                    <div class="serverListingVersion">${serv.getMinecraftVersion()}</div>
+                    <div class="serverListingRevision">${serv.getVersion()}</div>
+                    ${serv.isMainServer() ? `<div class="serverListingStarWrapper">
                         <svg id="Layer_1" viewBox="0 0 107.45 104.74" width="20px" height="20px">
                             <defs>
                                 <style>.cls-1{fill:#fff;}.cls-2{fill:none;stroke:#fff;stroke-miterlimit:10;}</style>

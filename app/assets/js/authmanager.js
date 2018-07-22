@@ -9,8 +9,8 @@
  * @module authmanager
  */
 // Requirements
-const ConfigManager = require('./configmanager.js')
-const Mojang = require('./mojang.js')
+const ConfigManager = require('./configmanager')
+const Mojang        = require('./mojang')
 
 // Functions
 

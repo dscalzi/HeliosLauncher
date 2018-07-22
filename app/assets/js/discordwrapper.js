@@ -1,49 +1,47 @@
 // Work in progress
 const {Client} = require('discord-rpc')
-const ConfigManager = require('./configmanager.js')
+const ConfigManager = require('./configmanager')
 
-let rpc
+let client
 let activity
 
 exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting for Client..'){
-    rpc = new Client({ transport: 'ipc' })
+    client = new Client({ transport: 'ipc' })
 
-    rpc.on('ready', () => {
-        activity = {
-            details: initialDetails,
-            state: 'Server: ' + servSettings.shortId,
-            largeImageKey: servSettings.largeImageKey,
-            largeImageText: servSettings.largeImageText,
-            smallImageKey: genSettings.smallImageKey,
-            smallImageText: genSettings.smallImageText,
-            startTimestamp: new Date().getTime() / 1000,
-            instance: false
-        }
-    
-        rpc.setActivity(activity)
+    activity = {
+        details: initialDetails,
+        state: 'Server: ' + servSettings.shortId,
+        largeImageKey: servSettings.largeImageKey,
+        largeImageText: servSettings.largeImageText,
+        smallImageKey: genSettings.smallImageKey,
+        smallImageText: genSettings.smallImageText,
+        startTimestamp: new Date().getTime() / 1000,
+        instance: false
+    }
+
+    client.on('ready', () => {
+        console.log('%c[Discord Wrapper]', 'color: #a02d2a; font-weight: bold', 'Discord RPC Connected')
+        client.setActivity(activity)
     })
-
-    rpc.login(genSettings.clientID).catch(error => {
+    
+    client.login({clientId: genSettings.clientId}).catch(error => {
         if(error.message.includes('ENOENT')) {
-            console.log('Unable to initialize Discord Rich Presence, no client detected.')
+            console.log('%c[Discord Wrapper]', 'color: #a02d2a; font-weight: bold', 'Unable to initialize Discord Rich Presence, no client detected.')
         } else {
-            console.log('Unable to initialize Discord Rich Presence: ' + error.message, error)
+            console.log('%c[Discord Wrapper]', 'color: #a02d2a; font-weight: bold', 'Unable to initialize Discord Rich Presence: ' + error.message, error)
         }
     })
 }
 
 exports.updateDetails = function(details){
-    if(activity == null){
-        console.error('Discord RPC is not initialized and therefore cannot be updated.')
-    }
     activity.details = details
-    rpc.setActivity(activity)
+    client.setActivity(activity)
 }
 
 exports.shutdownRPC = function(){
-    if(!rpc) return
-    rpc.clearActivity()
-    rpc.destroy()
-    rpc = null
+    if(!client) return
+    client.clearActivity()
+    client.destroy()
+    client = null
     activity = null
 }

@@ -109,6 +109,13 @@ exports.load = function(){
 }
 
 /**
+ * @returns {boolean} Whether or not the manager has been loaded.
+ */
+exports.isLoaded = function(){
+    return config != null
+}
+
+/**
  * Validate that the destination object has at least every field
  * present in the source object. Assign a default value otherwise.
  * 

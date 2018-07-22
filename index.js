@@ -71,8 +71,8 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
     }
 })
 // Redirect distribution index event from preloader to renderer.
-ipcMain.on('distributionIndexDone', (event, data) => {
-    event.sender.send('distributionIndexDone', data)
+ipcMain.on('distributionIndexDone', (event, res) => {
+    event.sender.send('distributionIndexDone', res)
 })
 
 // Disable hardware acceleration.

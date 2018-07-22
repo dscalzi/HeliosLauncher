@@ -2,6 +2,8 @@
 const os     = require('os')
 const semver = require('semver')
 
+const { AssetGuard } = require('./assets/js/assetguard')
+
 const settingsState = {
     invalid: new Set()
 }
