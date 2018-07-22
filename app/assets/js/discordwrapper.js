@@ -1,6 +1,5 @@
 // Work in progress
 const {Client} = require('discord-rpc')
-const ConfigManager = require('./configmanager')
 
 let client
 let activity

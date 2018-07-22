@@ -483,7 +483,7 @@ class DistroIndex {
      * @returns {Server} The main server.
      */
     getMainServer(){
-        return getServer(this.mainServer)
+        return this.mainServer != null ? this.getServer(this.mainServer) : null
     }
 
 }

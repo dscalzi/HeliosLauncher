@@ -73,7 +73,7 @@ const DEFAULT_CONFIG = {
     modConfigurations: []
 }
 
-let config = null;
+let config = null
 
 // Persistance Utility Functions
 

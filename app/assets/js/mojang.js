@@ -88,34 +88,34 @@ exports.statusToHex = function(status){
 exports.status = function(){
     return new Promise((resolve, reject) => {
         request.get('https://status.mojang.com/check',
-        {
-            json: true,
-            timeout: 2500
-        },
-        function(error, response, body){
+            {
+                json: true,
+                timeout: 2500
+            },
+            function(error, response, body){
 
-            if(error || response.statusCode !== 200){
-                console.warn('Unable to retrieve Mojang status.')
-                console.debug('Error while retrieving Mojang statuses:', error)
-                //reject(error || response.statusCode)
-                for(let i=0; i<statuses.length; i++){
-                    statuses[i].status = 'grey'
-                }
-                resolve(statuses)
-            } else {
-                for(let i=0; i<body.length; i++){
-                    const key = Object.keys(body[i])[0]
-                    inner:
-                    for(let j=0; j<statuses.length; j++){
-                        if(statuses[j].service === key) {
-                            statuses[j].status = body[i][key]
-                            break inner
+                if(error || response.statusCode !== 200){
+                    console.warn('Unable to retrieve Mojang status.')
+                    console.debug('Error while retrieving Mojang statuses:', error)
+                    //reject(error || response.statusCode)
+                    for(let i=0; i<statuses.length; i++){
+                        statuses[i].status = 'grey'
+                    }
+                    resolve(statuses)
+                } else {
+                    for(let i=0; i<body.length; i++){
+                        const key = Object.keys(body[i])[0]
+                        inner:
+                        for(let j=0; j<statuses.length; j++){
+                            if(statuses[j].service === key) {
+                                statuses[j].status = body[i][key]
+                                break inner
+                            }
                         }
                     }
+                    resolve(statuses)
                 }
-                resolve(statuses)
-            }
-        })
+            })
     })
 }
 
@@ -133,28 +133,28 @@ exports.status = function(){
 exports.authenticate = function(username, password, clientToken, requestUser = true, agent = minecraftAgent){
     return new Promise((resolve, reject) => {
         request.post(authpath + '/authenticate',
-        {
-            json: true,
-            body: {
-                agent,
-                username,
-                password,
-                clientToken,
-                requestUser
-            }
-        },
-        function(error, response, body){
-            if(error){
-                console.error('Error during authentication.', error)
-                reject(error)
-            } else {
-                if(response.statusCode === 200){
-                    resolve(body)
-                } else {
-                    reject(body || {code: 'ENOTFOUND'})
+            {
+                json: true,
+                body: {
+                    agent,
+                    username,
+                    password,
+                    clientToken,
+                    requestUser
                 }
-            }
-        })
+            },
+            function(error, response, body){
+                if(error){
+                    console.error('Error during authentication.', error)
+                    reject(error)
+                } else {
+                    if(response.statusCode === 200){
+                        resolve(body)
+                    } else {
+                        reject(body || {code: 'ENOTFOUND'})
+                    }
+                }
+            })
     })
 }
 
@@ -170,26 +170,26 @@ exports.authenticate = function(username, password, clientToken, requestUser = t
 exports.validate = function(accessToken, clientToken){
     return new Promise((resolve, reject) => {
         request.post(authpath + '/validate',
-        {
-            json: true,
-            body: {
-                accessToken,
-                clientToken
-            }
-        },
-        function(error, response, body){
-            if(error){
-                console.error('Error during validation.', error)
-                reject(error)
-            } else {
-                if(response.statusCode === 403){
-                    resolve(false)
-                } else {
-                    // 204 if valid
-                    resolve(true)
+            {
+                json: true,
+                body: {
+                    accessToken,
+                    clientToken
                 }
-            }
-        })
+            },
+            function(error, response, body){
+                if(error){
+                    console.error('Error during validation.', error)
+                    reject(error)
+                } else {
+                    if(response.statusCode === 403){
+                        resolve(false)
+                    } else {
+                    // 204 if valid
+                        resolve(true)
+                    }
+                }
+            })
     })
 }
 
@@ -205,25 +205,25 @@ exports.validate = function(accessToken, clientToken){
 exports.invalidate = function(accessToken, clientToken){
     return new Promise((resolve, reject) => {
         request.post(authpath + '/invalidate',
-        {
-            json: true,
-            body: {
-                accessToken,
-                clientToken
-            }
-        },
-        function(error, response, body){
-            if(error){
-                console.error('Error during invalidation.', error)
-                reject(error)
-            } else {
-                if(response.statusCode === 204){
-                    resolve()
-                } else {
-                    reject(body)
+            {
+                json: true,
+                body: {
+                    accessToken,
+                    clientToken
                 }
-            }
-        })
+            },
+            function(error, response, body){
+                if(error){
+                    console.error('Error during invalidation.', error)
+                    reject(error)
+                } else {
+                    if(response.statusCode === 204){
+                        resolve()
+                    } else {
+                        reject(body)
+                    }
+                }
+            })
     })
 }
 
@@ -241,25 +241,25 @@ exports.invalidate = function(accessToken, clientToken){
 exports.refresh = function(accessToken, clientToken, requestUser = true){
     return new Promise((resolve, reject) => {
         request.post(authpath + '/refresh',
-        {
-            json: true,
-            body: {
-                accessToken,
-                clientToken,
-                requestUser
-            }
-        },
-        function(error, response, body){
-            if(error){
-                console.error('Error during refresh.', error)
-                reject(error)
-            } else {
-                if(response.statusCode === 200){
-                    resolve(body)
-                } else {
-                    reject(body)
+            {
+                json: true,
+                body: {
+                    accessToken,
+                    clientToken,
+                    requestUser
                 }
-            }
-        })
+            },
+            function(error, response, body){
+                if(error){
+                    console.error('Error during refresh.', error)
+                    reject(error)
+                } else {
+                    if(response.statusCode === 200){
+                        resolve(body)
+                    } else {
+                        reject(body)
+                    }
+                }
+            })
     })
 }

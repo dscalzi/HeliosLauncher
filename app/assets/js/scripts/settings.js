@@ -12,7 +12,7 @@ const settingsState = {
  * General Settings Functions
  */
 
- /**
+/**
   * Bind value validators to the settings UI elements. These will
   * validate against the criteria defined in the ConfigManager (if
   * and). If the value is invalid, the UI will reflect this and saving
@@ -59,8 +59,8 @@ function initSettingsValues(){
         if(typeof gFn === 'function'){
             if(v.tagName === 'INPUT'){
                 if(v.type === 'number' || v.type === 'text'){
-                   // Special Conditions
-                   const cVal = v.getAttribute('cValue')
+                    // Special Conditions
+                    const cVal = v.getAttribute('cValue')
                     if(cVal === 'JavaExecutable'){
                         populateJavaExecDetails(v.value)
                         v.value = gFn()
@@ -363,7 +363,7 @@ function populateAuthAccounts(){
     const authKeys = Object.keys(authAccounts)
     const selectedUUID = ConfigManager.getSelectedAccount().uuid
 
-    let authAccountStr = ``
+    let authAccountStr = ''
 
     authKeys.map((val) => {
         const acc = authAccounts[val]
@@ -408,16 +408,16 @@ function prepareAccountsTab() {
  * Minecraft Tab
  */
 
- /**
+/**
   * Disable decimals, negative signs, and scientific notation.
   */
- document.getElementById('settingsGameWidth').addEventListener('keydown', (e) => {
-    if(/[-\.eE]/.test(e.key)){
+document.getElementById('settingsGameWidth').addEventListener('keydown', (e) => {
+    if(/^[-.eE]$/.test(e.key)){
         e.preventDefault()
     }
 })
 document.getElementById('settingsGameHeight').addEventListener('keydown', (e) => {
-    if(/[-\.eE]/.test(e.key)){
+    if(/^[-.eE]$/.test(e.key)){
         e.preventDefault()
     }
 })
@@ -472,7 +472,7 @@ settingsMinRAMRange.onchange = (e) => {
     if(sMaxV < sMinV){
         const sliderMeta = calculateRangeSliderMeta(settingsMaxRAMRange)
         updateRangedSlider(settingsMaxRAMRange, sMinV,
-        ((sMinV-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
+            ((sMinV-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
         settingsMaxRAMLabel.innerHTML = sMinV.toFixed(1) + 'G'
     }
 
@@ -504,7 +504,7 @@ settingsMaxRAMRange.onchange = (e) => {
     if(sMaxV < sMinV){
         const sliderMeta = calculateRangeSliderMeta(settingsMaxRAMRange)
         updateRangedSlider(settingsMinRAMRange, sMaxV,
-        ((sMaxV-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
+            ((sMaxV-sliderMeta.min)/sliderMeta.step)*sliderMeta.inc)
         settingsMinRAMLabel.innerHTML = sMaxV.toFixed(1) + 'G'
     }
     settingsMaxRAMLabel.innerHTML = sMaxV.toFixed(1) + 'G'
@@ -730,7 +730,7 @@ function prepareAboutTab(){
  * Settings preparation functions.
  */
 
- /**
+/**
   * Prepare the entire settings UI.
   * 
   * @param {boolean} first Whether or not it is the first load.

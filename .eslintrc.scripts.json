@@ -1,0 +1,47 @@
+{
+    "env": {
+        "es6": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 2017,
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "linebreak-style": [
+            "error",
+            "windows"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "never"
+        ],
+        "no-var": [
+            "error"
+        ],
+        "no-console": [
+            0
+        ],
+        "no-control-regex": [
+            0
+        ],
+        "no-unused-vars": [
+            0
+        ],
+        "no-undef": [
+            0
+        ]
+    }
+}

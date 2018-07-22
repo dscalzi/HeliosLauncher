@@ -104,7 +104,7 @@ function showMainUI(data){
     }, 750)
     // Disable tabbing to the news container.
     initNews().then(() => {
-        $("#newsContainer *").attr('tabindex', '-1')
+        $('#newsContainer *').attr('tabindex', '-1')
     })
 }
 
@@ -275,12 +275,12 @@ function mergeModConfiguration(o, n){
 function refreshDistributionIndex(remote, onSuccess, onError){
     if(remote){
         DistroManager.pullRemote()
-        .then(onSuccess)
-        .catch(onError)
+            .then(onSuccess)
+            .catch(onError)
     } else {
         DistroManager.pullLocal()
-        .then(onSuccess)
-        .catch(onError)
+            .then(onSuccess)
+            .catch(onError)
     }
 }
 
@@ -313,7 +313,7 @@ async function validateSelectedAccount(){
                     })
                 } else {
                     const accountsObj = ConfigManager.getAuthAccounts()
-                    const accounts = Array.from(Object.keys(accountsObj), v => accountsObj[v]);
+                    const accounts = Array.from(Object.keys(accountsObj), v => accountsObj[v])
                     // This function validates the account switch.
                     setSelectedAccount(accounts[0].uuid)
                     toggleOverlay(false)
@@ -375,7 +375,7 @@ ipcRenderer.on('distributionIndexDone', (event, res) => {
     } else {
         fatalStartupError = true
         if(document.readyState === 'complete'){
-           showFatalStartupError()
+            showFatalStartupError()
         } else {
             rscShouldLoad = true
         }

@@ -14,7 +14,7 @@ ConfigManager.load()
 function onDistroLoad(data){
     if(data != null){
         
-         // Resolve the selected server if its value has yet to be set.
+        // Resolve the selected server if its value has yet to be set.
         if(ConfigManager.getSelectedServer() == null || data.getServer(ConfigManager.getSelectedServer()) == null){
             console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Determining default selected server..')
             ConfigManager.setSelectedServer(data.getMainServer().getID())
@@ -28,7 +28,7 @@ function onDistroLoad(data){
 DistroManager.pullRemote().then((data) => {
     console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Loaded distribution index.')
 
-   onDistroLoad(data)
+    onDistroLoad(data)
 
 }).catch((err) => {
     console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Failed to load distribution index.')

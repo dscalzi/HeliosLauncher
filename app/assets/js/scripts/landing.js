@@ -152,8 +152,8 @@ const refreshMojangStatuses = async function(){
     console.log('Refreshing Mojang Statuses..')
 
     let status = 'grey'
-    let tooltipEssentialHTML = ``
-    let tooltipNonEssentialHTML = ``
+    let tooltipEssentialHTML = ''
+    let tooltipNonEssentialHTML = ''
 
     try {
         const statuses = await Mojang.status()
@@ -358,7 +358,7 @@ function asyncSystemScan(launchAfter = true){
 
             switch(m.data){
                 case 'download':
-                    // Downloading..
+                // Downloading..
                     setDownloadPercentage(m.value, m.total, m.percent)
                     break
             }
@@ -366,7 +366,7 @@ function asyncSystemScan(launchAfter = true){
         } else if(m.context === 'complete'){
 
             switch(m.data){
-                case 'download':
+                case 'download': {
                     // Show installing progress bar.
                     remote.getCurrentWindow().setProgressBar(2)
 
@@ -383,8 +383,9 @@ function asyncSystemScan(launchAfter = true){
                         setLaunchDetails(eLStr + dotStr)
                     }, 750)
                     break
+                }
                 case 'java':
-                    // Download & extraction complete, remove the loading from the OS progress bar.
+                // Download & extraction complete, remove the loading from the OS progress bar.
                     remote.getCurrentWindow().setProgressBar(-1)
 
                     // Extraction completed successfully.
@@ -497,14 +498,15 @@ function dlAsync(login = true){
             }
         } else if(m.context === 'progress'){
             switch(m.data){
-                case 'assets':
+                case 'assets': {
                     const perc = (m.value/m.total)*20
                     setLaunchPercentage(40+perc, 100, parseInt(40+perc))
                     break
+                }
                 case 'download':
                     setDownloadPercentage(m.value, m.total, m.percent)
                     break
-                case 'extract':
+                case 'extract': {
                     // Show installing progress bar.
                     remote.getCurrentWindow().setProgressBar(2)
 
@@ -521,6 +523,7 @@ function dlAsync(login = true){
                         setLaunchDetails(eLStr + dotStr)
                     }, 750)
                     break
+                }
             }
         } else if(m.context === 'complete'){
             switch(m.data){
@@ -1001,54 +1004,54 @@ function loadNews(){
         const newsFeed = distroData.getRSS()
         const newsHost = new URL(newsFeed).origin + '/'
         $.ajax(
-        {
-            url: newsFeed,
-            success: (data) => {
-                const items = $(data).find('item')
-                const articles = []
+            {
+                url: newsFeed,
+                success: (data) => {
+                    const items = $(data).find('item')
+                    const articles = []
 
-                for(let i=0; i<items.length; i++){
+                    for(let i=0; i<items.length; i++){
                     // JQuery Element
-                    const el = $(items[i])
+                        const el = $(items[i])
 
-                    // Resolve date.
-                    const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
+                        // Resolve date.
+                        const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
 
-                    // Resolve comments.
-                    let comments = el.find('slash\\:comments').text() || '0'
-                    comments = comments + ' Comment' + (comments === '1' ? '' : 's')
+                        // Resolve comments.
+                        let comments = el.find('slash\\:comments').text() || '0'
+                        comments = comments + ' Comment' + (comments === '1' ? '' : 's')
 
-                    // Fix relative links in content.
-                    let content = el.find('content\\:encoded').text()
-                    let regex = /src="(?!http:\/\/|https:\/\/)(.+)"/g
-                    let matches
-                    while(matches = regex.exec(content)){
-                        content = content.replace(matches[1], newsHost + matches[1])
-                    }
-
-                    let link   = el.find('link').text()
-                    let title  = el.find('title').text()
-                    let author = el.find('dc\\:creator').text()
-
-                    // Generate article.
-                    articles.push(
-                        {
-                            link,
-                            title,
-                            date,
-                            author,
-                            content,
-                            comments,
-                            commentsLink: link + '#comments'
+                        // Fix relative links in content.
+                        let content = el.find('content\\:encoded').text()
+                        let regex = /src="(?!http:\/\/|https:\/\/)(.+)"/g
+                        let matches
+                        while((matches = regex.exec(content))){
+                            content = content.replace(matches[1], newsHost + matches[1])
                         }
-                    )
-                }
-                resolve({
-                    articles
-                })
-            },
-            timeout: 2500
-        }).catch(err => {
+
+                        let link   = el.find('link').text()
+                        let title  = el.find('title').text()
+                        let author = el.find('dc\\:creator').text()
+
+                        // Generate article.
+                        articles.push(
+                            {
+                                link,
+                                title,
+                                date,
+                                author,
+                                content,
+                                comments,
+                                commentsLink: link + '#comments'
+                            }
+                        )
+                    }
+                    resolve({
+                        articles
+                    })
+                },
+                timeout: 2500
+            }).catch(err => {
             resolve({
                 articles: null
             })

@@ -5,7 +5,7 @@
  * modules, excluding dependencies.
  */
 // Requirements
-const $                                      = require('jquery');
+const $                                      = require('jquery')
 const {ipcRenderer, remote, shell, webFrame} = require('electron')
 const isDev                                  = require('electron-is-dev')
 
@@ -50,6 +50,7 @@ if(!isDev){
                     ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                 }, 1800000)
                 ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+                break
             case 'realerror':
                 if(info != null && info.code != null){
                     if(info.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
@@ -108,7 +109,7 @@ $(function(){
 
 document.addEventListener('readystatechange', function () {
     if (document.readyState === 'interactive'){
-        console.log('UICore Initializing..');
+        console.log('UICore Initializing..')
 
         // Bind close button.
         Array.from(document.getElementsByClassName('fCb')).map((val) => {
@@ -157,10 +158,10 @@ document.addEventListener('readystatechange', function () {
         //const targetWidth2 = document.getElementById("server_selection").getBoundingClientRect().width
         //const targetWidth3 = document.getElementById("launch_button").getBoundingClientRect().width
 
-        document.getElementById("launch_details").style.maxWidth = 266.01
-        document.getElementById("launch_progress").style.width = 170.8
-        document.getElementById("launch_details_right").style.maxWidth = 170.8
-        document.getElementById("launch_progress_label").style.width = 53.21
+        document.getElementById('launch_details').style.maxWidth = 266.01
+        document.getElementById('launch_progress').style.width = 170.8
+        document.getElementById('launch_details_right').style.maxWidth = 170.8
+        document.getElementById('launch_progress_label').style.width = 53.21
         
     }
 
@@ -170,7 +171,7 @@ document.addEventListener('readystatechange', function () {
  * Open web links in the user's default browser.
  */
 $(document).on('click', 'a[href^="http"]', function(event) {
-    event.preventDefault();
+    event.preventDefault()
     //console.log(os.homedir())
     shell.openExternal(this.href)
 })

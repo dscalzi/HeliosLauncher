@@ -22,7 +22,7 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
     if(toggleState){
         document.getElementById('main').setAttribute('overlay', true)
         // Make things untabbable.
-        $("#main *").attr('tabindex', '-1')
+        $('#main *').attr('tabindex', '-1')
         $('#' + content).parent().children().hide()
         $('#' + content).show()
         if(dismissable){
@@ -41,7 +41,7 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
     } else {
         document.getElementById('main').removeAttribute('overlay')
         // Make things tabbable.
-        $("#main *").removeAttr('tabindex')
+        $('#main *').removeAttr('tabindex')
         $('#overlayContainer').fadeOut({
             duration: 250,
             start: () => {
@@ -232,9 +232,9 @@ function populateServerListings(){
     const distro = DistroManager.getDistribution()
     const giaSel = ConfigManager.getSelectedServer()
     const servers = distro.getServers()
-    let htmlString = ``
+    let htmlString = ''
     for(const serv of servers){
-        htmlString += `<button class="serverListing" servid="${serv.getID()}" ${serv.getID() === giaSel ? `selected` : ``}>
+        htmlString += `<button class="serverListing" servid="${serv.getID()}" ${serv.getID() === giaSel ? 'selected' : ''}>
             <img class="serverListingImg" src="${serv.getIcon()}"/>
             <div class="serverListingDetails">
                 <span class="serverListingName">${serv.getName()}</span>
@@ -251,7 +251,7 @@ function populateServerListings(){
                             <circle class="cls-2" cx="53.73" cy="53.9" r="38"/>
                         </svg>
                         <span class="serverListingStarTooltip">Main Server</span>
-                    </div>` : ``}
+                    </div>` : ''}
                 </div>
             </div>
         </button>`
@@ -262,8 +262,8 @@ function populateServerListings(){
 
 function populateAccountListings(){
     const accountsObj = ConfigManager.getAuthAccounts()
-    const accounts = Array.from(Object.keys(accountsObj), v=>accountsObj[v]);
-    let htmlString = ``
+    const accounts = Array.from(Object.keys(accountsObj), v=>accountsObj[v])
+    let htmlString = ''
     for(let i=0; i<accounts.length; i++){
         htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${i===0 ? 'selected' : ''}>
             <img src="https://crafatar.com/renders/head/${accounts[i].uuid}?scale=2&default=MHF_Steve&overlay">

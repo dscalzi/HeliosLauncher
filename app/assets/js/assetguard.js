@@ -22,7 +22,7 @@ const crypto        = require('crypto')
 const EventEmitter  = require('events')
 const fs            = require('fs')
 const isDev         = require('electron-is-dev')
-const mkpath        = require('mkdirp');
+const mkpath        = require('mkdirp')
 const path          = require('path')
 const Registry      = require('winreg')
 const request       = require('request')
@@ -70,13 +70,13 @@ class Library extends Asset {
     static mojangFriendlyOS(){
         const opSys = process.platform
         if (opSys === 'darwin') {
-            return 'osx';
+            return 'osx'
         } else if (opSys === 'win32'){
-            return 'windows';
+            return 'windows'
         } else if (opSys === 'linux'){
-            return 'linux';
+            return 'linux'
         } else {
-            return 'unknown_os';
+            return 'unknown_os'
         }
     }
 
@@ -241,12 +241,11 @@ class AssetGuard extends EventEmitter {
             if(hash == null){
                 return true
             }
-            let fileName = path.basename(filePath)
             let buf = fs.readFileSync(filePath)
             let calcdhash = AssetGuard._calculateHash(buf, algo)
             return calcdhash === hash
         }
-        return false;
+        return false
     }
 
     /**
@@ -926,7 +925,7 @@ class AssetGuard extends EventEmitter {
         }
 
         // Check the JAVA_HOME environment variable.
-        const jHome = AssetGuard._scanJavaHome()
+        let jHome = AssetGuard._scanJavaHome()
         if(jHome != null){
             // Ensure we are at the absolute root.
             if(jHome.contains('/Contents/Home')){
@@ -1099,7 +1098,6 @@ class AssetGuard extends EventEmitter {
             //Asset constants
             const resourceURL = 'http://resources.download.minecraft.net/'
             const localPath = path.join(self.commonPath, 'assets')
-            const indexPath = path.join(localPath, 'indexes')
             const objectPath = path.join(localPath, 'objects')
 
             const assetDlQueue = []
@@ -1112,7 +1110,7 @@ class AssetGuard extends EventEmitter {
                 self.emit('progress', 'assets', acc, total)
                 const hash = value.hash
                 const assetName = path.join(hash.substring(0, 2), hash)
-                const urlName = hash.substring(0, 2) + "/" + hash
+                const urlName = hash.substring(0, 2) + '/' + hash
                 const ast = new Asset(key, hash, value.size, resourceURL + urlName, path.join(objectPath, assetName))
                 if(!AssetGuard._validateLocal(ast.to, 'sha1', ast.hash)){
                     dlSize += (ast.size*1)
@@ -1271,7 +1269,7 @@ class AssetGuard extends EventEmitter {
 
     _parseDistroModules(modules, version, servid){
         let alist = []
-        let asize = 0;
+        let asize = 0
         let decompressqueue = []
         for(let ob of modules){
             let obType = ob.getType
@@ -1361,15 +1359,15 @@ class AssetGuard extends EventEmitter {
                                 let h = null
                                 fs.createReadStream(a.to)
                                     .on('error', err => console.log(err))
-                                .pipe(zlib.createGunzip())
+                                    .pipe(zlib.createGunzip())
                                     .on('error', err => console.log(err))
-                                .pipe(tar.extract(dataDir, {
-                                    map: (header) => {
-                                        if(h == null){
-                                            h = header.name
+                                    .pipe(tar.extract(dataDir, {
+                                        map: (header) => {
+                                            if(h == null){
+                                                h = header.name
+                                            }
                                         }
-                                    }
-                                }))
+                                    }))
                                     .on('error', err => console.log(err))
                                     .on('finish', () => {
                                         fs.unlink(a.to, err => {
@@ -1525,7 +1523,7 @@ class AssetGuard extends EventEmitter {
             }, (err) => {
 
                 if(err){
-                    console.log('An item in ' + identifier + ' failed to process');
+                    console.log('An item in ' + identifier + ' failed to process')
                 } else {
                     console.log('All ' + identifier + ' have been processed successfully')
                 }

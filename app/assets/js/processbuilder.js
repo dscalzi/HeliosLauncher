@@ -210,11 +210,11 @@ class ProcessBuilder {
     constructJVMArguments(mods, tempNativePath){
 
         let args = ['-Xmx' + ConfigManager.getMaxRAM(),
-        '-Xms' + ConfigManager.getMinRAM(),
-        '-Djava.library.path=' + tempNativePath,
-        '-cp',
-        this.classpathArg(mods, tempNativePath).join(process.platform === 'win32' ? ';' : ':'),
-        this.forgeData.mainClass]
+            '-Xms' + ConfigManager.getMinRAM(),
+            '-Djava.library.path=' + tempNativePath,
+            '-cp',
+            this.classpathArg(mods, tempNativePath).join(process.platform === 'win32' ? ';' : ':'),
+            this.forgeData.mainClass]
 
         if(process.platform === 'darwin'){
             args.unshift('-Xdock:name=WesterosCraft')
@@ -241,13 +241,13 @@ class ProcessBuilder {
         for(let i=0; i<mcArgs.length; ++i){
             if(argDiscovery.test(mcArgs[i])){
                 const identifier = mcArgs[i].match(argDiscovery)[1]
-                let val = null;
+                let val = null
                 switch(identifier){
                     case 'auth_player_name':
                         val = this.authUser.displayName
                         break
                     case 'version_name':
-                        //val = versionData.id
+                    //val = versionData.id
                         val = this.server.getID()
                         break
                     case 'game_directory':
@@ -273,7 +273,7 @@ class ProcessBuilder {
                         break
                 }
                 if(val != null){
-                    mcArgs[i] = val;
+                    mcArgs[i] = val
                 }
             }
         }
