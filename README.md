@@ -105,4 +105,8 @@ If you run into any issue which cannot be resolved via a quick google search, cr
 
 Much of the discussion regarding this launcher is done on #launcherdev in Discord, feel free to join us there.
 
-[![Discord](https://discordapp.com/api/guilds/98469309352775680/embed.png?style=banner2)](https://discord.gg/hqdjs3m)
+[![Discord](https://discordapp.com/api/guilds/98469309352775680/embed.png?style=banner2)](https://discord.gg/hqdjs3m)[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FWesterosCraftCode%2FElectronLauncher.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FWesterosCraftCode%2FElectronLauncher?ref=badge_shield)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FWesterosCraftCode%2FElectronLauncher.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FWesterosCraftCode%2FElectronLauncher?ref=badge_large)
