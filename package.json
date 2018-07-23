@@ -1,6 +1,6 @@
 {
   "name": "westeroscraftlauncher",
-  "version": "0.0.1-alpha.14",
+  "version": "0.0.1-alpha.15",
   "description": "Custom modded launcher for Westeroscraft",
   "productName": "WesterosCraft Launcher",
   "main": "index.js",
@@ -97,7 +97,7 @@
     },
     "compression": "maximum",
     "files": [
-      "!{target,logs,.vscode,docs,dev-app-update.yml,.nvmrc}"
+      "!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.travis.yml,.nvmrc,.eslintrc.scripts.json,.eslintrc.json}"
     ],
     "extraResources": [
       "libraries"
