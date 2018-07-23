@@ -1760,7 +1760,7 @@ input:checked + .toggleSwitchSlider:before {
     text-decoration: none;
 }
 #settingsChangelogText a.commit-link:hover {
-    text-decoration: underline;
+    text-decoration: underline !important;
     text-decoration-color: black;
 }
 #settingsChangelogText tt {
@@ -1770,6 +1770,10 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 3px;
     color: black;
     font-weight: bold;
+}
+#settingsChangelogText a.commit-link:hover tt {
+    text-decoration: underline;
+    text-decoration-color: black;
 }
 #settingsChangelogText .highlight {
     background: rgba(0, 0, 0, 0.30);
