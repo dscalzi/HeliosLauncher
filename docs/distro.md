@@ -182,7 +182,7 @@ The parent module will be stored maven style, it's destination path will be reso
 
 ### `Module.id: string`
 
-The ID of the module. The best practice for an ID is to use a maven identifier. Modules which are stored maven style use the identifier to resolve the destination path. If the `extension` is not provided, it defaults to `jar`.
+The ID of the module. All modules that are not of type `File` **MUST** use a maven identifier. Version information and other metadata is pulled from the identifier. Modules which are stored maven style use the identifier to resolve the destination path. If the `extension` is not provided, it defaults to `jar`.
 
 **Template**
 

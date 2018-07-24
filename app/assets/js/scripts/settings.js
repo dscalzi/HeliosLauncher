@@ -455,7 +455,7 @@ function parseModulesForUI(mdls, submodules = false, servConf){
                         <div class="settingsModMainWrapper">
                             <div class="settingsModStatus"></div>
                             <div class="settingsModDetails">
-                                <span class="settingsModName">${mdl.getName().substring(0, mdl.getName().indexOf('('))}</span>
+                                <span class="settingsModName">${mdl.getName()}</span>
                                 <span class="settingsModVersion">v${mdl.getVersion()}</span>
                             </div>
                         </div>
@@ -479,7 +479,7 @@ function parseModulesForUI(mdls, submodules = false, servConf){
                         <div class="settingsModMainWrapper">
                             <div class="settingsModStatus"></div>
                             <div class="settingsModDetails">
-                                <span class="settingsModName">${mdl.getName().substring(0, mdl.getName().indexOf('('))}</span>
+                                <span class="settingsModName">${mdl.getName()}</span>
                                 <span class="settingsModVersion">v${mdl.getVersion()}</span>
                             </div>
                         </div>
