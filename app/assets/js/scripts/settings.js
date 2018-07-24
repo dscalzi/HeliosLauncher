@@ -423,6 +423,97 @@ document.getElementById('settingsGameHeight').addEventListener('keydown', (e) =>
 })
 
 /**
+ * Mods Tab
+ */
+
+function resolveModsForUI(){
+    const serv = ConfigManager.getSelectedServer()
+
+    const distro = DistroManager.getDistribution()
+    const servConf = ConfigManager.getModConfiguration(serv)
+
+    const modStr = parseModulesForUI(distro.getServer(serv).getModules(), false, servConf.mods)
+
+    document.getElementById('settingsReqModsContent').innerHTML = modStr.reqMods
+    document.getElementById('settingsOptModsContent').innerHTML = modStr.optMods
+
+}
+
+function parseModulesForUI(mdls, submodules = false, servConf){
+
+    let reqMods = ''
+    let optMods = ''
+
+    for(const mdl of mdls){
+
+        if(mdl.getType() === DistroManager.Types.ForgeMod || mdl.getType() === DistroManager.Types.LiteMod || mdl.getType() === DistroManager.Types.LiteLoader){
+
+            if(mdl.getRequired().isRequired()){
+
+                reqMods += `<div id="${mdl.getVersionlessID()}" class="settings${submodules ? 'Sub' : ''}Mod" enabled>
+                    <div class="settingsModContent">
+                        <div class="settingsModMainWrapper">
+                            <div class="settingsModStatus"></div>
+                            <div class="settingsModDetails">
+                                <span class="settingsModName">${mdl.getName().substring(0, mdl.getName().indexOf('('))}</span>
+                                <span class="settingsModVersion">v${mdl.getVersion()}</span>
+                            </div>
+                        </div>
+                        <label class="toggleSwitch" reqmod>
+                            <input type="checkbox" checked>
+                            <span class="toggleSwitchSlider"></span>
+                        </label>
+                    </div>
+                    ${mdl.hasSubModules() ? `<div class="settingsSubModContainer">
+                        ${Object.values(parseModulesForUI(mdl.getSubModules(), true)).join('')}
+                    </div>` : ''}
+                </div>`
+
+            } else {
+
+                const conf = servConf[mdl.getVersionlessID()]
+                const val = typeof conf === 'object' ? conf.value : conf
+
+                optMods += `<div id="${mdl.getVersionlessID()}" class="settings${submodules ? 'Sub' : ''}Mod" ${val ? 'enabled' : ''}>
+                    <div class="settingsModContent">
+                        <div class="settingsModMainWrapper">
+                            <div class="settingsModStatus"></div>
+                            <div class="settingsModDetails">
+                                <span class="settingsModName">${mdl.getName().substring(0, mdl.getName().indexOf('('))}</span>
+                                <span class="settingsModVersion">v${mdl.getVersion()}</span>
+                            </div>
+                        </div>
+                        <label class="toggleSwitch">
+                            <input type="checkbox" ${val ? 'checked' : ''}>
+                            <span class="toggleSwitchSlider"></span>
+                        </label>
+                    </div>
+                    ${mdl.hasSubModules() ? `<div class="settingsSubModContainer">
+                        ${mdl.hasSubModules() ? Object.values(parseModulesForUI(mdl.getSubModules(), true, conf.mods)).join('') : ''}
+                    </div>` : ''}
+                </div>`
+
+            }
+
+        }
+
+    }
+
+    return {
+        reqMods,
+        optMods
+    }
+
+}
+
+/**
+ * Prepare the Java tab for display.
+ */
+function prepareModsTab(){
+    resolveModsForUI()
+}
+
+/**
  * Java Tab
  */
 
@@ -739,6 +830,8 @@ function prepareSettings(first = false) {
     if(first){
         setupSettingsTabs()
         initSettingsValidators()
+    } else {
+        prepareModsTab()
     }
     initSettingsValues()
     prepareAccountsTab()
