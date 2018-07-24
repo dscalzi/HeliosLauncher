@@ -1047,13 +1047,13 @@
                             }
                         },
                         {
-                            "id": "net.minecraftforge:MercuriusUpdater:1.12.1",
+                            "id": "net.minecraftforge:MercuriusUpdater:1.12.2",
                             "name": "MercuriusUpdater",
                             "type": "Library",
                             "artifact": {
-                                "size": 15086,
-                                "MD5": "5580745b0620323f7d3ccbac6fd310d5",
-                                "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/MercuriusUpdater-1.12.1.jar"
+                                "size": 15098,
+                                "MD5": "6eb9e61097bee3103a2fdc42746b76a4",
+                                "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/1.12.2/MercuriusUpdater-1.12.2.jar"
                             }
                         }
                     ]
