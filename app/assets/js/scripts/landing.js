@@ -569,6 +569,11 @@ function dlAsync(login = true){
             }
         } else if(m.context === 'validateEverything'){
 
+            // If these properties are not defined it's likely an error.
+            if(m.result.forgeData == null || m.result.versionData == null){
+                console.error(m.result)
+            }
+
             forgeData = m.result.forgeData
             versionData = m.result.versionData
 

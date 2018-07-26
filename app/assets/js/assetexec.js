@@ -1,5 +1,7 @@
 const { AssetGuard } = require('./assetguard')
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
 const tracker = new AssetGuard(process.argv[2], process.argv[3])
 console.log('AssetExec Started')
 
@@ -31,7 +33,7 @@ process.on('message', (msg) => {
                 res.then((v) => {
                     process.send({result: v, context: func})
                 }).catch((err) => {
-                    process.send({result: err, context: func})
+                    process.send({result: err.message, context: func})
                 })
             } else {
                 process.send({result: res, context: func})
