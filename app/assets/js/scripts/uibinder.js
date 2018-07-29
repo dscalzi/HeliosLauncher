@@ -167,7 +167,19 @@ function syncModConfigurations(data){
                         if(modsOld[mdlID] == null){
                             mods[mdlID] = scanOptionalSubModules(mdl.getSubModules(), mdl)
                         } else {
-                            mods[mdlID] = mergeModConfiguration(modsOld[mdlID], scanOptionalSubModules(mdl.getSubModules(), mdl))
+                            mods[mdlID] = mergeModConfiguration(modsOld[mdlID], scanOptionalSubModules(mdl.getSubModules(), mdl), false)
+                        }
+                    } else {
+                        if(mdl.hasSubModules()){
+                            const mdlID = mdl.getVersionlessID()
+                            const v = scanOptionalSubModules(mdl.getSubModules(), mdl)
+                            if(typeof v === 'object'){
+                                if(modsOld[mdlID] == null){
+                                    mods[mdlID] = v
+                                } else {
+                                    mods[mdlID] = mergeModConfiguration(modsOld[mdlID], v, true)
+                                }
+                            }
                         }
                     }
                 }
@@ -187,6 +199,13 @@ function syncModConfigurations(data){
                 if(type === DistroManager.Types.ForgeMod || type === DistroManager.Types.LiteMod || type === DistroManager.Types.LiteLoader){
                     if(!mdl.getRequired().isRequired()){
                         mods[mdl.getVersionlessID()] = scanOptionalSubModules(mdl.getSubModules(), mdl)
+                    } else {
+                        if(mdl.hasSubModules()){
+                            const v = scanOptionalSubModules(mdl.getSubModules(), mdl)
+                            if(typeof v === 'object'){
+                                mods[mdl.getVersionlessID()] = v
+                            }
+                        }
                     }
                 }
             }
@@ -221,15 +240,25 @@ function scanOptionalSubModules(mdls, origin){
                 // It is optional.
                 if(!mdl.getRequired().isRequired()){
                     mods[mdl.getVersionlessID()] = scanOptionalSubModules(mdl.getSubModules(), mdl)
+                } else {
+                    if(mdl.hasSubModules()){
+                        const v = scanOptionalSubModules(mdl.getSubModules(), mdl)
+                        if(typeof v === 'object'){
+                            mods[mdl.getVersionlessID()] = v
+                        }
+                    }
                 }
             }
         }
 
         if(Object.keys(mods).length > 0){
-            return {
-                value: origin.getRequired().isDefault(),
+            const ret = {
                 mods
             }
+            if(!origin.getRequired().isRequired()){
+                ret.value = origin.getRequired().isDefault()
+            }
+            return ret
         }
     }
     return origin.getRequired().isDefault()
@@ -240,20 +269,25 @@ function scanOptionalSubModules(mdls, origin){
  * 
  * @param {boolean | Object} o The old configuration value.
  * @param {boolean | Object} n The new configuration value.
+ * @param {boolean} nReq If the new value is a required mod.
  * 
  * @returns {boolean | Object} The merged configuration.
  */
-function mergeModConfiguration(o, n){
+function mergeModConfiguration(o, n, nReq = false){
     if(typeof o === 'boolean'){
         if(typeof n === 'boolean') return o
         else if(typeof n === 'object'){
-            n.value = o
+            if(!nReq){
+                n.value = o
+            }
             return n
         }
     } else if(typeof o === 'object'){
-        if(typeof n === 'boolean') return o.value
+        if(typeof n === 'boolean') return typeof o.value !== 'undefined' ? o.value : true
         else if(typeof n === 'object'){
-            n.value = o.value
+            if(!nReq){
+                n.value = typeof o.value !== 'undefined' ? o.value : true
+            }
 
             const newMods = Object.keys(n.mods)
             for(let i=0; i<newMods.length; i++){
@@ -346,6 +380,7 @@ document.addEventListener('readystatechange', function(){
 
     if (document.readyState === 'interactive' || document.readyState === 'complete'){
         if(rscShouldLoad){
+            rscShouldLoad = false
             if(!fatalStartupError){
                 const data = DistroManager.getDistribution()
                 showMainUI(data)
@@ -353,13 +388,8 @@ document.addEventListener('readystatechange', function(){
                 showFatalStartupError()
             }
         } 
-    }// else if(document.readyState === 'interactive'){
-        //toggleOverlay(true, 'loadingContent')
-    //}
+    }
 
-    /*if (document.readyState === 'interactive'){
-        
-    }*/
 }, false)
 
 // Actions that must be performed after the distribution index is downloaded.

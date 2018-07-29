@@ -465,7 +465,7 @@ function parseModulesForUI(mdls, submodules = false, servConf){
                         </label>
                     </div>
                     ${mdl.hasSubModules() ? `<div class="settingsSubModContainer">
-                        ${Object.values(parseModulesForUI(mdl.getSubModules(), true)).join('')}
+                        ${Object.values(parseModulesForUI(mdl.getSubModules(), true, servConf[mdl.getVersionlessID()])).join('')}
                     </div>` : ''}
                 </div>`
 
@@ -541,12 +541,14 @@ function saveModConfiguration(){
  */
 function _saveModConfiguration(modConf){
     for(m of Object.entries(modConf)){
-        const val = settingsModsContainer.querySelectorAll(`[formod='${m[0]}']`)[0].checked
+        const tSwitch = settingsModsContainer.querySelectorAll(`[formod='${m[0]}']`)
         if(typeof m[1] === 'boolean'){
-            modConf[m[0]] = val
+            modConf[m[0]] = tSwitch[0].checked
         } else {
             if(m[1] != null){
-                modConf[m[0]].value = val
+                if(tSwitch.length > 0){
+                    modConf[m[0]].value = tSwitch[0].checked
+                }
                 modConf[m[0]].mods = _saveModConfiguration(modConf[m[0]].mods)
             }
         }
