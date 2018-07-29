@@ -1402,6 +1402,7 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 50%;
     background-color: #c32625;
     margin-right: 15px;
+    transition: 0.25s ease;
 }
 
 .settingsModContent {
@@ -1430,8 +1431,8 @@ input:checked + .toggleSwitchSlider:before {
     pointer-events: none;
 }
 
-.settingsMod[enabled] .settingsModStatus,
-.settingsSubMod[enabled] .settingsModStatus{
+.settingsMod[enabled] > .settingsModContent > .settingsModMainWrapper > .settingsModStatus,
+.settingsSubMod[enabled] > .settingsModContent > .settingsModMainWrapper > .settingsModStatus {
     background-color: rgb(165, 195, 37);
 }
 

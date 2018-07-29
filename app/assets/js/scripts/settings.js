@@ -55,12 +55,12 @@ function initSettingsValidators(){
 function initSettingsValues(){
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
     Array.from(sEls).map((v, index, arr) => {
-        const gFn = ConfigManager['get' + v.getAttribute('cValue')]
+        const cVal = v.getAttribute('cValue')
+        const gFn = ConfigManager['get' + cVal]
         if(typeof gFn === 'function'){
             if(v.tagName === 'INPUT'){
                 if(v.type === 'number' || v.type === 'text'){
                     // Special Conditions
-                    const cVal = v.getAttribute('cValue')
                     if(cVal === 'JavaExecutable'){
                         populateJavaExecDetails(v.value)
                         v.value = gFn()
@@ -75,7 +75,6 @@ function initSettingsValues(){
             } else if(v.tagName === 'DIV'){
                 if(v.classList.contains('rangeSlider')){
                     // Special Conditions
-                    const cVal = v.getAttribute('cValue')
                     if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
                         let val = gFn()
                         if(val.endsWith('M')){
@@ -101,12 +100,12 @@ function initSettingsValues(){
 function saveSettingsValues(){
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
     Array.from(sEls).map((v, index, arr) => {
-        const sFn = ConfigManager['set' + v.getAttribute('cValue')]
+        const cVal = v.getAttribute('cValue')
+        const sFn = ConfigManager['set' + cVal]
         if(typeof sFn === 'function'){
             if(v.tagName === 'INPUT'){
                 if(v.type === 'number' || v.type === 'text'){
                     // Special Conditions
-                    const cVal = v.getAttribute('cValue')
                     if(cVal === 'JVMOptions'){
                         sFn(v.value.split(' '))
                     } else {
@@ -115,7 +114,6 @@ function saveSettingsValues(){
                 } else if(v.type === 'checkbox'){
                     sFn(v.checked)
                     // Special Conditions
-                    const cVal = v.getAttribute('cValue')
                     if(cVal === 'AllowPrerelease'){
                         changeAllowPrerelease(v.checked)
                     }
@@ -123,7 +121,6 @@ function saveSettingsValues(){
             } else if(v.tagName === 'DIV'){
                 if(v.classList.contains('rangeSlider')){
                     // Special Conditions
-                    const cVal = v.getAttribute('cValue')
                     if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
                         let val = Number(v.getAttribute('value'))
                         if(val%1 > 0){
@@ -234,6 +231,7 @@ function settingsSaveDisabled(v){
 /* Closes the settings view and saves all data. */
 settingsNavDone.onclick = () => {
     saveSettingsValues()
+    saveModConfiguration()
     ConfigManager.save()
     switchView(getCurrentView(), VIEWS.landing)
 }
@@ -426,6 +424,8 @@ document.getElementById('settingsGameHeight').addEventListener('keydown', (e) =>
  * Mods Tab
  */
 
+const settingsModsContainer = document.getElementById('settingsModsContainer')
+
 function resolveModsForUI(){
     const serv = ConfigManager.getSelectedServer()
 
@@ -484,12 +484,12 @@ function parseModulesForUI(mdls, submodules = false, servConf){
                             </div>
                         </div>
                         <label class="toggleSwitch">
-                            <input type="checkbox" ${val ? 'checked' : ''}>
+                            <input type="checkbox" formod="${mdl.getVersionlessID()}" ${val ? 'checked' : ''}>
                             <span class="toggleSwitchSlider"></span>
                         </label>
                     </div>
                     ${mdl.hasSubModules() ? `<div class="settingsSubModContainer">
-                        ${mdl.hasSubModules() ? Object.values(parseModulesForUI(mdl.getSubModules(), true, conf.mods)).join('') : ''}
+                        ${Object.values(parseModulesForUI(mdl.getSubModules(), true, conf.mods)).join('')}
                     </div>` : ''}
                 </div>`
 
@@ -507,10 +507,59 @@ function parseModulesForUI(mdls, submodules = false, servConf){
 }
 
 /**
+ * Bind functionality to mod config toggle switches. Switching the value
+ * will also switch the status color on the left of the mod UI.
+ */
+function bindModsToggleSwitch(){
+    const sEls = settingsModsContainer.querySelectorAll('[formod]')
+    Array.from(sEls).map((v, index, arr) => {
+        v.onchange = () => {
+            if(v.checked) {
+                document.getElementById(v.getAttribute('formod')).setAttribute('enabled', '')
+            } else {
+                document.getElementById(v.getAttribute('formod')).removeAttribute('enabled')
+            }
+        }
+    })
+}
+
+
+/**
+ * Save the mod configuration based on the UI values.
+ */
+function saveModConfiguration(){
+    const serv = ConfigManager.getSelectedServer()
+    const modConf = ConfigManager.getModConfiguration(serv)
+    modConf.mods = _saveModConfiguration(modConf.mods)
+    ConfigManager.setModConfiguration(serv, modConf)
+}
+
+/**
+ * Recursively save mod config with submods.
+ * 
+ * @param {Object} modConf Mod config object to save.
+ */
+function _saveModConfiguration(modConf){
+    for(m of Object.entries(modConf)){
+        const val = settingsModsContainer.querySelectorAll(`[formod='${m[0]}']`)[0].checked
+        if(typeof m[1] === 'boolean'){
+            modConf[m[0]] = val
+        } else {
+            if(m[1] != null){
+                modConf[m[0]].value = val
+                modConf[m[0]].mods = _saveModConfiguration(modConf[m[0]].mods)
+            }
+        }
+    }
+    return modConf
+}
+
+/**
  * Prepare the Java tab for display.
  */
 function prepareModsTab(){
     resolveModsForUI()
+    bindModsToggleSwitch()
 }
 
 /**

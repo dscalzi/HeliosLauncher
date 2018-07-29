@@ -344,7 +344,7 @@ function setSelectedAccount(uuid){
 // Synchronous Listener
 document.addEventListener('readystatechange', function(){
 
-    if (document.readyState === 'complete'){
+    if (document.readyState === 'interactive' || document.readyState === 'complete'){
         if(rscShouldLoad){
             if(!fatalStartupError){
                 const data = DistroManager.getDistribution()
@@ -353,9 +353,9 @@ document.addEventListener('readystatechange', function(){
                 showFatalStartupError()
             }
         } 
-    } else if(document.readyState === 'interactive'){
+    }// else if(document.readyState === 'interactive'){
         //toggleOverlay(true, 'loadingContent')
-    }
+    //}
 
     /*if (document.readyState === 'interactive'){
         
@@ -367,14 +367,14 @@ ipcRenderer.on('distributionIndexDone', (event, res) => {
     if(res) {
         const data = DistroManager.getDistribution()
         syncModConfigurations(data)
-        if(document.readyState === 'complete'){
+        if(document.readyState === 'interactive' || document.readyState === 'complete'){
             showMainUI(data)
         } else {
             rscShouldLoad = true
         }
     } else {
         fatalStartupError = true
-        if(document.readyState === 'complete'){
+        if(document.readyState === 'interactive' || document.readyState === 'complete'){
             showFatalStartupError()
         } else {
             rscShouldLoad = true
