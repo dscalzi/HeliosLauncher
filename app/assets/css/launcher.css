@@ -1409,6 +1409,7 @@ input:checked + .toggleSwitchSlider:before {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    transition: opacity 0.25s ease;
 }
 
 .settingsModMainWrapper {
@@ -1436,6 +1437,11 @@ input:checked + .toggleSwitchSlider:before {
     background-color: rgb(165, 195, 37);
 }
 
+.settingsMod:not([enabled]) > .settingsSubModContainer .settingsModContent,
+.settingsSubMod:not([enabled]) > .settingsSubModContainer .settingsModContent {
+    opacity: 0.5;
+}
+
 .settingsSubModContainer > .settingsSubMod:first-child {
     border-top-left-radius: 10px;
 }
@@ -1451,6 +1457,55 @@ settingsSubModContainer > .settingsSubMod:only-child {
 
 .settingsSubModContainer {
     margin-top: 10px;
+}
+
+#settingsSelServContainer {
+    background: rgba(0, 0, 0, 0.25);
+    width: 75%;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0px;
+}
+
+#settingsSelServContent {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px 0px;
+}
+
+#settingsSwitchServerContainer {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+}
+
+#settingsSwitchServerButton {
+    opacity: 0;
+    border: 1px solid rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+    background: none;
+    font-size: 12px;
+    border-radius: 3px;
+    font-family: 'Avenir Medium';
+    transition: 0.25s ease;
+    cursor: pointer;
+    outline: none;
+}
+#settingsSwitchServerButton:hover,
+#settingsSwitchServerButton:focus {
+    box-shadow: 0px 0px 20px rgb(255, 255, 255);
+    background: rgba(255, 255, 255, 0.25);
+}
+#settingsSwitchServerButton:active {
+    box-shadow: 0px 0px 20px rgb(187, 187, 187);
+    background: rgba(187, 187, 187, 0.25);
+    border: 1px solid rgb(187, 187, 187);
+    color: rgb(187, 187, 187);
+}
+#settingsSelServContainer:hover #settingsSwitchServerButton {
+    opacity: 1;
 }
 
 /* * *

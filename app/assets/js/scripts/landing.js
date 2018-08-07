@@ -139,6 +139,9 @@ function updateSelectedServer(serverName){
         serverName = 'No Server Selected'
     }
     server_selection_button.innerHTML = '\u2022 ' + serverName
+    if(getCurrentView() === VIEWS.settings){
+        animateModsTabRefresh()
+    }
 }
 // Real text is set in uibinder.js on distributionIndexDone.
 updateSelectedServer('Loading..')
