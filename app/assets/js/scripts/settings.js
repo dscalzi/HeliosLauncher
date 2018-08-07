@@ -3,6 +3,7 @@ const os     = require('os')
 const semver = require('semver')
 
 const { AssetGuard } = require('./assets/js/assetguard')
+const DropinModUtil  = require('./assets/js/dropinmodutil')
 
 const settingsState = {
     invalid: new Set()
@@ -233,6 +234,7 @@ settingsNavDone.onclick = () => {
     saveSettingsValues()
     saveModConfiguration()
     ConfigManager.save()
+    saveDropinModConfiguration()
     switchView(getCurrentView(), VIEWS.landing)
 }
 
@@ -450,7 +452,7 @@ function parseModulesForUI(mdls, submodules, servConf){
 
             if(mdl.getRequired().isRequired()){
 
-                reqMods += `<div id="${mdl.getVersionlessID()}" class="settings${submodules ? 'Sub' : ''}Mod" enabled>
+                reqMods += `<div id="${mdl.getVersionlessID()}" class="settingsBaseMod settings${submodules ? 'Sub' : ''}Mod" enabled>
                     <div class="settingsModContent">
                         <div class="settingsModMainWrapper">
                             <div class="settingsModStatus"></div>
@@ -474,7 +476,7 @@ function parseModulesForUI(mdls, submodules, servConf){
                 const conf = servConf[mdl.getVersionlessID()]
                 const val = typeof conf === 'object' ? conf.value : conf
 
-                optMods += `<div id="${mdl.getVersionlessID()}" class="settings${submodules ? 'Sub' : ''}Mod" ${val ? 'enabled' : ''}>
+                optMods += `<div id="${mdl.getVersionlessID()}" class="settingsBaseMod settings${submodules ? 'Sub' : ''}Mod" ${val ? 'enabled' : ''}>
                     <div class="settingsModContent">
                         <div class="settingsModMainWrapper">
                             <div class="settingsModStatus"></div>
@@ -542,14 +544,16 @@ function saveModConfiguration(){
 function _saveModConfiguration(modConf){
     for(m of Object.entries(modConf)){
         const tSwitch = settingsModsContainer.querySelectorAll(`[formod='${m[0]}']`)
-        if(typeof m[1] === 'boolean'){
-            modConf[m[0]] = tSwitch[0].checked
-        } else {
-            if(m[1] != null){
-                if(tSwitch.length > 0){
-                    modConf[m[0]].value = tSwitch[0].checked
+        if(!tSwitch[0].hasAttribute('dropin')){
+            if(typeof m[1] === 'boolean'){
+                modConf[m[0]] = tSwitch[0].checked
+            } else {
+                if(m[1] != null){
+                    if(tSwitch.length > 0){
+                        modConf[m[0]].value = tSwitch[0].checked
+                    }
+                    modConf[m[0]].mods = _saveModConfiguration(modConf[m[0]].mods)
                 }
-                modConf[m[0]].mods = _saveModConfiguration(modConf[m[0]].mods)
             }
         }
     }
@@ -557,7 +561,6 @@ function _saveModConfiguration(modConf){
 }
 
 function loadSelectedServerOnModsTab(){
-
     const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
 
     document.getElementById('settingsSelServContent').innerHTML = `
@@ -583,13 +586,110 @@ function loadSelectedServerOnModsTab(){
     `
 }
 
-document.getElementById("settingsSwitchServerButton").addEventListener('click', (e) => {
+let CACHE_SETTINGS_MODS_DIR
+let CACHE_DROPIN_MODS
+
+function resolveDropinModsForUI(){
+    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+    CACHE_SETTINGS_MODS_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.getID(), 'mods')
+    CACHE_DROPIN_MODS = DropinModUtil.scanForDropinMods(CACHE_SETTINGS_MODS_DIR, serv.getMinecraftVersion())
+
+    let dropinMods = ''
+
+    for(dropin of CACHE_DROPIN_MODS){
+        dropinMods += `<div id="${dropin.fullName}" class="settingsBaseMod settingsDropinMod" ${!dropin.disabled ? 'enabled' : ''}>
+                    <div class="settingsModContent">
+                        <div class="settingsModMainWrapper">
+                            <div class="settingsModStatus"></div>
+                            <div class="settingsModDetails">
+                                <span class="settingsModName">${dropin.name}</span>
+                                <div class="settingsDropinRemoveWrapper">
+                                    <button class="settingsDropinRemoveButton" remmod="${dropin.fullName}">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        <label class="toggleSwitch">
+                            <input type="checkbox" formod="${dropin.fullName}" dropin ${!dropin.disabled ? 'checked' : ''}>
+                            <span class="toggleSwitchSlider"></span>
+                        </label>
+                    </div>
+                </div>`
+    }
+
+    document.getElementById('settingsDropinModsContent').innerHTML = dropinMods
+}
+
+function bindDropinModsRemoveButton(){
+    const sEls = settingsModsContainer.querySelectorAll('[remmod]')
+    Array.from(sEls).map((v, index, arr) => {
+        v.onclick = () => {
+            const fullName = v.getAttribute('remmod')
+            const res = DropinModUtil.deleteDropinMod(CACHE_SETTINGS_MODS_DIR, fullName)
+            if(res){
+                document.getElementById(fullName).remove()
+            } else {
+                setOverlayContent(
+                    `Failed to Delete<br>Drop-in Mod ${fullName}`,
+                    'Make sure the file is not in use and try again.',
+                    'Okay'
+                )
+                setOverlayHandler(null)
+                toggleOverlay(true)
+            }
+        }
+    })
+}
+
+function bindDropinModFileSystemButton(){
+    const fsBtn = document.getElementById('settingsDropinFileSystemButton')
+    fsBtn.onclick = () => {
+        shell.openItem(CACHE_SETTINGS_MODS_DIR)
+    }
+}
+
+function saveDropinModConfiguration(){
+    for(dropin of CACHE_DROPIN_MODS){
+        const dropinUI = document.getElementById(dropin.fullName)
+        if(dropinUI != null){
+            const dropinUIEnabled = dropinUI.hasAttribute('enabled')
+            if(DropinModUtil.isDropinModEnabled(dropin.fullName) != dropinUIEnabled){
+                DropinModUtil.toggleDropinMod(CACHE_SETTINGS_MODS_DIR, dropin.fullName, dropinUIEnabled).catch(err => {
+                    if(!isOverlayVisible()){
+                        setOverlayContent(
+                            'Failed to Toggle<br>One or More Drop-in Mods',
+                            err.message,
+                            'Okay'
+                        )
+                        setOverlayHandler(null)
+                        toggleOverlay(true)
+                    }
+                })
+            }
+        }
+    }
+}
+
+document.getElementById('settingsSwitchServerButton').addEventListener('click', (e) => {
     e.target.blur()
     toggleServerSelection(true)
 })
 
+document.addEventListener('keydown', (e) => {
+    if(getCurrentView() === VIEWS.settings && selectedSettingsTab === 'settingsTabMods'){
+        if(e.key === 'F5'){
+            resolveDropinModsForUI()
+            bindDropinModsRemoveButton()
+            bindDropinModFileSystemButton()
+            bindModsToggleSwitch()
+        }
+    }
+})
+
 function animateModsTabRefresh(){
     $('#settingsTabMods').fadeOut(500, () => {
+        saveModConfiguration()
+        ConfigManager.save()
+        saveDropinModConfiguration()
         prepareModsTab()
         $('#settingsTabMods').fadeIn(500)
     })
@@ -600,6 +700,9 @@ function animateModsTabRefresh(){
  */
 function prepareModsTab(first){
     resolveModsForUI()
+    resolveDropinModsForUI()
+    bindDropinModsRemoveButton()
+    bindDropinModFileSystemButton()
     bindModsToggleSwitch()
     loadSelectedServerOnModsTab()
 }

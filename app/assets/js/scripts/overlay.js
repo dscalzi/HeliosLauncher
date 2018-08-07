@@ -5,6 +5,15 @@
 /* Overlay Wrapper Functions */
 
 /**
+ * Check to see if the overlay is visible.
+ * 
+ * @returns {boolean} Whether or not the overlay is visible.
+ */
+function isOverlayVisible(){
+    return document.getElementById('main').hasAttribute('overlay');
+}
+
+/**
  * Toggle the visibility of the overlay.
  * 
  * @param {boolean} toggleState True to display, false to hide.
