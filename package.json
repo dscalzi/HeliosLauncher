@@ -47,9 +47,9 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^2.0.5",
-    "electron-builder": "^20.25.0",
-    "eslint": "^5.2.0"
+    "electron": "^2.0.6",
+    "electron-builder": "^20.26.1",
+    "eslint": "^5.3.0"
   },
   "build": {
     "appId": "westeroscraftlauncher",
