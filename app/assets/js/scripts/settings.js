@@ -428,6 +428,9 @@ document.getElementById('settingsGameHeight').addEventListener('keydown', (e) =>
 
 const settingsModsContainer = document.getElementById('settingsModsContainer')
 
+/**
+ * Resolve and update the mods on the UI.
+ */
 function resolveModsForUI(){
     const serv = ConfigManager.getSelectedServer()
 
@@ -438,9 +441,15 @@ function resolveModsForUI(){
 
     document.getElementById('settingsReqModsContent').innerHTML = modStr.reqMods
     document.getElementById('settingsOptModsContent').innerHTML = modStr.optMods
-
 }
 
+/**
+ * Recursively build the mod UI elements.
+ * 
+ * @param {Object[]} mdls An array of modules to parse.
+ * @param {boolean} submodules Whether or not we are parsing submodules.
+ * @param {Object} servConf The server configuration object for this module level.
+ */
 function parseModulesForUI(mdls, submodules, servConf){
 
     let reqMods = ''
@@ -496,9 +505,7 @@ function parseModulesForUI(mdls, submodules, servConf){
                 </div>`
 
             }
-
         }
-
     }
 
     return {
@@ -560,35 +567,15 @@ function _saveModConfiguration(modConf){
     return modConf
 }
 
-function loadSelectedServerOnModsTab(){
-    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
-
-    document.getElementById('settingsSelServContent').innerHTML = `
-        <img class="serverListingImg" src="${serv.getIcon()}"/>
-        <div class="serverListingDetails">
-            <span class="serverListingName">${serv.getName()}</span>
-            <span class="serverListingDescription">${serv.getDescription()}</span>
-            <div class="serverListingInfo">
-                <div class="serverListingVersion">${serv.getMinecraftVersion()}</div>
-                <div class="serverListingRevision">${serv.getVersion()}</div>
-                ${serv.isMainServer() ? `<div class="serverListingStarWrapper">
-                    <svg id="Layer_1" viewBox="0 0 107.45 104.74" width="20px" height="20px">
-                        <defs>
-                            <style>.cls-1{fill:#fff;}.cls-2{fill:none;stroke:#fff;stroke-miterlimit:10;}</style>
-                        </defs>
-                        <path class="cls-1" d="M100.93,65.54C89,62,68.18,55.65,63.54,52.13c2.7-5.23,18.8-19.2,28-27.55C81.36,31.74,63.74,43.87,58.09,45.3c-2.41-5.37-3.61-26.52-4.37-39-.77,12.46-2,33.64-4.36,39-5.7-1.46-23.3-13.57-33.49-20.72,9.26,8.37,25.39,22.36,28,27.55C39.21,55.68,18.47,62,6.52,65.55c12.32-2,33.63-6.06,39.34-4.9-.16,5.87-8.41,26.16-13.11,37.69,6.1-10.89,16.52-30.16,21-33.9,4.5,3.79,14.93,23.09,21,34C70,86.84,61.73,66.48,61.59,60.65,67.36,59.49,88.64,63.52,100.93,65.54Z"/>
-                        <circle class="cls-2" cx="53.73" cy="53.9" r="38"/>
-                    </svg>
-                    <span class="serverListingStarTooltip">Main Server</span>
-                </div>` : ''}
-            </div>
-        </div>
-    `
-}
+// Drop-in mod elements.
 
 let CACHE_SETTINGS_MODS_DIR
 let CACHE_DROPIN_MODS
 
+/**
+ * Resolve any located drop-in mods for this server and
+ * populate the results onto the UI.
+ */
 function resolveDropinModsForUI(){
     const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
     CACHE_SETTINGS_MODS_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.getID(), 'mods')
@@ -619,6 +606,9 @@ function resolveDropinModsForUI(){
     document.getElementById('settingsDropinModsContent').innerHTML = dropinMods
 }
 
+/**
+ * Bind the remove button for each loaded drop-in mod.
+ */
 function bindDropinModsRemoveButton(){
     const sEls = settingsModsContainer.querySelectorAll('[remmod]')
     Array.from(sEls).map((v, index, arr) => {
@@ -640,6 +630,10 @@ function bindDropinModsRemoveButton(){
     })
 }
 
+/**
+ * Bind functionality to the file system button for the selected
+ * server configuration.
+ */
 function bindDropinModFileSystemButton(){
     const fsBtn = document.getElementById('settingsDropinFileSystemButton')
     fsBtn.onclick = () => {
@@ -647,6 +641,10 @@ function bindDropinModFileSystemButton(){
     }
 }
 
+/**
+ * Save drop-in mod states. Enabling and disabling is just a matter
+ * of adding/removing the .disabled extension.
+ */
 function saveDropinModConfiguration(){
     for(dropin of CACHE_DROPIN_MODS){
         const dropinUI = document.getElementById(dropin.fullName)
@@ -669,11 +667,8 @@ function saveDropinModConfiguration(){
     }
 }
 
-document.getElementById('settingsSwitchServerButton').addEventListener('click', (e) => {
-    e.target.blur()
-    toggleServerSelection(true)
-})
-
+// Refresh the drop-in mods when F5 is pressed.
+// Only active on the mods tab.
 document.addEventListener('keydown', (e) => {
     if(getCurrentView() === VIEWS.settings && selectedSettingsTab === 'settingsTabMods'){
         if(e.key === 'F5'){
@@ -685,6 +680,47 @@ document.addEventListener('keydown', (e) => {
     }
 })
 
+// Server status bar functions.
+
+/**
+ * Load the currently selected server information onto the mods tab.
+ */
+function loadSelectedServerOnModsTab(){
+    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+
+    document.getElementById('settingsSelServContent').innerHTML = `
+        <img class="serverListingImg" src="${serv.getIcon()}"/>
+        <div class="serverListingDetails">
+            <span class="serverListingName">${serv.getName()}</span>
+            <span class="serverListingDescription">${serv.getDescription()}</span>
+            <div class="serverListingInfo">
+                <div class="serverListingVersion">${serv.getMinecraftVersion()}</div>
+                <div class="serverListingRevision">${serv.getVersion()}</div>
+                ${serv.isMainServer() ? `<div class="serverListingStarWrapper">
+                    <svg id="Layer_1" viewBox="0 0 107.45 104.74" width="20px" height="20px">
+                        <defs>
+                            <style>.cls-1{fill:#fff;}.cls-2{fill:none;stroke:#fff;stroke-miterlimit:10;}</style>
+                        </defs>
+                        <path class="cls-1" d="M100.93,65.54C89,62,68.18,55.65,63.54,52.13c2.7-5.23,18.8-19.2,28-27.55C81.36,31.74,63.74,43.87,58.09,45.3c-2.41-5.37-3.61-26.52-4.37-39-.77,12.46-2,33.64-4.36,39-5.7-1.46-23.3-13.57-33.49-20.72,9.26,8.37,25.39,22.36,28,27.55C39.21,55.68,18.47,62,6.52,65.55c12.32-2,33.63-6.06,39.34-4.9-.16,5.87-8.41,26.16-13.11,37.69,6.1-10.89,16.52-30.16,21-33.9,4.5,3.79,14.93,23.09,21,34C70,86.84,61.73,66.48,61.59,60.65,67.36,59.49,88.64,63.52,100.93,65.54Z"/>
+                        <circle class="cls-2" cx="53.73" cy="53.9" r="38"/>
+                    </svg>
+                    <span class="serverListingStarTooltip">Main Server</span>
+                </div>` : ''}
+            </div>
+        </div>
+    `
+}
+
+// Bind functionality to the server switch button.
+document.getElementById('settingsSwitchServerButton').addEventListener('click', (e) => {
+    e.target.blur()
+    toggleServerSelection(true)
+})
+
+/**
+ * Function to refresh the mods tab whenever the selected
+ * server is changed.
+ */
 function animateModsTabRefresh(){
     $('#settingsTabMods').fadeOut(500, () => {
         saveModConfiguration()

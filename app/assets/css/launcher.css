@@ -1368,103 +1368,7 @@ input:checked + .toggleSwitchSlider:before {
 * Settings View (Mods Tab)
 * * */
 
-#settingsReqModsContent,
-#settingsOptModsContent,
-#settingsDropinModsContent {
-    font-size: 12px;
-    background: rgba(0, 0, 0, 0.25);
-    border-radius: 3px;
-    color: white;
-}
-
-#settingsModsContainer {
-    width: 75%;
-}
-
-.settingsModsHeader {
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-    margin-bottom: 10px;
-}
-
-#settingsReqModsContainer,
-#settingsOptModsContainer,
-#settingsDropinModsContainer {
-    padding-bottom: 25px;
-}
-
-.settingsMod,
-.settingsDropinMod {
-    padding: 10px;
-}
-
-.settingsSubMod {
-    padding: 10px 0px 10px 15px;
-    margin-left: 20px;
-    border-left: 1px solid rgba(255, 255, 255, 0.5);
-}
-
-.settingsModStatus {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background-color: #c32625;
-    margin-right: 15px;
-    transition: 0.25s ease;
-}
-
-.settingsModContent {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: opacity 0.25s ease;
-}
-
-.settingsModMainWrapper {
-    display: flex;
-    align-items: center;
-}
-
-.settingsModVersion {
-    color: grey;
-    font-size: 10px;
-}
-
-.settingsModDetails {
-    display: flex;
-    flex-direction: column;
-}
-
-.toggleSwitch[reqmod] {
-    filter: grayscale(49%) brightness(60%);
-    pointer-events: none;
-}
-
-.settingsBaseMod[enabled] > .settingsModContent > .settingsModMainWrapper > .settingsModStatus {
-    background-color: rgb(165, 195, 37);
-}
-
-.settingsBaseMod:not([enabled]) > .settingsSubModContainer .settingsModContent {
-    opacity: 0.5;
-}
-
-.settingsSubModContainer > .settingsSubMod:first-child {
-    border-top-left-radius: 10px;
-}
-
-.settingsSubModContainer > .settingsSubMod:last-child {
-    border-bottom-left-radius: 10px;
-}
-
-settingsSubModContainer > .settingsSubMod:only-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-
-.settingsSubModContainer {
-    margin-top: 10px;
-}
-
+/* Selected server content container */
 #settingsSelServContainer {
     background: rgba(0, 0, 0, 0.25);
     width: 75%;
@@ -1474,6 +1378,7 @@ settingsSubModContainer > .settingsSubMod:only-child {
     margin: 15px 0px;
 }
 
+/* Div which will be populated with the selected server's information. */
 #settingsSelServContent {
     display: flex;
     align-items: center;
@@ -1481,12 +1386,14 @@ settingsSubModContainer > .settingsSubMod:only-child {
     padding: 5px 0px;
 }
 
+/* Wrapper container for the switch server button. */
 #settingsSwitchServerContainer {
     display: flex;
     align-items: center;
     padding: 15px;
 }
 
+/* Button to switch server configurations on the mods tab. */
 #settingsSwitchServerButton {
     opacity: 0;
     border: 1px solid rgb(255, 255, 255);
@@ -1514,6 +1421,140 @@ settingsSubModContainer > .settingsSubMod:only-child {
     opacity: 1;
 }
 
+/* Main content container for the mod elements. */
+#settingsModsContainer {
+    width: 75%;
+}
+
+/* Mod sub-container header text. */
+.settingsModsHeader {
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    margin-bottom: 10px;
+}
+
+/* Mod elements sub-containers. */
+#settingsReqModsContainer,
+#settingsOptModsContainer,
+#settingsDropinModsContainer {
+    padding-bottom: 25px;
+}
+
+/* Main content containers for mod elements. */
+#settingsReqModsContent,
+#settingsOptModsContent,
+#settingsDropinModsContent {
+    font-size: 12px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 3px;
+    color: white;
+}
+
+/* Mod elements. */
+.settingsMod,
+.settingsDropinMod {
+    padding: 10px;
+}
+.settingsSubMod {
+    padding: 10px 0px 10px 15px;
+    margin-left: 20px;
+    border-left: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Main content container for mod element information. */
+.settingsModContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: opacity 0.25s ease;
+}
+
+/* Wrapper container for the left side of a mod element. */
+.settingsModMainWrapper {
+    display: flex;
+    align-items: center;
+}
+
+/* Mod enabled/disabled status. */
+.settingsModStatus {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #c32625;
+    margin-right: 15px;
+    transition: 0.25s ease;
+}
+
+/* Mod details container. */
+.settingsModDetails {
+    display: flex;
+    flex-direction: column;
+}
+
+/* The version of the mod. */
+.settingsModVersion {
+    color: grey;
+    font-size: 10px;
+}
+
+/* Disabled toggleswitch for required mods. */
+.toggleSwitch[reqmod] {
+    filter: grayscale(49%) brightness(60%);
+    pointer-events: none;
+}
+
+/* Set the status color of an enabled mod. */
+.settingsBaseMod[enabled] > .settingsModContent > .settingsModMainWrapper > .settingsModStatus {
+    background-color: rgb(165, 195, 37);
+}
+
+/* Add opacity to submods of a disabled mod. */
+.settingsBaseMod:not([enabled]) > .settingsSubModContainer .settingsModContent {
+    opacity: 0.5;
+}
+
+/* Curve the left border for submods. */
+.settingsSubModContainer > .settingsSubMod:first-child {
+    border-top-left-radius: 10px;
+}
+.settingsSubModContainer > .settingsSubMod:last-child {
+    border-bottom-left-radius: 10px;
+}
+.settingsSubModContainer > .settingsSubMod:only-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+/* Wrapper container for all submods. */
+.settingsSubModContainer {
+    margin-top: 10px;
+}
+
+/* Button to open the mods folder for drop-in mods. */
+#settingsDropinFileSystemButton {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(126, 126, 126, 0.57);
+    border-radius: 3px;
+    height: 50px;
+    width: 100%;
+    text-align: left;
+    padding: 0px 50px;
+    cursor: pointer;
+    outline: none;
+    transition: 0.25s ease;
+    margin-bottom: 10px;
+}
+#settingsDropinFileSystemButton:hover,
+#settingsDropinFileSystemButton:focus {
+    background: rgba(54, 54, 54, 0.25);
+    text-shadow: 0px 0px 20px white;
+}
+/* Refresh instructions on the file system button. */
+#settingsDropinRefreshNote {
+    font-size: 10px;
+}
+
+/* Button to remove drop-in mods. */
 .settingsDropinRemoveButton {
     background: none;
     border: none;
@@ -1533,29 +1574,6 @@ settingsSubModContainer > .settingsSubMod:only-child {
 .settingsDropinRemoveButton:active {
     color: #9b1f1f;
     text-shadow: 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f;
-}
-
-#settingsDropinFileSystemButton {
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(126, 126, 126, 0.57);
-    border-radius: 3px;
-    height: 50px;
-    width: 100%;
-    text-align: left;
-    padding: 0px 50px;
-    cursor: pointer;
-    outline: none;
-    transition: 0.25s ease;
-    margin-bottom: 10px;
-}
-#settingsDropinFileSystemButton:hover,
-#settingsDropinFileSystemButton:focus {
-    background: rgba(54, 54, 54, 0.25);
-    text-shadow: 0px 0px 20px white;
-}
-
-#settingsDropinRefreshNote {
-    font-size: 10px;
 }
 
 /* * *

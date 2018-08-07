@@ -27,7 +27,7 @@ exports.scanForDropinMods = function(modsDir, version) {
         if(fs.existsSync(versionDir)){
             verCandidates = fs.readdirSync(versionDir)
         }
-        for(file of modCandidates){
+        for(let file of modCandidates){
             const match = MOD_REGEX.exec(file)
             if(match != null){
                 modsDiscovered.push({
@@ -38,7 +38,7 @@ exports.scanForDropinMods = function(modsDir, version) {
                 })
             }
         }
-        for(file of verCandidates){
+        for(let file of verCandidates){
             const match = MOD_REGEX.exec(file)
             if(match != null){
                 modsDiscovered.push({
@@ -62,15 +62,6 @@ exports.scanForDropinMods = function(modsDir, version) {
  * @returns {boolean} True if the mod was deleted, otherwise false.
  */
 exports.deleteDropinMod = function(modsDir, fullName){
-    /*return new Promise((resolve, reject) => {
-        fs.unlink(path.join(modsDir, fullName), (err) => {
-            if(err){
-                reject(err)
-            } else {
-                resolve()
-            }
-        })
-    })*/
     const res = shell.moveItemToTrash(path.join(modsDir, fullName))
     if(!res){
         shell.beep()
@@ -104,6 +95,12 @@ exports.toggleDropinMod = function(modsDir, fullName, enable){
     })
 }
 
+/**
+ * Check if a drop-in mod is enabled.
+ * 
+ * @param {string} fullName The fullName of the discovered mod to toggle.
+ * @returns {boolean} True if the mod is enabled, otherwise false.
+ */
 exports.isDropinModEnabled = function(fullName){
     return !fullName.endsWith(DISABLED_EXT)
 }
