@@ -2,7 +2,7 @@
 
 <h1 align="center"> WesterosCraft Launcher</h1>
 
-<p align="center"><img src="https://img.shields.io/travis/WesterosCraftCode/ElectronLauncher.svg?style=for-the-badge" alt="travis"> <img src="https://img.shields.io/github/downloads/WesterosCraftCode/ElectronLauncher/total.svg?style=for-the-badge" alt="downloads"> <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="stark"></p>
+[<p align="center"><img src="https://img.shields.io/travis/WesterosCraftCode/ElectronLauncher.svg?style=for-the-badge" alt="travis">](https://travis-ci.org/WesterosCraftCode/ElectronLauncher) [<img src="https://img.shields.io/github/downloads/WesterosCraftCode/ElectronLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/WesterosCraftCode/ElectronLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="stark"></p>
 
 <p align="center">Join WesterosCraft without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
 
@@ -36,13 +36,17 @@ The launcher is currently in alpha. It's very usable, however we are still putti
 
 ## Downloads
 
-Go to the [Releases](https://github.com/WesterosCraftCode/ElectronLauncher/releases) tab and download the installer for the latest release.
+Latest Release
+
+[![](https://img.shields.io/github/release/WesterosCraftCode/ElectronLauncher.svg?style=flat-square)](https://github.com/WesterosCraftCode/ElectronLauncher/releases/latest)
+
+Latest Prerelease
+
+[![](https://img.shields.io/github/release/WesterosCraftCode/ElectronLauncher/all.svg?style=flat-square)](https://github.com/WesterosCraftCode/ElectronLauncher/releases)
 
 **Supported Platforms**
 
-Latest Release: ![](https://img.shields.io/github/release/WesterosCraftCode/ElectronLauncher.svg?style=flat-square)
-
-Latest Prerelease: ![](https://img.shields.io/github/release/WesterosCraftCode/ElectronLauncher/all.svg?style=flat-square)
+Go to the [Releases](https://github.com/WesterosCraftCode/ElectronLauncher/releases) tab and download the installer for the latest release.
 
 | Platform | File |
 | -------- | ---- |
