@@ -976,12 +976,10 @@ function prepareJavaTab(){
  * About Tab
  */
 
-const settingsAboutCurrentVersionCheck = document.getElementById('settingsAboutCurrentVersionCheck')
-const settingsAboutCurrentVersionTitle = document.getElementById('settingsAboutCurrentVersionTitle')
-const settingsAboutCurrentVersionValue = document.getElementById('settingsAboutCurrentVersionValue')
-const settingsChangelogTitle           = document.getElementById('settingsChangelogTitle')
-const settingsChangelogText            = document.getElementById('settingsChangelogText')
-const settingsChangelogButton          = document.getElementById('settingsChangelogButton')
+const settingsTabAbout             = document.getElementById('settingsTabAbout')
+const settingsAboutChangelogTitle  = settingsTabAbout.getElementsByClassName('settingsChangelogTitle')[0]
+const settingsAboutChangelogText   = settingsTabAbout.getElementsByClassName('settingsChangelogText')[0]
+const settingsAboutChangelogButton = settingsTabAbout.getElementsByClassName('settingsChangelogButton')[0]
 
 // Bind the devtools toggle button.
 document.getElementById('settingsAboutDevToolsButton').onclick = (e) => {
@@ -990,22 +988,43 @@ document.getElementById('settingsAboutDevToolsButton').onclick = (e) => {
 }
 
 /**
+ * Return whether or not the provided version is a prerelease.
+ * 
+ * @param {string} version The semver version to test.
+ * @returns {boolean} True if the version is a prerelease, otherwise false.
+ */
+function isPrerelease(version){
+    const preRelComp = semver.prerelease(version)
+    return preRelComp != null && preRelComp.length > 0
+}
+
+/**
+ * Utility method to display version information on the
+ * About and Update settings tabs.
+ * 
+ * @param {string} version The semver version to display.
+ * @param {Element} valueElement The value element.
+ * @param {Element} titleElement The title element.
+ * @param {Element} checkElement The check mark element.
+ */
+function populateVersionInformation(version, valueElement, titleElement, checkElement){
+    valueElement.innerHTML = version
+    if(isPrerelease(version)){
+        titleElement.innerHTML = 'Pre-release'
+        titleElement.style.color = '#ff886d'
+        checkElement.style.background = '#ff886d'
+    } else {
+        titleElement.innerHTML = 'Stable Release'
+        titleElement.style.color = null
+        checkElement.style.background = null
+    }
+}
+
+/**
  * Retrieve the version information and display it on the UI.
  */
-function populateVersionInformation(){
-    const version = remote.app.getVersion()
-
-    settingsAboutCurrentVersionValue.innerHTML = version
-    const preRelComp = semver.prerelease(version)
-    if(preRelComp != null && preRelComp.length > 0){
-        settingsAboutCurrentVersionTitle.innerHTML = 'Pre-release'
-        settingsAboutCurrentVersionTitle.style.color = '#ff886d'
-        settingsAboutCurrentVersionCheck.style.background = '#ff886d'
-    } else {
-        settingsAboutCurrentVersionTitle.innerHTML = 'Stable Release'
-        settingsAboutCurrentVersionTitle.style.color = null
-        settingsAboutCurrentVersionCheck.style.background = null
-    }
+function populateAboutVersionInformation(){
+    populateVersionInformation(remote.app.getVersion(), document.getElementById('settingsAboutCurrentVersionValue'), document.getElementById('settingsAboutCurrentVersionTitle'), document.getElementById('settingsAboutCurrentVersionCheck'))
 }
 
 /**
@@ -1025,16 +1044,16 @@ function populateReleaseNotes(){
                 id = id.substring(id.lastIndexOf('/')+1)
 
                 if(id === version){
-                    settingsChangelogTitle.innerHTML = entry.find('title').text()
-                    settingsChangelogText.innerHTML = entry.find('content').text()
-                    settingsChangelogButton.href = entry.find('link').attr('href')
+                    settingsAboutChangelogTitle.innerHTML = entry.find('title').text()
+                    settingsAboutChangelogText.innerHTML = entry.find('content').text()
+                    settingsAboutChangelogButton.href = entry.find('link').attr('href')
                 }
             }
 
         },
         timeout: 2500
     }).catch(err => {
-        settingsChangelogText.innerHTML = 'Failed to load release notes.'
+        settingsAboutChangelogText.innerHTML = 'Failed to load release notes.'
     })
 }
 
@@ -1042,10 +1061,71 @@ function populateReleaseNotes(){
  * Prepare account tab for display.
  */
 function prepareAboutTab(){
-    populateVersionInformation()
+    populateAboutVersionInformation()
     populateReleaseNotes()
 }
 
+/**
+ * Update Tab
+ */
+
+const settingsTabUpdate            = document.getElementById('settingsTabUpdate')
+const settingsUpdateTitle          = document.getElementById('settingsUpdateTitle')
+const settingsUpdateVersionCheck   = document.getElementById('settingsUpdateVersionCheck')
+const settingsUpdateVersionTitle   = document.getElementById('settingsUpdateVersionTitle')
+const settingsUpdateVersionValue   = document.getElementById('settingsUpdateVersionValue')
+const settingsUpdateChangelogTitle = settingsTabUpdate.getElementsByClassName('settingsChangelogTitle')[0]
+const settingsUpdateChangelogText  = settingsTabUpdate.getElementsByClassName('settingsChangelogText')[0]
+const settingsUpdateChangelogCont  = settingsTabUpdate.getElementsByClassName('settingsChangelogContainer')[0]
+const settingsUpdateActionButton   = document.getElementById('settingsUpdateActionButton')
+
+/**
+ * Update the properties of the update action button.
+ * 
+ * @param {string} text The new button text.
+ * @param {boolean} disabled Optional. Disable or enable the button
+ * @param {function} handler Optional. New button event handler.
+ */
+function settingsUpdateButtonStatus(text, disabled = false, handler = null){
+    settingsUpdateActionButton.innerHTML = text
+    settingsUpdateActionButton.disabled = disabled
+    if(handler != null){
+        settingsUpdateActionButton.onclick = handler
+    }
+}
+
+/**
+ * Populate the update tab with relevant information.
+ * 
+ * @param {Object} data The update data.
+ */
+function populateSettingsUpdateInformation(data){
+    if(data != null){
+        settingsUpdateTitle.innerHTML = `New ${isPrerelease(data.version) ? 'Pre-release' : 'Release'} Available`
+        settingsUpdateChangelogCont.style.display = null
+        settingsUpdateChangelogTitle.innerHTML = data.releaseName
+        settingsUpdateChangelogText.innerHTML = data.releaseNotes
+        populateVersionInformation(data.version, settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
+        settingsUpdateButtonStatus('Downloading..', true)
+    } else {
+        settingsUpdateTitle.innerHTML = 'You Are Running the Latest Version'
+        settingsUpdateChangelogCont.style.display = 'none'
+        populateVersionInformation(remote.app.getVersion(), settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
+        settingsUpdateButtonStatus('Check for Updates', false, () => {
+            ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+            settingsUpdateButtonStatus('Checking for Updates..', true)
+        })
+    }
+}
+
+/**
+ * Prepare update tab for display.
+ * 
+ * @param {Object} data The update data.
+ */
+function prepareUpdateTab(data = null){
+    populateSettingsUpdateInformation(data)
+}
 
 /**
  * Settings preparation functions.
@@ -1060,6 +1140,7 @@ function prepareSettings(first = false) {
     if(first){
         setupSettingsTabs()
         initSettingsValidators()
+        prepareUpdateTab()
     } else {
         prepareModsTab()
     }

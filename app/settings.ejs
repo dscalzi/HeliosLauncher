@@ -13,7 +13,7 @@
                     <button class="settingsNavItem" rSc="settingsTabLauncher">Launcher</button>
                     <div class="settingsNavSpacer"></div>
                     <button class="settingsNavItem" rSc="settingsTabAbout">About</button>
-                    <button class="settingsNavItem">Updates</button>
+                    <button class="settingsNavItem" rSc="settingsTabUpdate" id="settingsNavUpdate">Updates</button>
                     <div id="settingsNavContentBottom">
                         <div class="settingsNavDivider"></div>
                         <button id="settingsNavDone">Done</button>
@@ -267,19 +267,55 @@
                     <a href="#" id="settingsAboutDevToolsButton" class="settingsAboutButton">DevTools Console</a>
                 </div>
             </div>
-            <div class="settingsAboutDivider"></div>
-            <div id="settingsChangelogContainer">
-                <div id="settingsChangelogContent">
-                    <div id="settingsChangelogHeadline">
-                        <div id="settingsChangelogLabel">Release Notes</div>
-                        <div id="settingsChangelogTitle">Changelog</div>
+            <div class="settingsChangelogContainer">
+                <div class="settingsChangelogContent">
+                    <div class="settingsChangelogHeadline">
+                        <div class="settingsChangelogLabel">Release Notes</div>
+                        <div class="settingsChangelogTitle">Changelog</div>
                     </div>
-                    <div id="settingsChangelogText">
+                    <div class="settingsChangelogText">
                         No Release Notes
                     </div>
                 </div>
-                <div id="settingsChangelogActions">
-                    <a id="settingsChangelogButton" class="settingsAboutButton" href="#">View Release Notes on GitHub</a>
+                <div class="settingsChangelogActions">
+                    <a class="settingsChangelogButton settingsAboutButton" href="#">View Release Notes on GitHub</a>
+                </div>
+            </div>
+        </div>
+        <div id="settingsTabUpdate" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Launcher Updates</span>
+                <span class="settingsTabHeaderDesc">Download, install, and review updates for the launcher.</span>
+            </div>
+            <div id="settingsUpdateStatusContainer">
+                <div id="settingsUpdateStatusContent">
+                    <div id="settingsUpdateStatusHeadline">
+                        <span id="settingsUpdateTitle">You Are Running the Latest Version</span>
+                    </div>
+                    <div id="settingsUpdateVersion">
+                        <div id="settingsUpdateVersionCheck">&#10003;</div>
+                        <div id="settingsUpdateVersionDetails">
+                            <span id="settingsUpdateVersionTitle">Stable Release</span>
+                            <div id="settingsUpdateVersionLine">
+                                <span id="settingsUpdateVersionText">Version </span>
+                                <span id="settingsUpdateVersionValue">0.0.1-alpha.18</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="settingsUpdateActionContainer">
+                        <button id="settingsUpdateActionButton">Check for Updates</button>
+                    </div>
+                </div>
+            </div>
+            <div class="settingsChangelogContainer">
+                <div class="settingsChangelogContent">
+                    <div class="settingsChangelogHeadline">
+                        <div class="settingsChangelogLabel">What's New</div>
+                        <div class="settingsChangelogTitle">Update Release Notes</div>
+                    </div>
+                    <div class="settingsChangelogText">
+                        No Release Notes
+                    </div>
                 </div>
             </div>
         </div>

@@ -34,16 +34,24 @@ if(!isDev){
         switch(arg){
             case 'checking-for-update':
                 console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Checking for update..')
+                settingsUpdateButtonStatus('Checking for Updates..', true)
                 break
             case 'update-available':
                 console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'New update available', info.version)
+                populateSettingsUpdateInformation(info)
                 break
             case 'update-downloaded':
                 console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Update ' + info.version + ' ready to be installed.')
+                settingsUpdateButtonStatus('Install Now', false, () => {
+                    if(!isDev){
+                        ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
+                    }
+                })
                 showUpdateUI(info)
                 break
             case 'update-not-available':
                 console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'No new update found.')
+                settingsUpdateButtonStatus('Check for Updates')
                 break
             case 'ready':
                 updateCheckListener = setInterval(() => {
@@ -86,7 +94,7 @@ function showUpdateUI(info){
     //TODO Make this message a bit more informative `${info.version}`
     document.getElementById('image_seal_container').setAttribute('update', true)
     document.getElementById('image_seal_container').onclick = () => {
-        setOverlayContent('Update Available', 'A new update for the launcher is available. Would you like to install now?', 'Install', 'Later')
+        /*setOverlayContent('Update Available', 'A new update for the launcher is available. Would you like to install now?', 'Install', 'Later')
         setOverlayHandler(() => {
             if(!isDev){
                 ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
@@ -98,7 +106,10 @@ function showUpdateUI(info){
         setDismissHandler(() => {
             toggleOverlay(false)
         })
-        toggleOverlay(true, true)
+        toggleOverlay(true, true)*/
+        switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
+            settingsNavItemListener(document.getElementById('settingsNavUpdate'), false)
+        })
     }
 }
 

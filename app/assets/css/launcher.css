@@ -1582,19 +1582,19 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Style links on the Java tab. */
 #settingsTabJava a,
-#settingsChangelogText a {
+.settingsChangelogText a {
     color: rgba(202, 202, 202, 0.75);
     transition: 0.25s ease;
     outline: none;
 }
 #settingsTabJava a:hover,
 #settingsTabJava a:focus,
-#settingsChangelogText a:hover,
-#settingsChangelogText a:focus {
+.settingsChangelogText a:hover,
+.settingsChangelogText a:focus {
     color: rgba(255, 255, 255, 0.75);
 }
 #settingsTabJava a:active,
-#settingsChangelogText a:active {
+.settingsChangelogText a:active {
     color: rgba(165, 165, 165, 0.75);
 }
 
@@ -1916,7 +1916,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* Main changelog container. */
-#settingsChangelogContainer {
+.settingsChangelogContainer {
     display: flex;
     flex-direction: column;
     background: rgba(0, 0, 0, 0.25);
@@ -1927,42 +1927,42 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* Changelog content container. */
-#settingsChangelogContent {
+.settingsChangelogContent {
     display: flex;
     flex-direction: column;
     padding: 15px;
 }
 
 /* Changelog header container. */
-#settingsChangelogHeadline {
+.settingsChangelogHeadline {
     padding-bottom: 10px;
     margin-bottom: 10px;
     border-bottom: 1px solid rgba(126, 126, 126, 0.57);
 }
 /* Changelog header label. */
-#settingsChangelogLabel {
+.settingsChangelogLabel {
     font-size: 12px;
     color: grey;
     font-weight: bold;
 }
 
 /* Changelog text content container. */
-#settingsChangelogText {
+.settingsChangelogText {
     font-size: 12px;
 }
 
 /* Styles for the changelog elements. */
-#settingsChangelogText p {
+.settingsChangelogText p {
     margin-bottom: 16px;
     line-height: 1.5;
 }
-#settingsChangelogText blockquote {
+.settingsChangelogText blockquote {
     border-left: 0.25em solid rgba(126, 126, 126, 0.95);
     margin: 0px;
     padding: 0 0 0 1em;
     color: rgba(255, 255, 255, 0.85);
 }
-#settingsChangelogText code {
+.settingsChangelogText code {
     padding: 0.1em 0.4em;
     font-size: 85%;
     background-color: rgba(255, 255, 255, 0.25);
@@ -1970,19 +1970,19 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 3px;
     font-family: 'Avenir Book';
 }
-#settingsChangelogText li+li {
+.settingsChangelogText li+li {
     margin-top: .25em;
 }
-#settingsChangelogText a.commit-link {
+.settingsChangelogText a.commit-link {
     font-weight: 400;
     color: #ffffff;
     text-decoration: none;
 }
-#settingsChangelogText a.commit-link:hover {
+.settingsChangelogText a.commit-link:hover {
     text-decoration: underline !important;
     text-decoration-color: black;
 }
-#settingsChangelogText tt {
+.settingsChangelogText tt {
     padding: 0.1em 0.4em;
     font-size: 86%;
     background-color: white;
@@ -1990,27 +1990,135 @@ input:checked + .toggleSwitchSlider:before {
     color: black;
     font-weight: bold;
 }
-#settingsChangelogText a.commit-link:hover tt {
+.settingsChangelogText a.commit-link:hover tt {
     text-decoration: underline;
     text-decoration-color: black;
 }
-#settingsChangelogText .highlight {
+.settingsChangelogText .highlight {
     background: rgba(0, 0, 0, 0.30);
     user-select: initial;
     padding: 5px 10px;
 }
-#settingsChangelogText .highlight pre {
+.settingsChangelogText .highlight pre {
     margin: 0px;
 }
 
 /* Container for the changelog button. */
-#settingsChangelogActions {
+.settingsChangelogActions {
     padding: 0px 15px 5px 15px;
 }
 
 /* Open changelog on GitHub. */
-#settingsChangelogButton {
+.settingsChangelogButton {
     padding: 0px;
+}
+
+/* * *
+* Settings View (Updates Tab)
+* * */
+
+/* Main about content container. */
+#settingsUpdateStatusContainer {
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(126, 126, 126, 0.57);
+    border-radius: 3px;
+    width: 75%;
+    margin-bottom: 20px;
+}
+
+/* Update content. */
+#settingsUpdateStatusContent {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+/* Update header elements. */
+#settingsUpdateStatusHeadline {
+    display: flex;
+    align-items: center;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(126, 126, 126, 0.57);
+}
+#settingsUpdateTitle {
+    font-size: 16px;
+    padding-left: 10px;
+    font-weight: bold;
+}
+
+/* Update version container. */
+#settingsUpdateVersion {
+    display: flex;
+    align-items: center;
+    padding: 10px 0px;
+    border-bottom: 1px solid rgba(126, 126, 126, 0.57);
+}
+
+/* Checkmark next to the version information. */
+#settingsUpdateVersionCheck {
+    border-radius: 50%;
+    background: #23aa23;
+    text-align: center;
+    font-weight: bold;
+    margin: 11px 12px;
+    color: white;
+    height: 15px;
+    width: 15px;
+    font-size: 12px;
+    line-height: 17px;
+}
+
+/* Update version details container. */
+#settingsUpdateVersionDetails {
+    margin-left: 10px;
+}
+
+/* Release type text. */
+#settingsUpdateVersionTitle {
+    font-size: 12px;
+    font-family: 'Avenir Medium';
+    color: #23aa23;
+    font-weight: bold;
+}
+
+/* Current version text. */
+#settingsUpdateVersionLine {
+    font-size: 10px;
+    color: grey;
+    font-weight: bold;
+}
+
+/* Update action container. */
+#settingsUpdateActionContainer {
+    padding-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Update action button styles. */
+#settingsUpdateActionButton {
+    padding-left: 10px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    text-align: left;
+    transition: 0.25s ease;
+}
+#settingsUpdateActionButton:hover,
+#settingsUpdateActionButton:focus {
+    text-shadow: 0px 0px 20px white, 0px 0px 20px white, 0px 0px 20px white;
+}
+#settingsUpdateActionButton:active {
+    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    color: #c7c7c7;
+}
+#settingsUpdateActionButton:disabled {
+    pointer-events: none;
 }
 
 /*******************************************************************************
