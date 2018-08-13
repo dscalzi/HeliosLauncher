@@ -424,9 +424,9 @@ let proc
 // Is DiscordRPC enabled
 let hasRPC = false
 // Joined server regex
-const servJoined = /[[0-2][0-9]:[0-6][0-9]:[0-6][0-9]\] \[Client thread\/INFO\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/g
-const gameJoined = /\[[0-2][0-9]:[0-6][0-9]:[0-6][0-9]\] \[Client thread\/WARN\]: Skipping bad option: lastServer:/g
-const gameJoined2 = /\[[0-2][0-9]:[0-6][0-9]:[0-6][0-9]\] \[Client thread\/INFO\]: Created: \d+x\d+ textures-atlas/g
+const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
+const GAME_JOINED_REGEX = /\[.+\]: Skipping bad option: lastServer:/
+const GAME_LAUNCH_REGEX = /^\[.+\]: MinecraftForge .+ Initialized$/
 
 let aEx
 let serv
@@ -585,37 +585,40 @@ function dlAsync(login = true){
                 console.log('authu', authUser)
                 let pb = new ProcessBuilder(serv, versionData, forgeData, authUser)
                 setLaunchDetails('Launching game..')
+
+                // Attach a temporary listener to the client output.
+                // Will wait for a certain bit of text meaning that
+                // the client application has started, and we can hide
+                // the progress bar stuff.
+                const tempListener = function(data){
+                    if(GAME_LAUNCH_REGEX.test(data.trim())){
+                        toggleLaunchArea(false)
+                        if(hasRPC){
+                            DiscordWrapper.updateDetails('Loading game..')
+                        }
+                        proc.stdout.on('data', gameStateChange)
+                        proc.stdout.removeListener('data', tempListener)
+                    }
+                }
+
+                // Listener for Discord RPC.
+                const gameStateChange = function(data){
+                    data = data.trim()
+                    if(SERVER_JOINED_REGEX.test(data)){
+                        DiscordWrapper.updateDetails('Exploring the Realm!')
+                    } else if(GAME_JOINED_REGEX.test(data)){
+                        DiscordWrapper.updateDetails('Sailing to Westeros!')
+                    }
+                }
+
                 try {
                     // Build Minecraft process.
                     proc = pb.build()
-                    setLaunchDetails('Done. Enjoy the server!')
-
-                    // Attach a temporary listener to the client output.
-                    // Will wait for a certain bit of text meaning that
-                    // the client application has started, and we can hide
-                    // the progress bar stuff.
-                    const tempListener = function(data){
-                        if(data.indexOf('[Client thread/INFO]: -- System Details --') > -1){
-                            toggleLaunchArea(false)
-                            if(hasRPC){
-                                DiscordWrapper.updateDetails('Loading game..')
-                            }
-                            proc.stdout.removeListener('data', tempListener)
-                        }
-                    }
-
-                    // Listener for Discord RPC.
-                    const gameStateChange = function(data){
-                        if(servJoined.test(data)){
-                            DiscordWrapper.updateDetails('Exploring the Realm!')
-                        } else if(gameJoined.test(data)){
-                            DiscordWrapper.updateDetails('Sailing to Westeros!')
-                        }
-                    }
 
                     // Bind listeners to stdout.
                     proc.stdout.on('data', tempListener)
-                    proc.stdout.on('data', gameStateChange)
+
+                    setLaunchDetails('Done. Enjoy the server!')
 
                     // Init Discord Hook
                     const distro = DistroManager.getDistribution()

@@ -37,9 +37,8 @@ class ProcessBuilder {
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         this.setupLiteLoader()
-        console.log('using liteloader', this.usingLiteLoader)
+        console.log('%c[ProcessBuilder]', 'color: #003996; font-weight: bold', 'Using liteloader:', this.usingLiteLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
-        console.log(modObj)
         this.constructModList('forge', modObj.fMods, true)
         if(this.usingLiteLoader){
             this.constructModList('liteloader', modObj.lMods, true)
@@ -58,19 +57,21 @@ class ProcessBuilder {
             child.unref()
         }
 
+        child.stdout.setEncoding('utf8')
+
         child.stdout.on('data', (data) => {
-            console.log('Minecraft:', data.toString('utf8'))
+            console.log('%c[Minecraft]', 'color: #36b030; font-weight: bold', data)
         })
         child.stderr.on('data', (data) => {
-            console.log('Minecraft:', data.toString('utf8'))
+            console.log('%c[Minecraft]', 'color: #36b030; font-weight: bold', data)
         })
         child.on('close', (code, signal) => {
-            console.log('Exited with code', code)
+            console.log('%c[ProcessBuilder]', 'color: #003996; font-weight: bold', 'Exited with code', code)
             rimraf(tempNativePath, (err) => {
                 if(err){
-                    console.warn('Error while deleting temp dir', err)
+                    console.warn('%c[ProcessBuilder]', 'color: #003996; font-weight: bold', 'Error while deleting temp dir', err)
                 } else {
-                    console.log('Temp dir deleted successfully.')
+                    console.log('%c[ProcessBuilder]', 'color: #003996; font-weight: bold', 'Temp dir deleted successfully.')
                 }
             })
         })
