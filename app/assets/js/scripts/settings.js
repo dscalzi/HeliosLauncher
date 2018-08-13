@@ -361,6 +361,9 @@ const settingsCurrentAccounts = document.getElementById('settingsCurrentAccounts
 function populateAuthAccounts(){
     const authAccounts = ConfigManager.getAuthAccounts()
     const authKeys = Object.keys(authAccounts)
+    if(authKeys.length === 0){
+        return
+    }
     const selectedUUID = ConfigManager.getSelectedAccount().uuid
 
     let authAccountStr = ''
@@ -1112,8 +1115,10 @@ function populateSettingsUpdateInformation(data){
         settingsUpdateChangelogCont.style.display = 'none'
         populateVersionInformation(remote.app.getVersion(), settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
         settingsUpdateButtonStatus('Check for Updates', false, () => {
-            ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
-            settingsUpdateButtonStatus('Checking for Updates..', true)
+            if(!isDev){
+                ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+                settingsUpdateButtonStatus('Checking for Updates..', true)
+            }
         })
     }
 }

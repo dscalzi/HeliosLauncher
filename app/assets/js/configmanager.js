@@ -101,9 +101,22 @@ exports.load = function(){
         config = DEFAULT_CONFIG
         exports.save()
     } else {
-        config = JSON.parse(fs.readFileSync(filePath, 'UTF-8'))
-        config = validateKeySet(DEFAULT_CONFIG, config)
-        exports.save()
+        let doValidate = false
+        try {
+            config = JSON.parse(fs.readFileSync(filePath, 'UTF-8'))
+            doValidate = true
+        } catch (err){
+            console.error(err)
+            console.log('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold', 'Configuration file contains malformed JSON or is corrupt.')
+            console.log('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold', 'Generating a new configuration file.')
+            mkpath.sync(path.join(filePath, '..'))
+            config = DEFAULT_CONFIG
+            exports.save()
+        }
+        if(doValidate){
+            config = validateKeySet(DEFAULT_CONFIG, config)
+            exports.save()
+        }
     }
     console.log('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold', 'Successfully Loaded')
 }
