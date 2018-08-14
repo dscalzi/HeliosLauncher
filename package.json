@@ -12,18 +12,20 @@
     "dist:win": "npm run dist -- --win --x64",
     "dist:mac": "npm run dist -- --mac",
     "dist:linux": "npm run dist -- --linux --x64",
+    "dist:deb": "npm run dist -- --linux deb --x64",
     "dist:all": "npm run dist -- -wl --x64",
     "lint": "eslint --config .eslintrc.json --ignore-pattern app/assets/js/scripts/*.js . && eslint --config .eslintrc.scripts.json app/assets/js/scripts"
   },
   "engines": {
-    "node": "10.5.x"
+    "node": "10.8.x"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/WesterosCraftCode/ElectronLauncher.git"
   },
-  "author": "Daniel Scalzi",
-  "license": "AGPL-3.0",
+  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "license": "UNLICENSED",
+  "private": true,
   "bugs": {
     "url": "https://github.com/WesterosCraftCode/ElectronLauncher/issues"
   },
