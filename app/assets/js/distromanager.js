@@ -245,8 +245,18 @@ class Module {
         return this.artifactGroup
     }
 
+    /**
+     * @returns {string} The identifier without he version or extension.
+     */
     getVersionlessID(){
         return this.getGroup() + ':' + this.getID()
+    }
+
+    /**
+     * @returns {string} The identifier without the extension.
+     */
+    getExtensionlessID(){
+        return this.getIdentifier().split('@')[0]
     }
 
     /**

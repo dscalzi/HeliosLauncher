@@ -184,11 +184,11 @@ class ProcessBuilder {
         const ids = []
         if(type === 'forge'){
             for(let mod of mods){
-                ids.push(mod.getIdentifier())
+                ids.push(mod.getExtensionlessID())
             }
         } else {
             for(let mod of mods){
-                ids.push(mod.getIdentifier() + '@' + mod.getExtension())
+                ids.push(mod.getExtensionlessID() + '@' + mod.getExtension())
             }
         }
         modList.modRef = ids

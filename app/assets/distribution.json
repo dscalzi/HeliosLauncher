@@ -15,7 +15,7 @@
             "name": "WesterosCraft Production Server",
             "description": "Main WesterosCraft server. Connect to enter the Realm.",
             "icon": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-prod.png",
-            "version": "3.8.0",
+            "version": "3.9.0",
             "address": "mc.westeroscraft.com",
             "minecraftVersion": "1.11.2",
             "discord": {
@@ -219,22 +219,22 @@
                     ]
                 },
                 {
-                    "id": "com.westeroscraft:westerosblocks:3.1.0-alpha-2-135",
+                    "id": "com.westeroscraft:westerosblocks:3.1.0-alpha-2-138",
                     "name": "WesterosBlocks",
                     "type": "ForgeMod",
                     "artifact": {
-                        "size": 16854431,
-                         "MD5": "ed5b2349d1ce2496895a5e8839b77f74",
+                        "size": 17352677,
+                         "MD5": "b5409aa925a47f67158c8141e71f723f",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/mods/WesterosBlocks.jar"
                     }
                 },
                 {
-                    "id": "com.westeroscraft:westeroscraftrp:2018-05-05",
+                    "id": "com.westeroscraft:westeroscraftrp:2018-07-21",
                     "name": "WesterosCraft Resource Pack",
                     "type": "File",
                     "artifact": {
-                        "size": 46067606,
-                        "MD5": "0e08b0bcf44c9d266bfe067d865ffc1e",
+                        "size": 46942221,
+                        "MD5": "26e3e63a5778691eb3a9db11f449fdf1",
                         "path": "resourcepacks/WesterosCraft.zip",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/prod-1.11.2/resourcepacks/WesterosCraft.zip"
                     }
@@ -430,7 +430,7 @@
             "name": "WesterosCraft Test Server",
             "description": "Main testing server. Experimental changes are live here.",
             "icon": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-test.png",
-            "version": "3.8.1",
+            "version": "3.8.3",
             "address": "mc.westeroscraft.com:4444",
             "minecraftVersion": "1.11.2",
             "discord": {
@@ -634,12 +634,12 @@
                     ]
                 },
                 {
-                    "id": "com.westeroscraft:westerosblocks:3.1.0-alpha-2-136",
+                    "id": "com.westeroscraft:westerosblocks:3.1.0-alpha-2-138",
                     "name": "WesterosBlocks",
                     "type": "ForgeMod",
                     "artifact": {
-                        "size": 17352679,
-                         "MD5": "7a26b3f4f89bfe48f34c4fc95fc6437f",
+                        "size": 17352677,
+                         "MD5": "b5409aa925a47f67158c8141e71f723f",
                         "url": "http://mc.westeroscraft.com/WesterosCraftLauncher/test-1.11.2/mods/WesterosBlocks.jar"
                     }
                 },

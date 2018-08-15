@@ -30,9 +30,10 @@
 
 This is not an exhaustive list. Download and install the launcher to gauge all it can do!
 
-## Alpha Tests
+## Beta Tests
 
-The launcher is currently in alpha. It's very usable, however we are still putting in a lot of work. A lot can change, at this point. For more information and instructions on how to **officially** sign up, check out the [Alpha Thread](https://westeroscraft.com/threads/new-launcher-alpha-tests.1113/).
+The launcher is currently available for beta testing.
+For information on beta, and download instructions, please see the [Beta Thread](https://westeroscraft.com/threads/official-new-launcher-beta.1371/).
 
 ## Downloads
 
