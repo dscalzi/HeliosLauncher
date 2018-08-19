@@ -58,12 +58,13 @@ class ProcessBuilder {
         }
 
         child.stdout.setEncoding('utf8')
+        child.stderr.setEncoding('utf8')
 
         child.stdout.on('data', (data) => {
             console.log('%c[Minecraft]', 'color: #36b030; font-weight: bold', data)
         })
         child.stderr.on('data', (data) => {
-            console.log('%c[Minecraft]', 'color: #36b030; font-weight: bold', data)
+            console.log('%c[Minecraft]', 'color: #b03030; font-weight: bold', data)
         })
         child.on('close', (code, signal) => {
             console.log('%c[ProcessBuilder]', 'color: #003996; font-weight: bold', 'Exited with code', code)
