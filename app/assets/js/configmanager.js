@@ -26,7 +26,7 @@ function resolveMaxRAM(){
 }
 
 function resolveMinRAM(){
-    return exports.getAbsoluteMinRAM() + 'G'
+    return resolveMaxRAM()
 }
 
 /**

@@ -298,8 +298,8 @@ function asyncSystemScan(launchAfter = true){
                     $('#overlayContent').fadeOut(250, () => {
                         //$('#overlayDismiss').toggle(false)
                         setOverlayContent(
-                            'Don\'t Forget!<br>Java is Required',
-                            'A valid x64 installation of Java 8 is required to launch. Downloads can be found on <a href="http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html">Oracle\'s website</a>. Once installed, you will be able to connect to the server.<br><br>Please refer to our <a href="http://westeroscraft.wikia.com/wiki/Troubleshooting_Guide">Troubleshooting Guide</a> if you have any difficulty.',
+                            'Java is Required<br>to Launch',
+                            'A valid x64 installation of Java 8 is required to launch.<br><br>Please refer to our <a href="https://github.com/WesterosCraftCode/ElectronLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.',
                             'I Understand',
                             'Go Back'
                         )
