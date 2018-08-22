@@ -1,6 +1,6 @@
 {
   "name": "westeroscraftlauncher",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Custom modded launcher for Westeroscraft",
   "productName": "WesterosCraft Launcher",
   "main": "index.js",
@@ -49,7 +49,7 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^2.0.7",
+    "electron": "^2.0.8",
     "electron-builder": "^20.28.2",
     "eslint": "^5.4.0"
   },
