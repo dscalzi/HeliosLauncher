@@ -8,9 +8,12 @@ const path                  = require('path')
 const rimraf                = require('rimraf')
 const {URL}                 = require('url')
 
-const { Library }             = require('./assetguard')
+const { Library }           = require('./assetguard')
 const ConfigManager         = require('./configmanager')
 const DistroManager         = require('./distromanager')
+const LoggerUtil            = require('./loggerutil')
+
+const logger = LoggerUtil('%c[ProcessBuilder]', 'color: #003996; font-weight: bold')
 
 class ProcessBuilder {
 
@@ -37,7 +40,7 @@ class ProcessBuilder {
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         this.setupLiteLoader()
-        console.log('%c[ProcessBuilder]', 'color: #003996; font-weight: bold', 'Using liteloader:', this.usingLiteLoader)
+        logger.log('Using liteloader:', this.usingLiteLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
         this.constructModList('forge', modObj.fMods, true)
         if(this.usingLiteLoader){
@@ -46,7 +49,7 @@ class ProcessBuilder {
         const uberModArr = modObj.fMods.concat(modObj.lMods)
         const args = this.constructJVMArguments(uberModArr, tempNativePath)
 
-        console.log(args)
+        logger.log('Launch Arguments:', args)
 
         const child = child_process.spawn(ConfigManager.getJavaExecutable(), args, {
             cwd: this.gameDir,
@@ -60,19 +63,22 @@ class ProcessBuilder {
         child.stdout.setEncoding('utf8')
         child.stderr.setEncoding('utf8')
 
+        const loggerMCstdout = LoggerUtil('%c[Minecraft]', 'color: #36b030; font-weight: bold')
+        const loggerMCstderr = LoggerUtil('%c[Minecraft]', 'color: #b03030; font-weight: bold')
+
         child.stdout.on('data', (data) => {
-            console.log('%c[Minecraft]', 'color: #36b030; font-weight: bold', data)
+            loggerMCstdout.log(data)
         })
         child.stderr.on('data', (data) => {
-            console.log('%c[Minecraft]', 'color: #b03030; font-weight: bold', data)
+            loggerMCstderr.log(data)
         })
         child.on('close', (code, signal) => {
-            console.log('%c[ProcessBuilder]', 'color: #003996; font-weight: bold', 'Exited with code', code)
+            logger.log('Exited with code', code)
             rimraf(tempNativePath, (err) => {
                 if(err){
-                    console.warn('%c[ProcessBuilder]', 'color: #003996; font-weight: bold', 'Error while deleting temp dir', err)
+                    logger.warn('Error while deleting temp dir', err)
                 } else {
-                    console.log('%c[ProcessBuilder]', 'color: #003996; font-weight: bold', 'Temp dir deleted successfully.')
+                    logger.log('Temp dir deleted successfully.')
                 }
             })
         })
@@ -401,7 +407,7 @@ class ProcessBuilder {
                         if(!shouldExclude){
                             fs.writeFile(path.join(tempNativePath, fileName), zipEntries[i].getData(), (err) => {
                                 if(err){
-                                    console.error('Error while extracting native library:', err)
+                                    logger.error('Error while extracting native library:', err)
                                 }
                             })
                         }

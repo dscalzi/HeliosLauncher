@@ -21,6 +21,8 @@ const loginForm             = document.getElementById('loginForm')
 // Control variables.
 let lu = false, lp = false
 
+const loggerLogin = LoggerUtil('%c[Login]', 'color: #000668; font-weight: bold')
+
 
 /**
  * Show a login error.
@@ -256,7 +258,6 @@ loginButton.addEventListener('click', () => {
         loginButton.innerHTML = loginButton.innerHTML.replace('LOGGING IN', 'SUCCESS')
         $('.circle-loader').toggleClass('load-complete')
         $('.checkmark').toggle()
-        //console.log(value)
         setTimeout(() => {
             switchView(VIEWS.login, loginViewOnSuccess, 500, 500, () => {
                 // Temporary workaround
@@ -284,7 +285,7 @@ loginButton.addEventListener('click', () => {
             toggleOverlay(false)
         })
         toggleOverlay(true)
-        console.log(err)
+        loggerLogin.log('Error while logging in.', err)
     })
 
 })

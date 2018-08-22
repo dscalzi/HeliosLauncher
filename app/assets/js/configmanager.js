@@ -1,8 +1,10 @@
-const fs = require('fs')
+const fs     = require('fs')
 const mkpath = require('mkdirp')
-const os = require('os')
-const path = require('path')
+const os     = require('os')
+const path   = require('path')
 const uuidV4 = require('uuid/v4')
+
+const logger = require('./loggerutil')('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold')
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME)
 const dataPath = path.join(sysRoot, '.westeroscraft')
@@ -106,9 +108,9 @@ exports.load = function(){
             config = JSON.parse(fs.readFileSync(filePath, 'UTF-8'))
             doValidate = true
         } catch (err){
-            console.error(err)
-            console.log('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold', 'Configuration file contains malformed JSON or is corrupt.')
-            console.log('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold', 'Generating a new configuration file.')
+            logger.error(err)
+            logger.log('Configuration file contains malformed JSON or is corrupt.')
+            logger.log('Generating a new configuration file.')
             mkpath.sync(path.join(filePath, '..'))
             config = DEFAULT_CONFIG
             exports.save()
@@ -118,7 +120,7 @@ exports.load = function(){
             exports.save()
         }
     }
-    console.log('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold', 'Successfully Loaded')
+    logger.log('Successfully Loaded')
 }
 
 /**

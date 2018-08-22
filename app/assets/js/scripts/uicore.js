@@ -8,6 +8,11 @@
 const $                                      = require('jquery')
 const {ipcRenderer, remote, shell, webFrame} = require('electron')
 const isDev                                  = require('electron-is-dev')
+const LoggerUtil                             = require('./assets/js/loggerutil')
+
+const loggerUICore             = LoggerUtil('%c[UICore]', 'color: #000668; font-weight: bold')
+const loggerAutoUpdater        = LoggerUtil('%c[AutoUpdater]', 'color: #000668; font-weight: bold')
+const loggerAutoUpdaterSuccess = LoggerUtil('%c[AutoUpdater]', 'color: #209b07; font-weight: bold')
 
 // Disable eval function.
 // eslint-disable-next-line
@@ -33,15 +38,15 @@ if(!isDev){
     ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
         switch(arg){
             case 'checking-for-update':
-                console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Checking for update..')
+                loggerAutoUpdater.log('Checking for update..')
                 settingsUpdateButtonStatus('Checking for Updates..', true)
                 break
             case 'update-available':
-                console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'New update available', info.version)
+                loggerAutoUpdaterSuccess.log('New update available', info.version)
                 populateSettingsUpdateInformation(info)
                 break
             case 'update-downloaded':
-                console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Update ' + info.version + ' ready to be installed.')
+                loggerAutoUpdaterSuccess.log('Update ' + info.version + ' ready to be installed.')
                 settingsUpdateButtonStatus('Install Now', false, () => {
                     if(!isDev){
                         ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
@@ -50,7 +55,7 @@ if(!isDev){
                 showUpdateUI(info)
                 break
             case 'update-not-available':
-                console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'No new update found.')
+                loggerAutoUpdater.log('No new update found.')
                 settingsUpdateButtonStatus('Check for Updates')
                 break
             case 'ready':
@@ -62,17 +67,17 @@ if(!isDev){
             case 'realerror':
                 if(info != null && info.code != null){
                     if(info.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
-                        console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'No suitable releases found.')
+                        loggerAutoUpdater.log('No suitable releases found.')
                     } else if(info.code === 'ERR_XML_MISSED_ELEMENT'){
-                        console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'No releases found.')
+                        loggerAutoUpdater.log('No releases found.')
                     } else {
-                        console.error('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Error during update check..', info)
-                        console.debug('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Error Code:', info.code)
+                        loggerAutoUpdater.error('Error during update check..', info)
+                        loggerAutoUpdater.debug('Error Code:', info.code)
                     }
                 }
                 break
             default:
-                console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Unknown argument', arg)
+                loggerAutoUpdater.log('Unknown argument', arg)
                 break
         }
     })
@@ -115,12 +120,12 @@ function showUpdateUI(info){
 
 /* jQuery Example
 $(function(){
-    console.log('UICore Initialized');
+    loggerUICore.log('UICore Initialized');
 })*/
 
 document.addEventListener('readystatechange', function () {
     if (document.readyState === 'interactive'){
-        console.log('UICore Initializing..')
+        loggerUICore.log('UICore Initializing..')
 
         // Bind close button.
         Array.from(document.getElementsByClassName('fCb')).map((val) => {
@@ -183,7 +188,6 @@ document.addEventListener('readystatechange', function () {
  */
 $(document).on('click', 'a[href^="http"]', function(event) {
     event.preventDefault()
-    //console.log(os.homedir())
     shell.openExternal(this.href)
 })
 

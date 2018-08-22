@@ -1,12 +1,13 @@
 const {ipcRenderer} = require('electron')
-const os = require('os')
-const path = require('path')
-const rimraf = require('rimraf')
+const os            = require('os')
+const path          = require('path')
+const rimraf        = require('rimraf')
 
 const ConfigManager = require('./configmanager')
 const DistroManager = require('./distromanager')
+const logger        = require('./loggerutil')('%c[Preloader]', 'color: #a02d2a; font-weight: bold')
 
-console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Loading..')
+logger.log('Loading..')
 
 // Load ConfigManager
 ConfigManager.load()
@@ -16,7 +17,7 @@ function onDistroLoad(data){
         
         // Resolve the selected server if its value has yet to be set.
         if(ConfigManager.getSelectedServer() == null || data.getServer(ConfigManager.getSelectedServer()) == null){
-            console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Determining default selected server..')
+            logger.log('Determining default selected server..')
             ConfigManager.setSelectedServer(data.getMainServer().getID())
             ConfigManager.save()
         }
@@ -26,27 +27,27 @@ function onDistroLoad(data){
 
 // Ensure Distribution is downloaded and cached.
 DistroManager.pullRemote().then((data) => {
-    console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Loaded distribution index.')
+    logger.log('Loaded distribution index.')
 
     onDistroLoad(data)
 
 }).catch((err) => {
-    console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Failed to load distribution index.')
-    console.error(err)
+    logger.log('Failed to load distribution index.')
+    logger.error(err)
 
-    console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Attempting to load an older version of the distribution index.')
+    logger.log('Attempting to load an older version of the distribution index.')
     // Try getting a local copy, better than nothing.
     DistroManager.pullLocal().then((data) => {
-        console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Successfully loaded an older version of the distribution index.')
+        logger.log('Successfully loaded an older version of the distribution index.')
 
         onDistroLoad(data)
 
 
     }).catch((err) => {
 
-        console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Failed to load an older version of the distribution index.')
-        console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Application cannot run.')
-        console.error(err)
+        logger.log('Failed to load an older version of the distribution index.')
+        logger.log('Application cannot run.')
+        logger.error(err)
 
         onDistroLoad(null)
 
@@ -57,8 +58,8 @@ DistroManager.pullRemote().then((data) => {
 // Clean up temp dir incase previous launches ended unexpectedly. 
 rimraf(path.join(os.tmpdir(), ConfigManager.getTempNativeFolder()), (err) => {
     if(err){
-        console.warn('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Error while cleaning natives directory', err)
+        logger.warn('Error while cleaning natives directory', err)
     } else {
-        console.log('%c[Preloader]', 'color: #a02d2a; font-weight: bold', 'Cleaned natives directory.')
+        logger.log('Cleaned natives directory.')
     }
 })

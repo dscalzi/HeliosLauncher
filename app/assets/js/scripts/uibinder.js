@@ -57,7 +57,7 @@ function getCurrentView(){
 function showMainUI(data){
 
     if(!isDev){
-        console.log('%c[AutoUpdater]', 'color: #a02d2a; font-weight: bold', 'Initializing..')
+        loggerAutoUpdater.log('Initializing..')
         ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
     }
 
@@ -73,13 +73,7 @@ function showMainUI(data){
         // If this is enabled in a development environment we'll get ratelimited.
         // The relaunch frequency is usually far too high.
         if(!isDev && isLoggedIn){
-            validateSelectedAccount().then((v) => {
-                if(v){
-                    console.log('%c[AuthManager]', 'color: #209b07; font-weight: bold', 'Account access token validated.')
-                } else {
-                    console.log('%c[AuthManager]', 'color: #a02d2a; font-weight: bold', 'Account access token  is invalid.')
-                }
-            })
+            validateSelectedAccount()
         }
 
         if(ConfigManager.isFirstLaunch()){

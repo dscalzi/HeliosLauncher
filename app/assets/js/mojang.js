@@ -7,6 +7,7 @@
  */
 // Requirements
 const request = require('request')
+const logger  = require('./loggerutil')('%c[Mojang]', 'color: #a02d2a; font-weight: bold')
 
 // Constants
 const minecraftAgent = {
@@ -95,8 +96,8 @@ exports.status = function(){
             function(error, response, body){
 
                 if(error || response.statusCode !== 200){
-                    console.warn('Unable to retrieve Mojang status.')
-                    console.debug('Error while retrieving Mojang statuses:', error)
+                    logger.warn('Unable to retrieve Mojang status.')
+                    logger.debug('Error while retrieving Mojang statuses:', error)
                     //reject(error || response.statusCode)
                     for(let i=0; i<statuses.length; i++){
                         statuses[i].status = 'grey'
@@ -145,7 +146,7 @@ exports.authenticate = function(username, password, clientToken, requestUser = t
             },
             function(error, response, body){
                 if(error){
-                    console.error('Error during authentication.', error)
+                    logger.error('Error during authentication.', error)
                     reject(error)
                 } else {
                     if(response.statusCode === 200){
@@ -179,7 +180,7 @@ exports.validate = function(accessToken, clientToken){
             },
             function(error, response, body){
                 if(error){
-                    console.error('Error during validation.', error)
+                    logger.error('Error during validation.', error)
                     reject(error)
                 } else {
                     if(response.statusCode === 403){
@@ -214,7 +215,7 @@ exports.invalidate = function(accessToken, clientToken){
             },
             function(error, response, body){
                 if(error){
-                    console.error('Error during invalidation.', error)
+                    logger.error('Error during invalidation.', error)
                     reject(error)
                 } else {
                     if(response.statusCode === 204){
@@ -251,7 +252,7 @@ exports.refresh = function(accessToken, clientToken, requestUser = true){
             },
             function(error, response, body){
                 if(error){
-                    console.error('Error during refresh.', error)
+                    logger.error('Error during refresh.', error)
                     reject(error)
                 } else {
                     if(response.statusCode === 200){

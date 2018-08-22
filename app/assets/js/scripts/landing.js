@@ -21,6 +21,8 @@ const launch_details_text     = document.getElementById('launch_details_text')
 const server_selection_button = document.getElementById('server_selection_button')
 const user_text               = document.getElementById('user_text')
 
+const loggerLanding = LoggerUtil('%c[Landing]', 'color: #000668; font-weight: bold')
+
 /* Launch Progress Wrapper Functions */
 
 /**
@@ -83,7 +85,7 @@ function setLaunchEnabled(val){
 
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', function(e){
-    console.log('Launching game..')
+    loggerLanding.log('Launching game..')
     const jExe = ConfigManager.getJavaExecutable()
     if(jExe == null){
         asyncSystemScan()
@@ -94,7 +96,7 @@ document.getElementById('launch_button').addEventListener('click', function(e){
         setLaunchPercentage(0, 100)
 
         AssetGuard._validateJavaBinary(jExe).then((v) => {
-            console.log(v)
+            loggerLanding.log('Java version meta', v)
             if(v.valid){
                 dlAsync()
             } else {
@@ -152,7 +154,7 @@ server_selection_button.onclick = (e) => {
 
 // Update Mojang Status Color
 const refreshMojangStatuses = async function(){
-    console.log('Refreshing Mojang Statuses..')
+    loggerLanding.log('Refreshing Mojang Statuses..')
 
     let status = 'grey'
     let tooltipEssentialHTML = ''
@@ -200,8 +202,8 @@ const refreshMojangStatuses = async function(){
         }
 
     } catch (err) {
-        console.warn('Unable to refresh Mojang service status.')
-        console.debug(err)
+        loggerLanding.warn('Unable to refresh Mojang service status.')
+        loggerLanding.debug(err)
     }
     
     document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML
@@ -210,7 +212,7 @@ const refreshMojangStatuses = async function(){
 }
 
 const refreshServerStatus = async function(fade = false){
-    console.log('Refreshing Server Status')
+    loggerLanding.log('Refreshing Server Status')
     const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
 
     let pLabel = 'SERVER'
@@ -225,8 +227,8 @@ const refreshServerStatus = async function(fade = false){
         }
 
     } catch (err) {
-        console.warn('Unable to refresh server status, assuming offline.')
-        console.debug(err)
+        loggerLanding.warn('Unable to refresh server status, assuming offline.')
+        loggerLanding.debug(err)
     }
     if(fade){
         $('#server_status_wrapper').fadeOut(250, () => {
@@ -261,6 +263,8 @@ function asyncSystemScan(launchAfter = true){
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
+    const loggerSysAEx = LoggerUtil('%c[SysAEx]', 'color: #353232; font-weight: bold')
+
     // Fork a process to run validations.
     sysAEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
         ConfigManager.getCommonDirectory(),
@@ -269,12 +273,14 @@ function asyncSystemScan(launchAfter = true){
         stdio: 'pipe'
     })
     // Stdout
+    sysAEx.stdio[1].setEncoding('utf8')
     sysAEx.stdio[1].on('data', (data) => {
-        console.log('%c[SysAEx]', 'color: #353232; font-weight: bold', data.toString('utf-8'))
+        loggerSysAEx.log(data)
     })
     // Stderr
+    sysAEx.stdio[2].setEncoding('utf8')
     sysAEx.stdio[2].on('data', (data) => {
-        console.log('%c[SysAEx]', 'color: #353232; font-weight: bold', data.toString('utf-8'))
+        loggerSysAEx.log(data)
     })
     
     sysAEx.on('message', (m) => {
@@ -442,8 +448,7 @@ function dlAsync(login = true){
 
     if(login) {
         if(ConfigManager.getSelectedAccount() == null){
-            console.error('login first.')
-            //in devtools AuthManager.addAccount(username, pass)
+            loggerLanding.error('You must be logged into an account.')
             return
         }
     }
@@ -451,6 +456,9 @@ function dlAsync(login = true){
     setLaunchDetails('Please wait..')
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
+
+    const loggerAEx = LoggerUtil('%c[AEx]', 'color: #353232; font-weight: bold')
+    const loggerLaunchSuite = LoggerUtil('%c[LaunchSuite]', 'color: #000668; font-weight: bold')
 
     // Start AssetExec to run validations and downloads in a forked process.
     aEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
@@ -460,12 +468,14 @@ function dlAsync(login = true){
         stdio: 'pipe'
     })
     // Stdout
+    aEx.stdio[1].setEncoding('utf8')
     aEx.stdio[1].on('data', (data) => {
-        console.log('%c[AEx]', 'color: #353232; font-weight: bold', data.toString('utf-8'))
+        loggerAEx.log(data)
     })
     // Stderr
+    aEx.stdio[2].setEncoding('utf8')
     aEx.stdio[2].on('data', (data) => {
-        console.log('%c[AEx]', 'color: #353232; font-weight: bold', data.toString('utf-8'))
+        loggerAEx.log(data)
     })
 
     // Establish communications between the AssetExec and current process.
@@ -475,27 +485,27 @@ function dlAsync(login = true){
             switch(m.data){
                 case 'distribution':
                     setLaunchPercentage(20, 100)
-                    console.log('Validated distibution index.')
+                    loggerLaunchSuite.log('Validated distibution index.')
                     setLaunchDetails('Loading version information..')
                     break
                 case 'version':
                     setLaunchPercentage(40, 100)
-                    console.log('Version data loaded.')
+                    loggerLaunchSuite.log('Version data loaded.')
                     setLaunchDetails('Validating asset integrity..')
                     break
                 case 'assets':
                     setLaunchPercentage(60, 100)
-                    console.log('Asset Validation Complete')
+                    loggerLaunchSuite.log('Asset Validation Complete')
                     setLaunchDetails('Validating library integrity..')
                     break
                 case 'libraries':
                     setLaunchPercentage(80, 100)
-                    console.log('Library validation complete.')
+                    loggerLaunchSuite.log('Library validation complete.')
                     setLaunchDetails('Validating miscellaneous file integrity..')
                     break
                 case 'files':
                     setLaunchPercentage(100, 100)
-                    console.log('File validation complete.')
+                    loggerLaunchSuite.log('File validation complete.')
                     setLaunchDetails('Downloading files..')
                     break
             }
@@ -544,7 +554,7 @@ function dlAsync(login = true){
         } else if(m.context === 'error'){
             switch(m.data){
                 case 'download':
-                    console.error(m.error)
+                    loggerLaunchSuite.error('Error while downloading:', m.error)
                     
                     if(m.error.code === 'ENOENT'){
                         setOverlayContent(
@@ -574,7 +584,7 @@ function dlAsync(login = true){
 
             // If these properties are not defined it's likely an error.
             if(m.result.forgeData == null || m.result.versionData == null){
-                console.error(m.result)
+                loggerLaunchSuite.error('Error during validation:', m.result)
             }
 
             forgeData = m.result.forgeData
@@ -582,7 +592,7 @@ function dlAsync(login = true){
 
             if(login) {
                 const authUser = ConfigManager.getSelectedAccount()
-                console.log('authu', authUser)
+                loggerLaunchSuite.log(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
                 let pb = new ProcessBuilder(serv, versionData, forgeData, authUser)
                 setLaunchDetails('Launching game..')
 
@@ -615,7 +625,7 @@ function dlAsync(login = true){
                 const gameErrorListener = function(data){
                     data = data.trim()
                     if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
-                        console.error('Game launch failed, LaunchWrapper was not downloaded properly.')
+                        loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
                         setOverlayContent(
                             'Error During Launch',
                             'The main file, LaunchWrapper, failed to download properly. As a result, the game cannot launch.<br><br>To fix this issue, temporarily turn off your antivirus software and launch the game again.<br><br>If you have time, please <a href="https://github.com/WesterosCraftCode/ElectronLauncher/issues">submit an issue</a> and let us know what antivirus software you use. We\'ll contact them and try to straighten things out.',
@@ -643,7 +653,7 @@ function dlAsync(login = true){
                         DiscordWrapper.initRPC(distro.discord, serv.discord)
                         hasRPC = true
                         proc.on('close', (code, signal) => {
-                            console.log('Shutting down Discord Rich Presence..')
+                            loggerLaunchSuite.log('Shutting down Discord Rich Presence..')
                             DiscordWrapper.shutdownRPC()
                             hasRPC = false
                             proc = null
@@ -652,7 +662,7 @@ function dlAsync(login = true){
 
                 } catch(err) {
 
-                    console.error('Error during launch', err)
+                    loggerLaunchSuite.error('Error during launch', err)
                     setOverlayContent(
                         'Error During Launch',
                         'Please check the console for more details.',
@@ -681,13 +691,13 @@ function dlAsync(login = true){
         serv = data.getServer(ConfigManager.getSelectedServer())
         aEx.send({task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()]})
     }, (err) => {
-        console.log(err)
+        loggerLaunchSuite.log('Error while fetching a fresh copy of the distribution index.', err)
         refreshDistributionIndex(false, (data) => {
             onDistroRefresh(data)
             serv = data.getServer(ConfigManager.getSelectedServer())
             aEx.send({task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()]})
         }, (err) => {
-            console.error('Unable to refresh distribution index.', err)
+            loggerLaunchSuite.error('Unable to refresh distribution index.', err)
             if(DistroManager.getDistribution() == null){
                 setOverlayContent(
                     'Fatal Error',

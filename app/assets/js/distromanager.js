@@ -3,6 +3,7 @@ const path = require('path')
 const request = require('request')
 
 const ConfigManager = require('./configmanager')
+const logger        = require('./loggerutil')('%c[DistroManager]', 'color: #a02d2a; font-weight: bold')
 
 /**
  * Represents the download information
@@ -168,7 +169,7 @@ class Module {
 
         } catch (err) {
             // Improper identifier
-            console.error('Improper ID for module', this.identifier, err)
+            logger.error('Improper ID for module', this.identifier, err)
         }
     }
 
@@ -567,10 +568,10 @@ exports.pullLocal = function(){
 
 exports.setDevMode = function(value){
     if(value){
-        console.log('%c[DistroManager]', 'color: #a02d2a; font-weight: bold', 'Developer mode enabled.')
-        console.log('%c[DistroManager]', 'color: #a02d2a; font-weight: bold', 'If you don\'t know what that means, revert immediately.')
+        logger.log('Developer mode enabled.')
+        logger.log('If you don\'t know what that means, revert immediately.')
     } else {
-        console.log('%c[DistroManager]', 'color: #a02d2a; font-weight: bold', 'Developer mode disabled.')
+        logger.log('Developer mode disabled.')
     }
     DEV_MODE = value
 }
@@ -585,10 +586,3 @@ exports.isDevMode = function(){
 exports.getDistribution = function(){
     return data
 }
-
-/*async function debug(){
-    const d = await exports.pullRemote()
-    console.log(d)
-}
-debug()*/
-//console.log(DistroIndex.fromJSON(JSON.parse(require('fs').readFileSync('../distribution.json', 'utf-8'))))
