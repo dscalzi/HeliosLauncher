@@ -13,6 +13,51 @@ function isOverlayVisible(){
     return document.getElementById('main').hasAttribute('overlay')
 }
 
+let overlayHandlerContent
+
+/**
+ * Overlay keydown handler for a non-dismissable overlay.
+ * 
+ * @param {KeyboardEvent} e The keydown event.
+ */
+function overlayKeyHandler (e){
+    if(e.key === 'Enter' || e.key === 'Escape'){
+        document.getElementById(overlayHandlerContent).getElementsByClassName('overlayKeybindEnter')[0].click()
+    }
+}
+/**
+ * Overlay keydown handler for a dismissable overlay.
+ * 
+ * @param {KeyboardEvent} e The keydown event.
+ */
+function overlayKeyDismissableHandler (e){
+    if(e.key === 'Enter'){
+        document.getElementById(overlayHandlerContent).getElementsByClassName('overlayKeybindEnter')[0].click()
+    } else if(e.key === 'Escape'){
+        document.getElementById(overlayHandlerContent).getElementsByClassName('overlayKeybindEsc')[0].click()
+    }
+}
+
+/**
+ * Bind overlay keydown listeners for escape and exit.
+ * 
+ * @param {boolean} state Whether or not to add new event listeners.
+ * @param {string} content The overlay content which will be shown.
+ * @param {boolean} dismissable Whether or not the overlay is dismissable 
+ */
+function bindOverlayKeys(state, content, dismissable){
+    overlayHandlerContent = content
+    document.removeEventListener('keydown', overlayKeyHandler)
+    document.removeEventListener('keydown', overlayKeyDismissableHandler)
+    if(state){
+        if(dismissable){
+            document.addEventListener('keydown', overlayKeyDismissableHandler)
+        } else {
+            document.addEventListener('keydown', overlayKeyHandler)
+        }
+    }
+}
+
 /**
  * Toggle the visibility of the overlay.
  * 
@@ -28,6 +73,7 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
         content = dismissable
         dismissable = false
     }
+    bindOverlayKeys(toggleState, content, dismissable)
     if(toggleState){
         document.getElementById('main').setAttribute('overlay', true)
         // Make things untabbable.
@@ -73,7 +119,7 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
 
 function toggleServerSelection(toggleState){
     prepareServerSelectionList()
-    toggleOverlay(toggleState, 'serverSelectContent')
+    toggleOverlay(toggleState, true, 'serverSelectContent')
 }
 
 /**
@@ -124,24 +170,6 @@ function setDismissHandler(handler){
 }
 
 /* Server Select View */
-
-document.addEventListener('keydown', (e) => {
-    if(document.getElementById('serverSelectContent').style.display !== 'none'){
-        console.debug('ServSelLi Keydown Called:', document.getElementById('serverSelectContent').style.display)
-        if(e.key === 'Escape'){
-            document.getElementById('serverSelectCancel').click()
-        } else if(e.key === 'Enter'){
-            document.getElementById('serverSelectConfirm').click()
-        }
-    } else if(document.getElementById('accountSelectContent').style.display !== 'none'){
-        console.debug('ServSelLi Keydown Called:', document.getElementById('accountSelectContent').style.display)
-        if(e.key === 'Escape'){
-            document.getElementById('accountSelectCancel').click()
-        } else if(e.key === 'Enter'){
-            document.getElementById('accountSelectConfirm').click()
-        }
-    }
-})
 
 document.getElementById('serverSelectConfirm').addEventListener('click', () => {
     const listings = document.getElementsByClassName('serverListing')

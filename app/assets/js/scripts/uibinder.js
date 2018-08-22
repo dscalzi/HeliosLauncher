@@ -336,13 +336,23 @@ async function validateSelectedAccount(){
                 document.getElementById('loginUsername').value = selectedAcc.username
                 validateEmail(selectedAcc.username)
                 loginViewOnSuccess = getCurrentView()
-                switchView(getCurrentView(), VIEWS.login)
+                loginViewOnCancel = getCurrentView()
+                if(accLen > 0){
+                    loginViewCancelHandler = () => {
+                        ConfigManager.addAuthAccount(selectedAcc.uuid, selectedAcc.accessToken, selectedAcc.username, selectedAcc.displayName)
+                        ConfigManager.save()
+                        validateSelectedAccount()
+                    }
+                    loginCancelEnabled(true)
+                }
                 toggleOverlay(false)
+                switchView(getCurrentView(), VIEWS.login)
             })
             setDismissHandler(() => {
                 if(accLen > 1){
                     prepareAccountSelectionList()
                     $('#overlayContent').fadeOut(250, () => {
+                        bindOverlayKeys(true, 'accountSelectContent', true)
                         $('#accountSelectContent').fadeIn(250)
                     })
                 } else {

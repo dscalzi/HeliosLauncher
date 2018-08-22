@@ -145,10 +145,10 @@ function updateSelectedServer(serverName){
 }
 // Real text is set in uibinder.js on distributionIndexDone.
 updateSelectedServer('Loading..')
-server_selection_button.addEventListener('click', (e) => {
+server_selection_button.onclick = (e) => {
     e.target.blur()
     toggleServerSelection(true)
-})
+}
 
 // Update Mojang Status Color
 const refreshMojangStatuses = async function(){

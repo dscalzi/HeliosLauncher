@@ -66,7 +66,6 @@ exports.removeAccount = async function(uuid){
 exports.validateSelected = async function(){
     const current = ConfigManager.getSelectedAccount()
     const isValid = await Mojang.validate(current.accessToken, ConfigManager.getClientToken())
-    console.log(isValid)
     if(!isValid){
         try {
             const session = await Mojang.refresh(current.accessToken, ConfigManager.getClientToken())

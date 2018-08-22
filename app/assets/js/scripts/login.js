@@ -220,6 +220,7 @@ function resolveError(err){
 
 let loginViewOnSuccess = VIEWS.landing
 let loginViewOnCancel = VIEWS.settings
+let loginViewCancelHandler
 
 function loginCancelEnabled(val){
     if(val){
@@ -232,6 +233,10 @@ function loginCancelEnabled(val){
 loginCancelButton.onclick = (e) => {
     switchView(getCurrentView(), loginViewOnCancel, 500, 500, () => {
         loginCancelEnabled(false)
+        if(loginViewCancelHandler != null){
+            loginViewCancelHandler()
+            loginViewCancelHandler = null
+        }
     })
 }
 
@@ -260,6 +265,7 @@ loginButton.addEventListener('click', () => {
                 }
                 loginViewOnSuccess = VIEWS.landing // Reset this for good measure.
                 loginCancelEnabled(false) // Reset this for good measure.
+                loginViewCancelHandler = null // Reset this for good measure.
                 loginUsername.value = ''
                 loginPassword.value = ''
                 $('.circle-loader').toggleClass('load-complete')
