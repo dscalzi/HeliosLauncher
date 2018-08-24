@@ -252,10 +252,10 @@ class ProcessBuilder {
                 let val = null
                 switch(identifier){
                     case 'auth_player_name':
-                        val = this.authUser.displayName
+                        val = this.authUser.displayName.trim()
                         break
                     case 'version_name':
-                    //val = versionData.id
+                        //val = versionData.id
                         val = this.server.getID()
                         break
                     case 'game_directory':

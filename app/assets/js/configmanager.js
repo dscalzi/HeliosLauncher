@@ -318,9 +318,9 @@ exports.addAuthAccount = function(uuid, accessToken, username, displayName){
     config.selectedAccount = uuid
     config.authenticationDatabase[uuid] = {
         accessToken,
-        username,
+        username: username.trim(),
         uuid,
-        displayName
+        displayName: displayName.trim()
     }
     return config.authenticationDatabase[uuid]
 }
