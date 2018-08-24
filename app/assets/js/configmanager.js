@@ -68,7 +68,7 @@ const DEFAULT_CONFIG = {
     },
     commonDirectory: path.join(dataPath, 'common'),
     instanceDirectory: path.join(dataPath, 'instances'),
-    clientToken: uuidV4().replace(/-/g, ''),
+    clientToken: uuidV4(),
     selectedServer: null, // Resolved
     selectedAccount: null,
     authenticationDatabase: {},
@@ -315,6 +315,13 @@ exports.updateAuthAccount = function(uuid, accessToken){
  * @returns {Object} The authenticated account object created by this action.
  */
 exports.addAuthAccount = function(uuid, accessToken, username, displayName){
+
+    if(!/.{8}-.{4}-.{4}-.{4}-.{12}/.test(uuid)){
+        const val = Array.from(uuid.match(/(.{8})(.{4})(.{4})(.{4})(.{12})/))
+        val.shift()
+        uuid = val.join('-')
+    }
+
     config.selectedAccount = uuid
     config.authenticationDatabase[uuid] = {
         accessToken,
