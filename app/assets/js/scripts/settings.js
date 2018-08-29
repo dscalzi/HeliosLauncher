@@ -294,8 +294,8 @@ function bindAuthAccountLogOut(){
                 )
                 setOverlayHandler(() => {
                     processLogOut(val, isLastAccount)
-                    switchView(getCurrentView(), VIEWS.login)
                     toggleOverlay(false)
+                    switchView(getCurrentView(), VIEWS.login)
                 })
                 setDismissHandler(() => {
                     toggleOverlay(false)
