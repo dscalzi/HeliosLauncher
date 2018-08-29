@@ -268,7 +268,7 @@ class ProcessBuilder {
                         val = this.versionData.assets
                         break
                     case 'auth_uuid':
-                        val = this.authUser.uuid
+                        val = this.authUser.uuid.trim()
                         break
                     case 'auth_access_token':
                         val = this.authUser.accessToken

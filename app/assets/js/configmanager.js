@@ -315,18 +315,11 @@ exports.updateAuthAccount = function(uuid, accessToken){
  * @returns {Object} The authenticated account object created by this action.
  */
 exports.addAuthAccount = function(uuid, accessToken, username, displayName){
-
-    if(!/.{8}-.{4}-.{4}-.{4}-.{12}/.test(uuid)){
-        const val = Array.from(uuid.match(/(.{8})(.{4})(.{4})(.{4})(.{12})/))
-        val.shift()
-        uuid = val.join('-')
-    }
-
     config.selectedAccount = uuid
     config.authenticationDatabase[uuid] = {
         accessToken,
         username: username.trim(),
-        uuid,
+        uuid: uuid.trim(),
         displayName: displayName.trim()
     }
     return config.authenticationDatabase[uuid]
