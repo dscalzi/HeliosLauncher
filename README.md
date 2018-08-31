@@ -30,24 +30,22 @@
 
 This is not an exhaustive list. Download and install the launcher to gauge all it can do!
 
-## Beta Tests
-
-The launcher is currently available for beta testing.
-For information on beta, and download instructions, please see the [Beta Thread](https://westeroscraft.com/threads/official-new-launcher-beta.1371/).
+#### Need Help? [Check the wiki.][wiki]
 
 ## Downloads
 
-Latest Release
+You can download from [GitHub Releases](https://github.com/WesterosCraftCode/ElectronLauncher/releases) or [WesterosCraft.com/launcher](https://westeroscraft.com/launcher)
+
+#### Latest Release
 
 [![](https://img.shields.io/github/release/WesterosCraftCode/ElectronLauncher.svg?style=flat-square)](https://github.com/WesterosCraftCode/ElectronLauncher/releases/latest)
 
-Latest Prerelease
-
+#### Latest Pre-Release
 [![](https://img.shields.io/github/release/WesterosCraftCode/ElectronLauncher/all.svg?style=flat-square)](https://github.com/WesterosCraftCode/ElectronLauncher/releases)
 
 **Supported Platforms**
 
-Go to the [Releases](https://github.com/WesterosCraftCode/ElectronLauncher/releases) tab and download the installer for the latest release.
+If you download from the [Releases](https://github.com/WesterosCraftCode/ElectronLauncher/releases) tab, select the installer for your system.
 
 | Platform | File |
 | -------- | ---- |
@@ -179,6 +177,7 @@ Note that you **cannot** open the DevTools window while using this debug configu
 
 * [WesterosCraft][westeroscraft]
 * [Support Forum][supportforum]
+* [Wiki][wiki]
 
 The best way to contact the developers is on Discord.
 
@@ -197,3 +196,4 @@ The best way to contact the developers is on Discord.
 [westeroscraft]: https://westeroscraft.com/ 'WesterosCraft.com'
 [supportforum]: https://westeroscraft.com/forum/support.40/ 'Support Forum'
 [discord]: https://discord.gg/hqdjs3m 'Discord'
+[wiki]: https://github.com/WesterosCraftCode/ElectronLauncher/wiki 'wiki'

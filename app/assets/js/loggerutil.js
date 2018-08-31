@@ -13,6 +13,10 @@ class LoggerUtil {
         console.info.apply(null, [this.prefix, this.style, ...arguments])
     }
 
+    warn(){
+        console.warn.apply(null, [this.prefix, this.style, ...arguments])
+    }
+
     debug(){
         console.debug.apply(null, [this.prefix, this.style, ...arguments])
     }
