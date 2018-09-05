@@ -1028,6 +1028,12 @@ function displayArticle(articleObject, index){
     newsArticleComments.innerHTML = articleObject.comments
     newsArticleComments.href = articleObject.commentsLink
     newsArticleContentScrollable.innerHTML = '<div id="newsArticleContentWrapper"><div class="newsArticleSpacerTop"></div>' + articleObject.content + '<div class="newsArticleSpacerBot"></div></div>'
+    Array.from(newsArticleContentScrollable.getElementsByClassName('bbCodeSpoilerButton')).forEach(v => {
+        v.onclick = () => {
+            const text = v.parentElement.getElementsByClassName('bbCodeSpoilerText')[0]
+            text.style.display = text.style.display === 'block' ? 'none' : 'block'
+        }
+    })
     newsNavigationStatus.innerHTML = index + ' of ' + newsArr.length
     newsContent.setAttribute('article', index-1)
 }
@@ -1061,10 +1067,10 @@ function loadNews(){
 
                         // Fix relative links in content.
                         let content = el.find('content\\:encoded').text()
-                        let regex = /src="(?!http:\/\/|https:\/\/)(.+)"/g
+                        let regex = /src="(?!http:\/\/|https:\/\/)(.+?)"/g
                         let matches
                         while((matches = regex.exec(content))){
-                            content = content.replace(matches[1], newsHost + matches[1])
+                            content = content.replace(`"${matches[1]}"`, `"${newsHost + matches[1]}"`)
                         }
 
                         let link   = el.find('link').text()
