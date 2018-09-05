@@ -17,7 +17,7 @@
     "lint": "eslint --config .eslintrc.json --ignore-pattern app/assets/js/scripts/*.js . && eslint --config .eslintrc.scripts.json app/assets/js/scripts"
   },
   "engines": {
-    "node": "10.8.x"
+    "node": "10.9.x"
   },
   "repository": {
     "type": "git",
