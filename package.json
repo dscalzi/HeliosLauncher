@@ -17,7 +17,7 @@
     "lint": "eslint --config .eslintrc.json --ignore-pattern app/assets/js/scripts/*.js . && eslint --config .eslintrc.scripts.json app/assets/js/scripts"
   },
   "engines": {
-    "node": "10.9.x"
+    "node": "10.x.x"
   },
   "repository": {
     "type": "git",
@@ -49,9 +49,9 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^2.0.8",
-    "electron-builder": "^20.28.3",
-    "eslint": "^5.5.0"
+    "electron": "^2.0.9",
+    "electron-builder": "^20.28.4",
+    "eslint": "^5.6.0"
   },
   "build": {
     "appId": "westeroscraftlauncher",
