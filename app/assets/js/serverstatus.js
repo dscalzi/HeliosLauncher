@@ -19,7 +19,7 @@ exports.getStatus = function(address, port = 25565){
 
     return new Promise((resolve, reject) => {
         const socket = net.connect(port, address, () => {
-            let buff = new Buffer([0xFE, 0x01])
+            let buff = Buffer.from([0xFE, 0x01])
             socket.write(buff)
         })
 

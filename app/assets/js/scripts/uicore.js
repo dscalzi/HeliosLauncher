@@ -14,6 +14,10 @@ const loggerUICore             = LoggerUtil('%c[UICore]', 'color: #000668; font-
 const loggerAutoUpdater        = LoggerUtil('%c[AutoUpdater]', 'color: #000668; font-weight: bold')
 const loggerAutoUpdaterSuccess = LoggerUtil('%c[AutoUpdater]', 'color: #209b07; font-weight: bold')
 
+// Log deprecation and process warnings.
+process.traceProcessWarnings = true
+process.traceDeprecation = true
+
 // Disable eval function.
 // eslint-disable-next-line
 window.eval = global.eval = function () {

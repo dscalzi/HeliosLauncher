@@ -1096,9 +1096,9 @@ function loadNews(){
                 },
                 timeout: 2500
             }).catch(err => {
-            resolve({
-                articles: null
+                resolve({
+                    articles: null
+                })
             })
-        })
     })
 }
