@@ -21,7 +21,6 @@ const child_process = require('child_process')
 const crypto        = require('crypto')
 const EventEmitter  = require('events')
 const fs            = require('fs')
-const isDev         = require('electron-is-dev')
 const mkpath        = require('mkdirp')
 const path          = require('path')
 const Registry      = require('winreg')
@@ -31,6 +30,7 @@ const zlib          = require('zlib')
 
 const ConfigManager = require('./configmanager')
 const DistroManager = require('./distromanager')
+const isDev         = require('./isdev')
 
 // Constants
 const PLATFORM_MAP = {

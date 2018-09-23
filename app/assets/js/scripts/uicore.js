@@ -7,7 +7,7 @@
 // Requirements
 const $                                      = require('jquery')
 const {ipcRenderer, remote, shell, webFrame} = require('electron')
-const isDev                                  = require('electron-is-dev')
+const isDev                                  = require('./assets/js/isdev')
 const LoggerUtil                             = require('./assets/js/loggerutil')
 
 const loggerUICore             = LoggerUtil('%c[UICore]', 'color: #000668; font-weight: bold')
