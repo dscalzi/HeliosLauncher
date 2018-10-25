@@ -1,6 +1,6 @@
 // Requirements
 const {app, BrowserWindow, ipcMain} = require('electron')
-const autoUpdater                   = require('electron-updater-bin').autoUpdater
+const autoUpdater                   = require('electron-updater').autoUpdater
 const ejse                          = require('ejs-electron')
 const fs                            = require('fs')
 const isDev                         = require('./app/assets/js/isdev')
