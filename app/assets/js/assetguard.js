@@ -1005,12 +1005,11 @@ class AssetGuard extends EventEmitter {
      */
     loadVersionData(version, force = false){
         const self = this
-        return new Promise((resolve, reject) => {
-            const name = version + '.json'
-            const url = 'https://s3.amazonaws.com/Minecraft.Download/versions/' + version + '/' + name
+        return new Promise(async (resolve, reject) => {
             const versionPath = path.join(self.commonPath, 'versions', version)
-            const versionFile = path.join(versionPath, name)
+            const versionFile = path.join(versionPath, version + '.json')
             if(!fs.existsSync(versionFile) || force){
+                const url = await self._getVersionDataUrl(version)
                 //This download will never be tracked as it's essential and trivial.
                 console.log('Preparing download of ' + version + ' assets.')
                 mkpath.sync(versionPath)
@@ -1021,6 +1020,34 @@ class AssetGuard extends EventEmitter {
             } else {
                 resolve(JSON.parse(fs.readFileSync(versionFile)))
             }
+        })
+    }
+
+    /**
+     * Parses Mojang's version manifest and retrieves the url of the version
+     * data index.
+     * 
+     * @param {string} version The version to lookup.
+     * @returns {Promise.<string>} Promise which resolves to the url of the version data index.
+     * If the version could not be found, resolves to null.
+     */
+    _getVersionDataUrl(version){
+        return new Promise((resolve, reject) => {
+            request('https://launchermeta.mojang.com/mc/game/version_manifest.json', (error, resp, body) => {
+                if(error){
+                    reject(error)
+                } else {
+                    const manifest = JSON.parse(body)
+
+                    for(let v of manifest.versions){
+                        if(v.id === version){
+                            resolve(v.url)
+                        }
+                    }
+
+                    resolve(null)
+                }
+            })
         })
     }
 
