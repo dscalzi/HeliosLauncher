@@ -32,6 +32,8 @@ This is not an exhaustive list. Download and install the launcher to gauge all i
 
 #### Need Help? [Check the wiki.][wiki]
 
+#### Like the project? Leave a ⭐ star on the repository!
+
 ## Downloads
 
 You can download from [GitHub Releases](https://github.com/WesterosCraftCode/ElectronLauncher/releases) or [WesterosCraft.com/launcher](https://westeroscraft.com/launcher)
@@ -170,6 +172,19 @@ This allows you to debug Electron's [main process][mainprocess]. You can debug s
 This allows you to debug Electron's [renderer process][rendererprocess]. This requires you to install the [Debugger for Chrome][chromedebugger] extension.
 
 Note that you **cannot** open the DevTools window while using this debug configuration. Chromium only allows one debugger, opening another will crash the program.
+
+---
+
+### Note on Third-Party Usage
+
+You may use this software in your own project so long as the following conditions are met.
+
+* Credit is expressly given to the original authors (Daniel Scalzi, WesterosCraft).
+  * Include a link to the original source on the launcher's About page.
+  * Credit the authors and provide a link to the original source in any publications or download pages.
+* The source code remain **public** as a fork of this repository.
+
+We reserve the right to update these conditions at any time, please check back periodically.
 
 ---
 
