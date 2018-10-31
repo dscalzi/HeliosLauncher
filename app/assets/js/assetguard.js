@@ -1282,14 +1282,6 @@ class AssetGuard extends EventEmitter {
         const self = this
         return new Promise((resolve, reject) => {
             self.forge = self._parseDistroModules(server.getModules(), server.getMinecraftVersion(), server.getID())
-            // Correct our workaround here.
-            let decompressqueue = self.forge.callback
-            self.extractQueue = decompressqueue
-            self.forge.callback = (asset, self) => {
-                if(asset.type === DistroManager.Types.ForgeHosted || asset.type === DistroManager.Types.Forge){
-                    AssetGuard._finalizeForgeAsset(asset, self.commonPath).catch(err => console.log(err))
-                }
-            }
             resolve(server)
         })
     }
@@ -1297,29 +1289,25 @@ class AssetGuard extends EventEmitter {
     _parseDistroModules(modules, version, servid){
         let alist = []
         let asize = 0
-        let decompressqueue = []
         for(let ob of modules){
-            let obType = ob.getType
             let obArtifact = ob.getArtifact()
             let obPath = obArtifact.getPath()
-            let artifact = new DistroModule(ob.getIdentifier(), obArtifact.getHash(), obArtifact.getSize(), obArtifact.getURL(), obPath, obType)
+            let artifact = new DistroModule(ob.getIdentifier(), obArtifact.getHash(), obArtifact.getSize(), obArtifact.getURL(), obPath, ob.getType())
             const validationPath = obPath.toLowerCase().endsWith('.pack.xz') ? obPath.substring(0, obPath.toLowerCase().lastIndexOf('.pack.xz')) : obPath
             if(!AssetGuard._validateLocal(validationPath, 'MD5', artifact.hash)){
                 asize += artifact.size*1
                 alist.push(artifact)
-                if(validationPath !== obPath) decompressqueue.push(obPath)
+                if(validationPath !== obPath) this.extractQueue.push(obPath)
             }
             //Recursively process the submodules then combine the results.
             if(ob.getSubModules() != null){
                 let dltrack = this._parseDistroModules(ob.getSubModules(), version, servid)
                 asize += dltrack.dlsize*1
                 alist = alist.concat(dltrack.dlqueue)
-                decompressqueue = decompressqueue.concat(dltrack.callback)
             }
         }
 
-        //Since we have no callback at this point, we use this value to store the decompressqueue.
-        return new DLTracker(alist, asize, decompressqueue)
+        return new DLTracker(alist, asize)
     }
 
     /**

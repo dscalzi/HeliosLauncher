@@ -16,7 +16,7 @@ exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting 
         largeImageText: servSettings.largeImageText,
         smallImageKey: genSettings.smallImageKey,
         smallImageText: genSettings.smallImageText,
-        startTimestamp: new Date().getTime() / 1000,
+        startTimestamp: new Date().getTime(),
         instance: false
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "westeroscraftlauncher",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Custom modded launcher for Westeroscraft",
   "productName": "WesterosCraft Launcher",
   "main": "index.js",
@@ -33,10 +33,10 @@
   "dependencies": {
     "adm-zip": "^0.4.11",
     "async": "^2.6.1",
-    "discord-rpc": "^3.0.1",
+    "discord-rpc": "discordjs/RPC",
     "ejs": "^2.6.1",
     "ejs-electron": "^2.0.3",
-    "electron-updater": "^3.1.5",
+    "electron-updater": "^3.1.6",
     "github-syntax-dark": "^0.5.0",
     "jquery": "^3.3.1",
     "mkdirp": "^0.5.1",
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "electron": "^3.0.6",
-    "electron-builder": "^20.29.1",
+    "electron-builder": "^20.30.0",
     "eslint": "^5.8.0"
   },
   "build": {
