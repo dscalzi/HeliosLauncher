@@ -1,6 +1,6 @@
 {
   "name": "westeroscraftlauncher",
-  "version": "1.0.4",
+  "version": "1.0.5-pre.1",
   "description": "Custom modded launcher for Westeroscraft",
   "productName": "WesterosCraft Launcher",
   "main": "index.js",
@@ -48,8 +48,8 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^3.0.6",
-    "electron-builder": "^20.30.0",
+    "electron": "^3.0.7",
+    "electron-builder": "^20.31.0",
     "eslint": "^5.8.0"
   },
   "build": {
@@ -78,7 +78,7 @@
       "uninstallerIcon": "build/icon.ico"
     },
     "mac": {
-      "target": "dmg",
+      "target": "default",
       "category": "public.app-category.games",
       "icon": "build/icon.icns",
       "type": "distribution"
