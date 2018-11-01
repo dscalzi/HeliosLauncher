@@ -33,7 +33,10 @@ function initAutoUpdater(event, data) {
     })
     autoUpdater.on('checking-for-update', () => {
         event.sender.send('autoUpdateNotification', 'checking-for-update')
-    })  
+    })
+    autoUpdater.on('error', () => {
+        event.sender.send('autoUpdateNotification', 'realerror', err)
+    }) 
 }
 
 // Open channel to listen for update actions.
