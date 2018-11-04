@@ -133,16 +133,21 @@ exports.status = function(){
  */
 exports.authenticate = function(username, password, clientToken, requestUser = true, agent = minecraftAgent){
     return new Promise((resolve, reject) => {
+
+        const body = {
+            agent,
+            username,
+            password,
+            requestUser
+        }
+        if(clientToken != null){
+            body.clientToken = clientToken
+        }
+
         request.post(authpath + '/authenticate',
             {
                 json: true,
-                body: {
-                    agent,
-                    username,
-                    password,
-                    clientToken,
-                    requestUser
-                }
+                body
             },
             function(error, response, body){
                 if(error){

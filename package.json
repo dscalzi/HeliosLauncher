@@ -44,12 +44,11 @@
     "rimraf": "^2.6.2",
     "semver": "^5.6.0",
     "tar-fs": "^1.16.3",
-    "uuid": "^3.3.2",
     "winreg": "^1.2.4"
   },
   "devDependencies": {
     "electron": "^3.0.7",
-    "electron-builder": "^20.31.1",
+    "electron-builder": "^20.31.2",
     "eslint": "^5.8.0"
   },
   "build": {

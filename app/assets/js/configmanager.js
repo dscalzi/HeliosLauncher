@@ -2,7 +2,6 @@ const fs     = require('fs')
 const mkpath = require('mkdirp')
 const os     = require('os')
 const path   = require('path')
-const uuidV4 = require('uuid/v4')
 
 const logger = require('./loggerutil')('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold')
 
@@ -68,7 +67,7 @@ const DEFAULT_CONFIG = {
     },
     commonDirectory: path.join(dataPath, 'common'),
     instanceDirectory: path.join(dataPath, 'instances'),
-    clientToken: uuidV4(),
+    clientToken: null,
     selectedServer: null, // Resolved
     selectedAccount: null,
     authenticationDatabase: {},
