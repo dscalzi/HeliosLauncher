@@ -1095,10 +1095,11 @@ function loadNews(){
                     })
                 },
                 timeout: 2500
-            }).catch(err => {
-                resolve({
-                    articles: null
-                })
+            }
+        ).catch(err => {
+            resolve({
+                articles: null
             })
+        })
     })
 }

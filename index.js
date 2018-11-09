@@ -34,7 +34,7 @@ function initAutoUpdater(event, data) {
     autoUpdater.on('checking-for-update', () => {
         event.sender.send('autoUpdateNotification', 'checking-for-update')
     })
-    autoUpdater.on('error', () => {
+    autoUpdater.on('error', (err) => {
         event.sender.send('autoUpdateNotification', 'realerror', err)
     }) 
 }
