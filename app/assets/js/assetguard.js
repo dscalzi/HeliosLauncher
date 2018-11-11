@@ -1,19 +1,3 @@
-/**
- * AssetGuard
- * 
- * This module aims to provide a comprehensive and stable method for processing
- * and downloading game assets for the WesterosCraft server. Download meta is
- * for several identifiers (categories) is stored inside of an AssetGuard object.
- * This meta data is initially empty until one of the module's processing functions 
- * are called. That function will process the corresponding asset index and validate 
- * any exisitng local files. If a file is missing or fails validation, it will be 
- * placed into a download queue (array). This queue is wrapped in a download tracker object
- * so that essential information can be cached. The download tracker object is then
- * assigned as the value of the identifier in the AssetGuard object. These download
- * trackers will remain idle until an async process is started to process them.
- * 
- * @module assetguard
- */
 // Requirements
 const AdmZip        = require('adm-zip')
 const async         = require('async')

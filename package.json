@@ -1,42 +1,36 @@
 {
   "name": "westeroscraftlauncher",
   "version": "1.0.5",
-  "description": "Custom modded launcher for Westeroscraft",
   "productName": "WesterosCraft Launcher",
+  "description": "Modded Minecraft Launcher",
+  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/WesterosCraftCode/ElectronLauncher",
+  "bugs": {
+    "url": "https://github.com/WesterosCraftCode/ElectronLauncher/issues"
+  },
+  "private": true,
   "main": "index.js",
   "scripts": {
     "start": "electron index.js",
-    "travislinux": "electron-builder --linux --win",
-    "travisdarwin": "electron-builder --mac",
+    "cilinux": "electron-builder --linux --win",
+    "cidarwin": "electron-builder --mac",
     "dist": "SET ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true & electron-builder",
     "dist:win": "npm run dist -- --win --x64",
     "dist:mac": "npm run dist -- --mac",
     "dist:linux": "npm run dist -- --linux --x64",
-    "dist:deb": "npm run dist -- --linux deb --x64",
-    "dist:all": "npm run dist -- -wl --x64",
     "lint": "eslint --config .eslintrc.json --ignore-pattern app/assets/js/scripts/*.js . && eslint --config .eslintrc.scripts.json app/assets/js/scripts"
   },
   "engines": {
     "node": "10.x.x"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/WesterosCraftCode/ElectronLauncher.git"
-  },
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
-  "license": "UNLICENSED",
-  "private": true,
-  "bugs": {
-    "url": "https://github.com/WesterosCraftCode/ElectronLauncher/issues"
-  },
-  "homepage": "http://www.westeroscraft.com/",
   "dependencies": {
     "adm-zip": "^0.4.11",
     "async": "^2.6.1",
     "discord-rpc": "discordjs/RPC",
     "ejs": "^2.6.1",
     "ejs-electron": "^2.0.3",
-    "electron-updater": "^3.2.2",
+    "electron-updater": "^3.2.3",
     "github-syntax-dark": "^0.5.0",
     "jquery": "^3.3.1",
     "mkdirp": "^0.5.1",
@@ -48,8 +42,12 @@
   },
   "devDependencies": {
     "electron": "^3.0.8",
-    "electron-builder": "^20.33.2",
-    "eslint": "^5.8.0"
+    "electron-builder": "^20.34.0",
+    "eslint": "^5.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WesterosCraftCode/ElectronLauncher.git"
   },
   "build": {
     "appId": "westeroscraftlauncher",
@@ -84,7 +82,7 @@
       "target": "AppImage",
       "maintainer": "Daniel Scalzi",
       "vendor": "WesterosCraft",
-      "synopsis": "Custom modded launcher for WesterosCraft",
+      "synopsis": "Custom Launcher for WesterosCraft",
       "description": "Custom launcher which allows users to join WesterosCraft. All mods, configurations, and updates are handled automatically.",
       "category": "Game"
     },
