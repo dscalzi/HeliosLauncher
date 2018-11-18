@@ -1162,7 +1162,7 @@ class AssetGuard extends EventEmitter {
             //Check validity of each library. If the hashs don't match, download the library.
             async.eachLimit(libArr, 5, (lib, cb) => {
                 if(Library.validateRules(lib.rules)){
-                    let artifact = (lib.natives == null) ? lib.downloads.artifact : lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()]]
+                    let artifact = (lib.natives == null) ? lib.downloads.artifact : lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()].replace('${arch}', process.arch.replace('x', ''))]
                     const libItm = new Library(lib.name, artifact.sha1, artifact.size, artifact.url, path.join(libPath, artifact.path))
                     if(!AssetGuard._validateLocal(libItm.to, 'sha1', libItm.hash)){
                         dlSize += (libItm.size*1)
