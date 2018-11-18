@@ -375,14 +375,9 @@ class ProcessBuilder {
                     libs.push(to)
                 } else {
                     // Extract the native library.
-                    const natives = lib.natives
                     const extractInst = lib.extract
                     const exclusionArr = extractInst.exclude
-                    const opSys = Library.mojangFriendlyOS()
-                    const indexId = natives[opSys]
-                    const dlInfo = lib.downloads
-                    const classifiers = dlInfo.classifiers
-                    const artifact = classifiers[indexId]
+                    const artifact = lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()].replace('${arch}', process.arch.replace('x', ''))]
     
                     // Location of native zip.
                     const to = path.join(this.libPath, artifact.path)
