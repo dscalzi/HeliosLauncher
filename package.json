@@ -1,6 +1,6 @@
 {
   "name": "westeroscraftlauncher",
-  "version": "1.0.6-pre.1",
+  "version": "1.0.6-pre.2",
   "productName": "WesterosCraft Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
@@ -15,7 +15,7 @@
     "start": "electron index.js",
     "cilinux": "electron-builder --linux --win",
     "cidarwin": "electron-builder --mac",
-    "dist": "SET ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true & electron-builder",
+    "dist": "cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true electron-builder",
     "dist:win": "npm run dist -- --win --x64",
     "dist:mac": "npm run dist -- --mac",
     "dist:linux": "npm run dist -- --linux --x64",
@@ -41,6 +41,7 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "electron": "^3.0.9",
     "electron-builder": "^20.36.2",
     "eslint": "^5.9.0"
