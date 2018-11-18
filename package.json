@@ -1,6 +1,6 @@
 {
   "name": "westeroscraftlauncher",
-  "version": "1.0.5",
+  "version": "1.0.6-pre.1",
   "productName": "WesterosCraft Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
@@ -25,12 +25,12 @@
     "node": "10.x.x"
   },
   "dependencies": {
-    "adm-zip": "^0.4.11",
+    "adm-zip": "^0.4.13",
     "async": "^2.6.1",
     "discord-rpc": "discordjs/RPC",
     "ejs": "^2.6.1",
     "ejs-electron": "^2.0.3",
-    "electron-updater": "^3.2.3",
+    "electron-updater": "^4.0.4",
     "github-syntax-dark": "^0.5.0",
     "jquery": "^3.3.1",
     "mkdirp": "^0.5.1",
@@ -41,8 +41,8 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^3.0.8",
-    "electron-builder": "^20.34.0",
+    "electron": "^3.0.9",
+    "electron-builder": "^20.36.2",
     "eslint": "^5.9.0"
   },
   "repository": {
