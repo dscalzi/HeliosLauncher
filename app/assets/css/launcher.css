@@ -2099,6 +2099,8 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Update action button styles. */
 #settingsUpdateActionButton {
+    display: flex;
+    flex-direction: column;
     padding-left: 10px;
     background: none;
     border: none;

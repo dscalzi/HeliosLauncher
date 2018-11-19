@@ -47,6 +47,12 @@ if(!isDev){
                 break
             case 'update-available':
                 loggerAutoUpdaterSuccess.log('New update available', info.version)
+                
+                if(process.platform === 'darwin'){
+                    info.darwindownload = `https://github.com/WesterosCraftCode/ElectronLauncher/releases/download/v${info.version}/westeroscraftlauncher-${info.version}.dmg`
+                    showUpdateUI(info)
+                }
+                
                 populateSettingsUpdateInformation(info)
                 break
             case 'update-downloaded':

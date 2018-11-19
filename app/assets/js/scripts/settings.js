@@ -1109,7 +1109,14 @@ function populateSettingsUpdateInformation(data){
         settingsUpdateChangelogTitle.innerHTML = data.releaseName
         settingsUpdateChangelogText.innerHTML = data.releaseNotes
         populateVersionInformation(data.version, settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
-        settingsUpdateButtonStatus('Downloading..', true)
+        
+        if(process.platform === 'darwin'){
+            settingsUpdateButtonStatus('Download from GitHub<span style="font-size: 10px;color: gray;text-shadow: none !important;">Close the launcher and run the file to update.</span>', false, () => {
+                shell.openExternal(data.darwindownload)
+            })
+        } else {
+            settingsUpdateButtonStatus('Downloading..', true)
+        }
     } else {
         settingsUpdateTitle.innerHTML = 'You Are Running the Latest Version'
         settingsUpdateChangelogCont.style.display = 'none'
