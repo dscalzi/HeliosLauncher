@@ -176,10 +176,7 @@ document.getElementById('serverSelectConfirm').addEventListener('click', () => {
     for(let i=0; i<listings.length; i++){
         if(listings[i].hasAttribute('selected')){
             const serv = DistroManager.getDistribution().getServer(listings[i].getAttribute('servid'))
-            ConfigManager.setSelectedServer(serv != null ? serv.getID() : null)
-            ConfigManager.save()
-            updateSelectedServer(serv != null ? serv.getName() : null)
-            setLaunchEnabled(serv != null)
+            updateSelectedServer(serv)
             refreshServerStatus(true)
             toggleOverlay(false)
             return
@@ -187,9 +184,8 @@ document.getElementById('serverSelectConfirm').addEventListener('click', () => {
     }
     // None are selected? Not possible right? Meh, handle it.
     if(listings.length > 0){
-        ConfigManager.setSelectedServer(listings[0].getAttribute('servid'))
-        ConfigManager.save()
-        updateSelectedServer()
+        const serv = DistroManager.getDistribution().getServer(listings[i].getAttribute('servid'))
+        updateSelectedServer(serv)
         toggleOverlay(false)
     }
 })

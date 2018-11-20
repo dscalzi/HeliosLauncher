@@ -552,7 +552,7 @@ function saveModConfiguration(){
  * @param {Object} modConf Mod config object to save.
  */
 function _saveModConfiguration(modConf){
-    for(m of Object.entries(modConf)){
+    for(let m of Object.entries(modConf)){
         const tSwitch = settingsModsContainer.querySelectorAll(`[formod='${m[0]}']`)
         if(!tSwitch[0].hasAttribute('dropin')){
             if(typeof m[1] === 'boolean'){
@@ -640,6 +640,7 @@ function bindDropinModsRemoveButton(){
 function bindDropinModFileSystemButton(){
     const fsBtn = document.getElementById('settingsDropinFileSystemButton')
     fsBtn.onclick = () => {
+        DropinModUtil.validateModsDir(CACHE_SETTINGS_MODS_DIR)
         shell.openItem(CACHE_SETTINGS_MODS_DIR)
     }
 }
@@ -721,14 +722,20 @@ document.getElementById('settingsSwitchServerButton').addEventListener('click', 
 })
 
 /**
+ * Save mod configuration for the current selected server.
+ */
+function saveAllModConfigurations(){
+    saveModConfiguration()
+    ConfigManager.save()
+    saveDropinModConfiguration()
+}
+
+/**
  * Function to refresh the mods tab whenever the selected
  * server is changed.
  */
 function animateModsTabRefresh(){
     $('#settingsTabMods').fadeOut(500, () => {
-        saveModConfiguration()
-        ConfigManager.save()
-        saveDropinModConfiguration()
         prepareModsTab()
         $('#settingsTabMods').fadeIn(500)
     })

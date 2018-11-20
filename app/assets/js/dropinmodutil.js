@@ -1,4 +1,5 @@
 const fs        = require('fs')
+const mkpath    = require('mkdirp')
 const path      = require('path')
 const { shell } = require('electron')
 
@@ -7,6 +8,18 @@ const { shell } = require('electron')
 // Group #3: If it is disabled (if string 'disabled' is present)
 const MOD_REGEX = /^(.+(jar|zip|litemod))(?:\.(disabled))?$/
 const DISABLED_EXT = '.disabled'
+
+/**
+ * Validate that the given mods directory exists. If not,
+ * it is created.
+ * 
+ * @param {string} modsDir The path to the mods directory.
+ */
+exports.validateModsDir = function(modsDir) {
+    if(!fs.existsSync(modsDir)) {
+        mkpath.sync(modsDir)
+    }
+}
 
 /**
  * Scan for drop-in mods in both the mods folder and version
