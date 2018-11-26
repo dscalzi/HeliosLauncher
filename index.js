@@ -125,62 +125,67 @@ function createWindow() {
 }
 
 function createMenu() {
-	
-	// Extend default included application menu to continue support for quit keyboard shortcut
-	let applicationSubMenu = {
-		label: "Application",
-		submenu: [{
-			label: "About Application",
-			selector: "orderFrontStandardAboutPanel:"
-		}, {
-			type: "separator"
-		}, {
-			label: "Quit",
-			accelerator: "Command+Q",
-			click: () => {
-				app.quit()
-			}
-		}]
-	}
-	
-	// New edit menu adds support for text-editing keyboard shortcuts
-	let editSubMenu = {
-		label: "Edit",
-		submenu: [{
-			label: "Undo",
-			accelerator: "CmdOrCtrl+Z",
-			selector: "undo:"
-		}, {
-			label: "Redo",
-			accelerator: "Shift+CmdOrCtrl+Z",
-			selector: "redo:"
-		}, {
-			type: "separator"
-		}, {
-			label: "Cut",
-			accelerator: "CmdOrCtrl+X",
-			selector: "cut:"
-		}, {
-			label: "Copy",
-			accelerator: "CmdOrCtrl+C",
-			selector: "copy:"
-		}, {
-			label: "Paste",
-			accelerator: "CmdOrCtrl+V",
-			selector: "paste:"
-		}, {
-			label: "Select All",
-			accelerator: "CmdOrCtrl+A",
-			selector: "selectAll:"
-		}]
-	}
-	
-	// Bundle submenus into a single template and build a menu object with it
-	let menuTemplate = [applicationSubMenu, editSubMenu]
-	let menuObject = Menu.buildFromTemplate(menuTemplate)
-	
-	// Assign it to the application
-	Menu.setApplicationMenu(menuObject)
+    
+    if(process.platform === 'darwin') {
+
+        // Extend default included application menu to continue support for quit keyboard shortcut
+        let applicationSubMenu = {
+            label: 'Application',
+            submenu: [{
+                label: 'About Application',
+                selector: 'orderFrontStandardAboutPanel:'
+            }, {
+                type: 'separator'
+            }, {
+                label: 'Quit',
+                accelerator: 'Command+Q',
+                click: () => {
+                    app.quit()
+                }
+            }]
+        }
+
+        // New edit menu adds support for text-editing keyboard shortcuts
+        let editSubMenu = {
+            label: 'Edit',
+            submenu: [{
+                label: 'Undo',
+                accelerator: 'CmdOrCtrl+Z',
+                selector: 'undo:'
+            }, {
+                label: 'Redo',
+                accelerator: 'Shift+CmdOrCtrl+Z',
+                selector: 'redo:'
+            }, {
+                type: 'separator'
+            }, {
+                label: 'Cut',
+                accelerator: 'CmdOrCtrl+X',
+                selector: 'cut:'
+            }, {
+                label: 'Copy',
+                accelerator: 'CmdOrCtrl+C',
+                selector: 'copy:'
+            }, {
+                label: 'Paste',
+                accelerator: 'CmdOrCtrl+V',
+                selector: 'paste:'
+            }, {
+                label: 'Select All',
+                accelerator: 'CmdOrCtrl+A',
+                selector: 'selectAll:'
+            }]
+        }
+
+        // Bundle submenus into a single template and build a menu object with it
+        let menuTemplate = [applicationSubMenu, editSubMenu]
+        let menuObject = Menu.buildFromTemplate(menuTemplate)
+
+        // Assign it to the application
+        Menu.setApplicationMenu(menuObject)
+
+    }
+
 }
 
 function getPlatformIcon(filename){
