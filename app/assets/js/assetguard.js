@@ -394,8 +394,8 @@ class AssetGuard extends EventEmitter {
      */
     static _latestJREOracle(){
 
-        const url = 'http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html'
-        const regex = /http:\/\/.+?(?=\/java)\/java\/jdk\/([0-9]+u[0-9]+)-(b[0-9]+)\/([a-f0-9]{32})?\/jre-\1/
+        const url = 'https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html'
+        const regex = /https:\/\/.+?(?=\/java)\/java\/jdk\/([0-9]+u[0-9]+)-(b[0-9]+)\/([a-f0-9]{32})?\/jre-\1/
     
         return new Promise((resolve, reject) => {
             request(url, (err, resp, body) => {
