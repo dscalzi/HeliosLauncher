@@ -1545,13 +1545,15 @@ input:checked + .toggleSwitchSlider:before {
     margin-bottom: 10px;
 }
 #settingsDropinFileSystemButton:hover,
-#settingsDropinFileSystemButton:focus {
+#settingsDropinFileSystemButton:focus,
+#settingsDropinFileSystemButton[drag] {
     background: rgba(54, 54, 54, 0.25);
     text-shadow: 0px 0px 20px white;
 }
 /* Refresh instructions on the file system button. */
 #settingsDropinRefreshNote {
     font-size: 10px;
+    pointer-events: none;
 }
 
 /* Button to remove drop-in mods. */
@@ -2663,7 +2665,6 @@ input:checked + .toggleSwitchSlider:before {
     box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
     overflow: hidden;
     position: relative;
-    /*background-image: url('https://cdn.discordapp.com/avatars/169197209630277642/6650b5a50e1cb3d00a79b9b88b9a0cd4.png');*/
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;

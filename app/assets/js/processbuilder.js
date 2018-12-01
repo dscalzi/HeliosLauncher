@@ -1,11 +1,9 @@
 const AdmZip                = require('adm-zip')
 const child_process         = require('child_process')
 const crypto                = require('crypto')
-const fs                    = require('fs')
-const mkpath                = require('mkdirp')
+const fs                    = require('fs-extra')
 const os                    = require('os')
 const path                  = require('path')
-const rimraf                = require('rimraf')
 const {URL}                 = require('url')
 
 const { Library }           = require('./assetguard')
@@ -36,7 +34,7 @@ class ProcessBuilder {
      * Convienence method to run the functions typically used to build a process.
      */
     build(){
-        mkpath.sync(this.gameDir)
+        fs.ensureDirSync(this.gameDir)
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         this.setupLiteLoader()
@@ -74,7 +72,7 @@ class ProcessBuilder {
         })
         child.on('close', (code, signal) => {
             logger.log('Exited with code', code)
-            rimraf(tempNativePath, (err) => {
+            fs.remove(tempNativePath, (err) => {
                 if(err){
                     logger.warn('Error while deleting temp dir', err)
                 } else {
@@ -364,7 +362,7 @@ class ProcessBuilder {
         const libs = []
 
         const libArr = this.versionData.libraries
-        mkpath.sync(tempNativePath)
+        fs.ensureDirSync(tempNativePath)
         for(let i=0; i<libArr.length; i++){
             const lib = libArr[i]
             if(Library.validateRules(lib.rules)){

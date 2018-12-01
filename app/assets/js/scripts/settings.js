@@ -643,6 +643,25 @@ function bindDropinModFileSystemButton(){
         DropinModUtil.validateModsDir(CACHE_SETTINGS_MODS_DIR)
         shell.openItem(CACHE_SETTINGS_MODS_DIR)
     }
+    fsBtn.ondragenter = e => {
+        e.dataTransfer.dropEffect = 'move'
+        fsBtn.setAttribute('drag', '')
+        e.preventDefault()
+    }
+    fsBtn.ondragover = e => {
+        e.preventDefault()
+    }
+    fsBtn.ondragleave = e => {
+        fsBtn.removeAttribute('drag')
+    }
+
+    fsBtn.ondrop = e => {
+        fsBtn.removeAttribute('drag')
+        e.preventDefault()
+
+        DropinModUtil.addDropinMods(e.dataTransfer.files, CACHE_SETTINGS_MODS_DIR)
+        reloadDropinMods()
+    }
 }
 
 /**
@@ -676,13 +695,17 @@ function saveDropinModConfiguration(){
 document.addEventListener('keydown', (e) => {
     if(getCurrentView() === VIEWS.settings && selectedSettingsTab === 'settingsTabMods'){
         if(e.key === 'F5'){
-            resolveDropinModsForUI()
-            bindDropinModsRemoveButton()
-            bindDropinModFileSystemButton()
-            bindModsToggleSwitch()
+            reloadDropinMods()
         }
     }
 })
+
+function reloadDropinMods(){
+    resolveDropinModsForUI()
+    bindDropinModsRemoveButton()
+    bindDropinModFileSystemButton()
+    bindModsToggleSwitch()
+}
 
 // Server status bar functions.
 

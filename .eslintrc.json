@@ -46,5 +46,18 @@
                 "argsIgnorePattern": "reject"
             }
         ]
-    }
+    },
+    "overrides": [
+        {
+          "files": [ "app/assets/js/scripts/*.js" ],
+          "rules": {
+            "no-unused-vars": [
+                0
+            ],
+            "no-undef": [
+                0
+            ]
+          }
+        }
+      ]
 }

@@ -1,5 +1,4 @@
-const fs     = require('fs')
-const mkpath = require('mkdirp')
+const fs     = require('fs-extra')
 const os     = require('os')
 const path   = require('path')
 
@@ -98,7 +97,7 @@ exports.load = function(){
 
     if(!fs.existsSync(filePath)){
         // Create all parent directories.
-        mkpath.sync(path.join(filePath, '..'))
+        fs.ensureDirSync(path.join(filePath, '..'))
         config = DEFAULT_CONFIG
         exports.save()
     } else {
@@ -110,7 +109,7 @@ exports.load = function(){
             logger.error(err)
             logger.log('Configuration file contains malformed JSON or is corrupt.')
             logger.log('Generating a new configuration file.')
-            mkpath.sync(path.join(filePath, '..'))
+            fs.ensureDirSync(path.join(filePath, '..'))
             config = DEFAULT_CONFIG
             exports.save()
         }

@@ -1,5 +1,4 @@
-const fs        = require('fs')
-const mkpath    = require('mkdirp')
+const fs        = require('fs-extra')
 const path      = require('path')
 const { shell } = require('electron')
 
@@ -16,9 +15,7 @@ const DISABLED_EXT = '.disabled'
  * @param {string} modsDir The path to the mods directory.
  */
 exports.validateModsDir = function(modsDir) {
-    if(!fs.existsSync(modsDir)) {
-        mkpath.sync(modsDir)
-    }
+    fs.ensureDirSync(modsDir)
 }
 
 /**
@@ -64,6 +61,22 @@ exports.scanForDropinMods = function(modsDir, version) {
         }
     }
     return modsDiscovered
+}
+
+/**
+ * Add dropin mods.
+ * 
+ * @param {FileList} files The files to add.
+ * @param {string} modsDir The path to the mods directory.
+ */
+exports.addDropinMods = function(files, modsdir) {
+
+    for(let f of files) {
+        if(MOD_REGEX.exec(f.name) != null) {
+            fs.moveSync(f.path, path.join(modsdir, f.name))
+        }
+    }
+
 }
 
 /**

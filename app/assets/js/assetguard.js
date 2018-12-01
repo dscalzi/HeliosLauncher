@@ -4,8 +4,7 @@ const async         = require('async')
 const child_process = require('child_process')
 const crypto        = require('crypto')
 const EventEmitter  = require('events')
-const fs            = require('fs')
-const mkpath        = require('mkdirp')
+const fs            = require('fs-extra')
 const path          = require('path')
 const Registry      = require('winreg')
 const request       = require('request')
@@ -360,7 +359,7 @@ class AssetGuard extends EventEmitter {
                         const versionPath = path.join(commonPath, 'versions', forgeVersion.id)
                         const versionFile = path.join(versionPath, forgeVersion.id + '.json')
                         if(!fs.existsSync(versionFile)){
-                            mkpath.sync(versionPath)
+                            fs.ensureDirSync(versionPath)
                             fs.writeFileSync(path.join(versionPath, forgeVersion.id + '.json'), zipEntries[i].getData())
                             resolve(forgeVersion)
                         } else {
@@ -996,7 +995,7 @@ class AssetGuard extends EventEmitter {
                 const url = await self._getVersionDataUrl(version)
                 //This download will never be tracked as it's essential and trivial.
                 console.log('Preparing download of ' + version + ' assets.')
-                mkpath.sync(versionPath)
+                fs.ensureDirSync(versionPath)
                 const stream = request(url).pipe(fs.createWriteStream(versionFile))
                 stream.on('finish', () => {
                     resolve(JSON.parse(fs.readFileSync(versionFile)))
@@ -1078,7 +1077,7 @@ class AssetGuard extends EventEmitter {
             let data = null
             if(!fs.existsSync(assetIndexLoc) || force){
                 console.log('Downloading ' + versionData.id + ' asset index.')
-                mkpath.sync(indexPath)
+                fs.ensureDirSync(indexPath)
                 const stream = request(assetIndex.url).pipe(fs.createWriteStream(assetIndexLoc))
                 stream.on('finish', () => {
                     data = JSON.parse(fs.readFileSync(assetIndexLoc, 'utf-8'))
@@ -1457,7 +1456,7 @@ class AssetGuard extends EventEmitter {
 
             async.eachLimit(dlQueue, limit, (asset, cb) => {
 
-                mkpath.sync(path.join(asset.to, '..'))
+                fs.ensureDirSync(path.join(asset.to, '..'))
 
                 let req = request(asset.from)
                 req.pause()
