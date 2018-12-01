@@ -71,6 +71,8 @@ exports.scanForDropinMods = function(modsDir, version) {
  */
 exports.addDropinMods = function(files, modsdir) {
 
+    exports.validateModsDir(modsdir)
+
     for(let f of files) {
         if(MOD_REGEX.exec(f.name) != null) {
             fs.moveSync(f.path, path.join(modsdir, f.name))

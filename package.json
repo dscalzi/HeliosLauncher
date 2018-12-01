@@ -27,7 +27,7 @@
   "dependencies": {
     "adm-zip": "^0.4.13",
     "async": "^2.6.1",
-    "discord-rpc": "discordjs/RPC",
+    "discord-rpc": "github:discordjs/RPC",
     "ejs": "^2.6.1",
     "ejs-electron": "^2.0.3",
     "electron-updater": "^4.0.5",
@@ -94,7 +94,7 @@
     },
     "compression": "maximum",
     "files": [
-      "!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.travis.yml,.nvmrc,.eslintrc.scripts.json,.eslintrc.json}"
+      "!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.travis.yml,.nvmrc,.eslintrc.json}"
     ],
     "extraResources": [
       "libraries"
