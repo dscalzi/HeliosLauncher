@@ -365,7 +365,7 @@ class ProcessBuilder {
         fs.ensureDirSync(tempNativePath)
         for(let i=0; i<libArr.length; i++){
             const lib = libArr[i]
-            if(Library.validateRules(lib.rules)){
+            if(Library.validateRules(lib.rules, lib.natives)){
                 if(lib.natives == null){
                     const dlInfo = lib.downloads
                     const artifact = dlInfo.artifact

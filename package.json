@@ -1,6 +1,6 @@
 {
   "name": "westeroscraftlauncher",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "productName": "WesterosCraft Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "electron": "^3.0.11",
+    "electron": "^3.0.12",
     "electron-builder": "^20.38.3",
     "eslint": "^5.10.0"
   },
