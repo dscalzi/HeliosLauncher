@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "electron": "^3.0.13",
+    "electron": "^4.0.0",
     "electron-builder": "^20.38.4",
     "eslint": "^5.10.0"
   },

@@ -8,14 +8,17 @@ const { shell } = require('electron')
 const MOD_REGEX = /^(.+(jar|zip|litemod))(?:\.(disabled))?$/
 const DISABLED_EXT = '.disabled'
 
+const SHADER_REGEX = /^(.+)\.zip$/
+const SHADER_OPTION = /shaderPack=(.+)/
+
 /**
- * Validate that the given mods directory exists. If not,
- * it is created.
+ * Validate that the given directory exists. If not, it is
+ * created.
  * 
  * @param {string} modsDir The path to the mods directory.
  */
-exports.validateModsDir = function(modsDir) {
-    fs.ensureDirSync(modsDir)
+exports.validateDir = function(dir) {
+    fs.ensureDirSync(dir)
 }
 
 /**
@@ -71,7 +74,7 @@ exports.scanForDropinMods = function(modsDir, version) {
  */
 exports.addDropinMods = function(files, modsdir) {
 
-    exports.validateModsDir(modsdir)
+    exports.validateDir(modsdir)
 
     for(let f of files) {
         if(MOD_REGEX.exec(f.name) != null) {
@@ -131,4 +134,77 @@ exports.toggleDropinMod = function(modsDir, fullName, enable){
  */
 exports.isDropinModEnabled = function(fullName){
     return !fullName.endsWith(DISABLED_EXT)
+}
+
+/**
+ * Scan for shaderpacks inside the shaderpacks folder.
+ * 
+ * @param {string} instanceDir The path to the server instance directory.
+ * 
+ * @returns {{fullName: string, name: string}[]}
+ * An array of objects storing metadata about each discovered shaderpack.
+ */
+exports.scanForShaderpacks = function(instanceDir){
+    const shaderDir = path.join(instanceDir, 'shaderpacks')
+    const packsDiscovered = [{
+        fullName: 'OFF',
+        name: 'No Shaderpack'
+    }]
+    if(fs.existsSync(shaderDir)){
+        let modCandidates = fs.readdirSync(shaderDir)
+        for(let file of modCandidates){
+            const match = SHADER_REGEX.exec(file)
+            if(match != null){
+                packsDiscovered.push({
+                    fullName: match[0],
+                    name: match[1]
+                })
+            }
+        }
+    }
+    return packsDiscovered
+}
+
+/**
+ * Read the optionsshaders.txt file to locate the current
+ * enabled pack. If the file does not exist, OFF is returned.
+ * 
+ * @param {string} instanceDir The path to the server instance directory.
+ * 
+ * @returns {string} The file name of the enabled shaderpack.
+ */
+exports.getEnabledShaderpack = function(instanceDir){
+    exports.validateDir(instanceDir)
+
+    const optionsShaders = path.join(instanceDir, 'optionsshaders.txt')
+    if(fs.existsSync(optionsShaders)){
+        const buf = fs.readFileSync(optionsShaders, {encoding: 'utf-8'})
+        const match = SHADER_OPTION.exec(buf)
+        if(match != null){
+            return match[1]
+        } else {
+            console.warn('WARNING: Shaderpack regex failed.')
+        }
+    }
+    return 'OFF'
+}
+
+/**
+ * Set the enabled shaderpack.
+ * 
+ * @param {string} instanceDir The path to the server instance directory.
+ * @param {string} pack the file name of the shaderpack.
+ */
+exports.setEnabledShaderpack = function(instanceDir, pack){
+    exports.validateDir(instanceDir)
+
+    const optionsShaders = path.join(instanceDir, 'optionsshaders.txt')
+    let buf
+    if(fs.existsSync(optionsShaders)){
+        buf = fs.readFileSync(optionsShaders, {encoding: 'utf-8'})
+        buf = buf.replace(SHADER_OPTION, `shaderPack=${pack}`)
+    } else {
+        buf = `shaderPack=${pack}`
+    }
+    fs.writeFileSync(optionsShaders, buf, {encoding: 'utf-8'})
 }

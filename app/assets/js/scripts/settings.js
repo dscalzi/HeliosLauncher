@@ -9,6 +9,38 @@ const settingsState = {
     invalid: new Set()
 }
 
+function bindSettingsSelect(){
+    for(let ele of document.getElementsByClassName('settingsSelectContainer')) {
+        const selectedDiv = ele.getElementsByClassName('settingsSelectSelected')[0]
+
+        selectedDiv.onclick = (e) => {
+            e.stopPropagation()
+            closeSettingsSelect(e.target)
+            e.target.nextElementSibling.toggleAttribute('hidden')
+            e.target.classList.toggle('select-arrow-active')
+        }
+    }
+}
+
+function closeSettingsSelect(el){
+    for(let ele of document.getElementsByClassName('settingsSelectContainer')) {
+        const selectedDiv = ele.getElementsByClassName('settingsSelectSelected')[0]
+        const optionsDiv = ele.getElementsByClassName('settingsSelectOptions')[0]
+
+        if(!(selectedDiv === el)) {
+            selectedDiv.classList.remove('select-arrow-active')
+            optionsDiv.setAttribute('hidden', '')
+        }
+    }
+}
+
+/* If the user clicks anywhere outside the select box,
+then close all select boxes: */
+document.addEventListener('click', closeSettingsSelect)
+
+bindSettingsSelect()
+
+
 /**
  * General Settings Functions
  */
@@ -640,7 +672,7 @@ function bindDropinModsRemoveButton(){
 function bindDropinModFileSystemButton(){
     const fsBtn = document.getElementById('settingsDropinFileSystemButton')
     fsBtn.onclick = () => {
-        DropinModUtil.validateModsDir(CACHE_SETTINGS_MODS_DIR)
+        DropinModUtil.validateDir(CACHE_SETTINGS_MODS_DIR)
         shell.openItem(CACHE_SETTINGS_MODS_DIR)
     }
     fsBtn.ondragenter = e => {
@@ -707,6 +739,47 @@ function reloadDropinMods(){
     bindModsToggleSwitch()
 }
 
+// Shaderpack
+
+let CACHE_SETTINGS_INSTANCE_DIR
+let CACHE_SHADERPACKS
+let CACHE_SELECTED_SHADERPACK
+
+/**
+ * Load shaderpack information.
+ */
+function resolveShaderpacksForUI(){
+    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+    CACHE_SETTINGS_INSTANCE_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.getID())
+    CACHE_SHADERPACKS = DropinModUtil.scanForShaderpacks(CACHE_SETTINGS_INSTANCE_DIR)
+    CACHE_SELECTED_SHADERPACK = DropinModUtil.getEnabledShaderpack(CACHE_SETTINGS_INSTANCE_DIR)
+
+    setShadersOptions(CACHE_SHADERPACKS, CACHE_SELECTED_SHADERPACK)
+}
+
+function setShadersOptions(arr, selected){
+    const cont = document.getElementById('settingsShadersOptions')
+    cont.innerHTML = ''
+    for(let opt of arr) {
+        const d = document.createElement('DIV')
+        d.innerHTML = opt.name
+        d.setAttribute('value', opt.fullName)
+        if(opt.fullName === selected) {
+            d.setAttribute('selected', '')
+            document.getElementById('settingsShadersSelected').innerHTML = opt.name
+        }
+        d.addEventListener('click', function(e) {
+            this.parentNode.previousElementSibling.innerHTML = this.innerHTML
+            for(let sib of this.parentNode.children){
+                sib.removeAttribute('selected')
+            }
+            this.setAttribute('selected', '')
+            closeSettingsSelect()
+        })
+        cont.appendChild(d)
+    }
+}
+
 // Server status bar functions.
 
 /**
@@ -770,6 +843,7 @@ function animateModsTabRefresh(){
 function prepareModsTab(first){
     resolveModsForUI()
     resolveDropinModsForUI()
+    resolveShaderpacksForUI()
     bindDropinModsRemoveButton()
     bindDropinModFileSystemButton()
     bindModsToggleSwitch()

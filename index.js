@@ -98,7 +98,9 @@ function createWindow() {
         icon: getPlatformIcon('WesterosSealSquare'),
         frame: false,
         webPreferences: {
-            preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js')
+            preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js'),
+            nodeIntegration: true,
+            contextIsolation: false
         },
         backgroundColor: '#171614'
     })

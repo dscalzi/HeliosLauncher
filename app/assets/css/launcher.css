@@ -1578,6 +1578,77 @@ input:checked + .toggleSwitchSlider:before {
     text-shadow: 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f;
 }
 
+/* Main select container. */
+.settingsSelectContainer {
+    position: relative;
+    width: 50%;
+}
+
+/* Div which displays the selected option. */
+.settingsSelectSelected {
+    border-radius: 3px;
+    border-width: 1px;
+    font-size: 14px;
+    padding: 6px 16px;
+}
+
+/* Style the arrow inside the select element. */
+.settingsSelectSelected:after {
+    position: absolute;
+    content: "";
+    top: calc(50% - 3px);
+    right: 10px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-color: rgba(126, 126, 126, 0.57) transparent transparent transparent;
+}
+
+/* Point the arrow upwards when the select box is open (active). */
+.settingsSelectSelected.select-arrow-active:after {
+    border-color: transparent transparent rgba(126, 126, 126, 0.57) transparent;
+    top: 7px;
+}
+.settingsSelectSelected.select-arrow-active {
+    border-radius: 3px 3px 0px 0px;
+}
+
+/* Options content container. */
+.settingsSelectOptions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+}
+/* Hide the items when the select box is closed. */
+.settingsSelectOptions[hidden] {
+    display: none;
+}
+
+/* Shared styles between options and selection div. */
+.settingsSelectOptions div,
+.settingsSelectSelected {
+    background: rgba(0, 0, 0, 0.25);
+    border-style: solid;
+    border-color: rgba(126, 126, 126, 0.57);
+    color: #ffffff;
+    cursor: pointer;
+}
+.settingsSelectOptions div {
+    border-width: 0px 1px 1px 1px;
+    font-size: 12px;
+    padding: 4px 16px;
+}
+.settingsSelectOptions .settingsSelectOption:last-child {
+    border-radius: 0px 0px 3px 3px;
+}
+
+/* Hover + selected styles. */
+.settingsSelectOptions div:hover, .settingsSelectOptions div[selected] {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
 /* * *
 * Settings View (Java Tab)
 * * */
