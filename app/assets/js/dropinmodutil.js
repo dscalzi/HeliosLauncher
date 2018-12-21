@@ -208,3 +208,23 @@ exports.setEnabledShaderpack = function(instanceDir, pack){
     }
     fs.writeFileSync(optionsShaders, buf, {encoding: 'utf-8'})
 }
+
+/**
+ * Add shaderpacks.
+ * 
+ * @param {FileList} files The files to add.
+ * @param {string} instanceDir The path to the server instance directory.
+ */
+exports.addShaderpacks = function(files, instanceDir) {
+
+    const p = path.join(instanceDir, 'shaderpacks')
+
+    exports.validateDir(p)
+
+    for(let f of files) {
+        if(SHADER_REGEX.exec(f.name) != null) {
+            fs.moveSync(f.path, path.join(p, f.name))
+        }
+    }
+
+}

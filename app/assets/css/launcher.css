@@ -1578,6 +1578,39 @@ input:checked + .toggleSwitchSlider:before {
     text-shadow: 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f;
 }
 
+/* Shaderpack settings description. */
+#settingsShaderpackDesc {
+    font-size: 10px;
+    margin: 10px 0px;
+    color: lightgrey;
+    font-weight: bold;
+    width: 89%;
+}
+
+/* Wrapper container. */
+#settingsShaderpackWrapper {
+    display: flex;
+}
+
+/* Button to add shaderpacks. */
+#settingsShaderpackButton {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(126, 126, 126, 0.57);
+    border-radius: 3px;
+    cursor: pointer;
+    outline: none;
+    transition: 0.25s ease;
+    font-size: 14px;
+    padding: 6px 11px;
+    margin-right: 5px;
+}
+#settingsShaderpackButton:hover,
+#settingsShaderpackButton:focus,
+#settingsShaderpackButton[drag] {
+    background: rgba(54, 54, 54, 0.25);
+    text-shadow: 0px 0px 20px white;
+}
+
 /* Main select container. */
 .settingsSelectContainer {
     position: relative;
@@ -1620,10 +1653,25 @@ input:checked + .toggleSwitchSlider:before {
     left: 0;
     right: 0;
     z-index: 99;
+    max-height: 300%;
+    overflow-y: scroll;
+    border: 1px solid rgba(126, 126, 126, 0.57);
+    border-top: none;
+    border-radius: 0px 0px 3px 3px;
 }
 /* Hide the items when the select box is closed. */
 .settingsSelectOptions[hidden] {
     display: none;
+}
+.settingsSelectOptions::-webkit-scrollbar {
+    width: 2px;
+}
+.settingsSelectOptions::-webkit-scrollbar-track {
+    display: none;
+}
+.settingsSelectOptions::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
 }
 
 /* Shared styles between options and selection div. */
@@ -1636,12 +1684,12 @@ input:checked + .toggleSwitchSlider:before {
     cursor: pointer;
 }
 .settingsSelectOptions div {
-    border-width: 0px 1px 1px 1px;
+    border-width: 0px 0px 1px 0px;
     font-size: 12px;
     padding: 4px 16px;
 }
-.settingsSelectOptions .settingsSelectOption:last-child {
-    border-radius: 0px 0px 3px 3px;
+.settingsSelectOptions div:last-child {
+    border-bottom: none;
 }
 
 /* Hover + selected styles. */

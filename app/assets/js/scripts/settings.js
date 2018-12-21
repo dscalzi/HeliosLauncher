@@ -267,6 +267,7 @@ settingsNavDone.onclick = () => {
     saveModConfiguration()
     ConfigManager.save()
     saveDropinModConfiguration()
+    saveShaderpackSettings()
     switchView(getCurrentView(), VIEWS.landing)
 }
 
@@ -728,6 +729,8 @@ document.addEventListener('keydown', (e) => {
     if(getCurrentView() === VIEWS.settings && selectedSettingsTab === 'settingsTabMods'){
         if(e.key === 'F5'){
             reloadDropinMods()
+            saveShaderpackSettings()
+            resolveShaderpacksForUI()
         }
     }
 })
@@ -777,6 +780,44 @@ function setShadersOptions(arr, selected){
             closeSettingsSelect()
         })
         cont.appendChild(d)
+    }
+}
+
+function saveShaderpackSettings(){
+    let sel = 'OFF'
+    for(let opt of document.getElementById('settingsShadersOptions').childNodes){
+        if(opt.hasAttribute('selected')){
+            sel = opt.getAttribute('value')
+        }
+    }
+    DropinModUtil.setEnabledShaderpack(CACHE_SETTINGS_INSTANCE_DIR, sel)
+}
+
+function bindShaderpackButton() {
+    const spBtn = document.getElementById('settingsShaderpackButton')
+    spBtn.onclick = () => {
+        const p = path.join(CACHE_SETTINGS_INSTANCE_DIR, 'shaderpacks')
+        DropinModUtil.validateDir(p)
+        shell.openItem(p)
+    }
+    spBtn.ondragenter = e => {
+        e.dataTransfer.dropEffect = 'move'
+        spBtn.setAttribute('drag', '')
+        e.preventDefault()
+    }
+    spBtn.ondragover = e => {
+        e.preventDefault()
+    }
+    spBtn.ondragleave = e => {
+        spBtn.removeAttribute('drag')
+    }
+
+    spBtn.ondrop = e => {
+        spBtn.removeAttribute('drag')
+        e.preventDefault()
+
+        DropinModUtil.addShaderpacks(e.dataTransfer.files, CACHE_SETTINGS_INSTANCE_DIR)
+        resolveShaderpacksForUI()
     }
 }
 
@@ -846,6 +887,7 @@ function prepareModsTab(first){
     resolveShaderpacksForUI()
     bindDropinModsRemoveButton()
     bindDropinModFileSystemButton()
+    bindShaderpackButton()
     bindModsToggleSwitch()
     loadSelectedServerOnModsTab()
 }
