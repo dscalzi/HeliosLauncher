@@ -10,6 +10,8 @@ const DISABLED_EXT = '.disabled'
 
 const SHADER_REGEX = /^(.+)\.zip$/
 const SHADER_OPTION = /shaderPack=(.+)/
+const SHADER_DIR = 'shaderpacks'
+const SHADER_CONFIG = 'optionsshaders.txt'
 
 /**
  * Validate that the given directory exists. If not, it is
@@ -145,10 +147,10 @@ exports.isDropinModEnabled = function(fullName){
  * An array of objects storing metadata about each discovered shaderpack.
  */
 exports.scanForShaderpacks = function(instanceDir){
-    const shaderDir = path.join(instanceDir, 'shaderpacks')
+    const shaderDir = path.join(instanceDir, SHADER_DIR)
     const packsDiscovered = [{
         fullName: 'OFF',
-        name: 'No Shaderpack'
+        name: 'Off (Default)'
     }]
     if(fs.existsSync(shaderDir)){
         let modCandidates = fs.readdirSync(shaderDir)
@@ -176,7 +178,7 @@ exports.scanForShaderpacks = function(instanceDir){
 exports.getEnabledShaderpack = function(instanceDir){
     exports.validateDir(instanceDir)
 
-    const optionsShaders = path.join(instanceDir, 'optionsshaders.txt')
+    const optionsShaders = path.join(instanceDir, SHADER_CONFIG)
     if(fs.existsSync(optionsShaders)){
         const buf = fs.readFileSync(optionsShaders, {encoding: 'utf-8'})
         const match = SHADER_OPTION.exec(buf)
@@ -198,7 +200,7 @@ exports.getEnabledShaderpack = function(instanceDir){
 exports.setEnabledShaderpack = function(instanceDir, pack){
     exports.validateDir(instanceDir)
 
-    const optionsShaders = path.join(instanceDir, 'optionsshaders.txt')
+    const optionsShaders = path.join(instanceDir, SHADER_CONFIG)
     let buf
     if(fs.existsSync(optionsShaders)){
         buf = fs.readFileSync(optionsShaders, {encoding: 'utf-8'})
@@ -217,7 +219,7 @@ exports.setEnabledShaderpack = function(instanceDir, pack){
  */
 exports.addShaderpacks = function(files, instanceDir) {
 
-    const p = path.join(instanceDir, 'shaderpacks')
+    const p = path.join(instanceDir, SHADER_DIR)
 
     exports.validateDir(p)
 

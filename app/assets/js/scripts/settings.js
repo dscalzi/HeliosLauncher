@@ -817,6 +817,7 @@ function bindShaderpackButton() {
         e.preventDefault()
 
         DropinModUtil.addShaderpacks(e.dataTransfer.files, CACHE_SETTINGS_INSTANCE_DIR)
+        saveShaderpackSettings()
         resolveShaderpacksForUI()
     }
 }
