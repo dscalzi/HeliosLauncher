@@ -86,21 +86,22 @@ function setLaunchEnabled(val){
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', function(e){
     loggerLanding.log('Launching game..')
+    const mcVersion = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
     const jExe = ConfigManager.getJavaExecutable()
     if(jExe == null){
-        asyncSystemScan()
+        asyncSystemScan(mcVersion)
     } else {
 
         setLaunchDetails('Please wait..')
         toggleLaunchArea(true)
         setLaunchPercentage(0, 100)
 
-        AssetGuard._validateJavaBinary(jExe).then((v) => {
+        AssetGuard._validateJavaBinary(jExe, mcVersion).then((v) => {
             loggerLanding.log('Java version meta', v)
             if(v.valid){
                 dlAsync()
             } else {
-                asyncSystemScan()
+                asyncSystemScan(mcVersion)
             }
         })
     }
@@ -260,7 +261,13 @@ let scanAt
 
 let extractListener
 
-function asyncSystemScan(launchAfter = true){
+/**
+ * Asynchronously scan the system for valid Java installations.
+ * 
+ * @param {string} mcVersion The Minecraft version we are scanning for.
+ * @param {boolean} launchAfter Whether we should begin to launch after scanning. 
+ */
+function asyncSystemScan(mcVersion, launchAfter = true){
 
     setLaunchDetails('Please wait..')
     toggleLaunchArea(true)
@@ -424,7 +431,7 @@ function asyncSystemScan(launchAfter = true){
 
     // Begin system Java scan.
     setLaunchDetails('Checking system info..')
-    sysAEx.send({task: 'execute', function: 'validateJava', argsArr: [ConfigManager.getLauncherDirectory()]})
+    sysAEx.send({task: 'execute', function: 'validateJava', argsArr: [ConfigManager.getLauncherDirectory(), mcVersion]})
 
 }
 

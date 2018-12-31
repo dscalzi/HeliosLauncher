@@ -1107,7 +1107,11 @@ settingsJavaExecSel.onchange = (e) => {
 function populateJavaExecDetails(execPath){
     AssetGuard._validateJavaBinary(execPath).then(v => {
         if(v.valid){
-            settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major} Update ${v.version.update} (x${v.arch})`
+            if(v.version.major < 9) {
+                settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major} Update ${v.version.update} (x${v.arch})`
+            } else {
+                settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major}.${v.version.minor}.${v.version.revision} (x${v.arch})`
+            }
         } else {
             settingsJavaExecDetails.innerHTML = 'Invalid Selection'
         }

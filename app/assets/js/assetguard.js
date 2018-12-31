@@ -475,12 +475,29 @@ class AssetGuard extends EventEmitter {
 
     /**
      * Parses a **full** Java Runtime version string and resolves
-     * the version information. Uses Java 8 formatting.
+     * the version information. Dynamically detects the formatting
+     * to use.
      * 
      * @param {string} verString Full version string to parse.
      * @returns Object containing the version information.
      */
     static parseJavaRuntimeVersion(verString){
+        const major = verString.split('.')[0]
+        if(major == 1){
+            return AssetGuard._parseJavaRuntimeVersion_8(verString)
+        } else {
+            return AssetGuard._parseJavaRuntimeVersion_9(verString)
+        }
+    }
+
+    /**
+     * Parses a **full** Java Runtime version string and resolves
+     * the version information. Uses Java 8 formatting.
+     * 
+     * @param {string} verString Full version string to parse.
+     * @returns Object containing the version information.
+     */
+    static _parseJavaRuntimeVersion_8(verString){
         // 1.{major}.0_{update}-b{build}
         // ex. 1.8.0_152-b16
         const ret = {}
@@ -493,15 +510,55 @@ class AssetGuard extends EventEmitter {
     }
 
     /**
+     * Parses a **full** Java Runtime version string and resolves
+     * the version information. Uses Java 9+ formatting.
+     * 
+     * @param {string} verString Full version string to parse.
+     * @returns Object containing the version information.
+     */
+    static _parseJavaRuntimeVersion_9(verString){
+        // {major}.{minor}.{revision}+{build}
+        // ex. 10.0.2+13
+        const ret = {}
+        let pts = verString.split('+')
+        ret.build = parseInt(pts[1])
+        pts = pts[0].split('.')
+        ret.major = parseInt(pts[0])
+        ret.minor = parseInt(pts[1])
+        ret.revision = parseInt(pts[2])
+        return ret
+    }
+
+    /**
+     * Returns true if the actual version is greater than
+     * or equal to the desired version.
+     * 
+     * @param {string} desired The desired version.
+     * @param {string} actual The actual version.
+     */
+    static mcVersionAtLeast(desired, actual){
+        const des = desired.split('.')
+        const act = actual.split('.')
+
+        for(let i=0; i<des.length; i++){
+            if(!(parseInt(act[i]) >= parseInt(des[i]))){
+                return false
+            }
+        }
+        return true
+    }
+
+    /**
      * Validates the output of a JVM's properties. Currently validates that a JRE is x64
      * and that the major = 8, update > 52.
      * 
      * @param {string} stderr The output to validate.
+     * @param {string} mcVersion The minecraft version we are scanning for.
      * 
      * @returns {Promise.<Object>} A promise which resolves to a meta object about the JVM.
      * The validity is stored inside the `valid` property.
      */
-    static _validateJVMProperties(stderr){
+    static _validateJVMProperties(stderr, mcVersion){
         const res = stderr
         const props = res.split('\n')
 
@@ -526,11 +583,24 @@ class AssetGuard extends EventEmitter {
                 let verString = props[i].split('=')[1].trim()
                 console.log(props[i].trim())
                 const verOb = AssetGuard.parseJavaRuntimeVersion(verString)
-                if(verOb.major === 8 && verOb.update > 52){
-                    meta.version = verOb
-                    ++checksum
-                    if(checksum === goal){
-                        break
+                if(verOb.major < 9){
+                    // Java 8
+                    if(verOb.major === 8 && verOb.update > 52){
+                        meta.version = verOb
+                        ++checksum
+                        if(checksum === goal){
+                            break
+                        }
+                    }
+                } else {
+                    // Java 9+
+                    if(AssetGuard.mcVersionAtLeast('1.13', mcVersion)){
+                        console.log('Java 9+ not yet tested.')
+                        /* meta.version = verOb
+                        ++checksum
+                        if(checksum === goal){
+                            break
+                        } */
                     }
                 }
             }
@@ -550,11 +620,12 @@ class AssetGuard extends EventEmitter {
      * removed.
      * 
      * @param {string} binaryExecPath Path to the java executable we wish to validate.
+     * @param {string} mcVersion The minecraft version we are scanning for.
      * 
      * @returns {Promise.<Object>} A promise which resolves to a meta object about the JVM.
      * The validity is stored inside the `valid` property.
      */
-    static _validateJavaBinary(binaryExecPath){
+    static _validateJavaBinary(binaryExecPath, mcVersion){
 
         return new Promise((resolve, reject) => {
             if(!AssetGuard.isJavaExecPath(binaryExecPath)){
@@ -563,7 +634,7 @@ class AssetGuard extends EventEmitter {
                 child_process.exec('"' + binaryExecPath + '" -XshowSettings:properties', (err, stdout, stderr) => {
                     try {
                         // Output is stored in stderr?
-                        resolve(this._validateJVMProperties(stderr))
+                        resolve(this._validateJVMProperties(stderr, mcVersion))
                     } catch (err){
                         // Output format might have changed, validation cannot be completed.
                         resolve({valid: false})
@@ -772,10 +843,11 @@ class AssetGuard extends EventEmitter {
     /**
      * 
      * @param {Set.<string>} rootSet A set of JVM root strings to validate.
+     * @param {string} mcVersion The minecraft version we are scanning for.
      * @returns {Promise.<Object[]>} A promise which resolves to an array of meta objects
      * for each valid JVM root directory.
      */
-    static async _validateJavaRootSet(rootSet){
+    static async _validateJavaRootSet(rootSet, mcVersion){
 
         const rootArr = Array.from(rootSet)
         const validArr = []
@@ -783,7 +855,7 @@ class AssetGuard extends EventEmitter {
         for(let i=0; i<rootArr.length; i++){
 
             const execPath = AssetGuard.javaExecFromRoot(rootArr[i])
-            const metaOb = await AssetGuard._validateJavaBinary(execPath)
+            const metaOb = await AssetGuard._validateJavaBinary(execPath, mcVersion)
 
             if(metaOb.valid){
                 metaOb.execPath = execPath
@@ -805,36 +877,50 @@ class AssetGuard extends EventEmitter {
      */
     static _sortValidJavaArray(validArr){
         const retArr = validArr.sort((a, b) => {
-            // Note that Java 9+ uses semver and that will need to be accounted for in
-            // the future.
 
             if(a.version.major === b.version.major){
-
-                if(a.version.update === b.version.update){
-
-                    if(a.version.build === b.version.build){
-
-                        // Same version, give priority to JRE.
-
-                        if(a.execPath.toLowerCase().indexOf('jdk') > -1){
-                            return b.execPath.toLowerCase().indexOf('jdk') > -1 ? 0 : 1
+                
+                if(a.version.major < 9){
+                    // Java 8
+                    if(a.version.update === b.version.update){
+                        if(a.version.build === b.version.build){
+    
+                            // Same version, give priority to JRE.
+                            if(a.execPath.toLowerCase().indexOf('jdk') > -1){
+                                return b.execPath.toLowerCase().indexOf('jdk') > -1 ? 0 : 1
+                            } else {
+                                return -1
+                            }
+    
                         } else {
-                            return -1
+                            return a.version.build > b.version.build ? -1 : 1
                         }
-
-
                     } else {
-                        return a.version.build > b.version.build ? -1 : 1
+                        return  a.version.update > b.version.update ? -1 : 1
                     }
-
                 } else {
-                    return  a.version.update > b.version.update ? -1 : 1
+                    // Java 9+
+                    if(a.version.minor === b.version.minor){
+                        if(a.version.revision === b.version.revision){
+    
+                            // Same version, give priority to JRE.
+                            if(a.execPath.toLowerCase().indexOf('jdk') > -1){
+                                return b.execPath.toLowerCase().indexOf('jdk') > -1 ? 0 : 1
+                            } else {
+                                return -1
+                            }
+    
+                        } else {
+                            return a.version.revision > b.version.revision ? -1 : 1
+                        }
+                    } else {
+                        return  a.version.minor > b.version.minor ? -1 : 1
+                    }
                 }
 
             } else {
                 return a.version.major > b.version.major ? -1 : 1
             }
-
         })
 
         return retArr
@@ -851,10 +937,11 @@ class AssetGuard extends EventEmitter {
      * If versions are equal, JRE > JDK.
      * 
      * @param {string} dataDir The base launcher directory.
+     * @param {string} mcVersion The minecraft version we are scanning for.
      * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
      * x64 Java installation. If none are found, null is returned.
      */
-    static async _win32JavaValidate(dataDir){
+    static async _win32JavaValidate(dataDir, mcVersion){
 
         // Get possible paths from the registry.
         let pathSet1 = await AssetGuard._scanRegistry()
@@ -875,7 +962,7 @@ class AssetGuard extends EventEmitter {
             uberSet.add(jHome)
         }
 
-        let pathArr = await AssetGuard._validateJavaRootSet(uberSet)
+        let pathArr = await AssetGuard._validateJavaRootSet(uberSet, mcVersion)
         pathArr = AssetGuard._sortValidJavaArray(pathArr)
 
         if(pathArr.length > 0){
@@ -896,10 +983,11 @@ class AssetGuard extends EventEmitter {
      * If versions are equal, JRE > JDK.
      * 
      * @param {string} dataDir The base launcher directory.
+     * @param {string} mcVersion The minecraft version we are scanning for.
      * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
      * x64 Java installation. If none are found, null is returned.
      */
-    static async _darwinJavaValidate(dataDir){
+    static async _darwinJavaValidate(dataDir, mcVersion){
 
         const pathSet1 = await AssetGuard._scanFileSystem('/Library/Java/JavaVirtualMachines')
         const pathSet2 = await AssetGuard._scanFileSystem(path.join(dataDir, 'runtime', 'x64'))
@@ -922,7 +1010,7 @@ class AssetGuard extends EventEmitter {
             uberSet.add(jHome)
         }
 
-        let pathArr = await AssetGuard._validateJavaRootSet(uberSet)
+        let pathArr = await AssetGuard._validateJavaRootSet(uberSet, mcVersion)
         pathArr = AssetGuard._sortValidJavaArray(pathArr)
 
         if(pathArr.length > 0){
@@ -941,10 +1029,11 @@ class AssetGuard extends EventEmitter {
      * If versions are equal, JRE > JDK.
      * 
      * @param {string} dataDir The base launcher directory.
+     * @param {string} mcVersion The minecraft version we are scanning for.
      * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
      * x64 Java installation. If none are found, null is returned.
      */
-    static async _linuxJavaValidate(dataDir){
+    static async _linuxJavaValidate(dataDir, mcVersion){
 
         const pathSet1 = await AssetGuard._scanFileSystem('/usr/lib/jvm')
         const pathSet2 = await AssetGuard._scanFileSystem(path.join(dataDir, 'runtime', 'x64'))
@@ -957,7 +1046,7 @@ class AssetGuard extends EventEmitter {
             uberSet.add(jHome)
         }
         
-        let pathArr = await AssetGuard._validateJavaRootSet(uberSet)
+        let pathArr = await AssetGuard._validateJavaRootSet(uberSet, mcVersion)
         pathArr = AssetGuard._sortValidJavaArray(pathArr)
 
         if(pathArr.length > 0){
@@ -971,10 +1060,11 @@ class AssetGuard extends EventEmitter {
      * Retrieve the path of a valid x64 Java installation.
      * 
      * @param {string} dataDir The base launcher directory.
+     * @param {string} mcVersion The minecraft version we are scanning for.
      * @returns {string} A path to a valid x64 Java installation, null if none found.
      */
-    static async validateJava(dataDir){
-        return await AssetGuard['_' + process.platform + 'JavaValidate'](dataDir)
+    static async validateJava(dataDir, mcVersion){
+        return await AssetGuard['_' + process.platform + 'JavaValidate'](dataDir, mcVersion)
     }
 
     // #endregion

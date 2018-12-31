@@ -237,6 +237,8 @@ loginCancelButton.onclick = (e) => {
         loginCancelEnabled(false)
         if(loginViewCancelHandler != null){
             loginViewCancelHandler()
+            loginUsername.value = ''
+            loginPassword.value = ''
             loginViewCancelHandler = null
         }
     })
