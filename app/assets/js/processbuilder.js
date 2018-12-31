@@ -175,6 +175,32 @@ class ProcessBuilder {
     }
 
     /**
+     * Test to see if this version of forge requires the absolute: prefix
+     * on the modListFile repository field.
+     */
+    _requiresAbsolute(){
+        try {
+            const ver = this.forgeData.id.split('-')[2]
+            const pts = ver.split('.')
+            const min = [14, 23, 3, 2655]
+            for(let i=0; i<pts.length; i++){
+                const parsed = Number.parseInt(pts[i])
+                if(parsed < min[i]){
+                    return false
+                } else if(parsed > min[i]){
+                    return true
+                }
+            }
+        } catch (err) {
+            // We know old forge versions follow this format.
+            // Error must be caused by newer version.
+        }
+        
+        // Equal or errored
+        return true
+    }
+
+    /**
      * Construct a mod list json object.
      * 
      * @param {'forge' | 'liteloader'} type The mod list type to construct.
@@ -183,7 +209,7 @@ class ProcessBuilder {
      */
     constructModList(type, mods, save = false){
         const modList = {
-            repositoryRoot: path.join(this.commonDir, 'modstore')
+            repositoryRoot: ((type === 'forge' && this._requiresAbsolute()) ? 'absolute:' : '') + path.join(this.commonDir, 'modstore')
         }
 
         const ids = []
