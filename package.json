@@ -1,6 +1,6 @@
 {
   "name": "westeroscraftlauncher",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "productName": "WesterosCraft Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
@@ -72,7 +72,8 @@
       "perMachine": true,
       "allowElevation": true,
       "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico"
+      "uninstallerIcon": "build/icon.ico",
+      "allowToChangeInstallationDirectory": true
     },
     "mac": {
       "target": "dmg",
