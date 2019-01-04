@@ -1,13 +1,46 @@
-const fs     = require('fs-extra')
-const os     = require('os')
-const path   = require('path')
+const fs   = require('fs-extra')
+const os   = require('os')
+const path = require('path')
 
 const logger = require('./loggerutil')('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold')
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME)
 const dataPath = path.join(sysRoot, '.westeroscraft')
 
-const firstLaunch = !fs.existsSync(dataPath)
+// Forked processes do not have access to electron, so we have this workaround.
+const launcherDir = process.env.CONFIG_DIRECT_PATH || require('electron').remote.app.getPath('userData')
+
+/**
+ * Retrieve the absolute path of the launcher directory.
+ * 
+ * @returns {string} The absolute path of the launcher directory.
+ */
+exports.getLauncherDirectory = function(){
+    return launcherDir
+}
+
+/**
+ * Get the launcher's data directory. This is where all files related
+ * to game launch are installed (common, instances, java, etc).
+ * 
+ * @returns {string} The absolute path of the launcher's data directory.
+ */
+exports.getDataDirectory = function(def = false){
+    return !def ? config.settings.launcher.dataDirectory : DEFAULT_CONFIG.settings.launcher.dataDirectory
+}
+
+/**
+ * Set the new data directory.
+ * 
+ * @param {string} dataDirectory The new data directory.
+ */
+exports.setDataDirectory = function(dataDirectory){
+    config.settings.launcher.dataDirectory = dataDirectory
+}
+
+const configPath = path.join(exports.getLauncherDirectory(), 'config.json')
+const configPathLEGACY = path.join(dataPath, 'config.json')
+const firstLaunch = !fs.existsSync(configPath) && !fs.existsSync(configPathLEGACY)
 
 exports.getAbsoluteMinRAM = function(){
     const mem = os.totalmem()
@@ -56,7 +89,8 @@ const DEFAULT_CONFIG = {
             launchDetached: true
         },
         launcher: {
-            allowPrerelease: false
+            allowPrerelease: false,
+            dataDirectory: dataPath
         }
     },
     newsCache: {
@@ -64,8 +98,6 @@ const DEFAULT_CONFIG = {
         content: null,
         dismissed: false
     },
-    commonDirectory: path.join(dataPath, 'common'),
-    instanceDirectory: path.join(dataPath, 'instances'),
     clientToken: null,
     selectedServer: null, // Resolved
     selectedAccount: null,
@@ -81,8 +113,7 @@ let config = null
  * Save the current configuration to a file.
  */
 exports.save = function(){
-    const filePath = path.join(dataPath, 'config.json')
-    fs.writeFileSync(filePath, JSON.stringify(config, null, 4), 'UTF-8')
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'UTF-8')
 }
 
 /**
@@ -92,24 +123,29 @@ exports.save = function(){
  * need to be externally assigned.
  */
 exports.load = function(){
-    // Determine the effective configuration.
-    const filePath = path.join(dataPath, 'config.json')
+    let doLoad = true
 
-    if(!fs.existsSync(filePath)){
+    if(!fs.existsSync(configPath)){
         // Create all parent directories.
-        fs.ensureDirSync(path.join(filePath, '..'))
-        config = DEFAULT_CONFIG
-        exports.save()
-    } else {
+        fs.ensureDirSync(path.join(configPath, '..'))
+        if(fs.existsSync(configPathLEGACY)){
+            fs.moveSync(configPathLEGACY, configPath)
+        } else {
+            doLoad = false
+            config = DEFAULT_CONFIG
+            exports.save()
+        }
+    }
+    if(doLoad){
         let doValidate = false
         try {
-            config = JSON.parse(fs.readFileSync(filePath, 'UTF-8'))
+            config = JSON.parse(fs.readFileSync(configPath, 'UTF-8'))
             doValidate = true
         } catch (err){
             logger.error(err)
             logger.log('Configuration file contains malformed JSON or is corrupt.')
             logger.log('Generating a new configuration file.')
-            fs.ensureDirSync(path.join(filePath, '..'))
+            fs.ensureDirSync(path.join(configPath, '..'))
             config = DEFAULT_CONFIG
             exports.save()
         }
@@ -150,15 +186,6 @@ function validateKeySet(srcObj, destObj){
         }
     }
     return destObj
-}
-
-/**
- * Retrieve the absolute path of the launcher directory.
- * 
- * @returns {string} The absolute path of the launcher directory.
- */
-exports.getLauncherDirectory = function(){
-    return dataPath
 }
 
 /**
@@ -218,7 +245,7 @@ exports.setNewsCacheDismissed = function(dismissed){
  * @returns {string} The launcher's common directory.
  */
 exports.getCommonDirectory = function(){
-    return config.commonDirectory
+    return path.join(exports.getDataDirectory(), 'common')
 }
 
 /**
@@ -228,7 +255,7 @@ exports.getCommonDirectory = function(){
  * @returns {string} The launcher's instance directory.
  */
 exports.getInstanceDirectory = function(){
-    return config.instanceDirectory
+    return path.join(exports.getDataDirectory(), 'instances')
 }
 
 /**

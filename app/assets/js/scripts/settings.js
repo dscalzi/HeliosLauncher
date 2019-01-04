@@ -41,6 +41,24 @@ document.addEventListener('click', closeSettingsSelect)
 bindSettingsSelect()
 
 
+function bindFileSelectors(){
+    for(let ele of document.getElementsByClassName('settingsFileSelSel')){
+        if(ele.id === 'settingsJavaExecSel'){
+            ele.onchange = (e) => {
+                ele.previousElementSibling.value = ele.files[0].path
+                populateJavaExecDetails(ele.previousElementSibling.value)
+            }
+        } else {
+            ele.onchange = (e) => {
+                ele.previousElementSibling.value = ele.files[0].path
+            }
+        }
+    }
+}
+
+bindFileSelectors()
+
+
 /**
  * General Settings Functions
  */
@@ -96,6 +114,8 @@ function initSettingsValues(){
                     // Special Conditions
                     if(cVal === 'JavaExecutable'){
                         populateJavaExecDetails(v.value)
+                        v.value = gFn()
+                    } else if (cVal === 'DataDirectory'){
                         v.value = gFn()
                     } else if(cVal === 'JVMOptions'){
                         v.value = gFn().join(' ')
@@ -905,8 +925,6 @@ const settingsMinRAMLabel     = document.getElementById('settingsMinRAMLabel')
 const settingsMemoryTotal     = document.getElementById('settingsMemoryTotal')
 const settingsMemoryAvail     = document.getElementById('settingsMemoryAvail')
 const settingsJavaExecDetails = document.getElementById('settingsJavaExecDetails')
-const settingsJavaExecVal     = document.getElementById('settingsJavaExecVal')
-const settingsJavaExecSel     = document.getElementById('settingsJavaExecSel')
 
 // Store maximum memory values.
 const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM()
@@ -1090,12 +1108,6 @@ function updateRangedSlider(element, value, notch){
 function populateMemoryStatus(){
     settingsMemoryTotal.innerHTML = Number((os.totalmem()-1000000000)/1000000000).toFixed(1) + 'G'
     settingsMemoryAvail.innerHTML = Number(os.freemem()/1000000000).toFixed(1) + 'G'
-}
-
-// Bind the executable file input to the display text input.
-settingsJavaExecSel.onchange = (e) => {
-    settingsJavaExecVal.value = settingsJavaExecSel.files[0].path
-    populateJavaExecDetails(settingsJavaExecVal.value)
 }
 
 /**

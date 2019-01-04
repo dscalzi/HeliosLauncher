@@ -275,11 +275,15 @@ function asyncSystemScan(mcVersion, launchAfter = true){
 
     const loggerSysAEx = LoggerUtil('%c[SysAEx]', 'color: #353232; font-weight: bold')
 
+    const forkEnv = JSON.parse(JSON.stringify(process.env))
+    forkEnv.CONFIG_DIRECT_PATH = ConfigManager.getLauncherDirectory()
+
     // Fork a process to run validations.
     sysAEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
         ConfigManager.getCommonDirectory(),
         ConfigManager.getJavaExecutable()
     ], {
+        env: forkEnv,
         stdio: 'pipe'
     })
     // Stdout
@@ -307,7 +311,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 )
                 setOverlayHandler(() => {
                     setLaunchDetails('Preparing Java Download..')
-                    sysAEx.send({task: 'execute', function: '_enqueueOracleJRE', argsArr: [ConfigManager.getLauncherDirectory()]})
+                    sysAEx.send({task: 'execute', function: '_enqueueOracleJRE', argsArr: [ConfigManager.getDataDirectory()]})
                     toggleOverlay(false)
                 })
                 setDismissHandler(() => {
@@ -431,7 +435,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
 
     // Begin system Java scan.
     setLaunchDetails('Checking system info..')
-    sysAEx.send({task: 'execute', function: 'validateJava', argsArr: [ConfigManager.getLauncherDirectory(), mcVersion]})
+    sysAEx.send({task: 'execute', function: 'validateJava', argsArr: [ConfigManager.getDataDirectory(), mcVersion]})
 
 }
 
@@ -470,11 +474,15 @@ function dlAsync(login = true){
     const loggerAEx = LoggerUtil('%c[AEx]', 'color: #353232; font-weight: bold')
     const loggerLaunchSuite = LoggerUtil('%c[LaunchSuite]', 'color: #000668; font-weight: bold')
 
+    const forkEnv = JSON.parse(JSON.stringify(process.env))
+    forkEnv.CONFIG_DIRECT_PATH = ConfigManager.getLauncherDirectory()
+
     // Start AssetExec to run validations and downloads in a forked process.
     aEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
         ConfigManager.getCommonDirectory(),
         ConfigManager.getJavaExecutable()
     ], {
+        env: forkEnv,
         stdio: 'pipe'
     })
     // Stdout

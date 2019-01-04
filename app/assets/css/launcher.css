@@ -1092,8 +1092,9 @@ body, button {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 20px 0px;
+    padding: 20px 0px;
     width: 75%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.50);
 }
 .settingsFieldLeft {
     display: flex;
@@ -1107,6 +1108,7 @@ body, button {
 .settingsFieldDesc {
     font-size: 12px;
     color: rgba(255, 255, 255, .95);
+    margin-top: 5px;
 }
 .settingsDivider {
     height: 1px;
@@ -1185,6 +1187,93 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 3px;
     left: 50%;
     cursor: ew-resize;
+}
+
+/* File selectors */
+
+/* Main container for File selectors. */
+.settingsFileSelContainer {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.50);
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: 75%;
+}
+
+/* File selector title. */
+.settingsFileSelTitle {
+    margin-bottom: 10px;
+}
+
+/* Wrapper container for the actionable elements. */
+.settingsFileSelActions {
+    display: flex;
+    width: 90%;
+}
+
+/* File selector icon settings. */
+.settingsFileSelIcon {
+    display: flex;
+    align-items: center;
+    background: rgba(126, 126, 126, 0.57);
+    border-radius: 3px 0px 0px 3px;
+    padding: 5px;
+    transition: 0.25s ease;
+}
+.settingsFileSelSVG {
+    width: 20px;
+    height: 20px;
+    fill: white;
+}
+
+/* Disabled text field which stores the selected file path. */
+.settingsFileSelVal {
+    border-radius: 0px !important;
+    width: 100%;
+    padding: 5px 10px;
+    font-size: 12px;
+    height: 30px;
+}
+
+/* File input for file selection. */
+.settingsFileSelSel {
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+}
+.settingsFileSelSel::-webkit-file-upload-button {
+    display: none;
+}
+
+/* Wrapper label to add a custom style to the file input. */
+.settingsFileSelLabel {
+    border-left: 0px;
+    border-radius: 0px 3px 3px 0px;
+    font-size: 12px;
+    padding: 0px 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background: rgba(126, 126, 126, 0.57);
+    transition: 0.25s ease;
+    white-space: nowrap;
+}
+.settingsFileSelLabel:hover,
+.settingsFileSelLabel:focus,
+.settingsFileSelSel:focus ~ #settingsJavaExecLabel {
+    text-shadow: 0px 0px 20px white;
+}
+
+/* Description for the file selector. */
+.settingsFileSelDesc {
+    font-size: 10px;
+    margin: 20px 0px;
+    color: lightgrey;
+    width: 89%;
+}
+.settingsFileSelDesc strong {
+    font-family: 'Avenir Medium';
 }
 
 /* * *
@@ -1347,7 +1436,9 @@ input:checked + .toggleSwitchSlider:before {
 #settingsGameResolutionContainer {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.50);
+    width: 75%;
 }
 #settingsGameResolutionContent {
     display: flex;
@@ -1805,95 +1896,11 @@ input:checked + .toggleSwitchSlider:before {
     font-weight: bold;
 }
 
-/* Main container for the Java executable setting. */
-#settingsJavaExecContainer {
-    display: flex;
-    flex-direction: column;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.50);
-    margin-bottom: 20px;
-    width: 75%;
-}
-
-/* Java executable setting title. */
-#settingsJavaExecTitle {
-    margin-bottom: 10px;
-}
-
 /* Status text which displays details on the selected executable. */
 #settingsJavaExecDetails {
     font-weight: bold;
     color: grey;
     font-size: 12px;
-}
-
-/* Wrapper container for the actionable elements. */
-#settingsJavaExecActions {
-    display: flex;
-    width: 90%;
-}
-
-/* Java icon settings. */
-.settingsJavaIcon {
-    display: flex;
-    align-items: center;
-    background: rgba(126, 126, 126, 0.57);
-    border-radius: 3px 0px 0px 3px;
-    padding: 5px;
-    transition: 0.25s ease;
-}
-.settingsJavaIconSVG {
-    width: 20px;
-    height: 20px;
-    fill: white;
-}
-
-/* Disabled text field which stores the selected executable path. */
-#settingsJavaExecVal {
-    border-radius: 0px !important;
-    width: 100%;
-    padding: 5px 10px;
-    font-size: 12px;
-}
-
-/* File input for executable selection. */
-#settingsJavaExecSel {
-    width: 0px;
-    height: 0px;
-    opacity: 0;
-}
-#settingsJavaExecSel::-webkit-file-upload-button {
-    display: none;
-}
-
-/* Wrapper label to add a custom style to the file input. */
-#settingsJavaExecLabel {
-    border-left: 0px;
-    border-radius: 0px 3px 3px 0px;
-    font-size: 12px;
-    padding: 0px 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    background: rgba(126, 126, 126, 0.57);
-    transition: 0.25s ease;
-    white-space: nowrap;
-}
-#settingsJavaExecLabel:hover,
-#settingsJavaExecLabel:focus,
-#settingsJavaExecSel:focus ~ #settingsJavaExecLabel {
-    text-shadow: 0px 0px 20px white;
-}
-
-/* Description for the Java executable setting. */
-#settingsJavaExecDesc {
-    font-size: 10px;
-    margin: 20px 0px;
-    color: lightgrey;
-    font-weight: bold;
-    width: 89%;
-}
-#settingsJavaExecDesc strong {
-    font-family: 'Avenir Medium';
 }
 
 /* Main container for the JVM options setting. */
@@ -1930,6 +1937,15 @@ input:checked + .toggleSwitchSlider:before {
     color: lightgrey;
     font-weight: bold;
     width: 89%;
+}
+
+/* * *
+* Settings View (Launcher Tab)
+* * */
+
+/* Tailored style for the data directory header. */
+#settingsDataDirTitle {
+    margin-bottom: 10px;
 }
 
 /* * *
