@@ -254,6 +254,23 @@ refreshMojangStatuses()
 let mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 300000)
 let serverStatusListener = setInterval(() => refreshServerStatus(true), 300000)
 
+/**
+ * Shows an error overlay, toggles off the launch area.
+ * 
+ * @param {string} title The overlay title.
+ * @param {string} desc The overlay description.
+ */
+function showLaunchFailure(title, desc){
+    setOverlayContent(
+        title,
+        desc,
+        'Okay'
+    )
+    setOverlayHandler(null)
+    toggleOverlay(true)
+    toggleLaunchArea(false)
+}
+
 /* System (Java) Scan */
 
 let sysAEx
@@ -495,6 +512,16 @@ function dlAsync(login = true){
     aEx.stdio[2].on('data', (data) => {
         loggerAEx.log(data)
     })
+    aEx.on('error', (err) => {
+        loggerLaunchSuite.error('Error during launch', err)
+        showLaunchFailure('Error During Launch', err.message || 'See console (CTRL + Shift + i) for more details.')
+    })
+    aEx.on('close', (code, signal) => {
+        if(code !== 0){
+            loggerLaunchSuite.error(`AssetExec exited with code ${code}, assuming error.`)
+            showLaunchFailure('Error During Launch', 'See console (CTRL + Shift + i) for more details.')
+        }
+    })
 
     // Establish communications between the AssetExec and current process.
     aEx.on('message', (m) => {
@@ -575,24 +602,18 @@ function dlAsync(login = true){
                     loggerLaunchSuite.error('Error while downloading:', m.error)
                     
                     if(m.error.code === 'ENOENT'){
-                        setOverlayContent(
+                        showLaunchFailure(
                             'Download Error',
-                            'Could not connect to the file server. Ensure that you are connected to the internet and try again.',
-                            'Okay'
+                            'Could not connect to the file server. Ensure that you are connected to the internet and try again.'
                         )
-                        setOverlayHandler(null)
                     } else {
-                        setOverlayContent(
+                        showLaunchFailure(
                             'Download Error',
-                            'Check the console for more details. Please try again.',
-                            'Okay'
+                            'Check the console (CTRL + Shift + i) for more details. Please try again.'
                         )
-                        setOverlayHandler(null)
                     }
 
                     remote.getCurrentWindow().setProgressBar(-1)
-                    toggleOverlay(true)
-                    toggleLaunchArea(false)
 
                     // Disconnect from AssetExec
                     aEx.disconnect()
@@ -644,14 +665,7 @@ function dlAsync(login = true){
                     data = data.trim()
                     if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
                         loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
-                        setOverlayContent(
-                            'Error During Launch',
-                            'The main file, LaunchWrapper, failed to download properly. As a result, the game cannot launch.<br><br>To fix this issue, temporarily turn off your antivirus software and launch the game again.<br><br>If you have time, please <a href="https://github.com/WesterosCraftCode/ElectronLauncher/issues">submit an issue</a> and let us know what antivirus software you use. We\'ll contact them and try to straighten things out.',
-                            'Okay'
-                        )
-                        setOverlayHandler(null)
-                        toggleOverlay(true)
-                        toggleLaunchArea(false)
+                        showLaunchFailure('Error During Launch', 'The main file, LaunchWrapper, failed to download properly. As a result, the game cannot launch.<br><br>To fix this issue, temporarily turn off your antivirus software and launch the game again.<br><br>If you have time, please <a href="https://github.com/WesterosCraftCode/ElectronLauncher/issues">submit an issue</a> and let us know what antivirus software you use. We\'ll contact them and try to straighten things out.')
                     }
                 }
 
@@ -681,14 +695,7 @@ function dlAsync(login = true){
                 } catch(err) {
 
                     loggerLaunchSuite.error('Error during launch', err)
-                    setOverlayContent(
-                        'Error During Launch',
-                        'Please check the console for more details.',
-                        'Okay'
-                    )
-                    setOverlayHandler(null)
-                    toggleOverlay(true)
-                    toggleLaunchArea(false)
+                    showLaunchFailure('Error During Launch', 'Please check the console (CTRL + Shift + i) for more details.')
 
                 }
             }
@@ -717,15 +724,7 @@ function dlAsync(login = true){
         }, (err) => {
             loggerLaunchSuite.error('Unable to refresh distribution index.', err)
             if(DistroManager.getDistribution() == null){
-                setOverlayContent(
-                    'Fatal Error',
-                    'Could not load a copy of the distribution index. See the console for more details.',
-                    'Okay'
-                )
-                setOverlayHandler(null)
-
-                toggleOverlay(true)
-                toggleLaunchArea(false)
+                showLaunchFailure('Fatal Error', 'Could not load a copy of the distribution index. See the console (CTRL + Shift + i) for more details.')
 
                 // Disconnect from AssetExec
                 aEx.disconnect()

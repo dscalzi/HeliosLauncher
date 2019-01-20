@@ -534,7 +534,12 @@ exports.pullRemote = function(){
         const distroDest = path.join(ConfigManager.getLauncherDirectory(), 'distribution.json')
         request(opts, (error, resp, body) => {
             if(!error){
-                data = DistroIndex.fromJSON(JSON.parse(body))
+                
+                try {
+                    data = DistroIndex.fromJSON(JSON.parse(body))
+                } catch (e) {
+                    reject(e)
+                }
 
                 fs.writeFile(distroDest, body, 'utf-8', (err) => {
                     if(!err){
