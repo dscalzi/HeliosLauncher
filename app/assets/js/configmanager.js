@@ -368,6 +368,7 @@ exports.removeAuthAccount = function(uuid){
                 config.selectedAccount = keys[0]
             } else {
                 config.selectedAccount = null
+                config.clientToken = null
             }
         }
         return true
