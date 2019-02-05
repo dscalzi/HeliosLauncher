@@ -206,10 +206,17 @@ function resolveError(err){
         }
     }
     if(err.message != null){
-        // Unknown error with request.
-        return {
-            title: 'Error During Login:<br>Unknown Error',
-            desc: err.message
+        if(err.message === 'NotPaidAccount'){
+            return {
+                title: 'Error During Login:<br>Game Not Purchased',
+                desc: 'The account you are trying to login with has not purchased a copy of Minecraft.<br>You may purchase a copy on <a href="https://minecraft.net/">Minecraft.net</a>'
+            }
+        } else {
+            // Unknown error with request.
+            return {
+                title: 'Error During Login:<br>Unknown Error',
+                desc: err.message
+            }
         }
     } else {
         // Unknown Mojang error.
@@ -234,11 +241,11 @@ function loginCancelEnabled(val){
 
 loginCancelButton.onclick = (e) => {
     switchView(getCurrentView(), loginViewOnCancel, 500, 500, () => {
+        loginUsername.value = ''
+        loginPassword.value = ''
         loginCancelEnabled(false)
         if(loginViewCancelHandler != null){
             loginViewCancelHandler()
-            loginUsername.value = ''
-            loginPassword.value = ''
             loginViewCancelHandler = null
         }
     })
