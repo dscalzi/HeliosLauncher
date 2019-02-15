@@ -241,20 +241,26 @@ class ProcessBuilder {
      */
     constructJVMArguments(mods, tempNativePath){
 
-        let args = ['-Xmx' + ConfigManager.getMaxRAM(),
-            '-Xms' + ConfigManager.getMinRAM(),
-            '-Djava.library.path=' + tempNativePath,
-            '-cp',
-            this.classpathArg(mods, tempNativePath).join(process.platform === 'win32' ? ';' : ':'),
-            this.forgeData.mainClass]
+        let args = []
 
+        // Classpath Argument
+        args.push('-cp')
+        args.push(this.classpathArg(mods, tempNativePath).join(process.platform === 'win32' ? ';' : ':'))
+
+        // Java Arguments
         if(process.platform === 'darwin'){
-            args.unshift('-Xdock:name=WesterosCraft')
-            args.unshift('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
+            args.push('-Xdock:name=WesterosCraft')
+            args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
+        args.push('-Xmx' + ConfigManager.getMaxRAM())
+        args.push('-Xms' + ConfigManager.getMinRAM())
+        args = args.concat(ConfigManager.getJVMOptions())
+        args.push('-Djava.library.path=' + tempNativePath)
 
-        args.splice(2, 0, ...ConfigManager.getJVMOptions())
+        // Main Java Class
+        args.push(this.forgeData.mainClass)
 
+        // Forge Arguments
         args = args.concat(this._resolveForgeArgs())
 
         return args
@@ -298,7 +304,7 @@ class ProcessBuilder {
                         val = this.authUser.accessToken
                         break
                     case 'user_type':
-                        val = 'MOJANG'
+                        val = 'mojang'
                         break
                     case 'version_type':
                         val = this.versionData.type
@@ -309,36 +315,41 @@ class ProcessBuilder {
                 }
             }
         }
-        mcArgs.push('--modListFile')
-        mcArgs.push('absolute:' + this.fmlDir)
 
-        if(this.usingLiteLoader){
-            mcArgs.push('--modRepo')
-            mcArgs.push(this.llDir)
-
-            mcArgs.unshift('com.mumfrey.liteloader.launch.LiteLoaderTweaker')
-            mcArgs.unshift('--tweakClass')
+        // Autoconnect to the selected server.
+        if(ConfigManager.getAutoConnect() && this.server.isAutoConnect()){
+            const serverURL = new URL('my://' + this.server.getAddress())
+            mcArgs.push('--server')
+            mcArgs.push(serverURL.hostname)
+            if(serverURL.port){
+                mcArgs.push('--port')
+                mcArgs.push(serverURL.port)
+            }
         }
 
         // Prepare game resolution
         if(ConfigManager.getFullscreen()){
-            mcArgs.unshift('--fullscreen')
+            mcArgs.push('--fullscreen')
+            mcArgs.push(true)
         } else {
-            mcArgs.unshift(ConfigManager.getGameWidth())
-            mcArgs.unshift('--width')
-            mcArgs.unshift(ConfigManager.getGameHeight())
-            mcArgs.unshift('--height')
+            mcArgs.push('--width')
+            mcArgs.push(ConfigManager.getGameWidth())
+            mcArgs.push('--height')
+            mcArgs.push(ConfigManager.getGameHeight())
         }
+        
+        // Mod List File Argument
+        mcArgs.push('--modListFile')
+        mcArgs.push('absolute:' + this.fmlDir)
 
-        // Prepare autoconnect
-        if(ConfigManager.getAutoConnect() && this.server.isAutoConnect()){
-            const serverURL = new URL('my://' + this.server.getAddress())
-            mcArgs.unshift(serverURL.hostname)
-            mcArgs.unshift('--server')
-            if(serverURL.port){
-                mcArgs.unshift(serverURL.port)
-                mcArgs.unshift('--port')
-            }
+        // LiteLoader
+        if(this.usingLiteLoader){
+            mcArgs.push('--modRepo')
+            mcArgs.push(this.llDir)
+
+            // Set first arg to liteloader tweak class
+            mcArgs.unshift('com.mumfrey.liteloader.launch.LiteLoaderTweaker')
+            mcArgs.unshift('--tweakClass')
         }
 
         return mcArgs
