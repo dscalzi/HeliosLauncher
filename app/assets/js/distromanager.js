@@ -163,6 +163,7 @@ class Module {
 
             const m1 = m0[0].split(':')
 
+            this.artifactClassifier = m1[3] || undefined
             this.artifactVersion = m1[2] || '???'
             this.artifactID = m1[1] || '???'
             this.artifactGroup = m1[0] || '???'
@@ -174,7 +175,7 @@ class Module {
     }
 
     _resolveArtifactPath(artifactPath, serverid){
-        const pth = artifactPath == null ? path.join(...this.getGroup().split('.'), this.getID(), this.getVersion(), `${this.getID()}-${this.getVersion()}.${this.getExtension()}`) : artifactPath
+        const pth = artifactPath == null ? path.join(...this.getGroup().split('.'), this.getID(), this.getVersion(), `${this.getID()}-${this.getVersion()}${this.artifactClassifier != undefined ? `-${this.artifactClassifier}` : ''}.${this.getExtension()}`) : artifactPath
 
         switch (this.type){
             case exports.Types.Library:
@@ -185,6 +186,12 @@ class Module {
             case exports.Types.ForgeMod:
             case exports.Types.LiteMod:
                 this.artifact.path = path.join(ConfigManager.getCommonDirectory(), 'modstore', pth)
+                break
+            case exports.Types.VersionManifest:
+                this.artifact.path = path.join(ConfigManager.getCommonDirectory(), 'versions', this.getIdentifier(), `${this.getIdentifier()}.json`)
+                break
+            case exports.Types.VersionJar:
+                this.artifact.path = path.join(ConfigManager.getCommonDirectory(), 'versions', this.getIdentifier(), `${this.getIdentifier()}.jar`)
                 break
             case exports.Types.File:
             default:
@@ -265,6 +272,13 @@ class Module {
      */
     getVersion(){
         return this.artifactVersion
+    }
+
+    /**
+     * @returns {string} The classifier of this module's artifact
+     */
+    getClassifier(){
+        return this.artifactClassifier
     }
 
     /**
@@ -507,7 +521,9 @@ exports.Types = {
     LiteLoader: 'LiteLoader',
     ForgeMod: 'ForgeMod',
     LiteMod: 'LiteMod',
-    File: 'File'
+    File: 'File',
+    VersionManifest: 'VersionManifest',
+    VersionJar: 'VersionJar'
 }
 
 let DEV_MODE = false

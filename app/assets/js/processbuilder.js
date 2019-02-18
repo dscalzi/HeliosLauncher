@@ -4,24 +4,25 @@ const crypto                = require('crypto')
 const fs                    = require('fs-extra')
 const os                    = require('os')
 const path                  = require('path')
-const {URL}                 = require('url')
+const { URL }               = require('url')
 
-const { Library }           = require('./assetguard')
-const ConfigManager         = require('./configmanager')
-const DistroManager         = require('./distromanager')
-const LoggerUtil            = require('./loggerutil')
+const { AssetGuard, Library }  = require('./assetguard')
+const ConfigManager            = require('./configmanager')
+const DistroManager            = require('./distromanager')
+const LoggerUtil               = require('./loggerutil')
 
 const logger = LoggerUtil('%c[ProcessBuilder]', 'color: #003996; font-weight: bold')
 
 class ProcessBuilder {
 
-    constructor(distroServer, versionData, forgeData, authUser){
+    constructor(distroServer, versionData, forgeData, authUser, launcherVersion){
         this.gameDir = path.join(ConfigManager.getInstanceDirectory(), distroServer.getID())
         this.commonDir = ConfigManager.getCommonDirectory()
         this.server = distroServer
         this.versionData = versionData
         this.forgeData = forgeData
         this.authUser = authUser
+        this.launcherVersion = launcherVersion
         this.fmlDir = path.join(this.gameDir, 'forgeModList.json')
         this.llDir = path.join(this.gameDir, 'liteloaderModList.json')
         this.libPath = path.join(this.commonDir, 'libraries')
@@ -240,6 +241,22 @@ class ProcessBuilder {
      * @returns {Array.<string>} An array containing the full JVM arguments for this process.
      */
     constructJVMArguments(mods, tempNativePath){
+        if(AssetGuard.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+            return this._constructJVMArguments113(mods, tempNativePath)
+        } else {
+            return this._constructJVMArguments112(mods, tempNativePath)
+        }
+    }
+
+    /**
+     * Construct the argument array that will be passed to the JVM process.
+     * This function is for 1.12 and below.
+     * 
+     * @param {Array.<Object>} mods An array of enabled mods which will be launched with this process.
+     * @param {string} tempNativePath The path to store the native libraries.
+     * @returns {Array.<string>} An array containing the full JVM arguments for this process.
+     */
+    _constructJVMArguments112(mods, tempNativePath){
 
         let args = []
 
@@ -262,6 +279,154 @@ class ProcessBuilder {
 
         // Forge Arguments
         args = args.concat(this._resolveForgeArgs())
+
+        return args
+    }
+
+    /**
+     * Construct the argument array that will be passed to the JVM process.
+     * This function is for 1.13+
+     * 
+     * Note: Required Libs https://github.com/MinecraftForge/MinecraftForge/blob/af98088d04186452cb364280340124dfd4766a5c/src/fmllauncher/java/net/minecraftforge/fml/loading/LibraryFinder.java#L82
+     * 
+     * @param {Array.<Object>} mods An array of enabled mods which will be launched with this process.
+     * @param {string} tempNativePath The path to store the native libraries.
+     * @returns {Array.<string>} An array containing the full JVM arguments for this process.
+     */
+    _constructJVMArguments113(mods, tempNativePath){
+
+        const argDiscovery = /\${*(.*)}/
+
+        // JVM Arguments First
+        let args = this.versionData.arguments.jvm
+
+        // Java Arguments
+        if(process.platform === 'darwin'){
+            args.push('-Xdock:name=WesterosCraft')
+            args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
+        }
+        args.push('-Xmx' + ConfigManager.getMaxRAM())
+        args.push('-Xms' + ConfigManager.getMinRAM())
+        args = args.concat(ConfigManager.getJVMOptions())
+
+        // Main Java Class
+        args.push(this.forgeData.mainClass)
+
+        // Vanilla Arguments
+        args = args.concat(this.versionData.arguments.game)
+
+        for(let i=0; i<args.length; i++){
+            if(typeof args[i] === 'object' && args[i].rules != null){
+                
+                let checksum = 0
+                for(let rule of args[i].rules){
+                    if(rule.os != null){
+                        if(rule.os.name === Library.mojangFriendlyOS()
+                            && (rule.os.version == null || new RegExp(rule.os.version).test(os.release))){
+                            if(rule.action === 'allow'){
+                                checksum++
+                            }
+                        } else {
+                            if(rule.action === 'disallow'){
+                                checksum++
+                            }
+                        }
+                    } else if(rule.features != null){
+                        // We don't have many 'features' in the index at the moment.
+                        // This should be fine for a while.
+                        if(rule.features.has_custom_resolution != null && rule.features.has_custom_resolution === true){
+                            if(ConfigManager.getFullscreen()){
+                                rule.values = [
+                                    '--fullscreen',
+                                    'true'
+                                ]
+                            }
+                            checksum++
+                        }
+                    }
+                }
+
+                // TODO splice not push
+                if(checksum === args[i].rules.length){
+                    if(typeof args[i].value === 'string'){
+                        args[i] = args[i].value
+                    } else if(typeof args[i].value === 'object'){
+                        //args = args.concat(args[i].value)
+                        args.splice(i, 1, ...args[i].value)
+                    }
+
+                    // Decrement i to reprocess the resolved value
+                    i--
+                } else {
+                    args[i] = null
+                }
+
+            } else if(typeof args[i] === 'string'){
+                if(argDiscovery.test(args[i])){
+                    const identifier = args[i].match(argDiscovery)[1]
+                    let val = null
+                    switch(identifier){
+                        case 'auth_player_name':
+                            val = this.authUser.displayName.trim()
+                            break
+                        case 'version_name':
+                            //val = versionData.id
+                            val = this.server.getID()
+                            break
+                        case 'game_directory':
+                            val = this.gameDir
+                            break
+                        case 'assets_root':
+                            val = path.join(this.commonDir, 'assets')
+                            break
+                        case 'assets_index_name':
+                            val = this.versionData.assets
+                            break
+                        case 'auth_uuid':
+                            val = this.authUser.uuid.trim()
+                            break
+                        case 'auth_access_token':
+                            val = this.authUser.accessToken
+                            break
+                        case 'user_type':
+                            val = 'mojang'
+                            break
+                        case 'version_type':
+                            val = this.versionData.type
+                            break
+                        case 'resolution_width':
+                            val = ConfigManager.getGameWidth()
+                            break
+                        case 'resolution_height':
+                            val = ConfigManager.getGameHeight()
+                            break
+                        case 'natives_directory':
+                            val = args[i].replace(argDiscovery, tempNativePath)
+                            break
+                        case 'launcher_name':
+                            val = args[i].replace(argDiscovery, 'WesterosCraft-Launcher')
+                            break
+                        case 'launcher_version':
+                            val = args[i].replace(argDiscovery, this.launcherVersion)
+                            break
+                        case 'classpath':
+                            val = this.classpathArg(mods, tempNativePath).join(process.platform === 'win32' ? ';' : ':')
+                            break
+                    }
+                    if(val != null){
+                        args[i] = val
+                    }
+                }
+            }
+        }
+
+        // Forge Specific Arguments
+        args = args.concat(this.forgeData.arguments.game)
+
+        // Filter null values
+        args = args.filter(arg => {
+            return arg != null
+        })
 
         return args
     }
@@ -410,8 +575,7 @@ class ProcessBuilder {
                     libs.push(to)
                 } else {
                     // Extract the native library.
-                    const extractInst = lib.extract
-                    const exclusionArr = extractInst.exclude
+                    const exclusionArr = lib.extract != null ? lib.extract.exclude : ['META-INF/']
                     const artifact = lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()].replace('${arch}', process.arch.replace('x', ''))]
     
                     // Location of native zip.

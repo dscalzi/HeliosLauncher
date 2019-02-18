@@ -1401,12 +1401,28 @@ class AssetGuard extends EventEmitter {
             for(let ob of modules){
                 const type = ob.getType()
                 if(type === DistroManager.Types.ForgeHosted || type === DistroManager.Types.Forge){
-                    let obArtifact = ob.getArtifact()
-                    let obPath = obArtifact.getPath()
-                    let asset = new DistroModule(ob.getIdentifier(), obArtifact.getHash(), obArtifact.getSize(), obArtifact.getURL(), obPath, type)
-                    let forgeData = await AssetGuard._finalizeForgeAsset(asset, self.commonPath)
-                    resolve(forgeData)
-                    return
+                    if(AssetGuard.mcVersionAtLeast('1.13', server.getMinecraftVersion())){
+                        for(let sub of ob.getSubModules()){
+                            if(sub.getType() === DistroManager.Types.VersionManifest){
+                                const versionFile = path.join(self.commonPath, 'versions', sub.getIdentifier(), `${sub.getIdentifier()}.json`)
+                                resolve(JSON.parse(fs.readFileSync(versionFile, 'utf-8')))
+                                return
+                            }
+                        }
+                        reject('No forge version manifest found!')
+                        return
+                    } else {
+                        let obArtifact = ob.getArtifact()
+                        let obPath = obArtifact.getPath()
+                        let asset = new DistroModule(ob.getIdentifier(), obArtifact.getHash(), obArtifact.getSize(), obArtifact.getURL(), obPath, type)
+                        try {
+                            let forgeData = await AssetGuard._finalizeForgeAsset(asset, self.commonPath)
+                            resolve(forgeData)
+                        } catch (err){
+                            reject(err)
+                        }
+                        return
+                    }
                 }
             }
             reject('No forge module found!')
@@ -1686,34 +1702,44 @@ class AssetGuard extends EventEmitter {
 
     async validateEverything(serverid, dev = false){
 
-        if(!ConfigManager.isLoaded()){
-            ConfigManager.load()
-        }
-        DistroManager.setDevMode(dev)
-        const dI = await DistroManager.pullLocal()
-
-        const server = dI.getServer(serverid)
-
-        // Validate Everything
-
-        await this.validateDistribution(server)
-        this.emit('validate', 'distribution')
-        const versionData = await this.loadVersionData(server.getMinecraftVersion())
-        this.emit('validate', 'version')
-        await this.validateAssets(versionData)
-        this.emit('validate', 'assets')
-        await this.validateLibraries(versionData)
-        this.emit('validate', 'libraries')
-        await this.validateMiscellaneous(versionData)
-        this.emit('validate', 'files')
-        await this.processDlQueues()
-        //this.emit('complete', 'download')
-        const forgeData = await this.loadForgeData(server)
+        try {
+            if(!ConfigManager.isLoaded()){
+                ConfigManager.load()
+            }
+            DistroManager.setDevMode(dev)
+            const dI = await DistroManager.pullLocal()
     
-        return {
-            versionData,
-            forgeData
+            const server = dI.getServer(serverid)
+    
+            // Validate Everything
+    
+            await this.validateDistribution(server)
+            this.emit('validate', 'distribution')
+            const versionData = await this.loadVersionData(server.getMinecraftVersion())
+            this.emit('validate', 'version')
+            await this.validateAssets(versionData)
+            this.emit('validate', 'assets')
+            await this.validateLibraries(versionData)
+            this.emit('validate', 'libraries')
+            await this.validateMiscellaneous(versionData)
+            this.emit('validate', 'files')
+            await this.processDlQueues()
+            //this.emit('complete', 'download')
+            const forgeData = await this.loadForgeData(server)
+        
+            return {
+                versionData,
+                forgeData
+            }
+
+        } catch (err){
+            return {
+                versionData: null,
+                forgeData: null,
+                error: err
+            }
         }
+        
 
     }
 

@@ -33,7 +33,7 @@ process.on('message', (msg) => {
                 res.then((v) => {
                     process.send({result: v, context: func})
                 }).catch((err) => {
-                    process.send({result: err.message, context: func})
+                    process.send({result: err.message || err, context: func})
                 })
             } else {
                 process.send({result: res, context: func})
