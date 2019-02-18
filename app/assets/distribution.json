@@ -1547,6 +1547,26 @@
                         }
                         
                     ]
+                },
+                {
+                    "id": "squeek:appleskin:1.0.9",
+                    "name": "AppleSkin (test mod)",
+                    "type": "ForgeMod",
+                    "artifact": {
+                        "size": 26613,
+                         "MD5": "ada2e02e0cc3267f5d927805332c4c8b",
+                        "url": ""
+                    }
+                },
+                {
+                    "id": "com.blamejared:controlling:4.0.1",
+                    "name": "Controlling (Test Mod)",
+                    "type": "ForgeMod",
+                    "artifact": {
+                        "size": 34914,
+                         "MD5": "b4dc10b9039518ce00845ca962e6a136",
+                        "url": ""
+                    }
                 }
             ]
         }

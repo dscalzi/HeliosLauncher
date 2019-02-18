@@ -41,12 +41,21 @@ class ProcessBuilder {
         this.setupLiteLoader()
         logger.log('Using liteloader:', this.usingLiteLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
-        this.constructModList('forge', modObj.fMods, true)
-        if(this.usingLiteLoader){
-            this.constructModList('liteloader', modObj.lMods, true)
+        
+        // Mod list below 1.13
+        if(!AssetGuard.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+            this.constructModList('forge', modObj.fMods, true)
+            if(this.usingLiteLoader){
+                this.constructModList('liteloader', modObj.lMods, true)
+            }
         }
+        
         const uberModArr = modObj.fMods.concat(modObj.lMods)
-        const args = this.constructJVMArguments(uberModArr, tempNativePath)
+        let args = this.constructJVMArguments(uberModArr, tempNativePath)
+
+        if(AssetGuard.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+            args = args.concat(this.constructModArguments(modObj.fMods))
+        }
 
         logger.log('Launch Arguments:', args)
 
@@ -234,6 +243,29 @@ class ProcessBuilder {
     }
 
     /**
+     * Construct the mod argument list for forge 1.13
+     * 
+     * @param {Array.<Object>} mods An array of mods to add to the mod list.
+     */
+    constructModArguments(mods){
+        const argStr = mods.map(mod => {
+            return mod.getExtensionlessID()
+        }).join(',')
+
+        if(argStr){
+            return [
+                '--fml.mavenRoots',
+                path.join('..', '..', 'common', 'modstore'),
+                '--fml.mods',
+                argStr
+            ]
+        } else {
+            return []
+        }
+        
+    }
+
+    /**
      * Construct the argument array that will be passed to the JVM process.
      * 
      * @param {Array.<Object>} mods An array of enabled mods which will be launched with this process.
@@ -299,6 +331,8 @@ class ProcessBuilder {
 
         // JVM Arguments First
         let args = this.versionData.arguments.jvm
+
+        //args.push('-Dlog4j.configurationFile=D:\\WesterosCraft\\game\\common\\assets\\log_configs\\client-1.12.xml')
 
         // Java Arguments
         if(process.platform === 'darwin'){
