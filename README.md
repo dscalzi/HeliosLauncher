@@ -2,7 +2,7 @@
 
 <h1 align="center">Electron Launcher</h1>
 
-[<p align="center"><img src="https://img.shields.io/travis/dscalzi/ElectronLauncher.svg?style=for-the-badge" alt="travis">](https://travis-ci.org/WesterosCraftCode/ElectronLauncher) [<img src="https://img.shields.io/github/downloads/dscalzi/ElectronLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/WesterosCraftCode/ElectronLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="stark"></p>
+[<p align="center"><img src="https://img.shields.io/travis/dscalzi/ElectronLauncher.svg?style=for-the-badge" alt="travis">](https://travis-ci.org/dscalzi/ElectronLauncher) [<img src="https://img.shields.io/github/downloads/dscalzi/ElectronLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/dscalzi/ElectronLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="stark"></p>
 
 <p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
 
@@ -36,7 +36,7 @@ This is not an exhaustive list. Download and install the launcher to gauge all i
 
 ## Downloads
 
-You can download from [GitHub Releases](https://github.com/WesterosCraftCode/ElectronLauncher/releases)
+You can download from [GitHub Releases](https://github.com/dscalzi/ElectronLauncher/releases)
 
 #### Latest Release
 
@@ -179,7 +179,7 @@ Note that you **cannot** open the DevTools window while using this debug configu
 
 You may use this software in your own project so long as the following conditions are met.
 
-* Credit is expressly given to the original authors (Daniel Scalzi, WesterosCraft).
+* Credit is expressly given to the original authors (Daniel Scalzi).
   * Include a link to the original source on the launcher's About page.
   * Credit the authors and provide a link to the original source in any publications or download pages.
 * The source code remain **public** as a fork of this repository.
@@ -198,7 +198,7 @@ The best way to contact the developers is on Discord.
 
 ---
 
-### See you in Westeros.
+### See you ingame.
 
 
 [nodejs]: https://nodejs.org/en/ 'Node.js'
