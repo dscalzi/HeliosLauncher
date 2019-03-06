@@ -1,13 +1,13 @@
 {
-  "name": "westeroscraftlauncher",
+  "name": "electronlauncher",
   "version": "1.6.0",
-  "productName": "WesterosCraft Launcher",
+  "productName": "Electron Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/WesterosCraftCode/ElectronLauncher",
+  "homepage": "https://github.com/dscalzi/ElectronLauncher",
   "bugs": {
-    "url": "https://github.com/WesterosCraftCode/ElectronLauncher/issues"
+    "url": "https://github.com/dscalzi/ElectronLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -47,13 +47,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WesterosCraftCode/ElectronLauncher.git"
+    "url": "git+https://github.com/dscalzi/ElectronLauncher.git"
   },
   "build": {
-    "appId": "westeroscraftlauncher",
-    "productName": "WesterosCraft Launcher",
+    "appId": "electronlauncher",
+    "productName": "Electron Launcher",
     "artifactName": "${productName}.${ext}",
-    "copyright": "Copyright © 2018 WesterosCraft",
+    "copyright": "Copyright © 2018-2019 Daniel Scalzi",
     "directories": {
       "buildResources": "build",
       "output": "dist"
@@ -83,9 +83,9 @@
     "linux": {
       "target": "AppImage",
       "maintainer": "Daniel Scalzi",
-      "vendor": "WesterosCraft",
-      "synopsis": "Custom Launcher for WesterosCraft",
-      "description": "Custom launcher which allows users to join WesterosCraft. All mods, configurations, and updates are handled automatically.",
+      "vendor": "Daniel Scalzi",
+      "synopsis": "Modded Minecraft Launcher",
+      "description": "Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.",
       "category": "Game"
     },
     "deb": {

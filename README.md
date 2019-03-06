@@ -1,10 +1,10 @@
-<p align="center"><img src="./app/assets/images/WesterosSealCircle.png" width="150px" height="150px" alt="westeroscraft"></p>
+<p align="center"><img src="./app/assets/images/SealCircle.png" width="150px" height="150px" alt="aventium softworks"></p>
 
-<h1 align="center"> WesterosCraft Launcher</h1>
+<h1 align="center">Electron Launcher</h1>
 
-[<p align="center"><img src="https://img.shields.io/travis/WesterosCraftCode/ElectronLauncher.svg?style=for-the-badge" alt="travis">](https://travis-ci.org/WesterosCraftCode/ElectronLauncher) [<img src="https://img.shields.io/github/downloads/WesterosCraftCode/ElectronLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/WesterosCraftCode/ElectronLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="stark"></p>
+[<p align="center"><img src="https://img.shields.io/travis/dscalzi/ElectronLauncher.svg?style=for-the-badge" alt="travis">](https://travis-ci.org/WesterosCraftCode/ElectronLauncher) [<img src="https://img.shields.io/github/downloads/dscalzi/ElectronLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/WesterosCraftCode/ElectronLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="stark"></p>
 
-<p align="center">Join WesterosCraft without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
+<p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
 
 ![Screenshot 1](https://i.imgur.com/M8HVW9H.jpg)
 ![Screenshot 2](https://i.imgur.com/zDiSoq4.jpg)
@@ -36,24 +36,24 @@ This is not an exhaustive list. Download and install the launcher to gauge all i
 
 ## Downloads
 
-You can download from [GitHub Releases](https://github.com/WesterosCraftCode/ElectronLauncher/releases) or [WesterosCraft.com/launcher](https://westeroscraft.com/launcher)
+You can download from [GitHub Releases](https://github.com/WesterosCraftCode/ElectronLauncher/releases)
 
 #### Latest Release
 
-[![](https://img.shields.io/github/release/WesterosCraftCode/ElectronLauncher.svg?style=flat-square)](https://github.com/WesterosCraftCode/ElectronLauncher/releases/latest)
+[![](https://img.shields.io/github/release/dscalzi/ElectronLauncher.svg?style=flat-square)](https://github.com/dscalzi/ElectronLauncher/releases/latest)
 
 #### Latest Pre-Release
-[![](https://img.shields.io/github/release/WesterosCraftCode/ElectronLauncher/all.svg?style=flat-square)](https://github.com/WesterosCraftCode/ElectronLauncher/releases)
+[![](https://img.shields.io/github/release/dscalzi/ElectronLauncher/all.svg?style=flat-square)](https://github.com/dscalzi/ElectronLauncher/releases)
 
 **Supported Platforms**
 
-If you download from the [Releases](https://github.com/WesterosCraftCode/ElectronLauncher/releases) tab, select the installer for your system.
+If you download from the [Releases](https://github.com/dscalzi/ElectronLauncher/releases) tab, select the installer for your system.
 
 | Platform | File |
 | -------- | ---- |
-| Windows x64 | `westeroscraftlauncher-setup-VERSION.exe` |
-| macOS | `westeroscraftlauncher-VERSION.dmg` |
-| Linux x64 | `westeroscraftlauncher-VERSION-x86_64.AppImage` |
+| Windows x64 | `electronlauncher-setup-VERSION.exe` |
+| macOS | `electronlauncher-VERSION.dmg` |
+| Linux x64 | `electronlauncher-VERSION-x86_64.AppImage` |
 
 ## Console
 
@@ -85,7 +85,7 @@ If you want to export the console output, simply right click anywhere on the con
 **Clone and Install Dependencies**
 
 ```console
-> git clone https://github.com/WesterosCraftCode/ElectronLauncher.git
+> git clone https://github.com/dscalzi/ElectronLauncher.git
 > cd ElectronLauncher
 > npm install
 ```
@@ -190,13 +190,11 @@ We reserve the right to update these conditions at any time, please check back p
 
 ## Resources
 
-* [WesterosCraft][westeroscraft]
-* [Support Forum][supportforum]
 * [Wiki][wiki]
 
 The best way to contact the developers is on Discord.
 
-[![discord](https://discordapp.com/api/guilds/98469309352775680/embed.png?style=banner2)][discord]
+[![discord](https://discordapp.com/api/guilds/211524927831015424/embed.png?style=banner3)][discord]
 
 ---
 
@@ -208,7 +206,5 @@ The best way to contact the developers is on Discord.
 [mainprocess]: https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes 'Main Process'
 [rendererprocess]: https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes 'Renderer Process'
 [chromedebugger]: https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome 'Debugger for Chrome'
-[westeroscraft]: https://westeroscraft.com/ 'WesterosCraft.com'
-[supportforum]: https://westeroscraft.com/forum/support.40/ 'Support Forum'
-[discord]: https://discord.gg/hqdjs3m 'Discord'
-[wiki]: https://github.com/WesterosCraftCode/ElectronLauncher/wiki 'wiki'
+[discord]: https://discord.gg/zNWUXdt 'Discord'
+[wiki]: https://github.com/dscalzi/ElectronLauncher/wiki 'wiki'
