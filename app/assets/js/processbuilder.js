@@ -6,7 +6,7 @@ const os                    = require('os')
 const path                  = require('path')
 const { URL }               = require('url')
 
-const { AssetGuard, Library }  = require('./assetguard')
+const { Util, Library }  = require('./assetguard')
 const ConfigManager            = require('./configmanager')
 const DistroManager            = require('./distromanager')
 const LoggerUtil               = require('./loggerutil')
@@ -43,7 +43,7 @@ class ProcessBuilder {
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
         
         // Mod list below 1.13
-        if(!AssetGuard.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        if(!Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
             this.constructModList('forge', modObj.fMods, true)
             if(this.usingLiteLoader){
                 this.constructModList('liteloader', modObj.lMods, true)
@@ -53,7 +53,7 @@ class ProcessBuilder {
         const uberModArr = modObj.fMods.concat(modObj.lMods)
         let args = this.constructJVMArguments(uberModArr, tempNativePath)
 
-        if(AssetGuard.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        if(Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
             args = args.concat(this.constructModArguments(modObj.fMods))
         }
 
@@ -273,7 +273,7 @@ class ProcessBuilder {
      * @returns {Array.<string>} An array containing the full JVM arguments for this process.
      */
     constructJVMArguments(mods, tempNativePath){
-        if(AssetGuard.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        if(Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
             return this._constructJVMArguments113(mods, tempNativePath)
         } else {
             return this._constructJVMArguments112(mods, tempNativePath)

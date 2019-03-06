@@ -2,7 +2,7 @@
 const os     = require('os')
 const semver = require('semver')
 
-const { AssetGuard } = require('./assets/js/assetguard')
+const { JavaGuard } = require('./assets/js/assetguard')
 const DropinModUtil  = require('./assets/js/dropinmodutil')
 
 const settingsState = {
@@ -1117,7 +1117,8 @@ function populateMemoryStatus(){
  * @param {string} execPath The executable path to populate against.
  */
 function populateJavaExecDetails(execPath){
-    AssetGuard._validateJavaBinary(execPath).then(v => {
+    const jg = new JavaGuard(DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion())
+    jg._validateJavaBinary(execPath).then(v => {
         if(v.valid){
             if(v.version.major < 9) {
                 settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major} Update ${v.version.update} (x${v.arch})`
@@ -1326,4 +1327,4 @@ function prepareSettings(first = false) {
 }
 
 // Prepare the settings UI on startup.
-prepareSettings(true)
+//prepareSettings(true)

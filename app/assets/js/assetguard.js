@@ -145,6 +145,698 @@ class DLTracker {
 
 }
 
+class Util {
+
+    /**
+     * Returns true if the actual version is greater than
+     * or equal to the desired version.
+     * 
+     * @param {string} desired The desired version.
+     * @param {string} actual The actual version.
+     */
+    static mcVersionAtLeast(desired, actual){
+        const des = desired.split('.')
+        const act = actual.split('.')
+
+        for(let i=0; i<des.length; i++){
+            if(!(parseInt(act[i]) >= parseInt(des[i]))){
+                return false
+            }
+        }
+        return true
+    }
+
+}
+
+
+class JavaGuard extends EventEmitter {
+
+    constructor(mcVersion){
+        super()
+        this.mcVersion = mcVersion
+    }
+
+    /**
+     * @typedef OracleJREData
+     * @property {string} uri The base uri of the JRE.
+     * @property {{major: string, update: string, build: string}} version Object containing version information.
+     */
+
+    /**
+     * Resolves the latest version of Oracle's JRE and parses its download link.
+     * 
+     * @returns {Promise.<OracleJREData>} Promise which resolved to an object containing the JRE download data.
+     */
+    static _latestJREOracle(){
+
+        const url = 'https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html'
+        const regex = /https:\/\/.+?(?=\/java)\/java\/jdk\/([0-9]+u[0-9]+)-(b[0-9]+)\/([a-f0-9]{32})?\/jre-\1/
+    
+        return new Promise((resolve, reject) => {
+            request(url, (err, resp, body) => {
+                if(!err){
+                    const arr = body.match(regex)
+                    const verSplit = arr[1].split('u')
+                    resolve({
+                        uri: arr[0],
+                        version: {
+                            major: verSplit[0],
+                            update: verSplit[1],
+                            build: arr[2]
+                        }
+                    })
+                } else {
+                    resolve(null)
+                }
+            })
+        })
+    }
+
+    /**
+     * Returns the path of the OS-specific executable for the given Java
+     * installation. Supported OS's are win32, darwin, linux.
+     * 
+     * @param {string} rootDir The root directory of the Java installation.
+     * @returns {string} The path to the Java executable.
+     */
+    static javaExecFromRoot(rootDir){
+        if(process.platform === 'win32'){
+            return path.join(rootDir, 'bin', 'javaw.exe')
+        } else if(process.platform === 'darwin'){
+            return path.join(rootDir, 'Contents', 'Home', 'bin', 'java')
+        } else if(process.platform === 'linux'){
+            return path.join(rootDir, 'bin', 'java')
+        }
+        return rootDir
+    }
+
+    /**
+     * Check to see if the given path points to a Java executable.
+     * 
+     * @param {string} pth The path to check against.
+     * @returns {boolean} True if the path points to a Java executable, otherwise false.
+     */
+    static isJavaExecPath(pth){
+        if(process.platform === 'win32'){
+            return pth.endsWith(path.join('bin', 'javaw.exe'))
+        } else if(process.platform === 'darwin'){
+            return pth.endsWith(path.join('bin', 'java'))
+        } else if(process.platform === 'linux'){
+            return pth.endsWith(path.join('bin', 'java'))
+        }
+        return false
+    }
+
+    /**
+     * Load Mojang's launcher.json file.
+     * 
+     * @returns {Promise.<Object>} Promise which resolves to Mojang's launcher.json object.
+     */
+    static loadMojangLauncherData(){
+        return new Promise((resolve, reject) => {
+            request.get('https://launchermeta.mojang.com/mc/launcher.json', (err, resp, body) => {
+                if(err){
+                    resolve(null)
+                } else {
+                    resolve(JSON.parse(body))
+                }
+            })
+        })
+    }
+
+    /**
+     * Parses a **full** Java Runtime version string and resolves
+     * the version information. Dynamically detects the formatting
+     * to use.
+     * 
+     * @param {string} verString Full version string to parse.
+     * @returns Object containing the version information.
+     */
+    static parseJavaRuntimeVersion(verString){
+        const major = verString.split('.')[0]
+        if(major == 1){
+            return JavaGuard._parseJavaRuntimeVersion_8(verString)
+        } else {
+            return JavaGuard._parseJavaRuntimeVersion_9(verString)
+        }
+    }
+
+    /**
+     * Parses a **full** Java Runtime version string and resolves
+     * the version information. Uses Java 8 formatting.
+     * 
+     * @param {string} verString Full version string to parse.
+     * @returns Object containing the version information.
+     */
+    static _parseJavaRuntimeVersion_8(verString){
+        // 1.{major}.0_{update}-b{build}
+        // ex. 1.8.0_152-b16
+        const ret = {}
+        let pts = verString.split('-')
+        ret.build = parseInt(pts[1].substring(1))
+        pts = pts[0].split('_')
+        ret.update = parseInt(pts[1])
+        ret.major = parseInt(pts[0].split('.')[1])
+        return ret
+    }
+
+    /**
+     * Parses a **full** Java Runtime version string and resolves
+     * the version information. Uses Java 9+ formatting.
+     * 
+     * @param {string} verString Full version string to parse.
+     * @returns Object containing the version information.
+     */
+    static _parseJavaRuntimeVersion_9(verString){
+        // {major}.{minor}.{revision}+{build}
+        // ex. 10.0.2+13
+        const ret = {}
+        let pts = verString.split('+')
+        ret.build = parseInt(pts[1])
+        pts = pts[0].split('.')
+        ret.major = parseInt(pts[0])
+        ret.minor = parseInt(pts[1])
+        ret.revision = parseInt(pts[2])
+        return ret
+    }
+
+    /**
+     * Validates the output of a JVM's properties. Currently validates that a JRE is x64
+     * and that the major = 8, update > 52.
+     * 
+     * @param {string} stderr The output to validate.
+     * 
+     * @returns {Promise.<Object>} A promise which resolves to a meta object about the JVM.
+     * The validity is stored inside the `valid` property.
+     */
+    _validateJVMProperties(stderr){
+        const res = stderr
+        const props = res.split('\n')
+
+        const goal = 2
+        let checksum = 0
+
+        const meta = {}
+
+        for(let i=0; i<props.length; i++){
+            if(props[i].indexOf('sun.arch.data.model') > -1){
+                let arch = props[i].split('=')[1].trim()
+                arch = parseInt(arch)
+                console.log(props[i].trim())
+                if(arch === 64){
+                    meta.arch = arch
+                    ++checksum
+                    if(checksum === goal){
+                        break
+                    }
+                }
+            } else if(props[i].indexOf('java.runtime.version') > -1){
+                let verString = props[i].split('=')[1].trim()
+                console.log(props[i].trim())
+                const verOb = JavaGuard.parseJavaRuntimeVersion(verString)
+                if(verOb.major < 9){
+                    // Java 8
+                    if(verOb.major === 8 && verOb.update > 52){
+                        meta.version = verOb
+                        ++checksum
+                        if(checksum === goal){
+                            break
+                        }
+                    }
+                } else {
+                    // Java 9+
+                    if(Util.mcVersionAtLeast('1.13', this.mcVersion)){
+                        console.log('Java 9+ not yet tested.')
+                        /* meta.version = verOb
+                        ++checksum
+                        if(checksum === goal){
+                            break
+                        } */
+                    }
+                }
+            }
+        }
+
+        meta.valid = checksum === goal
+        
+        return meta
+    }
+
+    /**
+     * Validates that a Java binary is at least 64 bit. This makes use of the non-standard
+     * command line option -XshowSettings:properties. The output of this contains a property,
+     * sun.arch.data.model = ARCH, in which ARCH is either 32 or 64. This option is supported
+     * in Java 8 and 9. Since this is a non-standard option. This will resolve to true if
+     * the function's code throws errors. That would indicate that the option is changed or
+     * removed.
+     * 
+     * @param {string} binaryExecPath Path to the java executable we wish to validate.
+     * 
+     * @returns {Promise.<Object>} A promise which resolves to a meta object about the JVM.
+     * The validity is stored inside the `valid` property.
+     */
+    _validateJavaBinary(binaryExecPath){
+
+        return new Promise((resolve, reject) => {
+            if(!JavaGuard.isJavaExecPath(binaryExecPath)){
+                resolve({valid: false})
+            } else if(fs.existsSync(binaryExecPath)){
+                child_process.exec('"' + binaryExecPath + '" -XshowSettings:properties', (err, stdout, stderr) => {
+                    try {
+                        // Output is stored in stderr?
+                        resolve(this._validateJVMProperties(stderr))
+                    } catch (err){
+                        // Output format might have changed, validation cannot be completed.
+                        resolve({valid: false})
+                    }
+                })
+            } else {
+                resolve({valid: false})
+            }
+        })
+        
+    }
+
+    /**
+     * Checks for the presence of the environment variable JAVA_HOME. If it exits, we will check
+     * to see if the value points to a path which exists. If the path exits, the path is returned.
+     * 
+     * @returns {string} The path defined by JAVA_HOME, if it exists. Otherwise null.
+     */
+    static _scanJavaHome(){
+        const jHome = process.env.JAVA_HOME
+        try {
+            let res = fs.existsSync(jHome)
+            return res ? jHome : null
+        } catch (err) {
+            // Malformed JAVA_HOME property.
+            return null
+        }
+    }
+
+    /**
+     * Scans the registry for 64-bit Java entries. The paths of each entry are added to
+     * a set and returned. Currently, only Java 8 (1.8) is supported.
+     * 
+     * @returns {Promise.<Set.<string>>} A promise which resolves to a set of 64-bit Java root
+     * paths found in the registry.
+     */
+    static _scanRegistry(){
+
+        return new Promise((resolve, reject) => {
+            // Keys for Java v9.0.0 and later:
+            // 'SOFTWARE\\JavaSoft\\JRE'
+            // 'SOFTWARE\\JavaSoft\\JDK'
+            // Forge does not yet support Java 9, therefore we do not.
+
+            // Keys for Java 1.8 and prior:
+            const regKeys = [
+                '\\SOFTWARE\\JavaSoft\\Java Runtime Environment',
+                '\\SOFTWARE\\JavaSoft\\Java Development Kit'
+            ]
+
+            let keysDone = 0
+
+            const candidates = new Set()
+
+            for(let i=0; i<regKeys.length; i++){
+                const key = new Registry({
+                    hive: Registry.HKLM,
+                    key: regKeys[i],
+                    arch: 'x64'
+                })
+                key.keyExists((err, exists) => {
+                    if(exists) {
+                        key.keys((err, javaVers) => {
+                            if(err){
+                                keysDone++
+                                console.error(err)
+
+                                // REG KEY DONE
+                                // DUE TO ERROR
+                                if(keysDone === regKeys.length){
+                                    resolve(candidates)
+                                }
+                            } else {
+                                if(javaVers.length === 0){
+                                    // REG KEY DONE
+                                    // NO SUBKEYS
+                                    keysDone++
+                                    if(keysDone === regKeys.length){
+                                        resolve(candidates)
+                                    }
+                                } else {
+
+                                    let numDone = 0
+
+                                    for(let j=0; j<javaVers.length; j++){
+                                        const javaVer = javaVers[j]
+                                        const vKey = javaVer.key.substring(javaVer.key.lastIndexOf('\\')+1)
+                                        // Only Java 8 is supported currently.
+                                        if(parseFloat(vKey) === 1.8){
+                                            javaVer.get('JavaHome', (err, res) => {
+                                                const jHome = res.value
+                                                if(jHome.indexOf('(x86)') === -1){
+                                                    candidates.add(jHome)
+                                                }
+
+                                                // SUBKEY DONE
+
+                                                numDone++
+                                                if(numDone === javaVers.length){
+                                                    keysDone++
+                                                    if(keysDone === regKeys.length){
+                                                        resolve(candidates)
+                                                    }
+                                                }
+                                            })
+                                        } else {
+
+                                            // SUBKEY DONE
+                                            // NOT JAVA 8
+
+                                            numDone++
+                                            if(numDone === javaVers.length){
+                                                keysDone++
+                                                if(keysDone === regKeys.length){
+                                                    resolve(candidates)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                    } else {
+
+                        // REG KEY DONE
+                        // DUE TO NON-EXISTANCE
+
+                        keysDone++
+                        if(keysDone === regKeys.length){
+                            resolve(candidates)
+                        }
+                    }
+                })
+            }
+
+        })
+        
+    }
+
+    /**
+     * See if JRE exists in the Internet Plug-Ins folder.
+     * 
+     * @returns {string} The path of the JRE if found, otherwise null.
+     */
+    static _scanInternetPlugins(){
+        // /Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java
+        const pth = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin'
+        const res = fs.existsSync(JavaGuard.javaExecFromRoot(pth))
+        return res ? pth : null
+    }
+
+    /**
+     * Scan a directory for root JVM folders.
+     * 
+     * @param {string} scanDir The directory to scan.
+     * @returns {Promise.<Set.<string>>} A promise which resolves to a set of the discovered
+     * root JVM folders.
+     */
+    static _scanFileSystem(scanDir){
+        return new Promise((resolve, reject) => {
+
+            fs.exists(scanDir, (e) => {
+
+                let res = new Set()
+                
+                if(e){
+                    fs.readdir(scanDir, (err, files) => {
+                        if(err){
+                            resolve(res)
+                            console.log(err)
+                        } else {
+                            let pathsDone = 0
+
+                            for(let i=0; i<files.length; i++){
+
+                                const combinedPath = path.join(scanDir, files[i])
+                                const execPath = JavaGuard.javaExecFromRoot(combinedPath)
+
+                                fs.exists(execPath, (v) => {
+
+                                    if(v){
+                                        res.add(combinedPath)
+                                    }
+
+                                    ++pathsDone
+
+                                    if(pathsDone === files.length){
+                                        resolve(res)
+                                    }
+
+                                })
+                            }
+                            if(pathsDone === files.length){
+                                resolve(res)
+                            }
+                        }
+                    })
+                } else {
+                    resolve(res)
+                }
+            })
+
+        })
+    }
+
+    /**
+     * 
+     * @param {Set.<string>} rootSet A set of JVM root strings to validate.
+     * @returns {Promise.<Object[]>} A promise which resolves to an array of meta objects
+     * for each valid JVM root directory.
+     */
+    async _validateJavaRootSet(rootSet){
+
+        const rootArr = Array.from(rootSet)
+        const validArr = []
+
+        for(let i=0; i<rootArr.length; i++){
+
+            const execPath = JavaGuard.javaExecFromRoot(rootArr[i])
+            const metaOb = await this._validateJavaBinary(execPath)
+
+            if(metaOb.valid){
+                metaOb.execPath = execPath
+                validArr.push(metaOb)
+            }
+
+        }
+
+        return validArr
+
+    }
+
+    /**
+     * Sort an array of JVM meta objects. Best candidates are placed before all others.
+     * Sorts based on version and gives priority to JREs over JDKs if versions match.
+     * 
+     * @param {Object[]} validArr An array of JVM meta objects.
+     * @returns {Object[]} A sorted array of JVM meta objects.
+     */
+    static _sortValidJavaArray(validArr){
+        const retArr = validArr.sort((a, b) => {
+
+            if(a.version.major === b.version.major){
+                
+                if(a.version.major < 9){
+                    // Java 8
+                    if(a.version.update === b.version.update){
+                        if(a.version.build === b.version.build){
+    
+                            // Same version, give priority to JRE.
+                            if(a.execPath.toLowerCase().indexOf('jdk') > -1){
+                                return b.execPath.toLowerCase().indexOf('jdk') > -1 ? 0 : 1
+                            } else {
+                                return -1
+                            }
+    
+                        } else {
+                            return a.version.build > b.version.build ? -1 : 1
+                        }
+                    } else {
+                        return  a.version.update > b.version.update ? -1 : 1
+                    }
+                } else {
+                    // Java 9+
+                    if(a.version.minor === b.version.minor){
+                        if(a.version.revision === b.version.revision){
+    
+                            // Same version, give priority to JRE.
+                            if(a.execPath.toLowerCase().indexOf('jdk') > -1){
+                                return b.execPath.toLowerCase().indexOf('jdk') > -1 ? 0 : 1
+                            } else {
+                                return -1
+                            }
+    
+                        } else {
+                            return a.version.revision > b.version.revision ? -1 : 1
+                        }
+                    } else {
+                        return  a.version.minor > b.version.minor ? -1 : 1
+                    }
+                }
+
+            } else {
+                return a.version.major > b.version.major ? -1 : 1
+            }
+        })
+
+        return retArr
+    }
+
+    /**
+     * Attempts to find a valid x64 installation of Java on Windows machines.
+     * Possible paths will be pulled from the registry and the JAVA_HOME environment
+     * variable. The paths will be sorted with higher versions preceeding lower, and
+     * JREs preceeding JDKs. The binaries at the sorted paths will then be validated.
+     * The first validated is returned.
+     * 
+     * Higher versions > Lower versions
+     * If versions are equal, JRE > JDK.
+     * 
+     * @param {string} dataDir The base launcher directory.
+     * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
+     * x64 Java installation. If none are found, null is returned.
+     */
+    async _win32JavaValidate(dataDir){
+
+        // Get possible paths from the registry.
+        let pathSet1 = await JavaGuard._scanRegistry()
+        if(pathSet1.length === 0){
+            // Do a manual file system scan of program files.
+            pathSet1 = JavaGuard._scanFileSystem('C:\\Program Files\\Java')
+        }
+
+        // Get possible paths from the data directory.
+        const pathSet2 = await JavaGuard._scanFileSystem(path.join(dataDir, 'runtime', 'x64'))
+
+        // Merge the results.
+        const uberSet = new Set([...pathSet1, ...pathSet2])
+
+        // Validate JAVA_HOME.
+        const jHome = JavaGuard._scanJavaHome()
+        if(jHome != null && jHome.indexOf('(x86)') === -1){
+            uberSet.add(jHome)
+        }
+
+        let pathArr = await this._validateJavaRootSet(uberSet)
+        pathArr = JavaGuard._sortValidJavaArray(pathArr)
+
+        if(pathArr.length > 0){
+            return pathArr[0].execPath
+        } else {
+            return null
+        }
+
+    }
+
+    /**
+     * Attempts to find a valid x64 installation of Java on MacOS.
+     * The system JVM directory is scanned for possible installations.
+     * The JAVA_HOME enviroment variable and internet plugins directory
+     * are also scanned and validated.
+     * 
+     * Higher versions > Lower versions
+     * If versions are equal, JRE > JDK.
+     * 
+     * @param {string} dataDir The base launcher directory.
+     * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
+     * x64 Java installation. If none are found, null is returned.
+     */
+    async _darwinJavaValidate(dataDir){
+
+        const pathSet1 = await JavaGuard._scanFileSystem('/Library/Java/JavaVirtualMachines')
+        const pathSet2 = await JavaGuard._scanFileSystem(path.join(dataDir, 'runtime', 'x64'))
+
+        const uberSet = new Set([...pathSet1, ...pathSet2])
+
+        // Check Internet Plugins folder.
+        const iPPath = JavaGuard._scanInternetPlugins()
+        if(iPPath != null){
+            uberSet.add(iPPath)
+        }
+
+        // Check the JAVA_HOME environment variable.
+        let jHome = JavaGuard._scanJavaHome()
+        if(jHome != null){
+            // Ensure we are at the absolute root.
+            if(jHome.contains('/Contents/Home')){
+                jHome = jHome.substring(0, jHome.indexOf('/Contents/Home'))
+            }
+            uberSet.add(jHome)
+        }
+
+        let pathArr = await this._validateJavaRootSet(uberSet)
+        pathArr = JavaGuard._sortValidJavaArray(pathArr)
+
+        if(pathArr.length > 0){
+            return pathArr[0].execPath
+        } else {
+            return null
+        }
+    }
+
+    /**
+     * Attempts to find a valid x64 installation of Java on Linux.
+     * The system JVM directory is scanned for possible installations.
+     * The JAVA_HOME enviroment variable is also scanned and validated.
+     * 
+     * Higher versions > Lower versions
+     * If versions are equal, JRE > JDK.
+     * 
+     * @param {string} dataDir The base launcher directory.
+     * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
+     * x64 Java installation. If none are found, null is returned.
+     */
+    async _linuxJavaValidate(dataDir){
+
+        const pathSet1 = await JavaGuard._scanFileSystem('/usr/lib/jvm')
+        const pathSet2 = await JavaGuard._scanFileSystem(path.join(dataDir, 'runtime', 'x64'))
+        
+        const uberSet = new Set([...pathSet1, ...pathSet2])
+
+        // Validate JAVA_HOME
+        const jHome = JavaGuard._scanJavaHome()
+        if(jHome != null){
+            uberSet.add(jHome)
+        }
+        
+        let pathArr = await this._validateJavaRootSet(uberSet)
+        pathArr = JavaGuard._sortValidJavaArray(pathArr)
+
+        if(pathArr.length > 0){
+            return pathArr[0].execPath
+        } else {
+            return null
+        }
+    }
+
+    /**
+     * Retrieve the path of a valid x64 Java installation.
+     * 
+     * @param {string} dataDir The base launcher directory.
+     * @returns {string} A path to a valid x64 Java installation, null if none found.
+     */
+    async validateJava(dataDir){
+        return await this['_' + process.platform + 'JavaValidate'](dataDir)
+    }
+
+}
+
+
+
+
 /**
  * Central object class used for control flow. This object stores data about
  * categories of downloads. Each category is assigned an identifier with a 
@@ -378,693 +1070,6 @@ class AssetGuard extends EventEmitter {
                 reject('Unable to finalize Forge processing, version.json not found! Has forge changed their format?')
             })
         })
-    }
-
-    // #endregion
-
-    // Static Java Utility
-    // #region
-
-    /**
-     * @typedef OracleJREData
-     * @property {string} uri The base uri of the JRE.
-     * @property {{major: string, update: string, build: string}} version Object containing version information.
-     */
-
-    /**
-     * Resolves the latest version of Oracle's JRE and parses its download link.
-     * 
-     * @returns {Promise.<OracleJREData>} Promise which resolved to an object containing the JRE download data.
-     */
-    static _latestJREOracle(){
-
-        const url = 'https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html'
-        const regex = /https:\/\/.+?(?=\/java)\/java\/jdk\/([0-9]+u[0-9]+)-(b[0-9]+)\/([a-f0-9]{32})?\/jre-\1/
-    
-        return new Promise((resolve, reject) => {
-            request(url, (err, resp, body) => {
-                if(!err){
-                    const arr = body.match(regex)
-                    const verSplit = arr[1].split('u')
-                    resolve({
-                        uri: arr[0],
-                        version: {
-                            major: verSplit[0],
-                            update: verSplit[1],
-                            build: arr[2]
-                        }
-                    })
-                } else {
-                    resolve(null)
-                }
-            })
-        })
-    }
-
-    /**
-     * Returns the path of the OS-specific executable for the given Java
-     * installation. Supported OS's are win32, darwin, linux.
-     * 
-     * @param {string} rootDir The root directory of the Java installation.
-     * @returns {string} The path to the Java executable.
-     */
-    static javaExecFromRoot(rootDir){
-        if(process.platform === 'win32'){
-            return path.join(rootDir, 'bin', 'javaw.exe')
-        } else if(process.platform === 'darwin'){
-            return path.join(rootDir, 'Contents', 'Home', 'bin', 'java')
-        } else if(process.platform === 'linux'){
-            return path.join(rootDir, 'bin', 'java')
-        }
-        return rootDir
-    }
-
-    /**
-     * Check to see if the given path points to a Java executable.
-     * 
-     * @param {string} pth The path to check against.
-     * @returns {boolean} True if the path points to a Java executable, otherwise false.
-     */
-    static isJavaExecPath(pth){
-        if(process.platform === 'win32'){
-            return pth.endsWith(path.join('bin', 'javaw.exe'))
-        } else if(process.platform === 'darwin'){
-            return pth.endsWith(path.join('bin', 'java'))
-        } else if(process.platform === 'linux'){
-            return pth.endsWith(path.join('bin', 'java'))
-        }
-        return false
-    }
-
-    /**
-     * Load Mojang's launcher.json file.
-     * 
-     * @returns {Promise.<Object>} Promise which resolves to Mojang's launcher.json object.
-     */
-    static loadMojangLauncherData(){
-        return new Promise((resolve, reject) => {
-            request.get('https://launchermeta.mojang.com/mc/launcher.json', (err, resp, body) => {
-                if(err){
-                    resolve(null)
-                } else {
-                    resolve(JSON.parse(body))
-                }
-            })
-        })
-    }
-
-    /**
-     * Parses a **full** Java Runtime version string and resolves
-     * the version information. Dynamically detects the formatting
-     * to use.
-     * 
-     * @param {string} verString Full version string to parse.
-     * @returns Object containing the version information.
-     */
-    static parseJavaRuntimeVersion(verString){
-        const major = verString.split('.')[0]
-        if(major == 1){
-            return AssetGuard._parseJavaRuntimeVersion_8(verString)
-        } else {
-            return AssetGuard._parseJavaRuntimeVersion_9(verString)
-        }
-    }
-
-    /**
-     * Parses a **full** Java Runtime version string and resolves
-     * the version information. Uses Java 8 formatting.
-     * 
-     * @param {string} verString Full version string to parse.
-     * @returns Object containing the version information.
-     */
-    static _parseJavaRuntimeVersion_8(verString){
-        // 1.{major}.0_{update}-b{build}
-        // ex. 1.8.0_152-b16
-        const ret = {}
-        let pts = verString.split('-')
-        ret.build = parseInt(pts[1].substring(1))
-        pts = pts[0].split('_')
-        ret.update = parseInt(pts[1])
-        ret.major = parseInt(pts[0].split('.')[1])
-        return ret
-    }
-
-    /**
-     * Parses a **full** Java Runtime version string and resolves
-     * the version information. Uses Java 9+ formatting.
-     * 
-     * @param {string} verString Full version string to parse.
-     * @returns Object containing the version information.
-     */
-    static _parseJavaRuntimeVersion_9(verString){
-        // {major}.{minor}.{revision}+{build}
-        // ex. 10.0.2+13
-        const ret = {}
-        let pts = verString.split('+')
-        ret.build = parseInt(pts[1])
-        pts = pts[0].split('.')
-        ret.major = parseInt(pts[0])
-        ret.minor = parseInt(pts[1])
-        ret.revision = parseInt(pts[2])
-        return ret
-    }
-
-    /**
-     * Returns true if the actual version is greater than
-     * or equal to the desired version.
-     * 
-     * @param {string} desired The desired version.
-     * @param {string} actual The actual version.
-     */
-    static mcVersionAtLeast(desired, actual){
-        const des = desired.split('.')
-        const act = actual.split('.')
-
-        for(let i=0; i<des.length; i++){
-            if(!(parseInt(act[i]) >= parseInt(des[i]))){
-                return false
-            }
-        }
-        return true
-    }
-
-    /**
-     * Validates the output of a JVM's properties. Currently validates that a JRE is x64
-     * and that the major = 8, update > 52.
-     * 
-     * @param {string} stderr The output to validate.
-     * @param {string} mcVersion The minecraft version we are scanning for.
-     * 
-     * @returns {Promise.<Object>} A promise which resolves to a meta object about the JVM.
-     * The validity is stored inside the `valid` property.
-     */
-    static _validateJVMProperties(stderr, mcVersion){
-        const res = stderr
-        const props = res.split('\n')
-
-        const goal = 2
-        let checksum = 0
-
-        const meta = {}
-
-        for(let i=0; i<props.length; i++){
-            if(props[i].indexOf('sun.arch.data.model') > -1){
-                let arch = props[i].split('=')[1].trim()
-                arch = parseInt(arch)
-                console.log(props[i].trim())
-                if(arch === 64){
-                    meta.arch = arch
-                    ++checksum
-                    if(checksum === goal){
-                        break
-                    }
-                }
-            } else if(props[i].indexOf('java.runtime.version') > -1){
-                let verString = props[i].split('=')[1].trim()
-                console.log(props[i].trim())
-                const verOb = AssetGuard.parseJavaRuntimeVersion(verString)
-                if(verOb.major < 9){
-                    // Java 8
-                    if(verOb.major === 8 && verOb.update > 52){
-                        meta.version = verOb
-                        ++checksum
-                        if(checksum === goal){
-                            break
-                        }
-                    }
-                } else {
-                    // Java 9+
-                    if(AssetGuard.mcVersionAtLeast('1.13', mcVersion)){
-                        console.log('Java 9+ not yet tested.')
-                        /* meta.version = verOb
-                        ++checksum
-                        if(checksum === goal){
-                            break
-                        } */
-                    }
-                }
-            }
-        }
-
-        meta.valid = checksum === goal
-        
-        return meta
-    }
-
-    /**
-     * Validates that a Java binary is at least 64 bit. This makes use of the non-standard
-     * command line option -XshowSettings:properties. The output of this contains a property,
-     * sun.arch.data.model = ARCH, in which ARCH is either 32 or 64. This option is supported
-     * in Java 8 and 9. Since this is a non-standard option. This will resolve to true if
-     * the function's code throws errors. That would indicate that the option is changed or
-     * removed.
-     * 
-     * @param {string} binaryExecPath Path to the java executable we wish to validate.
-     * @param {string} mcVersion The minecraft version we are scanning for.
-     * 
-     * @returns {Promise.<Object>} A promise which resolves to a meta object about the JVM.
-     * The validity is stored inside the `valid` property.
-     */
-    static _validateJavaBinary(binaryExecPath, mcVersion){
-
-        return new Promise((resolve, reject) => {
-            if(!AssetGuard.isJavaExecPath(binaryExecPath)){
-                resolve({valid: false})
-            } else if(fs.existsSync(binaryExecPath)){
-                child_process.exec('"' + binaryExecPath + '" -XshowSettings:properties', (err, stdout, stderr) => {
-                    try {
-                        // Output is stored in stderr?
-                        resolve(this._validateJVMProperties(stderr, mcVersion))
-                    } catch (err){
-                        // Output format might have changed, validation cannot be completed.
-                        resolve({valid: false})
-                    }
-                })
-            } else {
-                resolve({valid: false})
-            }
-        })
-        
-    }
-
-    /**
-     * Checks for the presence of the environment variable JAVA_HOME. If it exits, we will check
-     * to see if the value points to a path which exists. If the path exits, the path is returned.
-     * 
-     * @returns {string} The path defined by JAVA_HOME, if it exists. Otherwise null.
-     */
-    static _scanJavaHome(){
-        const jHome = process.env.JAVA_HOME
-        try {
-            let res = fs.existsSync(jHome)
-            return res ? jHome : null
-        } catch (err) {
-            // Malformed JAVA_HOME property.
-            return null
-        }
-    }
-
-    /**
-     * Scans the registry for 64-bit Java entries. The paths of each entry are added to
-     * a set and returned. Currently, only Java 8 (1.8) is supported.
-     * 
-     * @returns {Promise.<Set.<string>>} A promise which resolves to a set of 64-bit Java root
-     * paths found in the registry.
-     */
-    static _scanRegistry(){
-
-        return new Promise((resolve, reject) => {
-            // Keys for Java v9.0.0 and later:
-            // 'SOFTWARE\\JavaSoft\\JRE'
-            // 'SOFTWARE\\JavaSoft\\JDK'
-            // Forge does not yet support Java 9, therefore we do not.
-
-            // Keys for Java 1.8 and prior:
-            const regKeys = [
-                '\\SOFTWARE\\JavaSoft\\Java Runtime Environment',
-                '\\SOFTWARE\\JavaSoft\\Java Development Kit'
-            ]
-
-            let keysDone = 0
-
-            const candidates = new Set()
-
-            for(let i=0; i<regKeys.length; i++){
-                const key = new Registry({
-                    hive: Registry.HKLM,
-                    key: regKeys[i],
-                    arch: 'x64'
-                })
-                key.keyExists((err, exists) => {
-                    if(exists) {
-                        key.keys((err, javaVers) => {
-                            if(err){
-                                keysDone++
-                                console.error(err)
-
-                                // REG KEY DONE
-                                // DUE TO ERROR
-                                if(keysDone === regKeys.length){
-                                    resolve(candidates)
-                                }
-                            } else {
-                                if(javaVers.length === 0){
-                                    // REG KEY DONE
-                                    // NO SUBKEYS
-                                    keysDone++
-                                    if(keysDone === regKeys.length){
-                                        resolve(candidates)
-                                    }
-                                } else {
-
-                                    let numDone = 0
-
-                                    for(let j=0; j<javaVers.length; j++){
-                                        const javaVer = javaVers[j]
-                                        const vKey = javaVer.key.substring(javaVer.key.lastIndexOf('\\')+1)
-                                        // Only Java 8 is supported currently.
-                                        if(parseFloat(vKey) === 1.8){
-                                            javaVer.get('JavaHome', (err, res) => {
-                                                const jHome = res.value
-                                                if(jHome.indexOf('(x86)') === -1){
-                                                    candidates.add(jHome)
-                                                }
-
-                                                // SUBKEY DONE
-
-                                                numDone++
-                                                if(numDone === javaVers.length){
-                                                    keysDone++
-                                                    if(keysDone === regKeys.length){
-                                                        resolve(candidates)
-                                                    }
-                                                }
-                                            })
-                                        } else {
-
-                                            // SUBKEY DONE
-                                            // NOT JAVA 8
-
-                                            numDone++
-                                            if(numDone === javaVers.length){
-                                                keysDone++
-                                                if(keysDone === regKeys.length){
-                                                    resolve(candidates)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        })
-                    } else {
-
-                        // REG KEY DONE
-                        // DUE TO NON-EXISTANCE
-
-                        keysDone++
-                        if(keysDone === regKeys.length){
-                            resolve(candidates)
-                        }
-                    }
-                })
-            }
-
-        })
-        
-    }
-
-    /**
-     * See if JRE exists in the Internet Plug-Ins folder.
-     * 
-     * @returns {string} The path of the JRE if found, otherwise null.
-     */
-    static _scanInternetPlugins(){
-        // /Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java
-        const pth = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin'
-        const res = fs.existsSync(AssetGuard.javaExecFromRoot(pth))
-        return res ? pth : null
-    }
-
-    /**
-     * Scan a directory for root JVM folders.
-     * 
-     * @param {string} scanDir The directory to scan.
-     * @returns {Promise.<Set.<string>>} A promise which resolves to a set of the discovered
-     * root JVM folders.
-     */
-    static _scanFileSystem(scanDir){
-        return new Promise((resolve, reject) => {
-
-            fs.exists(scanDir, (e) => {
-
-                let res = new Set()
-                
-                if(e){
-                    fs.readdir(scanDir, (err, files) => {
-                        if(err){
-                            resolve(res)
-                            console.log(err)
-                        } else {
-                            let pathsDone = 0
-
-                            for(let i=0; i<files.length; i++){
-
-                                const combinedPath = path.join(scanDir, files[i])
-                                const execPath = AssetGuard.javaExecFromRoot(combinedPath)
-
-                                fs.exists(execPath, (v) => {
-
-                                    if(v){
-                                        res.add(combinedPath)
-                                    }
-
-                                    ++pathsDone
-
-                                    if(pathsDone === files.length){
-                                        resolve(res)
-                                    }
-
-                                })
-                            }
-                            if(pathsDone === files.length){
-                                resolve(res)
-                            }
-                        }
-                    })
-                } else {
-                    resolve(res)
-                }
-            })
-
-        })
-    }
-
-    /**
-     * 
-     * @param {Set.<string>} rootSet A set of JVM root strings to validate.
-     * @param {string} mcVersion The minecraft version we are scanning for.
-     * @returns {Promise.<Object[]>} A promise which resolves to an array of meta objects
-     * for each valid JVM root directory.
-     */
-    static async _validateJavaRootSet(rootSet, mcVersion){
-
-        const rootArr = Array.from(rootSet)
-        const validArr = []
-
-        for(let i=0; i<rootArr.length; i++){
-
-            const execPath = AssetGuard.javaExecFromRoot(rootArr[i])
-            const metaOb = await AssetGuard._validateJavaBinary(execPath, mcVersion)
-
-            if(metaOb.valid){
-                metaOb.execPath = execPath
-                validArr.push(metaOb)
-            }
-
-        }
-
-        return validArr
-
-    }
-
-    /**
-     * Sort an array of JVM meta objects. Best candidates are placed before all others.
-     * Sorts based on version and gives priority to JREs over JDKs if versions match.
-     * 
-     * @param {Object[]} validArr An array of JVM meta objects.
-     * @returns {Object[]} A sorted array of JVM meta objects.
-     */
-    static _sortValidJavaArray(validArr){
-        const retArr = validArr.sort((a, b) => {
-
-            if(a.version.major === b.version.major){
-                
-                if(a.version.major < 9){
-                    // Java 8
-                    if(a.version.update === b.version.update){
-                        if(a.version.build === b.version.build){
-    
-                            // Same version, give priority to JRE.
-                            if(a.execPath.toLowerCase().indexOf('jdk') > -1){
-                                return b.execPath.toLowerCase().indexOf('jdk') > -1 ? 0 : 1
-                            } else {
-                                return -1
-                            }
-    
-                        } else {
-                            return a.version.build > b.version.build ? -1 : 1
-                        }
-                    } else {
-                        return  a.version.update > b.version.update ? -1 : 1
-                    }
-                } else {
-                    // Java 9+
-                    if(a.version.minor === b.version.minor){
-                        if(a.version.revision === b.version.revision){
-    
-                            // Same version, give priority to JRE.
-                            if(a.execPath.toLowerCase().indexOf('jdk') > -1){
-                                return b.execPath.toLowerCase().indexOf('jdk') > -1 ? 0 : 1
-                            } else {
-                                return -1
-                            }
-    
-                        } else {
-                            return a.version.revision > b.version.revision ? -1 : 1
-                        }
-                    } else {
-                        return  a.version.minor > b.version.minor ? -1 : 1
-                    }
-                }
-
-            } else {
-                return a.version.major > b.version.major ? -1 : 1
-            }
-        })
-
-        return retArr
-    }
-
-    /**
-     * Attempts to find a valid x64 installation of Java on Windows machines.
-     * Possible paths will be pulled from the registry and the JAVA_HOME environment
-     * variable. The paths will be sorted with higher versions preceeding lower, and
-     * JREs preceeding JDKs. The binaries at the sorted paths will then be validated.
-     * The first validated is returned.
-     * 
-     * Higher versions > Lower versions
-     * If versions are equal, JRE > JDK.
-     * 
-     * @param {string} dataDir The base launcher directory.
-     * @param {string} mcVersion The minecraft version we are scanning for.
-     * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
-     * x64 Java installation. If none are found, null is returned.
-     */
-    static async _win32JavaValidate(dataDir, mcVersion){
-
-        // Get possible paths from the registry.
-        let pathSet1 = await AssetGuard._scanRegistry()
-        if(pathSet1.length === 0){
-            // Do a manual file system scan of program files.
-            pathSet1 = AssetGuard._scanFileSystem('C:\\Program Files\\Java')
-        }
-
-        // Get possible paths from the data directory.
-        const pathSet2 = await AssetGuard._scanFileSystem(path.join(dataDir, 'runtime', 'x64'))
-
-        // Merge the results.
-        const uberSet = new Set([...pathSet1, ...pathSet2])
-
-        // Validate JAVA_HOME.
-        const jHome = AssetGuard._scanJavaHome()
-        if(jHome != null && jHome.indexOf('(x86)') === -1){
-            uberSet.add(jHome)
-        }
-
-        let pathArr = await AssetGuard._validateJavaRootSet(uberSet, mcVersion)
-        pathArr = AssetGuard._sortValidJavaArray(pathArr)
-
-        if(pathArr.length > 0){
-            return pathArr[0].execPath
-        } else {
-            return null
-        }
-
-    }
-
-    /**
-     * Attempts to find a valid x64 installation of Java on MacOS.
-     * The system JVM directory is scanned for possible installations.
-     * The JAVA_HOME enviroment variable and internet plugins directory
-     * are also scanned and validated.
-     * 
-     * Higher versions > Lower versions
-     * If versions are equal, JRE > JDK.
-     * 
-     * @param {string} dataDir The base launcher directory.
-     * @param {string} mcVersion The minecraft version we are scanning for.
-     * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
-     * x64 Java installation. If none are found, null is returned.
-     */
-    static async _darwinJavaValidate(dataDir, mcVersion){
-
-        const pathSet1 = await AssetGuard._scanFileSystem('/Library/Java/JavaVirtualMachines')
-        const pathSet2 = await AssetGuard._scanFileSystem(path.join(dataDir, 'runtime', 'x64'))
-
-        const uberSet = new Set([...pathSet1, ...pathSet2])
-
-        // Check Internet Plugins folder.
-        const iPPath = AssetGuard._scanInternetPlugins()
-        if(iPPath != null){
-            uberSet.add(iPPath)
-        }
-
-        // Check the JAVA_HOME environment variable.
-        let jHome = AssetGuard._scanJavaHome()
-        if(jHome != null){
-            // Ensure we are at the absolute root.
-            if(jHome.contains('/Contents/Home')){
-                jHome = jHome.substring(0, jHome.indexOf('/Contents/Home'))
-            }
-            uberSet.add(jHome)
-        }
-
-        let pathArr = await AssetGuard._validateJavaRootSet(uberSet, mcVersion)
-        pathArr = AssetGuard._sortValidJavaArray(pathArr)
-
-        if(pathArr.length > 0){
-            return pathArr[0].execPath
-        } else {
-            return null
-        }
-    }
-
-    /**
-     * Attempts to find a valid x64 installation of Java on Linux.
-     * The system JVM directory is scanned for possible installations.
-     * The JAVA_HOME enviroment variable is also scanned and validated.
-     * 
-     * Higher versions > Lower versions
-     * If versions are equal, JRE > JDK.
-     * 
-     * @param {string} dataDir The base launcher directory.
-     * @param {string} mcVersion The minecraft version we are scanning for.
-     * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
-     * x64 Java installation. If none are found, null is returned.
-     */
-    static async _linuxJavaValidate(dataDir, mcVersion){
-
-        const pathSet1 = await AssetGuard._scanFileSystem('/usr/lib/jvm')
-        const pathSet2 = await AssetGuard._scanFileSystem(path.join(dataDir, 'runtime', 'x64'))
-        
-        const uberSet = new Set([...pathSet1, ...pathSet2])
-
-        // Validate JAVA_HOME
-        const jHome = AssetGuard._scanJavaHome()
-        if(jHome != null){
-            uberSet.add(jHome)
-        }
-        
-        let pathArr = await AssetGuard._validateJavaRootSet(uberSet, mcVersion)
-        pathArr = AssetGuard._sortValidJavaArray(pathArr)
-
-        if(pathArr.length > 0){
-            return pathArr[0].execPath
-        } else {
-            return null
-        }
-    }
-
-    /**
-     * Retrieve the path of a valid x64 Java installation.
-     * 
-     * @param {string} dataDir The base launcher directory.
-     * @param {string} mcVersion The minecraft version we are scanning for.
-     * @returns {string} A path to a valid x64 Java installation, null if none found.
-     */
-    static async validateJava(dataDir, mcVersion){
-        return await AssetGuard['_' + process.platform + 'JavaValidate'](dataDir, mcVersion)
     }
 
     // #endregion
@@ -1401,7 +1406,7 @@ class AssetGuard extends EventEmitter {
             for(let ob of modules){
                 const type = ob.getType()
                 if(type === DistroManager.Types.ForgeHosted || type === DistroManager.Types.Forge){
-                    if(AssetGuard.mcVersionAtLeast('1.13', server.getMinecraftVersion())){
+                    if(Util.mcVersionAtLeast('1.13', server.getMinecraftVersion())){
                         for(let sub of ob.getSubModules()){
                             if(sub.getType() === DistroManager.Types.VersionManifest){
                                 const versionFile = path.join(self.commonPath, 'versions', sub.getIdentifier(), `${sub.getIdentifier()}.json`)
@@ -1748,7 +1753,9 @@ class AssetGuard extends EventEmitter {
 }
 
 module.exports = {
+    Util,
     AssetGuard,
+    JavaGuard,
     Asset,
     Library
 }

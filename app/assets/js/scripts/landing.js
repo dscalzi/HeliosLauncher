@@ -96,7 +96,8 @@ document.getElementById('launch_button').addEventListener('click', function(e){
         toggleLaunchArea(true)
         setLaunchPercentage(0, 100)
 
-        AssetGuard._validateJavaBinary(jExe, mcVersion).then((v) => {
+        const jg = new JavaGuard(mcVersion)
+        jg._validateJavaBinary(jExe).then((v) => {
             loggerLanding.log('Java version meta', v)
             if(v.valid){
                 dlAsync()
@@ -297,8 +298,8 @@ function asyncSystemScan(mcVersion, launchAfter = true){
 
     // Fork a process to run validations.
     sysAEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
-        ConfigManager.getCommonDirectory(),
-        ConfigManager.getJavaExecutable()
+        'JavaGuard',
+        mcVersion
     ], {
         env: forkEnv,
         stdio: 'pipe'
@@ -452,7 +453,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
 
     // Begin system Java scan.
     setLaunchDetails('Checking system info..')
-    sysAEx.send({task: 'execute', function: 'validateJava', argsArr: [ConfigManager.getDataDirectory(), mcVersion]})
+    sysAEx.send({task: 'execute', function: 'validateJava', argsArr: [ConfigManager.getDataDirectory()]})
 
 }
 
@@ -496,6 +497,7 @@ function dlAsync(login = true){
 
     // Start AssetExec to run validations and downloads in a forked process.
     aEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
+        'AssetGuard',
         ConfigManager.getCommonDirectory(),
         ConfigManager.getJavaExecutable()
     ], {
