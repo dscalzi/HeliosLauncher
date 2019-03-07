@@ -1337,16 +1337,6 @@
                         },
                         {
                             "id": "1.13.2-forge-25.0.63",
-                            "name": "Minecraft Forge (version.jar)",
-                            "type": "VersionJar",
-                            "artifact": {
-                                "size": 16089640,
-                                "MD5": "0d20673fc03f9c6a60279146ee1b1a14",
-                                "url": ""
-                            }
-                        },
-                        {
-                            "id": "1.13.2-forge-25.0.63",
                             "name": "Minecraft Forge (version.json)",
                             "type": "VersionManifest",
                             "artifact": {

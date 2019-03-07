@@ -1407,10 +1407,10 @@ class AssetGuard extends EventEmitter {
                 const type = ob.getType()
                 if(type === DistroManager.Types.ForgeHosted || type === DistroManager.Types.Forge){
                     if(Util.mcVersionAtLeast('1.13', server.getMinecraftVersion())){
+                        // Read Manifest
                         for(let sub of ob.getSubModules()){
                             if(sub.getType() === DistroManager.Types.VersionManifest){
-                                const versionFile = path.join(self.commonPath, 'versions', sub.getIdentifier(), `${sub.getIdentifier()}.json`)
-                                resolve(JSON.parse(fs.readFileSync(versionFile, 'utf-8')))
+                                resolve(JSON.parse(fs.readFileSync(sub.getArtifact().getPath(), 'utf-8')))
                                 return
                             }
                         }

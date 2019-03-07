@@ -190,9 +190,6 @@ class Module {
             case exports.Types.VersionManifest:
                 this.artifact.path = path.join(ConfigManager.getCommonDirectory(), 'versions', this.getIdentifier(), `${this.getIdentifier()}.json`)
                 break
-            case exports.Types.VersionJar:
-                this.artifact.path = path.join(ConfigManager.getCommonDirectory(), 'versions', this.getIdentifier(), `${this.getIdentifier()}.jar`)
-                break
             case exports.Types.File:
             default:
                 this.artifact.path = path.join(ConfigManager.getInstanceDirectory(), serverid, pth)
