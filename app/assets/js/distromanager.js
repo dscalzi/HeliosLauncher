@@ -519,8 +519,7 @@ exports.Types = {
     ForgeMod: 'ForgeMod',
     LiteMod: 'LiteMod',
     File: 'File',
-    VersionManifest: 'VersionManifest',
-    VersionJar: 'VersionJar'
+    VersionManifest: 'VersionManifest'
 }
 
 let DEV_MODE = false
