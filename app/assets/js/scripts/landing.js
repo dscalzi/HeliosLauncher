@@ -92,7 +92,7 @@ document.getElementById('launch_button').addEventListener('click', function(e){
         asyncSystemScan(mcVersion)
     } else {
 
-        setLaunchDetails('Please wait..')
+        setLaunchDetails(Lang.queryJS('landing.launch.pleaseWait'))
         toggleLaunchArea(true)
         setLaunchPercentage(0, 100)
 

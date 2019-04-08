@@ -5,12 +5,16 @@ const path          = require('path')
 
 const ConfigManager = require('./configmanager')
 const DistroManager = require('./distromanager')
+const LangLoader    = require('./langloader')
 const logger        = require('./loggerutil')('%c[Preloader]', 'color: #a02d2a; font-weight: bold')
 
 logger.log('Loading..')
 
 // Load ConfigManager
 ConfigManager.load()
+
+// Load Strings
+LangLoader.loadLanguage('en_US')
 
 function onDistroLoad(data){
     if(data != null){
