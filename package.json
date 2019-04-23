@@ -13,12 +13,12 @@
   "main": "index.js",
   "scripts": {
     "start": "electron .",
-    "cilinux": "electron-builder --linux --win",
-    "cidarwin": "electron-builder --mac",
-    "dist": "cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true electron-builder",
-    "dist:win": "npm run dist -- --win --x64",
-    "dist:mac": "npm run dist -- --mac",
-    "dist:linux": "npm run dist -- --linux --x64",
+    "cilinux": "node build.js WINDOWS && node build.js LINUX",
+    "cidarwin": "node build.js MAC",
+    "dist": "cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true node build.js",
+    "dist:win": "npm run dist -- WINDOWS",
+    "dist:mac": "npm run dist -- MAC",
+    "dist:linux": "npm run dist -- LINUX",
     "lint": "eslint --config .eslintrc.json ."
   },
   "engines": {
@@ -48,58 +48,5 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dscalzi/ElectronLauncher.git"
-  },
-  "build": {
-    "appId": "electronlauncher",
-    "productName": "Electron Launcher",
-    "artifactName": "${productName}.${ext}",
-    "copyright": "Copyright © 2018-2019 Daniel Scalzi",
-    "directories": {
-      "buildResources": "build",
-      "output": "dist"
-    },
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": "x64"
-        }
-      ],
-      "icon": "build/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": true,
-      "allowElevation": true,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
-      "allowToChangeInstallationDirectory": true
-    },
-    "mac": {
-      "target": "dmg",
-      "category": "public.app-category.games",
-      "icon": "build/icon.icns"
-    },
-    "linux": {
-      "target": "AppImage",
-      "maintainer": "Daniel Scalzi",
-      "vendor": "Daniel Scalzi",
-      "synopsis": "Modded Minecraft Launcher",
-      "description": "Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.",
-      "category": "Game"
-    },
-    "deb": {
-      "compression": "xz",
-      "packageCategory": "Games",
-      "priority": "optional"
-    },
-    "compression": "maximum",
-    "files": [
-      "!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.travis.yml,.nvmrc,.eslintrc.json}"
-    ],
-    "extraResources": [
-      "libraries"
-    ],
-    "asar": true
   }
 }
