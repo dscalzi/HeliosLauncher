@@ -27,7 +27,7 @@
   "dependencies": {
     "adm-zip": "^0.4.13",
     "async": "^3.0.1",
-    "discord-rpc": "github:discordjs/RPC",
+    "discord-rpc": "3.0.2",
     "ejs": "^2.6.1",
     "ejs-electron": "^2.0.3",
     "electron-updater": "^4.0.6",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "electron": "^4.2.2",
+    "electron": "^5.0.2",
     "electron-builder": "^20.41.0",
     "eslint": "^5.16.0"
   },

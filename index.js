@@ -117,7 +117,7 @@ function createWindow() {
         win.show()
     })*/
 
-    win.setMenu(null)
+    win.removeMenu()
 
     win.setResizable(true)
 
