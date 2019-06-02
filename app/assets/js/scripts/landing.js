@@ -329,7 +329,8 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 )
                 setOverlayHandler(() => {
                     setLaunchDetails('Preparing Java Download..')
-                    sysAEx.send({task: 'execute', function: '_enqueueOracleJRE', argsArr: [ConfigManager.getDataDirectory()]})
+                    sysAEx.send({task: 'changeContext', class: 'AssetGuard', args: [ConfigManager.getCommonDirectory(),ConfigManager.getJavaExecutable()]})
+                    sysAEx.send({task: 'execute', function: '_enqueueOpenJDK', argsArr: [ConfigManager.getDataDirectory()]})
                     toggleOverlay(false)
                 })
                 setDismissHandler(() => {
@@ -369,7 +370,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 }
                 sysAEx.disconnect()
             }
-        } else if(m.context === '_enqueueOracleJRE'){
+        } else if(m.context === '_enqueueOpenJDK'){
 
             if(m.result === true){
 
@@ -399,7 +400,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
 
             switch(m.data){
                 case 'download':
-                // Downloading..
+                    // Downloading..
                     setDownloadPercentage(m.value, m.total, m.percent)
                     break
             }
@@ -448,6 +449,8 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                     break
             }
 
+        } else if(m.context === 'error'){
+            console.log(m.error)
         }
     })
 

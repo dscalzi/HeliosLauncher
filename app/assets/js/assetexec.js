@@ -14,18 +14,22 @@ console.log('AssetExec Started')
 // Temporary for debug purposes.
 process.on('unhandledRejection', r => console.log(r))
 
-tracker.on('validate', (data) => {
-    process.send({context: 'validate', data})
-})
-tracker.on('progress', (data, acc, total) => {
-    process.send({context: 'progress', data, value: acc, total, percent: parseInt((acc/total)*100)})
-})
-tracker.on('complete', (data, ...args) => {
-    process.send({context: 'complete', data, args})
-})
-tracker.on('error', (data, error) => {
-    process.send({context: 'error', data, error})
-})
+function assignListeners(){
+    tracker.on('validate', (data) => {
+        process.send({context: 'validate', data})
+    })
+    tracker.on('progress', (data, acc, total) => {
+        process.send({context: 'progress', data, value: acc, total, percent: parseInt((acc/total)*100)})
+    })
+    tracker.on('complete', (data, ...args) => {
+        process.send({context: 'complete', data, args})
+    })
+    tracker.on('error', (data, error) => {
+        process.send({context: 'error', data, error})
+    })
+}
+
+assignListeners()
 
 process.on('message', (msg) => {
     if(msg.task === 'execute'){
@@ -44,6 +48,16 @@ process.on('message', (msg) => {
             } else {
                 process.send({result: res, context: func})
             }
+        } else {
+            process.send({context: 'error', data: null, error: `Function ${func} not found on ${process.argv[2]}`})
+        }
+    } else if(msg.task === 'changeContext'){
+        target = require('./assetguard')[msg.class]
+        if(target == null){
+            process.send({context: 'error', data: null, error: `Invalid class ${msg.class}`})
+        } else {
+            tracker = new target(...(msg.args))
+            assignListeners()
         }
     }
 })
