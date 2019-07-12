@@ -45,6 +45,9 @@
                 "ignoreRestSiblings": false,
                 "argsIgnorePattern": "reject"
             }
+        ],
+        "no-async-promise-executor": [
+            0
         ]
     },
     "overrides": [

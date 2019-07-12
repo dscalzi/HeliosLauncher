@@ -78,7 +78,7 @@ If you want to export the console output, simply right click anywhere on the con
 
 **System Requirements**
 
-* [Node.js][nodejs] v10.x.x
+* [Node.js][nodejs] v12.x.x
 
 ---
 
