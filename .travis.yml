@@ -13,6 +13,7 @@ matrix:
     - os: linux
       services: docker
       language: generic
+      node_js: "12"
       env:
         - ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true
 
