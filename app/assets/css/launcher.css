@@ -105,16 +105,13 @@ body, button {
 }
 
 /* Frame logo (windows only). */
-#frameImageDock {
-    width: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+#frameTitleDock {
+    padding: 0px 10px;
 }
-#frameImage {
-    height: 15px;
-    filter: grayscale(100%);
+#frameTitleText {
+    font-size: 14px;
+    font-family: 'Avenir Medium';
+    letter-spacing: 0.5px;
 }
 
 /* Windows frame button dock. */

@@ -18,8 +18,8 @@ function getCurrentPlatform(){
 builder.build({
     targets: (process.argv[2] != null && Platform[process.argv[2]] != null ? Platform[process.argv[2]] : getCurrentPlatform()).createTarget(),
     config: {
-        appId: 'electronlauncher',
-        productName: 'Electron Launcher',
+        appId: 'helioslauncher',
+        productName: 'Helios Launcher',
         artifactName: '${productName}.${ext}',
         copyright: 'Copyright © 2018-2019 Daniel Scalzi',
         directories: {
@@ -32,21 +32,17 @@ builder.build({
                     target: 'nsis',
                     arch: 'x64'
                 }
-            ],
-            icon: 'build/icon.ico'
+            ]
         },
         nsis: {
             oneClick: false,
-            perMachine: true,
+            perMachine: false,
             allowElevation: true,
-            installerIcon: 'build/icon.ico',
-            uninstallerIcon: 'build/icon.ico',
             allowToChangeInstallationDirectory: true
         },
         mac: {
             target: 'dmg',
-            category: 'public.app-category.games',
-            icon: 'build/icon.icns'
+            category: 'public.app-category.games'
         },
         linux: {
             target: 'AppImage',
