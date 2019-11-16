@@ -505,8 +505,8 @@ class ProcessBuilder {
                     case 'user_type':
                         val = 'mojang'
                         break
-                    case 'user_properties':
-                        val = "{}"
+                    case 'user_properties': // 1.8.9 and below.
+                        val = '{}'
                         break
                     case 'version_type':
                         val = this.versionData.type
