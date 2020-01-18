@@ -184,12 +184,19 @@ class ProcessBuilder {
         }
     }
 
+    _isBelowOneDotSeven() {
+        return Number(this.forgeData.id.split('-')[0].split('.')[1]) <= 7
+    }
+
     /**
      * Test to see if this version of forge requires the absolute: prefix
      * on the modListFile repository field.
      */
     _requiresAbsolute(){
         try {
+            if(this._isBelowOneDotSeven()) {
+                return false
+            }
             const ver = this.forgeData.id.split('-')[2]
             const pts = ver.split('.')
             const min = [14, 23, 3, 2655]
@@ -542,7 +549,12 @@ class ProcessBuilder {
         
         // Mod List File Argument
         mcArgs.push('--modListFile')
-        mcArgs.push('absolute:' + this.fmlDir)
+        if(this._isBelowOneDotSeven()) {
+            mcArgs.push(path.basename(this.fmlDir))
+        } else {
+            mcArgs.push('absolute:' + this.fmlDir)
+        }
+        
 
         // LiteLoader
         if(this.usingLiteLoader){
@@ -579,11 +591,15 @@ class ProcessBuilder {
 
         // Resolve the Mojang declared libraries.
         const mojangLibs = this._resolveMojangLibraries(tempNativePath)
-        cpArgs = cpArgs.concat(mojangLibs)
 
         // Resolve the server declared libraries.
         const servLibs = this._resolveServerLibraries(mods)
-        cpArgs = cpArgs.concat(servLibs)
+
+        // Merge libraries, server libs with the same
+        // maven identifier will override the mojang ones.
+        // Ex. 1.7.10 forge overrides mojang's guava with newer version.
+        const finalLibs = {...mojangLibs, ...servLibs}
+        cpArgs = cpArgs.concat(Object.values(finalLibs))
 
         return cpArgs
     }
@@ -595,10 +611,10 @@ class ProcessBuilder {
      * TODO - clean up function
      * 
      * @param {string} tempNativePath The path to store the native libraries.
-     * @returns {Array.<string>} An array containing the paths of each library mojang declares.
+     * @returns {{[id: string]: string}} An object containing the paths of each library mojang declares.
      */
     _resolveMojangLibraries(tempNativePath){
-        const libs = []
+        const libs = {}
 
         const libArr = this.versionData.libraries
         fs.ensureDirSync(tempNativePath)
@@ -609,7 +625,8 @@ class ProcessBuilder {
                     const dlInfo = lib.downloads
                     const artifact = dlInfo.artifact
                     const to = path.join(this.libPath, artifact.path)
-                    libs.push(to)
+                    const versionIndependentId = lib.name.substring(0, lib.name.lastIndexOf(':'))
+                    libs[versionIndependentId] = to
                 } else {
                     // Extract the native library.
                     const exclusionArr = lib.extract != null ? lib.extract.exclude : ['META-INF/']
@@ -657,21 +674,21 @@ class ProcessBuilder {
      * declare libraries.
      * 
      * @param {Array.<Object>} mods An array of enabled mods which will be launched with this process.
-     * @returns {Array.<string>} An array containing the paths of each library this server requires.
+     * @returns {{[id: string]: string}} An object containing the paths of each library this server requires.
      */
     _resolveServerLibraries(mods){
         const mdls = this.server.getModules()
-        let libs = []
+        let libs = {}
 
         // Locate Forge/Libraries
         for(let mdl of mdls){
             const type = mdl.getType()
             if(type === DistroManager.Types.ForgeHosted || type === DistroManager.Types.Library){
-                libs.push(mdl.getArtifact().getPath())
+                libs[mdl.getVersionlessID()] = mdl.getArtifact().getPath()
                 if(mdl.hasSubModules()){
                     const res = this._resolveModuleLibraries(mdl)
                     if(res.length > 0){
-                        libs = libs.concat(res)
+                        libs = {...libs, ...res}
                     }
                 }
             }
@@ -682,7 +699,7 @@ class ProcessBuilder {
             if(mods.sub_modules != null){
                 const res = this._resolveModuleLibraries(mods[i])
                 if(res.length > 0){
-                    libs = libs.concat(res)
+                    libs = {...libs, ...res}
                 }
             }
         }
