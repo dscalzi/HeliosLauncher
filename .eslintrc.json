@@ -52,7 +52,7 @@
     },
     "overrides": [
         {
-          "files": [ "app/assets/js/scripts/*.js" ],
+          "files": [ "src/scripts/*.js" ],
           "rules": {
             "no-unused-vars": [
                 0

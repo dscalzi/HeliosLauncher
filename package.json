@@ -10,8 +10,11 @@
     "url": "https://github.com/dscalzi/HeliosLauncher/issues"
   },
   "private": true,
-  "main": "index.js",
+  "main": "out/index.js",
   "scripts": {
+    "clean": "rimraf out",
+    "tsc": "tsc",
+    "build": "npm run clean && npm run tsc",
     "start": "electron .",
     "cilinux": "node build.js WINDOWS && node build.js LINUX",
     "cidarwin": "node build.js MAC",
@@ -26,7 +29,7 @@
   },
   "dependencies": {
     "adm-zip": "^0.4.13",
-    "async": "^3.1.0",
+    "async": "^3.1.1",
     "discord-rpc": "3.1.0",
     "ejs": "^3.0.1",
     "ejs-electron": "^2.0.3",
@@ -40,10 +43,21 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "cross-env": "^6.0.3",
-    "electron": "^7.1.9",
+    "@types/adm-zip": "^0.4.32",
+    "@types/async": "^3.0.5",
+    "@types/discord-rpc": "^3.0.2",
+    "@types/fs-extra": "^8.0.1",
+    "@types/jquery": "^3.3.31",
+    "@types/node": "^12.12.25",
+    "@types/request": "^2.48.4",
+    "@types/tar-fs": "^1.16.2",
+    "@types/winreg": "^1.2.30",
+    "cross-env": "^7.0.0",
+    "electron": "^7.1.10",
     "electron-builder": "^22.2.0",
-    "eslint": "^6.8.0"
+    "eslint": "^6.8.0",
+    "helios-distribution-types": "1.0.0-pre.1",
+    "rimraf": "^3.0.0"
   },
   "repository": {
     "type": "git",
