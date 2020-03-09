@@ -6,7 +6,15 @@ import { format } from "url"
 import { autoUpdater } from 'electron-updater'
 import isdev from "./isdev"
 
-const ejse = require('ejs-electron')
+const installExtensions = async () => {
+    const installer = require('electron-devtools-installer');
+    const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+    const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
+
+    return Promise.all(
+        extensions.map(name => installer.default(installer[name], forceDownload))
+    ).catch(console.log); // eslint-disable-line no-console
+};
 
 // Setup auto updater.
 function initAutoUpdater(event: any, data: any) {
@@ -89,7 +97,11 @@ app.disableHardwareAcceleration()
 // be closed automatically when the JavaScript object is garbage collected.
 let win: BrowserWindow | null
 
-function createWindow() {
+async function createWindow() {
+
+    if (process.env.NODE_ENV !== 'production') {
+        await installExtensions();
+    }
 
     win = new BrowserWindow({
         width: 980,
@@ -104,10 +116,10 @@ function createWindow() {
         backgroundColor: '#171614'
     })
 
-    ejse.data('bkid', Math.floor((Math.random() * readdirSync(join(__dirname, '..', 'assets', 'images', 'backgrounds')).length)))
+    // ejse.data('bkid', Math.floor((Math.random() * readdirSync(join(__dirname, '..', 'assets', 'images', 'backgrounds')).length)))
 
     win.loadURL(format({
-        pathname: join(__dirname, '..', 'assets', 'templates', 'app.ejs'),
+        pathname: join(__dirname, 'index.html'),
         protocol: 'file:',
         slashes: true
     }))
@@ -119,6 +131,13 @@ function createWindow() {
     win.removeMenu()
 
     win.resizable = true
+
+    if (process.env.NODE_ENV !== 'production') {
+        // Open DevTools, see https://github.com/electron/electron/issues/12438 for why we wait for dom-ready
+        win.webContents.once('dom-ready', () => {
+            win!.webContents.openDevTools();
+        });
+    }
 
     win.on('closed', () => {
         win = null

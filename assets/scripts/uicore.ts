@@ -1,3 +1,4 @@
+// @ts-nocheck
 import $ from 'jquery'
 import { ipcRenderer, remote, shell, webFrame } from 'electron'
 import { LoggerUtil } from '../loggerutil'
@@ -107,7 +108,7 @@ function changeAllowPrerelease(val){
 
 function showUpdateUI(info){
     //TODO Make this message a bit more informative `${info.version}`
-    document.getElementById('image_seal_container').setAttribute('update', true)
+    document.getElementById('image_seal_container').setAttribute('update', 'true')
     document.getElementById('image_seal_container').onclick = () => {
         /*setOverlayContent('Update Available', 'A new update for the launcher is available. Would you like to install now?', 'Install', 'Later')
         setOverlayHandler(() => {
@@ -138,6 +139,7 @@ document.addEventListener('readystatechange', function () {
         loggerUICore.log('UICore Initializing..')
 
         // Bind close button.
+        // DONE
         Array.from(document.getElementsByClassName('fCb')).map((val) => {
             val.addEventListener('click', e => {
                 const window = remote.getCurrentWindow()
@@ -146,6 +148,7 @@ document.addEventListener('readystatechange', function () {
         })
 
         // Bind restore down button.
+        // DONE
         Array.from(document.getElementsByClassName('fRb')).map((val) => {
             val.addEventListener('click', e => {
                 const window = remote.getCurrentWindow()
@@ -154,23 +157,24 @@ document.addEventListener('readystatechange', function () {
                 } else {
                     window.maximize()
                 }
-                document.activeElement.blur()
+                (document.activeElement as HTMLElement).blur()
             })
         })
 
         // Bind minimize button.
+        // DONE
         Array.from(document.getElementsByClassName('fMb')).map((val) => {
             val.addEventListener('click', e => {
                 const window = remote.getCurrentWindow()
-                window.minimize()
-                document.activeElement.blur()
+                window.minimize();
+                (document.activeElement as HTMLElement).blur()
             })
         })
 
         // Remove focus from social media buttons once they're clicked.
         Array.from(document.getElementsByClassName('mediaURL')).map(val => {
             val.addEventListener('click', e => {
-                document.activeElement.blur()
+                (document.activeElement as HTMLElement).blur()
             })
         })
 
@@ -184,10 +188,10 @@ document.addEventListener('readystatechange', function () {
         //const targetWidth2 = document.getElementById("server_selection").getBoundingClientRect().width
         //const targetWidth3 = document.getElementById("launch_button").getBoundingClientRect().width
 
-        document.getElementById('launch_details').style.maxWidth = 266.01
-        document.getElementById('launch_progress').style.width = 170.8
-        document.getElementById('launch_details_right').style.maxWidth = 170.8
-        document.getElementById('launch_progress_label').style.width = 53.21
+        document.getElementById('launch_details').style.maxWidth = '266.01'
+        document.getElementById('launch_progress').style.width = '170.8'
+        document.getElementById('launch_details_right').style.maxWidth = '170.8'
+        document.getElementById('launch_progress_label').style.width = '53.21'
         
     }
 
@@ -209,6 +213,6 @@ $(document).on('click', 'a[href^="http"]', function(event) {
 document.addEventListener('keydown', function (e) {
     if((e.key === 'I' || e.key === 'i') && e.ctrlKey && e.shiftKey){
         let window = remote.getCurrentWindow()
-        window.toggleDevTools()
+        window.webContents.toggleDevTools()
     }
 })
