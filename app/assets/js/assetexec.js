@@ -14,12 +14,17 @@ console.log('AssetExec Started')
 // Temporary for debug purposes.
 process.on('unhandledRejection', r => console.log(r))
 
+let percent = 0
 function assignListeners(){
     tracker.on('validate', (data) => {
         process.send({context: 'validate', data})
     })
     tracker.on('progress', (data, acc, total) => {
-        process.send({context: 'progress', data, value: acc, total, percent: parseInt((acc/total)*100)})
+        const currPercent = parseInt((acc/total) * 100)
+        if (currPercent !== percent) {
+            percent = currPercent
+            process.send({context: 'progress', data, value: acc, total, percent})
+        }
     })
     tracker.on('complete', (data, ...args) => {
         process.send({context: 'complete', data, args})
