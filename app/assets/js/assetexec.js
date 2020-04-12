@@ -21,7 +21,7 @@ function assignListeners(){
     })
     tracker.on('progress', (data, acc, total) => {
         const currPercent = parseInt((acc/total) * 100)
-        if (currPercent != percent) {
+        if (currPercent !== percent) {
             percent = currPercent
             process.send({context: 'progress', data, value: acc, total, percent})
         }
