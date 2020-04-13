@@ -63,9 +63,9 @@
     right: -2px;
     height: 22px;
 }
-#frameButtonDockWin > .frameButton:not(:first-child) {
+/* #frameButtonDockWin > .frameButton:not(:first-child) {
     margin-left: -4px;
-}
+} */
 
 /* Darwin frame button dock: NaN; */
 #frameButtonDockDarwin {
