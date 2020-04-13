@@ -118,11 +118,23 @@ async function createWindow() {
 
     // ejse.data('bkid', Math.floor((Math.random() * readdirSync(join(__dirname, '..', 'assets', 'images', 'backgrounds')).length)))
 
-    win.loadURL(format({
-        pathname: join(__dirname, 'index.html'),
-        protocol: 'file:',
-        slashes: true
-    }))
+    if (isdev) {
+        win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
+    }
+    else {
+        win.loadURL(format({
+            pathname: join(__dirname, 'index.html'),
+            protocol: 'file',
+            slashes: true
+        }))
+    }
+
+    // console.log(__dirname)
+    // win.loadURL(format({
+    //     pathname: join(__dirname, 'index.html'),
+    //     protocol: 'file',
+    //     slashes: true
+    // }))
 
     /*win.once('ready-to-show', () => {
         win.show()

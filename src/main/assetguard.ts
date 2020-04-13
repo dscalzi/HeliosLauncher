@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import request = require('request')
+import request from 'request'
 import { join } from 'path'
 import { pathExistsSync, pathExists, readdir, exists, readFileSync, createWriteStream, ensureDirSync, readFile, writeFileSync, unlink, createReadStream, readJsonSync } from 'fs-extra'
 import Registry from 'winreg'
