@@ -3,7 +3,7 @@ import { Distribution, Module, Type, TypeMetadata, Server } from 'helios-distrib
 import { readJson, writeJson } from 'fs-extra'
 import { join } from 'path'
 import { LoggerUtil } from './loggerutil'
-import { ConfigManager } from './configmanager'
+import { ConfigManager } from '../config/configmanager'
 
 const logger = new LoggerUtil('%c[DistroManager]', 'color: #a02d2a; font-weight: bold')
 

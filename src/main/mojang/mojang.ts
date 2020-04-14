@@ -1,10 +1,10 @@
 import { LoggerUtil } from '../logging/loggerutil'
-import { Agent } from '../model/mojang/auth/Agent'
-import { Status, StatusColor } from './type/Status'
+import { Agent } from './model/auth/Agent'
+import { Status, StatusColor } from './model/internal/Status'
 import axios, { AxiosError } from 'axios'
-import { Session } from '../model/mojang/auth/Session'
-import { AuthPayload } from '../model/mojang/auth/AuthPayload'
-import { MojangResponse, MojangResponseCode, deciperResponseCode, isInternalError } from './type/Response'
+import { Session } from './model/auth/Session'
+import { AuthPayload } from './model/auth/AuthPayload'
+import { MojangResponse, MojangResponseCode, deciperResponseCode, isInternalError } from './model/internal/Response'
 
 export class Mojang {
 

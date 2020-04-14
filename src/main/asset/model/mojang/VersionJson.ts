@@ -15,7 +15,7 @@ export interface Natives {
     windows?: string
 }
 
-interface BaseArtifact {
+export interface BaseArtifact {
 
     sha1: string
     size: number

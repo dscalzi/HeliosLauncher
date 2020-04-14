@@ -1,10 +1,10 @@
-interface LauncherJava {
+export interface LauncherJava {
     sha1: string
     url: string
     version: string
 }
 
-interface LauncherVersions {
+export interface LauncherVersions {
     launcher: {
         commit: string
         name: string

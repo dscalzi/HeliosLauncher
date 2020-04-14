@@ -1,18 +1,19 @@
-import { LoggerUtil } from './loggerutil'
 import { join } from 'path'
-import { pathExistsSync, writeFileSync, ensureDirSync, moveSync, readFileSync } from 'fs-extra'
+import { pathExistsSync, writeFileSync, ensureDirSync, readFileSync } from 'fs-extra'
 import { totalmem } from 'os'
-import { SavedAccount } from './model/internal/config/SavedAccount'
-import { LauncherConfig } from './model/internal/config/LauncherConfig'
-import { ModConfig } from './model/internal/config/ModConfig'
-import { NewsCache } from './model/internal/config/NewsCache'
+import { SavedAccount } from './model/SavedAccount'
+import { LauncherConfig } from './model/LauncherConfig'
+import { ModConfig } from './model/ModConfig'
+import { NewsCache } from './model/NewsCache'
+import { LoggerUtil } from '../logging/loggerutil'
+
+// TODO final review upon usage in implementation.
 
 export class ConfigManager {
 
-    private static readonly logger = new LoggerUtil('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold')
+    private static readonly logger = LoggerUtil.getLogger('ConfigManager')
     private static readonly sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME)
-    // TODO change
-    private static readonly dataPath = join(ConfigManager.sysRoot as string, '.westeroscraft')
+    private static readonly dataPath = join(ConfigManager.sysRoot as string, '.helioslauncher')
 
     // Forked processes do not have access to electron, so we have this workaround.
     private static readonly launcherDir = process.env.CONFIG_DIRECT_PATH || require('electron').remote.app.getPath('userData')
@@ -46,8 +47,7 @@ export class ConfigManager {
     }
 
     private static readonly configPath = join(ConfigManager.getLauncherDirectory(), 'config.json')
-    private static readonly configPathLEGACY = join(ConfigManager.dataPath, 'config.json') // TODO remove, it's been 1 year.
-    private static readonly firstLaunch = !pathExistsSync(ConfigManager.configPath) && !pathExistsSync(ConfigManager.configPathLEGACY)
+    private static readonly firstLaunch = !pathExistsSync(ConfigManager.configPath)
 
     /**
      * Three types of values:
@@ -135,13 +135,9 @@ export class ConfigManager {
         if(!pathExistsSync(ConfigManager.configPath)){
             // Create all parent directories.
             ensureDirSync(join(ConfigManager.configPath, '..'))
-            if(pathExistsSync(ConfigManager.configPathLEGACY)){
-                moveSync(ConfigManager.configPathLEGACY, ConfigManager.configPath)
-            } else {
-                doLoad = false
-                ConfigManager.config = ConfigManager.DEFAULT_CONFIG
-                ConfigManager.save()
-            }
+            doLoad = false
+            ConfigManager.config = ConfigManager.DEFAULT_CONFIG
+            ConfigManager.save()
         }
         if(doLoad){
             let doValidate = false
@@ -150,8 +146,8 @@ export class ConfigManager {
                 doValidate = true
             } catch (err){
                 ConfigManager.logger.error(err)
-                ConfigManager.logger.log('Configuration file contains malformed JSON or is corrupt.')
-                ConfigManager.logger.log('Generating a new configuration file.')
+                ConfigManager.logger.info('Configuration file contains malformed JSON or is corrupt.')
+                ConfigManager.logger.info('Generating a new configuration file.')
                 ensureDirSync(join(ConfigManager.configPath, '..'))
                 ConfigManager.config = ConfigManager.DEFAULT_CONFIG
                 ConfigManager.save()
@@ -161,7 +157,7 @@ export class ConfigManager {
                 ConfigManager.save()
             }
         }
-        ConfigManager.logger.log('Successfully Loaded')
+        ConfigManager.logger.info('Successfully Loaded')
     }
 
     /**

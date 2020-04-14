@@ -1,4 +1,4 @@
-import { ConfigManager } from './configmanager'
+import { ConfigManager } from '../config/configmanager'
 import { DistroManager, DistributionWrapper } from './distromanager'
 import { join } from 'path'
 import { remove } from 'fs-extra'
