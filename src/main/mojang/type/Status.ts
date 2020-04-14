@@ -1,7 +1,14 @@
+export enum StatusColor {
+    RED = 'red',
+    YELLOW = 'yellow',
+    GREEN = 'green',
+    GREY = 'grey'
+}
+
 export interface Status {
 
     service: string
-    status: 'red' | 'yellow' | 'green' | 'grey'
+    status: StatusColor
     name: string
     essential: boolean
 
