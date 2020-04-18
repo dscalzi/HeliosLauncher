@@ -31,11 +31,11 @@
   "dependencies": {
     "adm-zip": "^0.4.14",
     "async": "^3.2.0",
-    "axios": "^0.19.2",
     "discord-rpc": "3.1.0",
     "electron-updater": "^4.2.4",
     "fs-extra": "^9.0.0",
     "github-syntax-dark": "^0.5.0",
+    "got": "^10.7.0",
     "jquery": "^3.5.0",
     "moment": "^2.24.0",
     "request": "^2.88.2",

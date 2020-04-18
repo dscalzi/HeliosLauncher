@@ -1,7 +1,6 @@
 import { Mojang } from "../../src/main/mojang/mojang"
 import { expect } from 'chai'
 import nock from 'nock'
-import { URL } from 'url'
 import { Session } from "../../src/main/mojang/model/auth/Session"
 import { MojangResponseCode } from "../../src/main/mojang/model/internal/Response"
 
@@ -18,13 +17,16 @@ function expectMojangResponse(res: any, responseCode: MojangResponseCode, negate
 
 describe('Mojang Errors', () => {
 
+    after(() => {
+        nock.cleanAll()
+    })
+
     it('Status (Offline)', async () => {
 
         const defStatusHack = Mojang['statuses']
-        const url = new URL(Mojang.STATUS_ENDPOINT)
 
-        nock(url.origin)
-            .get(url.pathname)
+        nock(Mojang.STATUS_ENDPOINT)
+            .get('/check')
             .reply(500, 'Service temprarily offline.')
 
         const res = await Mojang.status();
@@ -58,10 +60,9 @@ describe('Mojang Status', () => {
     it('Status (Online)', async () => {
 
         const defStatusHack = Mojang['statuses']
-        const url = new URL(Mojang.STATUS_ENDPOINT)
 
-        nock(url.origin)
-            .get(url.pathname)
+        nock(Mojang.STATUS_ENDPOINT)
+            .get('/check')
             .reply(200, defStatusHack)
 
         const res = await Mojang.status();

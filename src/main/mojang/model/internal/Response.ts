@@ -1,4 +1,4 @@
-import { AxiosError } from "axios"
+import { GotError } from "got/dist/source"
 
 /**
  * @see https://wiki.vg/Authentication#Errors
@@ -22,12 +22,18 @@ export interface MojangResponse<T> {
 
     data: T
     responseCode: MojangResponseCode
-    error?: AxiosError
+    error?: GotError
     isInternalError?: boolean
 
 }
 
-export function deciperResponseCode(body: { error: string, errorMessage: string, cause?: string }): MojangResponseCode {
+export interface MojangErrorBody {
+    error: string
+    errorMessage: string
+    cause?: string
+}
+
+export function deciperResponseCode(body: MojangErrorBody): MojangResponseCode {
 
     if(body.error === 'Method Not Allowed') {
         return MojangResponseCode.ERROR_METHOD_NOT_ALLOWED

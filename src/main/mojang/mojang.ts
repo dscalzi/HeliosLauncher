@@ -1,10 +1,10 @@
 import { LoggerUtil } from '../logging/loggerutil'
 import { Agent } from './model/auth/Agent'
 import { Status, StatusColor } from './model/internal/Status'
-import axios, { AxiosError } from 'axios'
+import got, { RequestError, HTTPError, TimeoutError, GotError, ParseError } from 'got'
 import { Session } from './model/auth/Session'
 import { AuthPayload } from './model/auth/AuthPayload'
-import { MojangResponse, MojangResponseCode, deciperResponseCode, isInternalError } from './model/internal/Response'
+import { MojangResponse, MojangResponseCode, deciperResponseCode, isInternalError, MojangErrorBody } from './model/internal/Response'
 
 export class Mojang {
 
@@ -13,7 +13,18 @@ export class Mojang {
     private static readonly TIMEOUT = 2500
 
     public static readonly AUTH_ENDPOINT = 'https://authserver.mojang.com'
-    public static readonly STATUS_ENDPOINT = 'https://status.mojang.com/check'
+    public static readonly STATUS_ENDPOINT = 'https://status.mojang.com'
+
+    private static authClient = got.extend({
+        prefixUrl: Mojang.AUTH_ENDPOINT,
+        responseType: 'json',
+        retry: 0
+    })
+    private static statusClient = got.extend({
+        prefixUrl: Mojang.STATUS_ENDPOINT,
+        responseType: 'json',
+        retry: 0
+    })
 
     public static readonly MINECRAFT_AGENT: Agent = {
         name: 'Minecraft',
@@ -78,24 +89,30 @@ export class Mojang {
         }
     }
 
-    private static handleAxiosError<T>(operation: string, error: AxiosError, dataProvider: () => T): MojangResponse<T> {
+    private static handleGotError<T>(operation: string, error: GotError, dataProvider: () => T): MojangResponse<T> {
         const response: MojangResponse<T> = {
             data: dataProvider(),
             responseCode: MojangResponseCode.ERROR,
             error
         }
-
-        if(error.response) {
-            response.responseCode = deciperResponseCode(error.response.data)
-            Mojang.logger.error(`Error during ${operation} request (HTTP Response ${error.response.status})`, error)
+        
+        if(error instanceof HTTPError) {
+            response.responseCode = deciperResponseCode(error.response.body as MojangErrorBody)
+            Mojang.logger.error(`Error during ${operation} request (HTTP Response ${error.response.statusCode})`, error)
             Mojang.logger.debug('Response Details:')
-            Mojang.logger.debug('Data:', error.response.data)
+            Mojang.logger.debug('Body:', error.response.body)
             Mojang.logger.debug('Headers:', error.response.headers)
-        } else if(error.request) {
-            Mojang.logger.error(`${operation} request recieved no response.`, error)
+        } else if(error instanceof RequestError) {
+            Mojang.logger.error(`${operation} request recieved no response (${error.code}).`, error)
+        } else if(error instanceof TimeoutError) {
+            Mojang.logger.error(`${operation} request timed out (${error.timings.phases.total}ms).`)
+        } else if(error instanceof ParseError) {
+            Mojang.logger.error(`${operation} request recieved unexepected body (Parse Error).`)
         } else {
+            // CacheError, ReadError, MaxRedirectsError, UnsupportedProtocolError, CancelError
             Mojang.logger.error(`Error during ${operation} request.`, error)
         }
+
         response.isInternalError = isInternalError(response.responseCode)
 
         return response
@@ -118,11 +135,11 @@ export class Mojang {
     public static async status(): Promise<MojangResponse<Status[]>>{
         try {
 
-            const res = await axios.get<{[service: string]: StatusColor}[]>(Mojang.STATUS_ENDPOINT, { timeout: Mojang.TIMEOUT })
+            const res = await Mojang.statusClient.get<{[service: string]: StatusColor}[]>('check')
 
-            Mojang.expectSpecificSuccess('Mojang Status', 200, res.status)
+            Mojang.expectSpecificSuccess('Mojang Status', 200, res.statusCode)
 
-            res.data.forEach(status => {
+            res.body.forEach(status => {
                 const entry = Object.entries(status)[0]
                 for(let i=0; i<Mojang.statuses.length; i++) {
                     if(Mojang.statuses[i].service === entry[0]) {
@@ -139,7 +156,7 @@ export class Mojang {
 
         } catch(error) {
 
-            return Mojang.handleAxiosError('Mojang Status', error as AxiosError, () => {
+            return Mojang.handleGotError('Mojang Status', error as GotError, () => {
                 for(let i=0; i<Mojang.statuses.length; i++){
                     Mojang.statuses[i].status = StatusColor.GREY
                 }
@@ -170,25 +187,25 @@ export class Mojang {
 
         try {
 
-            const data: AuthPayload = {
+            const json: AuthPayload = {
                 agent,
                 username,
                 password,
                 requestUser
             }
             if(clientToken != null){
-                data.clientToken = clientToken
+                json.clientToken = clientToken
             }
 
-            const res = await axios.post<Session>(`${Mojang.AUTH_ENDPOINT}/authenticate`, data)
-            Mojang.expectSpecificSuccess('Mojang Authenticate', 200, res.status)
+            const res = await Mojang.authClient.post<Session>('authenticate', { json })
+            Mojang.expectSpecificSuccess('Mojang Authenticate', 200, res.statusCode)
             return {
-                data: res.data,
+                data: res.body,
                 responseCode: MojangResponseCode.SUCCESS
             }
 
         } catch(err) {
-            return Mojang.handleAxiosError('Mojang Authenticate', err, () => null)
+            return Mojang.handleGotError('Mojang Authenticate', err as GotError, () => null)
         }
 
     }
@@ -206,27 +223,27 @@ export class Mojang {
 
         try {
 
-            const data = {
+            const json = {
                 accessToken,
                 clientToken
             }
 
-            const res = await axios.post(`${Mojang.AUTH_ENDPOINT}/validate`, data)
-            Mojang.expectSpecificSuccess('Mojang Validate', 204, res.status)
+            const res = await Mojang.authClient.post('validate', { json })
+            Mojang.expectSpecificSuccess('Mojang Validate', 204, res.statusCode)
 
             return {
-                data: res.status === 204,
+                data: res.statusCode === 204,
                 responseCode: MojangResponseCode.SUCCESS
             }
 
         } catch(err) {
-            if(err.response && err.response.status === 403) {
+            if(err instanceof HTTPError && err.response.statusCode === 403) {
                 return {
                     data: false,
                     responseCode: MojangResponseCode.SUCCESS
                 }
             }
-            return Mojang.handleAxiosError('Mojang Validate', err, () => false)
+            return Mojang.handleGotError('Mojang Validate', err as GotError, () => false)
         }
 
     }
@@ -244,13 +261,13 @@ export class Mojang {
 
         try {
 
-            const data = {
+            const json = {
                 accessToken,
                 clientToken
             }
 
-            const res = await axios.post(`${Mojang.AUTH_ENDPOINT}/invalidate`, data)
-            Mojang.expectSpecificSuccess('Mojang Invalidate', 204, res.status)
+            const res = await Mojang.authClient.post('invalidate', { json })
+            Mojang.expectSpecificSuccess('Mojang Invalidate', 204, res.statusCode)
 
             return {
                 data: undefined,
@@ -258,7 +275,7 @@ export class Mojang {
             }
 
         } catch(err) {
-            return Mojang.handleAxiosError('Mojang Invalidate', err, () => undefined)
+            return Mojang.handleGotError('Mojang Invalidate', err as GotError, () => undefined)
         }
 
     }
@@ -278,22 +295,22 @@ export class Mojang {
 
         try {
 
-            const data = {
+            const json = {
                 accessToken,
                 clientToken,
                 requestUser
             }
 
-            const res = await axios.post<Session>(`${Mojang.AUTH_ENDPOINT}/refresh`, data)
-            Mojang.expectSpecificSuccess('Mojang Refresh', 200, res.status)
+            const res = await Mojang.authClient.post<Session>('refresh', { json })
+            Mojang.expectSpecificSuccess('Mojang Refresh', 200, res.statusCode)
 
             return {
-                data: res.data,
+                data: res.body,
                 responseCode: MojangResponseCode.SUCCESS
             }
 
         } catch(err) {
-            return Mojang.handleAxiosError('Mojang Refresh', err, () => null)
+            return Mojang.handleGotError('Mojang Refresh', err as GotError, () => null)
         }
 
     }
