@@ -23,7 +23,7 @@ export interface BaseArtifact {
 
 }
 
-interface LibraryArtifact extends BaseArtifact {
+export interface LibraryArtifact extends BaseArtifact {
 
     path: string
 
