@@ -1,0 +1,49 @@
+{
+    "html": {
+        "avatarOverlay": "Bearbeiten"
+    },
+    "js": {
+        "login": {
+            "error": {
+                "invalidValue": "* Ungültiger Wert",
+                "requiredValue": "* Erforderlich",
+                "userMigrated": {
+                    "title": "Fehler bei der Anmeldung:<br>Ungültige Daten",
+                    "desc": "Dein Account ist migriert worden. Versuche dich erneut mit der verknüpften E-Mail-Adresse als Usernamen anzumeldenas."
+                },
+                "invalidCredentials": {
+                    "title": "Fehler bei der Anmeldung:<br>Ungültige Daten",
+                    "desc": "Die eingegebene E-Mail-Adresse oder das Passwort ist nicht korrekt. Bitte versuche es erneut."
+                },
+                "rateLimit": {
+                    "title": "Fehler bei der Anmeldung:<br>Zu viele Versuche",
+                    "desc": "Es gab zu viele Anmeldeversuche für diesen Benutzer in kurzer Zeit.Bitte versuche es später erneut."
+                },
+                "noInternet": {
+                    "title": "Fehler bei der Anmeldung:<br>Keine Internetverbindung",
+                    "desc": "Du musst mit dem Internet verbunden sein um dich anzumelden. Bitte verbinde dich und versuche es erneut."
+                },
+                "authDown": {
+                    "title": "Fehler bei der Anmeldung:<br>Authentifizierungsserver Offline",
+                    "desc": "Mojang's Authentifizierugsserver ist zurzeit nicht erreichbar. Bitte versuche es später erneut. Du kannst den Serverstatus auf <a href=\"https://help.mojang.com/\">Mojang's Hilfeportal</a> einsehen."
+                },
+                "notPaid": {
+                    "title": "Fehler bei der Anmeldung:<br>Spiel nicht im Besitz",
+                    "desc": "Der Account mit dem du dich anmelden möchtest verfügt über keine gültige Minecraftversion.<br>Du kannst das Spiel kaufen auf <a href=\"https://minecraft.net/\">Minecraft.net</a>."
+                },
+                "unknown": {
+                    "title": "Fehler bei der Anmeldung:<br>Unbekannter Fehler"
+                }
+            },
+            "login": "LOGIN",
+            "loggingIn": "EINLOGGEN",
+            "success": "ERFOLG",
+            "tryAgain": "Versuche erneut"
+        },
+        "landing": {
+            "launch": {
+                "pleaseWait": "Bitte warten.."
+            }
+        }
+    }
+}
