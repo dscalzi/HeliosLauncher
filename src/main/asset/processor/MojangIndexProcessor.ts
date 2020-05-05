@@ -1,5 +1,5 @@
 import { IndexProcessor } from '../model/engine/IndexProcessor'
-import got, { HTTPError, GotError, RequestError, ParseError, TimeoutError } from 'got'
+import got, { HTTPError, RequestError, ParseError, TimeoutError } from 'got'
 import { LoggerUtil } from '../../logging/loggerutil'
 import { pathExists, readFile, ensureDir, writeFile, readJson } from 'fs-extra'
 import { MojangVersionManifest } from '../model/mojang/VersionManifest'
@@ -24,13 +24,13 @@ export class MojangIndexProcessor extends IndexProcessor {
         responseType: 'json'
     })
 
-    private handleGotError<T>(operation: string, error: GotError, dataProvider: () => T): T {
+    private handleGotError<T>(operation: string, error: RequestError, dataProvider: () => T): T {
         if(error instanceof HTTPError) {
             this.logger.error(`Error during ${operation} request (HTTP Response ${error.response.statusCode})`, error)
             this.logger.debug('Response Details:')
             this.logger.debug('Body:', error.response.body)
             this.logger.debug('Headers:', error.response.headers)
-        } else if(error instanceof RequestError) {
+        } else if(Object.getPrototypeOf(error) instanceof RequestError) {
             this.logger.error(`${operation} request recieved no response (${error.code}).`, error)
         } else if(error instanceof TimeoutError) {
             this.logger.error(`${operation} request timed out (${error.timings.phases.total}ms).`)
@@ -148,7 +148,7 @@ export class MojangIndexProcessor extends IndexProcessor {
 
             return res.body
         } catch(error) {
-            return this.handleGotError(url, error as GotError, () => null)
+            return this.handleGotError(url, error, () => null)
         }
 
     }
@@ -158,7 +158,7 @@ export class MojangIndexProcessor extends IndexProcessor {
             const res = await this.client.get<MojangVersionManifest>(MojangIndexProcessor.VERSION_MANIFEST_ENDPOINT)
             return res.body
         } catch(error) {
-            return this.handleGotError('Load Mojang Version Manifest', error as GotError, () => null)
+            return this.handleGotError('Load Mojang Version Manifest', error, () => null)
         }
     }
 

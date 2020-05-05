@@ -1,7 +1,7 @@
 import { LoggerUtil } from '../logging/loggerutil'
 import { Agent } from './model/auth/Agent'
 import { Status, StatusColor } from './model/internal/Status'
-import got, { RequestError, HTTPError, TimeoutError, GotError, ParseError } from 'got'
+import got, { RequestError, HTTPError, TimeoutError, ParseError } from 'got'
 import { Session } from './model/auth/Session'
 import { AuthPayload } from './model/auth/AuthPayload'
 import { MojangResponse, MojangResponseCode, deciperResponseCode, isInternalError, MojangErrorBody } from './model/internal/Response'
@@ -89,7 +89,7 @@ export class Mojang {
         }
     }
 
-    private static handleGotError<T>(operation: string, error: GotError, dataProvider: () => T): MojangResponse<T> {
+    private static handleGotError<T>(operation: string, error: RequestError, dataProvider: () => T): MojangResponse<T> {
         const response: MojangResponse<T> = {
             data: dataProvider(),
             responseCode: MojangResponseCode.ERROR,
@@ -102,7 +102,7 @@ export class Mojang {
             Mojang.logger.debug('Response Details:')
             Mojang.logger.debug('Body:', error.response.body)
             Mojang.logger.debug('Headers:', error.response.headers)
-        } else if(error instanceof RequestError) {
+        } else if(Object.getPrototypeOf(error) instanceof RequestError) {
             Mojang.logger.error(`${operation} request recieved no response (${error.code}).`, error)
         } else if(error instanceof TimeoutError) {
             Mojang.logger.error(`${operation} request timed out (${error.timings.phases.total}ms).`)
@@ -156,7 +156,7 @@ export class Mojang {
 
         } catch(error) {
 
-            return Mojang.handleGotError('Mojang Status', error as GotError, () => {
+            return Mojang.handleGotError('Mojang Status', error, () => {
                 for(let i=0; i<Mojang.statuses.length; i++){
                     Mojang.statuses[i].status = StatusColor.GREY
                 }
@@ -197,7 +197,7 @@ export class Mojang {
                 json.clientToken = clientToken
             }
 
-            const res = await Mojang.authClient.post<Session>('authenticate', { json })
+            const res = await Mojang.authClient.post<Session>('authenticate', { json, responseType: 'json' })
             Mojang.expectSpecificSuccess('Mojang Authenticate', 200, res.statusCode)
             return {
                 data: res.body,
@@ -205,7 +205,7 @@ export class Mojang {
             }
 
         } catch(err) {
-            return Mojang.handleGotError('Mojang Authenticate', err as GotError, () => null)
+            return Mojang.handleGotError('Mojang Authenticate', err, () => null)
         }
 
     }
@@ -243,7 +243,7 @@ export class Mojang {
                     responseCode: MojangResponseCode.SUCCESS
                 }
             }
-            return Mojang.handleGotError('Mojang Validate', err as GotError, () => false)
+            return Mojang.handleGotError('Mojang Validate', err, () => false)
         }
 
     }
@@ -275,7 +275,7 @@ export class Mojang {
             }
 
         } catch(err) {
-            return Mojang.handleGotError('Mojang Invalidate', err as GotError, () => undefined)
+            return Mojang.handleGotError('Mojang Invalidate', err, () => undefined)
         }
 
     }
@@ -301,7 +301,7 @@ export class Mojang {
                 requestUser
             }
 
-            const res = await Mojang.authClient.post<Session>('refresh', { json })
+            const res = await Mojang.authClient.post<Session>('refresh', { json, responseType: 'json' })
             Mojang.expectSpecificSuccess('Mojang Refresh', 200, res.statusCode)
 
             return {
@@ -310,7 +310,7 @@ export class Mojang {
             }
 
         } catch(err) {
-            return Mojang.handleGotError('Mojang Refresh', err as GotError, () => null)
+            return Mojang.handleGotError('Mojang Refresh', err, () => null)
         }
 
     }

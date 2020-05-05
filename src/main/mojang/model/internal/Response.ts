@@ -1,4 +1,4 @@
-import { GotError } from "got/dist/source"
+import { RequestError } from "got/dist/source"
 
 /**
  * @see https://wiki.vg/Authentication#Errors
@@ -22,7 +22,7 @@ export interface MojangResponse<T> {
 
     data: T
     responseCode: MojangResponseCode
-    error?: GotError
+    error?: RequestError
     isInternalError?: boolean
 
 }

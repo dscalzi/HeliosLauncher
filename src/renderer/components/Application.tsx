@@ -1,13 +1,12 @@
 import { hot } from 'react-hot-loader/root';
 import * as React from 'react';
-import Frame from './Frame';
+import Frame from './frame/Frame';
+import Welcome from './welcome/Welcome';
 
 const Application = () => (
     <>
     <Frame />
-    <div>
-        Hello World from Electron!
-    </div>
+    <Welcome />
     </>
 );
 
