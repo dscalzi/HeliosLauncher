@@ -1,10 +1,10 @@
 import * as React from 'react'
 
-export default class Login extends React.Component {
+export default class Landing extends React.Component {
 
     render() {
         return <>
-            LOGIN TBD
+            LANDING TBD
         </>
     }
 

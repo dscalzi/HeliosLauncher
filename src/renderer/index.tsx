@@ -1,22 +1,27 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
+import store from './redux/store'
 import './index.css';
 
 import Application from './components/Application';
+import { Provider } from 'react-redux';
 
 // Create main element
 const mainElement = document.createElement('div');
 document.body.appendChild(mainElement);
 
 // Render components
-const render = (Component: () => JSX.Element) => {
-    ReactDOM.render(
-        <AppContainer>
-            <Component />
-        </AppContainer>,
-        mainElement
-    );
-};
+ReactDOM.render(
+    <AppContainer>
+        <Provider store={store}>
+            <Application currentView={store.getState().currentView} />
+        </Provider>
+    </AppContainer>,
+    mainElement
+);
 
-render(Application);
+// setTimeout(() => {
+//     console.log('firing')
+//     store.dispatch(setCurrentView(View.LOGIN))
+// }, 2500)
