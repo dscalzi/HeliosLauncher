@@ -7,7 +7,6 @@ const defaultView = View.WELCOME
 const ViewReducer: Reducer<View, ChangeViewAction> = (state = defaultView, action) => {
     switch(action.type) {
         case ViewActionType.ChangeView:
-            console.log('Reducer fired')
             return action.payload
     }
     return state
