@@ -203,8 +203,7 @@
                             </svg>
                         </div>
                         <input class="settingsFileSelVal" id="settingsJavaExecVal" type="text" value="null" cValue="JavaExecutable" disabled>
-                        <input class="settingsFileSelSel" id="settingsJavaExecSel" type="file" <%= process.platform === 'win32' ? 'accept=.exe' : '' %>>
-                        <label class="settingsFileSelLabel" for="settingsJavaExecSel">Choose File</label>
+                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="false">Choose File</button>
                     </div>
                 </div>
                 <div class="settingsFileSelDesc">The Java executable is validated before game launch. <strong>Requires Java 8 x64.</strong><br>The path should end with <strong>bin<%= process.platform === 'win32' ? '\\javaw.exe' : '/java' %></strong>.</div>
@@ -262,8 +261,7 @@
                             </svg>
                         </div>
                         <input class="settingsFileSelVal" type="text" value="null" cValue="DataDirectory" disabled>
-                        <input class="settingsFileSelSel" id="settingsDataDirSel" type="file" webkitdirectory>
-                        <label class="settingsFileSelLabel" for="settingsDataDirSel">Choose Folder</label>
+                        <button class="settingsFileSelButton" dialogTitle="Select Data Directory" dialogDirectory="true">Choose Folder</button>
                     </div>
                 </div>
                 <div class="settingsFileSelDesc">All game files and local Java installations will be stored in the data directory.<br>Screenshots and world saves are stored in the instance folder for the corresponding server configuration.</div>

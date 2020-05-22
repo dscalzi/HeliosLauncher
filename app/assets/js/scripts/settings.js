@@ -42,15 +42,34 @@ bindSettingsSelect()
 
 
 function bindFileSelectors(){
-    for(let ele of document.getElementsByClassName('settingsFileSelSel')){
-        if(ele.id === 'settingsJavaExecSel'){
-            ele.onchange = (e) => {
-                ele.previousElementSibling.value = ele.files[0].path
-                populateJavaExecDetails(ele.previousElementSibling.value)
+    for(let ele of document.getElementsByClassName('settingsFileSelButton')){
+        
+        ele.onclick = async e => {
+            const isJavaExecSel = ele.id === 'settingsJavaExecSel'
+            const directoryDialog = ele.hasAttribute('dialogDirectory') && ele.getAttribute('dialogDirectory') == 'true'
+            const properties = directoryDialog ? ['openDirectory', 'createDirectory'] : ['openFile']
+
+            const options = {
+                properties
             }
-        } else {
-            ele.onchange = (e) => {
-                ele.previousElementSibling.value = ele.files[0].path
+
+            if(ele.hasAttribute('dialogTitle')) {
+                options.title = ele.getAttribute('dialogTitle')
+            }
+
+            if(isJavaExecSel && process.platform === 'win32') {
+                options.filters = [
+                    { name: 'Executables', extensions: ['exe'] },
+                    { name: 'All Files', extensions: ['*'] }
+                ]
+            }
+
+            const res = await remote.dialog.showOpenDialog(remote.getCurrentWindow(), options)
+            if(!res.canceled) {
+                ele.previousElementSibling.value = res.filePaths[0]
+                if(isJavaExecSel) {
+                    populateJavaExecDetails(ele.previousElementSibling.value)
+                }
             }
         }
     }
@@ -694,7 +713,7 @@ function bindDropinModFileSystemButton(){
     const fsBtn = document.getElementById('settingsDropinFileSystemButton')
     fsBtn.onclick = () => {
         DropinModUtil.validateDir(CACHE_SETTINGS_MODS_DIR)
-        shell.openItem(CACHE_SETTINGS_MODS_DIR)
+        shell.openPath(CACHE_SETTINGS_MODS_DIR)
     }
     fsBtn.ondragenter = e => {
         e.dataTransfer.dropEffect = 'move'
@@ -818,7 +837,7 @@ function bindShaderpackButton() {
     spBtn.onclick = () => {
         const p = path.join(CACHE_SETTINGS_INSTANCE_DIR, 'shaderpacks')
         DropinModUtil.validateDir(p)
-        shell.openItem(p)
+        shell.openPath(p)
     }
     spBtn.ondragenter = e => {
         e.dataTransfer.dropEffect = 'move'

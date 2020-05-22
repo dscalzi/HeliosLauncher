@@ -1233,33 +1233,25 @@ input:checked + .toggleSwitchSlider:before {
     height: 30px;
 }
 
-/* File input for file selection. */
-.settingsFileSelSel {
-    width: 0px;
-    height: 0px;
-    opacity: 0;
-}
-.settingsFileSelSel::-webkit-file-upload-button {
-    display: none;
-}
-
-/* Wrapper label to add a custom style to the file input. */
-.settingsFileSelLabel {
-    border-left: 0px;
+/* File selection button. */
+.settingsFileSelButton {
+    border: 0px;
     border-radius: 0px 3px 3px 0px;
     font-size: 12px;
     padding: 0px 5px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
     background: rgba(126, 126, 126, 0.57);
     transition: 0.25s ease;
     white-space: nowrap;
+    outline: none;
 }
-.settingsFileSelLabel:hover,
-.settingsFileSelLabel:focus,
-.settingsFileSelSel:focus ~ #settingsJavaExecLabel {
+.settingsFileSelButton:hover,
+.settingsFileSelButton:focus {
     text-shadow: 0px 0px 20px white;
+}
+.settingsFileSelButton:active {
+    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
 }
 
 /* Description for the file selector. */
