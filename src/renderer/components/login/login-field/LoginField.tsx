@@ -2,14 +2,59 @@ import * as React from 'react'
 
 import './LoginField.css'
 
-type LoginFieldProps = {
-    password: boolean,
-
+enum FieldError {
+    REQUIRED = 'Required',
+    INVALID = 'Invalid Value'
 }
 
-export default class LoginField extends React.Component<LoginFieldProps> {
+type LoginFieldProps = {
+    password: boolean
+}
 
-    getFieldSvg(): JSX.Element {
+type LoginFieldSettings = {
+    errorText: FieldError,
+    hasError: boolean,
+    shake: boolean,
+    value: string
+}
+
+export default class LoginField extends React.Component<LoginFieldProps, LoginFieldSettings> {
+
+    private readonly USERNAME_REGEX = /^[a-zA-Z0-9_]{1,16}$/
+    private readonly BASIC_EMAIL_REGEX = /^\S+@\S+\.\S+$/
+    // private readonly VALID_EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+
+    private readonly SHAKE_CLASS = 'shake'
+
+    private errorSpanRef: React.RefObject<HTMLSpanElement>
+
+    constructor(props: LoginFieldProps) {
+        super(props)
+        this.state = {
+            errorText: FieldError.REQUIRED,
+            hasError: true,
+            shake: false,
+            value: ''
+        }
+        this.errorSpanRef = React.createRef()
+    }
+
+    componentDidUpdate() {
+        if(this.state.hasError) {
+            // @ts-ignore Opacity is a number, not a string..
+            this.errorSpanRef.current!.style.opacity = 1
+            if(this.state.shake) {
+                this.errorSpanRef.current!.classList.remove(this.SHAKE_CLASS)
+                void this.errorSpanRef.current!.offsetWidth
+                this.errorSpanRef.current!.classList.add(this.SHAKE_CLASS)
+            }
+        } else {
+            // @ts-ignore Opacity is a number, not a string..
+            this.errorSpanRef.current!.style.opacity = 0
+        }
+    }
+
+    private getFieldSvg(): JSX.Element {
         if(this.props.password) {
 
             return (
@@ -37,20 +82,66 @@ export default class LoginField extends React.Component<LoginFieldProps> {
         }
     }
 
-    getDefaultErrorMessage(): string {
-        if(this.props.password) {
-            return '* Required'
-        } else {
-            return '* Invalid Value'
+    private formatError(error: FieldError): string {
+        return `* ${error}`
+    }
+
+    private getErrorState(shake: boolean, errorText: FieldError): Partial<LoginFieldSettings> {
+        return {
+            shake,
+            errorText,
+            hasError: true,
         }
     }
 
-    getPlaceholder(): string {
-        if(this.props.password) {
-            return 'PASSWORD'
-        } else {
-            return 'EMAIL OR USERNAME'
+    private getValidState(): Partial<LoginFieldSettings> {
+        return {
+            hasError: false
         }
+    }
+
+    private validateEmail = (value: string, shakeOnError: boolean): void => {
+        let newState
+        if(value) {
+            if(!this.BASIC_EMAIL_REGEX.test(value) && !this.USERNAME_REGEX.test(value)) {
+                newState = this.getErrorState(shakeOnError, FieldError.INVALID)
+            } else {
+                newState = this.getValidState()
+            }
+        } else {
+            newState = this.getErrorState(shakeOnError, FieldError.REQUIRED)
+        }
+        this.setState({
+            ...this.state,
+            ...newState,
+            value
+        })
+    }
+
+    private validatePassword = (value: string, shakeOnError: boolean): void => {
+        let newState
+        if(value) {
+            newState = this.getValidState()
+        } else {
+            newState = this.getErrorState(shakeOnError, FieldError.REQUIRED)
+        }
+        this.setState({
+            ...this.state,
+            ...newState,
+            value
+        })
+    }
+
+    private getValidateFunction(): (value: string, shakeOnError: boolean) => void {
+        return this.props.password ? this.validatePassword : this.validateEmail
+    }
+
+    private handleBlur = (event: React.FocusEvent<HTMLInputElement>): void => {
+        this.getValidateFunction()(event.target.value, true)
+    }
+
+    private handleInput = (event: React.FormEvent<HTMLInputElement>): void => {
+        this.getValidateFunction()((event.target as HTMLInputElement).value, false)
     }
 
     render() {
@@ -58,8 +149,18 @@ export default class LoginField extends React.Component<LoginFieldProps> {
             <>
                 <div className="loginFieldContainer">
                     {this.getFieldSvg()}
-                    <span className="loginErrorSpan">{this.getDefaultErrorMessage()}</span>
-                    <input className="loginField" type={this.props.password ? 'password' : 'text'} placeholder={this.getPlaceholder()}/>
+                    <span
+                        className="loginErrorSpan"
+                        ref={this.errorSpanRef}>
+                        {this.formatError(this.state.errorText)}
+                    </span>
+                    <input 
+                        className="loginField"
+                        type={this.props.password ? 'password' : 'text'}
+                        value={this.state.value}
+                        placeholder={this.props.password ? 'PASSWORD' : 'EMAIL OR USERNAME'}
+                        onBlur={this.handleBlur}
+                        onInput={this.handleInput} />
                 </div>
             </>
         )
