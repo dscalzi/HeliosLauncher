@@ -8,37 +8,45 @@ import Landing from './landing/Landing';
 import Login from './login/Login';
 import Settings from './settings/Settings';
 
+import './Application.css'
+
 type ApplicationProps = {
     currentView: View
 }
 
 class Application extends React.Component<ApplicationProps> {
 
-    render() {
+    getViewElement(): JSX.Element {
         switch(this.props.currentView) {
             case View.WELCOME:
                 return <>
-                    <Frame />
                     <Welcome />
                 </>
             case View.LANDING:
                 return <>
-                    <Frame />
                     <Landing />
                 </>
             case View.LOGIN:
                 return <>
-                    <Frame />
-                    <Login />
+                    <Login cancelable={false} />
                 </>
             case View.SETTINGS:
                 return <>
-                    <Frame />
                     <Settings />
                 </>
 
         }
-        
+    }
+
+    render() {
+        return (
+            <>
+                <Frame />
+                <div className="appWrapper">
+                    {this.getViewElement()}
+                </div>
+            </>
+        )
     }
     
 }

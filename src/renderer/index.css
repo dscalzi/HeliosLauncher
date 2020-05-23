@@ -25,6 +25,20 @@
  *                                                                             *
  ******************************************************************************/
 
+/* TODO: Temp for development */
+body {
+    background-image: url('../../assets/images/backgrounds/3.jpg');
+    background-size: cover;
+}
+
+/* Set height to 100% */
+html {
+    min-height: 100%;
+}
+body {
+    height: 100vh;
+}
+
 /* Reset body, html, and div presets. */
 body, html, div {
     margin: 0;

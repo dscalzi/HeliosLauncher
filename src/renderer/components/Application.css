@@ -1,0 +1,4 @@
+.appWrapper {
+    height: calc(100vh - 22px);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
+}
