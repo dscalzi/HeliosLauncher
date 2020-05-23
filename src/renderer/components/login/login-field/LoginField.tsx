@@ -8,17 +8,19 @@ enum FieldError {
 }
 
 type LoginFieldProps = {
-    password: boolean
+    password: boolean,
+    disabled: boolean,
+    onValidityChange: (valid: boolean) => void
 }
 
-type LoginFieldSettings = {
+type LoginFieldState = {
     errorText: FieldError,
     hasError: boolean,
     shake: boolean,
     value: string
 }
 
-export default class LoginField extends React.Component<LoginFieldProps, LoginFieldSettings> {
+export default class LoginField extends React.Component<LoginFieldProps, LoginFieldState> {
 
     private readonly USERNAME_REGEX = /^[a-zA-Z0-9_]{1,16}$/
     private readonly BASIC_EMAIL_REGEX = /^\S+@\S+\.\S+$/
@@ -27,6 +29,7 @@ export default class LoginField extends React.Component<LoginFieldProps, LoginFi
     private readonly SHAKE_CLASS = 'shake'
 
     private errorSpanRef: React.RefObject<HTMLSpanElement>
+    private internalTrigger = false // Indicates that the component updated from an internal trigger.
 
     constructor(props: LoginFieldProps) {
         super(props)
@@ -40,18 +43,25 @@ export default class LoginField extends React.Component<LoginFieldProps, LoginFi
     }
 
     componentDidUpdate() {
-        if(this.state.hasError) {
-            // @ts-ignore Opacity is a number, not a string..
-            this.errorSpanRef.current!.style.opacity = 1
-            if(this.state.shake) {
-                this.errorSpanRef.current!.classList.remove(this.SHAKE_CLASS)
-                void this.errorSpanRef.current!.offsetWidth
-                this.errorSpanRef.current!.classList.add(this.SHAKE_CLASS)
+        if(this.internalTrigger) {
+            if(this.state.hasError) {
+                // @ts-ignore Opacity is a number, not a string..
+                this.errorSpanRef.current!.style.opacity = 1
+                if(this.state.shake) {
+                    this.errorSpanRef.current!.classList.remove(this.SHAKE_CLASS)
+                    void this.errorSpanRef.current!.offsetWidth
+                    this.errorSpanRef.current!.classList.add(this.SHAKE_CLASS)
+                }
+            } else {
+                // @ts-ignore Opacity is a number, not a string..
+                this.errorSpanRef.current!.style.opacity = 0
             }
-        } else {
-            // @ts-ignore Opacity is a number, not a string..
-            this.errorSpanRef.current!.style.opacity = 0
         }
+        this.internalTrigger = false
+    }
+
+    public getValue(): string {
+        return this.state.value
     }
 
     private getFieldSvg(): JSX.Element {
@@ -86,7 +96,7 @@ export default class LoginField extends React.Component<LoginFieldProps, LoginFi
         return `* ${error}`
     }
 
-    private getErrorState(shake: boolean, errorText: FieldError): Partial<LoginFieldSettings> {
+    private getErrorState(shake: boolean, errorText: FieldError): Partial<LoginFieldState> & Required<{hasError: boolean}> {
         return {
             shake,
             errorText,
@@ -94,7 +104,7 @@ export default class LoginField extends React.Component<LoginFieldProps, LoginFi
         }
     }
 
-    private getValidState(): Partial<LoginFieldSettings> {
+    private getValidState(): Partial<LoginFieldState> & Required<{hasError: boolean}> {
         return {
             hasError: false
         }
@@ -111,11 +121,13 @@ export default class LoginField extends React.Component<LoginFieldProps, LoginFi
         } else {
             newState = this.getErrorState(shakeOnError, FieldError.REQUIRED)
         }
+        this.internalTrigger = true
         this.setState({
             ...this.state,
             ...newState,
             value
         })
+        this.props.onValidityChange(!newState.hasError)
     }
 
     private validatePassword = (value: string, shakeOnError: boolean): void => {
@@ -125,11 +137,13 @@ export default class LoginField extends React.Component<LoginFieldProps, LoginFi
         } else {
             newState = this.getErrorState(shakeOnError, FieldError.REQUIRED)
         }
+        this.internalTrigger = true
         this.setState({
             ...this.state,
             ...newState,
             value
         })
+        this.props.onValidityChange(!newState.hasError)
     }
 
     private getValidateFunction(): (value: string, shakeOnError: boolean) => void {
@@ -156,8 +170,9 @@ export default class LoginField extends React.Component<LoginFieldProps, LoginFi
                     </span>
                     <input 
                         className="loginField"
+                        disabled={this.props.disabled}
                         type={this.props.password ? 'password' : 'text'}
-                        value={this.state.value}
+                        defaultValue={this.state.value}
                         placeholder={this.props.password ? 'PASSWORD' : 'EMAIL OR USERNAME'}
                         onBlur={this.handleBlur}
                         onInput={this.handleInput} />
