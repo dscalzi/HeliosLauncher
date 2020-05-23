@@ -195,7 +195,7 @@ function createMenu() {
 function getPlatformIcon(filename){
     const opSys = process.platform
     if (opSys === 'darwin') {
-        filename = filename + '.icns'
+        filename = filename + '.png'
     } else if (opSys === 'win32') {
         filename = filename + '.ico'
     } else {
