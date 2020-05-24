@@ -8,15 +8,15 @@ enum FieldError {
 }
 
 type LoginFieldProps = {
-    password: boolean,
-    disabled: boolean,
+    password: boolean
+    disabled: boolean
     onValidityChange: (valid: boolean) => void
 }
 
 type LoginFieldState = {
-    errorText: FieldError,
-    hasError: boolean,
-    shake: boolean,
+    errorText: FieldError
+    hasError: boolean
+    shake: boolean
     value: string
 }
 
@@ -42,9 +42,10 @@ export default class LoginField extends React.Component<LoginFieldProps, LoginFi
         this.errorSpanRef = React.createRef()
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(): void {
         if(this.internalTrigger) {
             if(this.state.hasError) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore Opacity is a number, not a string..
                 this.errorSpanRef.current!.style.opacity = 1
                 if(this.state.shake) {
@@ -53,6 +54,7 @@ export default class LoginField extends React.Component<LoginFieldProps, LoginFi
                     this.errorSpanRef.current!.classList.add(this.SHAKE_CLASS)
                 }
             } else {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore Opacity is a number, not a string..
                 this.errorSpanRef.current!.style.opacity = 0
             }
@@ -158,7 +160,7 @@ export default class LoginField extends React.Component<LoginFieldProps, LoginFi
         this.getValidateFunction()((event.target as HTMLInputElement).value, false)
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <>
                 <div className="loginFieldContainer">

@@ -1,12 +1,12 @@
-import { hot } from 'react-hot-loader/root';
-import * as React from 'react';
-import Frame from './frame/Frame';
-import Welcome from './welcome/Welcome';
-import { connect } from 'react-redux';
-import { View } from '../meta/Views';
-import Landing from './landing/Landing';
-import Login from './login/Login';
-import Settings from './settings/Settings';
+import { hot } from 'react-hot-loader/root'
+import * as React from 'react'
+import Frame from './frame/Frame'
+import Welcome from './welcome/Welcome'
+import { connect } from 'react-redux'
+import { View } from '../meta/Views'
+import Landing from './landing/Landing'
+import Login from './login/Login'
+import Settings from './settings/Settings'
 
 import './Application.css'
 
@@ -55,4 +55,4 @@ const connected = connect((state: any) => ({
     currentView: state.currentView
 }), undefined)(Application)
 
-export default hot(connected);
+export default hot(connected)

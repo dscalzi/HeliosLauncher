@@ -75,7 +75,7 @@ export class Mojang {
      * are 'green', 'yellow', 'red', and 'grey'. Grey is a custom status
      * to our project which represents an unknown status.
      */
-    public static statusToHex(status: string){
+    public static statusToHex(status: string): string {
         switch(status.toLowerCase()){
             case StatusColor.GREEN:
                 return '#a5c325'
@@ -181,7 +181,7 @@ export class Mojang {
         username: string,
         password: string,
         clientToken: string | null,
-        requestUser: boolean = true,
+        requestUser = true,
         agent: Agent = Mojang.MINECRAFT_AGENT
     ): Promise<MojangResponse<Session | null>> {
 
@@ -291,7 +291,7 @@ export class Mojang {
      * 
      * @see http://wiki.vg/Authentication#Refresh
      */
-    public static async refresh(accessToken: string, clientToken: string, requestUser: boolean = true): Promise<MojangResponse<Session | null>> {
+    public static async refresh(accessToken: string, clientToken: string, requestUser = true): Promise<MojangResponse<Session | null>> {
 
         try {
 

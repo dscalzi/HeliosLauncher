@@ -1,5 +1,5 @@
-import { View } from "../../meta/Views";
-import { Action } from "redux";
+import { View } from '../../meta/Views'
+import { Action } from 'redux'
 
 export enum ViewActionType {
     ChangeView = 'CHANGE_VIEW'

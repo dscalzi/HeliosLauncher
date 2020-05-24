@@ -1,66 +1,49 @@
 {
-    "env": {
-        "es2017": true,
-        "node": true
-    },
-    "extends": "eslint:recommended",
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended"
+    ],
     "parserOptions": {
-        "ecmaVersion": 2019,
-        "sourceType": "module"
-    },
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },  
     "rules": {
-        "indent": [
-            "error",
-            4,
-            {
-                "SwitchCase": 1
-            }
-        ],
-        "linebreak-style": [
-            "error",
-            "windows"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
+        "semi": "off",
+        "@typescript-eslint/semi": [
             "error",
             "never"
         ],
-        "no-var": [
-            "error"
+        "quotes": "off",
+        "@typescript-eslint/quotes": [
+            "error",
+            "single"
         ],
-        "no-console": [
-            0
+        "indent": "off",
+        "@typescript-eslint/indent": [
+            "error",
+            4
         ],
-        "no-control-regex": [
-            0
-        ],
-        "no-unused-vars": [
+        "@typescript-eslint/member-delimiter-style": [
             "error",
             {
-                "vars": "all",
-                "args": "none",
-                "ignoreRestSiblings": false,
-                "argsIgnorePattern": "reject"
+                "multiline": {
+                    "delimiter": "none",
+                    "requireLast": false
+                },
+                "singleline": {
+                    "delimiter": "comma",
+                    "requireLast": false
+                }
             }
         ],
-        "no-async-promise-executor": [
-            0
-        ]
-    },
-    "overrides": [
-        {
-          "files": [ "src/scripts/*.js" ],
-          "rules": {
-            "no-unused-vars": [
-                0
-            ],
-            "no-undef": [
-                0
-            ]
-          }
-        }
-      ]
+        "@typescript-eslint/no-non-null-assertion": "off"
+    }
 }

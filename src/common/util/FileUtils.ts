@@ -2,7 +2,7 @@ import { createHash } from 'crypto'
 import { join } from 'path'
 import { pathExists, readFile } from 'fs-extra'
 
-export function calculateHash(buf: Buffer, algo: string) {
+export function calculateHash(buf: Buffer, algo: string): string {
     return createHash(algo).update(buf).digest('hex')
 }
 
@@ -21,14 +21,14 @@ function getVersionExtPath(commonDir: string, version: string, ext: string) {
     return join(commonDir, 'versions', version, `${version}.${ext}`)
 }
 
-export function getVersionJsonPath(commonDir: string, version: string) {
+export function getVersionJsonPath(commonDir: string, version: string): string {
     return getVersionExtPath(commonDir, version, 'json')
 }
 
-export function getVersionJarPath(commonDir: string, version: string) {
+export function getVersionJarPath(commonDir: string, version: string): string {
     return getVersionExtPath(commonDir, version, 'jar')
 }
 
-export function getLibraryDir(commonDir: string) {
+export function getLibraryDir(commonDir: string): string {
     return join(commonDir, 'libraries')
 }

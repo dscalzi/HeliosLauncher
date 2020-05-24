@@ -1,4 +1,4 @@
-import { RequestError } from "got/dist/source"
+import { RequestError } from 'got'
 
 /**
  * @see https://wiki.vg/Authentication#Errors
@@ -74,18 +74,12 @@ export function deciperResponseCode(body: MojangErrorBody): MojangResponseCode {
 // These indicate problems with the code and not the data.
 export function isInternalError(responseCode: MojangResponseCode): boolean {
     switch(responseCode) {
-        // We've sent the wrong method to an endpoint. (ex. GET to POST)
-        case MojangResponseCode.ERROR_METHOD_NOT_ALLOWED:
-        // Indicates endpoint has changed. (404)
-        case MojangResponseCode.ERROR_NOT_FOUND:
-        // Selecting profiles isn't implemented yet. (Shouldnt happen)
-        case MojangResponseCode.ERROR_ACCESS_TOKEN_HAS_PROFILE:
-        // Username/password was not submitted. (UI should forbid this)
-        case MojangResponseCode.ERROR_CREDENTIALS_ARE_NULL:
-        // ??? (Shouldnt happen)
-        case MojangResponseCode.ERROR_INVALID_SALT_VERSION:
-        // Data was not submitted as application/json
-        case MojangResponseCode.ERROR_UNSUPPORTED_MEDIA_TYPE:
+        case MojangResponseCode.ERROR_METHOD_NOT_ALLOWED:       // We've sent the wrong method to an endpoint. (ex. GET to POST)
+        case MojangResponseCode.ERROR_NOT_FOUND:                // Indicates endpoint has changed. (404)
+        case MojangResponseCode.ERROR_ACCESS_TOKEN_HAS_PROFILE: // Selecting profiles isn't implemented yet. (Shouldnt happen)
+        case MojangResponseCode.ERROR_CREDENTIALS_ARE_NULL:     // Username/password was not submitted. (UI should forbid this)
+        case MojangResponseCode.ERROR_INVALID_SALT_VERSION:     // ??? (Shouldnt happen)
+        case MojangResponseCode.ERROR_UNSUPPORTED_MEDIA_TYPE:   // Data was not submitted as application/json
             return true
         default:
             return false

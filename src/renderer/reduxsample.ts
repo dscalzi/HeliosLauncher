@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { combineReducers, createStore, Reducer, Action, AnyAction } from 'redux'
 
 const userReducer: Reducer<any, AnyAction> = (state = {name: 'Name1', age: 0}, action) => {

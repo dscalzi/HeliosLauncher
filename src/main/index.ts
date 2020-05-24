@@ -1,20 +1,20 @@
-import { ipcMain, app, BrowserWindow, Menu, MenuItem } from "electron"
-import { prerelease } from "semver"
-import { join } from "path"
-import { readdirSync } from "fs-extra"
-import { format } from "url"
+import { ipcMain, app, BrowserWindow, Menu, MenuItem } from 'electron'
+import { prerelease } from 'semver'
+import { join } from 'path'
+import { readdirSync } from 'fs-extra'
+import { format } from 'url'
 import { autoUpdater } from 'electron-updater'
-import isdev from "../common/util/isdev"
+import isdev from '../common/util/isdev'
 
 const installExtensions = async () => {
-    const installer = require('electron-devtools-installer');
-    const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-    const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
+    const installer = require('electron-devtools-installer')
+    const forceDownload = !!process.env.UPGRADE_EXTENSIONS
+    const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS']
 
     return Promise.all(
         extensions.map(name => installer.default(installer[name], forceDownload))
-    ).catch(console.log); // eslint-disable-line no-console
-};
+    ).catch(console.log) // eslint-disable-line no-console
+}
 
 // Setup auto updater.
 function initAutoUpdater(event: any, data: any) {
@@ -100,7 +100,7 @@ let win: BrowserWindow | null
 async function createWindow() {
 
     if (process.env.NODE_ENV !== 'production') {
-        await installExtensions();
+        await installExtensions()
     }
 
     win = new BrowserWindow({
@@ -147,8 +147,8 @@ async function createWindow() {
     if (process.env.NODE_ENV !== 'production') {
         // Open DevTools, see https://github.com/electron/electron/issues/12438 for why we wait for dom-ready
         win.webContents.once('dom-ready', () => {
-            win!.webContents.openDevTools();
-        });
+            win!.webContents.openDevTools()
+        })
     }
 
     win.on('closed', () => {
@@ -161,7 +161,7 @@ function createMenu() {
     if(process.platform === 'darwin') {
 
         // Extend default included application menu to continue support for quit keyboard shortcut
-        let applicationSubMenu = new MenuItem({
+        const applicationSubMenu = new MenuItem({
             label: 'Application',
             submenu: [{
                 label: 'About Application',
@@ -179,7 +179,7 @@ function createMenu() {
         })
 
         // New edit menu adds support for text-editing keyboard shortcuts
-        let editSubMenu = new MenuItem({
+        const editSubMenu = new MenuItem({
             label: 'Edit',
             submenu: [
                 {
@@ -219,8 +219,8 @@ function createMenu() {
         })
 
         // Bundle submenus into a single template and build a menu object with it
-        let menuTemplate: MenuItem[] = [applicationSubMenu, editSubMenu]
-        let menuObject = Menu.buildFromTemplate(menuTemplate)
+        const menuTemplate: MenuItem[] = [applicationSubMenu, editSubMenu]
+        const menuObject = Menu.buildFromTemplate(menuTemplate)
 
         // Assign it to the application
         Menu.setApplicationMenu(menuObject)

@@ -1,6 +1,6 @@
-import { SavedAccount } from './SavedAccount';
-import { NewsCache } from './NewsCache';
-import { ModConfig } from './ModConfig';
+import { SavedAccount } from './SavedAccount'
+import { NewsCache } from './NewsCache'
+import { ModConfig } from './ModConfig'
 
 export interface LauncherConfig {
 
@@ -27,7 +27,7 @@ export interface LauncherConfig {
     clientToken: string | null
     selectedServer: string | null
     selectedAccount: string | null
-    authenticationDatabase: {[uuid: string]: SavedAccount},
+    authenticationDatabase: {[uuid: string]: SavedAccount}
     modConfigurations: ModConfig[]
 
 }

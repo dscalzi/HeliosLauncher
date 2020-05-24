@@ -1,4 +1,4 @@
-import { Rule, Natives } from "../asset/model/mojang/VersionJson"
+import { Rule, Natives } from '../asset/model/mojang/VersionJson'
 
 export function getMojangOS(): string {
     const opSys = process.platform
@@ -47,7 +47,7 @@ export function isLibraryCompatible(rules?: Rule[], natives?: Natives): boolean 
  * @param {string} desired The desired version.
  * @param {string} actual The actual version.
  */
-export function mcVersionAtLeast(desired: string, actual: string){
+export function mcVersionAtLeast(desired: string, actual: string): boolean {
     const des = desired.split('.')
     const act = actual.split('.')
 

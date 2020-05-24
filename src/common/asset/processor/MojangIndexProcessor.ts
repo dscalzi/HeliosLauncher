@@ -77,7 +77,7 @@ export class MojangIndexProcessor extends IndexProcessor {
      * complete init when 3 files are validated and loaded.
      * 
      */
-    public async init() {
+    public async init(): Promise<void> {
 
         const versionManifest = await this.loadVersionManifest()
         this.versionJson = await this.loadVersionJson(this.version, versionManifest)
@@ -103,7 +103,7 @@ export class MojangIndexProcessor extends IndexProcessor {
             }
             const hash = this.getVersionJsonHash(versionJsonUrl)
             if(hash == null) {
-                throw new AssetGuardError(`Format of Mojang's version manifest has changed. Unable to proceed.`)
+                throw new AssetGuardError('Format of Mojang\'s version manifest has changed. Unable to proceed.')
             }
             const versionJson = await this.loadContentWithRemoteFallback<VersionJson>(versionJsonUrl, versionJsonPath, { algo: 'sha1', value: hash })
             if(versionJson == null) {
@@ -186,7 +186,8 @@ export class MojangIndexProcessor extends IndexProcessor {
     }
 
     //  TODO progress tracker
-    public async validate() {
+    // TODO type return object
+    public async validate(): Promise<any> {
 
         const assets = await this.validateAssets(this.assetIndex)
         const libraries = await this.validateLibraries(this.versionJson)
@@ -239,8 +240,10 @@ export class MojangIndexProcessor extends IndexProcessor {
                 if(libEntry.natives == null) {
                     artifact = libEntry.downloads.artifact
                 } else {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     const classifier = libEntry.natives[getMojangOS()].replace('${arch}', process.arch.replace('x', ''))
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     artifact = libEntry.downloads.classifiers[classifier]
                 }

@@ -1,15 +1,15 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
+import { AppContainer } from 'react-hot-loader'
 import store from './redux/store'
-import './index.css';
+import './index.css'
 
-import Application from './components/Application';
-import { Provider } from 'react-redux';
+import Application from './components/Application'
+import { Provider } from 'react-redux'
 
 // Create main element
-const mainElement = document.createElement('div');
-document.body.appendChild(mainElement);
+const mainElement = document.createElement('div')
+document.body.appendChild(mainElement)
 
 // Render components
 ReactDOM.render(
@@ -19,7 +19,7 @@ ReactDOM.render(
         </Provider>
     </AppContainer>,
     mainElement
-);
+)
 
 // setTimeout(() => {
 //     console.log('firing')

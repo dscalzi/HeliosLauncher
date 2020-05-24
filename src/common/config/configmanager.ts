@@ -23,7 +23,7 @@ export class ConfigManager {
      * 
      * @returns {string} The absolute path of the launcher directory.
      */
-    public static getLauncherDirectory(){
+    public static getLauncherDirectory(): string {
         return ConfigManager.launcherDir
     }
 
@@ -33,7 +33,7 @@ export class ConfigManager {
      * 
      * @returns {string} The absolute path of the launcher's data directory.
      */
-    public static getDataDirectory(def = false){
+    public static getDataDirectory(def = false): string {
         return !def ? ConfigManager.config.settings.launcher.dataDirectory : ConfigManager.DEFAULT_CONFIG.settings.launcher.dataDirectory
     }
 
@@ -42,7 +42,7 @@ export class ConfigManager {
      * 
      * @param {string} dataDirectory The new data directory.
      */
-    public static setDataDirectory(dataDirectory: string){
+    public static setDataDirectory(dataDirectory: string): void {
         ConfigManager.config.settings.launcher.dataDirectory = dataDirectory
     }
 
@@ -94,12 +94,12 @@ export class ConfigManager {
 
     private static config: LauncherConfig = null as unknown as LauncherConfig
 
-    public static getAbsoluteMinRAM(){
+    public static getAbsoluteMinRAM(): number {
         const mem = totalmem()
         return mem >= 6000000000 ? 3 : 2
     }
     
-    public static getAbsoluteMaxRAM(){
+    public static getAbsoluteMaxRAM(): number {
         const mem = totalmem()
         const gT16 = mem-16000000000
         return Math.floor((mem-1000000000-(gT16 > 0 ? (Number.parseInt(gT16/8 as unknown as string) + 16000000000/4) : mem/4))/1000000000)
@@ -119,7 +119,7 @@ export class ConfigManager {
     /**
      * Save the current configuration to a file.
      */
-    public static save(){
+    public static save(): void {
         writeFileSync(ConfigManager.configPath, JSON.stringify(ConfigManager.config, null, 4), 'UTF-8')
     }
 
@@ -129,7 +129,7 @@ export class ConfigManager {
      * be generated. Note that "resolved" values default to null and will
      * need to be externally assigned.
      */
-    public static load(){
+    public static load(): void {
         let doLoad = true
 
         if(!pathExistsSync(ConfigManager.configPath)){
@@ -228,7 +228,7 @@ export class ConfigManager {
      * 
      * @param {Object} newsCache The new news cache object.
      */
-    public static setNewsCache(newsCache: any): void {
+    public static setNewsCache(newsCache: NewsCache): void {
         ConfigManager.config.newsCache = newsCache
     }
 
@@ -391,8 +391,8 @@ export class ConfigManager {
      */
     public static getSelectedAccount(): SavedAccount | null {
         return ConfigManager.config.selectedAccount == null ? 
-                null : 
-                ConfigManager.config.authenticationDatabase[ConfigManager.config.selectedAccount]
+            null : 
+            ConfigManager.config.authenticationDatabase[ConfigManager.config.selectedAccount]
     }
 
     /**

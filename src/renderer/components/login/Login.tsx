@@ -15,9 +15,9 @@ type LoginProperties = {
 }
 
 type LoginState = {
-    rememberMe: boolean,
-    userValid: boolean,
-    passValid: boolean,
+    rememberMe: boolean
+    userValid: boolean
+    passValid: boolean
     status: LoginStatus
 }
 
@@ -113,7 +113,7 @@ export default class Login extends React.Component<LoginProperties, LoginState> 
         })
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <>
                 <div id="loginContainer">
@@ -154,7 +154,7 @@ export default class Login extends React.Component<LoginProperties, LoginState> 
                                 id="loginButton"
                                 disabled={!this.canSave()}
                                 onClick={this.handleLoginButtonClick}
-                                {...(this.isLoading() ? {loading: "true"} : {})}>
+                                {...(this.isLoading() ? {loading: 'true'} : {})}>
                                 <div id="loginButtonContent">
                                     {this.getButtonText()}
                                     <svg id="loginSVG" viewBox="0 0 24.87 13.97">
