@@ -4,7 +4,7 @@ import { join } from "path"
 import { readdirSync } from "fs-extra"
 import { format } from "url"
 import { autoUpdater } from 'electron-updater'
-import isdev from "./util/isdev"
+import isdev from "../common/util/isdev"
 
 const installExtensions = async () => {
     const installer = require('electron-devtools-installer');

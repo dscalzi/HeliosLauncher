@@ -1,7 +1,7 @@
 import { LoggerUtil } from './loggerutil'
-import { ConfigManager } from '../config/configmanager'
-import { Mojang } from '../mojang/mojang'
-import { SavedAccount } from '../config/model/SavedAccount'
+import { ConfigManager } from '../../common/config/configmanager'
+import { Mojang } from '../../common/mojang/mojang'
+import { SavedAccount } from '../../common/config/model/SavedAccount'
 
 /**
  * AuthManager

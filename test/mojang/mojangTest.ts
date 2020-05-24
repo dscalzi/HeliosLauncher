@@ -1,8 +1,8 @@
-import { Mojang } from "../../src/main/mojang/mojang"
+import { Mojang } from "common/mojang/mojang"
 import { expect } from 'chai'
 import nock from 'nock'
-import { Session } from "../../src/main/mojang/model/auth/Session"
-import { MojangResponseCode } from "../../src/main/mojang/model/internal/Response"
+import { Session } from "common/mojang/model/auth/Session"
+import { MojangResponseCode } from "common/mojang/model/internal/Response"
 
 function expectMojangResponse(res: any, responseCode: MojangResponseCode, negate = false) {
     expect(res).to.not.be.an('error')

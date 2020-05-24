@@ -1,10 +1,10 @@
 import nock from 'nock'
 import { URL } from 'url'
-import { MojangIndexProcessor } from '../../src/main/asset/processor/MojangIndexProcessor'
+import { MojangIndexProcessor } from 'common/asset/processor/MojangIndexProcessor'
 import { dirname, join } from 'path'
 import { expect } from 'chai'
 import { remove, pathExists } from 'fs-extra'
-import { getVersionJsonPath } from '../../src/main/util/FileUtils'
+import { getVersionJsonPath } from 'common/util/FileUtils'
 
 // @ts-ignore (JSON Modules enabled in tsconfig.test.json)
 import versionManifest from './files/version_manifest.json'

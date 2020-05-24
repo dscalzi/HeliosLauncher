@@ -1,4 +1,4 @@
-import { Rule, Natives } from "../asset/model/mojang/VersionJson"
+import { Rule, Natives } from "../../main/asset/model/mojang/VersionJson"
 
 export function getMojangOS(): string {
     const opSys = process.platform

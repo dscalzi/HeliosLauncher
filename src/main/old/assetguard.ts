@@ -4,16 +4,16 @@ import { join } from 'path'
 import { pathExistsSync, pathExists, readdir, exists, readFileSync, createWriteStream, ensureDirSync, readFile, writeFileSync, unlink, createReadStream, readJsonSync } from 'fs-extra'
 import Registry from 'winreg'
 import { exec, spawn } from 'child_process'
-import { LauncherJson } from '../asset/model/mojang/LauncherJson'
+import { LauncherJson } from 'common/asset/model/mojang/LauncherJson'
 import { createHash } from 'crypto'
 import AdmZip from 'adm-zip'
 import { forEachOfLimit, eachLimit } from 'async'
 import { extract } from 'tar-fs'
 import { createGunzip } from 'zlib'
-import { VersionJson, AssetIndex, Rule, Natives, Library } from '../asset/model/mojang/VersionJson'
+import { VersionJson, AssetIndex, Rule, Natives, Library } from 'common/asset/model/mojang/VersionJson'
 
-import { ConfigManager } from '../config/configmanager'
-import isDev from '../util/isdev'
+import { ConfigManager } from 'common/config/configmanager'
+import isDev from 'common/util/isdev'
 const DistroManager = require('./distromanager')
 
 // Constants

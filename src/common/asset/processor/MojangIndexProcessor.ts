@@ -1,14 +1,14 @@
 import { IndexProcessor } from '../model/engine/IndexProcessor'
 import got, { HTTPError, RequestError, ParseError, TimeoutError } from 'got'
-import { LoggerUtil } from '../../logging/loggerutil'
+import { LoggerUtil } from 'common/logging/loggerutil'
 import { pathExists, readFile, ensureDir, writeFile, readJson } from 'fs-extra'
 import { MojangVersionManifest } from '../model/mojang/VersionManifest'
-import { calculateHash, getVersionJsonPath, validateLocalFile, getLibraryDir, getVersionJarPath } from '../../util/FileUtils'
+import { calculateHash, getVersionJsonPath, validateLocalFile, getLibraryDir, getVersionJarPath } from 'common/util/FileUtils'
 import { dirname, join } from 'path'
 import { VersionJson, AssetIndex, LibraryArtifact } from '../model/mojang/VersionJson'
 import { AssetGuardError } from '../model/engine/AssetGuardError'
 import { Asset } from '../model/engine/Asset'
-import { isLibraryCompatible, getMojangOS } from '../../util/MojangUtils'
+import { isLibraryCompatible, getMojangOS } from 'common/util/MojangUtils'
 
 export class MojangIndexProcessor extends IndexProcessor {
 
