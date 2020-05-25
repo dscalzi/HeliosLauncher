@@ -175,6 +175,7 @@ export class ConfigManager {
      * @param {Object} destObj The destination object.
      * @returns {Object} A validated destination object.
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private static validateKeySet(srcObj: any, destObj: any){
         if(srcObj == null){
             srcObj = {}

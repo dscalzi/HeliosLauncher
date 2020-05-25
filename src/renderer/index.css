@@ -27,7 +27,7 @@
 
 /* TODO: Temp for development */
 body {
-    background-image: url('../../assets/images/backgrounds/3.jpg');
+    /* background-image: url('../../static/images/backgrounds/3.jpg'); */
     background-size: cover;
 }
 

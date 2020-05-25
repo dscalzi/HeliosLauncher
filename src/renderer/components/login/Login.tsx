@@ -104,6 +104,7 @@ export default class Login extends React.Component<LoginProperties, LoginState> 
         event.preventDefault()
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     handleLoginButtonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
         console.log(this.userRef.current!.getValue())
         console.log(this.passRef.current!.getValue())

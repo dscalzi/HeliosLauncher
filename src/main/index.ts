@@ -1,16 +1,16 @@
 import { ipcMain, app, BrowserWindow, Menu, MenuItem } from 'electron'
 import { prerelease } from 'semver'
 import { join } from 'path'
-import { readdirSync } from 'fs-extra'
 import { format } from 'url'
 import { autoUpdater } from 'electron-updater'
 import isdev from '../common/util/isdev'
 
 const installExtensions = async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const installer = require('electron-devtools-installer')
     const forceDownload = !!process.env.UPGRADE_EXTENSIONS
     const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS']
-
+    
     return Promise.all(
         extensions.map(name => installer.default(installer[name], forceDownload))
     ).catch(console.log) // eslint-disable-line no-console
@@ -115,8 +115,6 @@ async function createWindow() {
         },
         backgroundColor: '#171614'
     })
-
-    // ejse.data('bkid', Math.floor((Math.random() * readdirSync(join(__dirname, '..', 'assets', 'images', 'backgrounds')).length)))
 
     if (isdev) {
         win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
