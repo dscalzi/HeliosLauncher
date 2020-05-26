@@ -1,0 +1,62 @@
+/*******************************************************************************
+ *                                                                             *
+ * Loading Element (app.ejs)                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+/* Loading container, placed above everything. */
+#loadingContainer {
+    position: absolute;
+    z-index: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100% - 22px);
+}
+
+/* Loading content container. */
+#loadingContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Spinner container. */
+#loadSpinnerContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Stationary image for the spinner. */
+#loadCenterImage {
+    position: absolute;
+    width: 277px;
+    height: auto;
+}
+
+/* Rotating image for the spinner. */
+#loadSpinnerImage {
+    width: 280px;
+    height: auto;
+    z-index: 400;
+}
+
+/* Rotating animation for the spinner. */
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Class which is applied when the spinner image is spinning. */
+.rotating {
+    animation: rotating 10s linear infinite;
+}

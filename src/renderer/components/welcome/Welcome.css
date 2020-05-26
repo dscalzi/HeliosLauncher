@@ -5,6 +5,7 @@
     align-items: center;
     height: 100%;
     width: 100%;
+    background: rgba(0, 0, 0, 0.50);
 }
 
 #welcomeContent {

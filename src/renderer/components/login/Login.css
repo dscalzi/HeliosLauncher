@@ -19,7 +19,6 @@
     align-items: center;
     height: 100%;
     width: 100%;
-    transition: filter 0.25s ease;
     background: rgba(0, 0, 0, 0.50);
 }
 

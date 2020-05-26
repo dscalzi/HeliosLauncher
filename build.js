@@ -57,7 +57,8 @@ builder.build({
             '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.travis.yml,.nvmrc,.eslintrc.json,build.js}'
         ],
         extraResources: [
-            'libraries'
+            'libraries',
+            'static'
         ],
         asar: true
     }
