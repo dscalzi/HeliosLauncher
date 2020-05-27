@@ -58,6 +58,7 @@
 
 /* Windows frame button dock. */
 #frameButtonDockWin {
+    display: flex;
     -webkit-app-region: no-drag !important;
     position: relative;
     top: -2px;
@@ -83,6 +84,7 @@
     height: 22px;
     width: 39px;
     cursor: pointer;
+    line-height: 22px;
 }
 .frameButton:hover,
 .frameButton:focus {

@@ -13,6 +13,7 @@
     justify-content: center;
     width: 100%;
     height: calc(100% - 22px);
+    overflow: hidden;
 }
 
 /* Loading content container. */
@@ -35,13 +36,13 @@
 /* Stationary image for the spinner. */
 #loadCenterImage {
     position: absolute;
-    width: 277px;
+    width: 17.3125rem;
     height: auto;
 }
 
 /* Rotating image for the spinner. */
 #loadSpinnerImage {
-    width: 280px;
+    width: 17.5rem;
     height: auto;
     z-index: 400;
 }
