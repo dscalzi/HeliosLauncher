@@ -10,20 +10,20 @@
 /* SVG icons on the login view. */
 .loginSVG {
     fill: #fff;
-    height: 20px;
-    width: 20px;
+    height: 1.25rem;
+    width: 1.25rem;
 }
 
 /* Span which displays errors related to login field content. */
 .loginErrorSpan {
     font-family: 'Avenir Medium';
     font-weight: bold;
-    font-size: 8px;
+    font-size: 0.5rem;
     color: #ff1b0c;
     width: 100%;
     text-align: right;
     position: absolute;
-    top: 7px;
+    top: 0.4375rem;
     opacity: 0;
     transition: 0.25s ease;
 }
@@ -34,19 +34,19 @@
 
 @keyframes shake {
     10%, 90% {
-        transform: translate3d(-1px, 0, 0);
+        transform: translate3d(-0.0625rem, 0, 0);
     }
     
     20%, 80% {
-        transform: translate3d(2px, 0, 0);
+        transform: translate3d(0.125rem, 0, 0);
     }
   
     30%, 50%, 70% {
-        transform: translate3d(-4px, 0, 0);
+        transform: translate3d(-0.25rem, 0, 0);
     }
   
     40%, 60% {
-        transform: translate3d(4px, 0, 0);
+        transform: translate3d(0.25rem, 0, 0);
     }
 }
 
@@ -54,18 +54,18 @@
 .loginField {
     font-family: 'Avenir Book';
     background: none;
-    border-width: 1.5px 0px 0px 0px;
+    border-width: 0.09375rem 0 0 0;
     border-style: solid;
-    width: 250px;
-    margin-bottom: 20px;
+    width: 15.625rem;
+    margin-bottom: 1.25rem;
     border-color: #fff;
     color: rgba(255, 255, 255, 0.75);
     font-weight: bold;
     text-align: center;
     box-sizing: border-box;
-    padding: 7.5px;
-    font-size: 10px;
-    letter-spacing: 1px;
+    padding: 0.46875rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.0625rem;
 }
 .loginField:focus {
     outline: none;
@@ -75,8 +75,8 @@
 }
 .loginField::-webkit-input-placeholder {
     color: rgba(255, 255, 255, 0.75);
-    font-size: 10px;
-    letter-spacing: 1px;
+    font-size: 0.625rem;
+    letter-spacing: 0.0625rem;
     text-align: center;
     font-weight: bold;
 }
