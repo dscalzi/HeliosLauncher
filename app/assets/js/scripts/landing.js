@@ -467,7 +467,8 @@ let hasRPC = false
 // Joined server regex
 const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
 const GAME_JOINED_REGEX = /\[.+\]: Skipping bad option: lastServer:/
-const GAME_LAUNCH_REGEX = /^\[.+\]: MinecraftForge .+ Initialized$/
+const GAME_LAUNCH_REGEX = /^\[.+\]: (?:MinecraftForge .+ Initialized|ModLauncher .+ starting: .+)$/
+const MIN_LINGER = 5000
 
 let aEx
 let serv
@@ -647,19 +648,29 @@ function dlAsync(login = true){
                 let pb = new ProcessBuilder(serv, versionData, forgeData, authUser, remote.app.getVersion())
                 setLaunchDetails('Launching game..')
 
+                const onLoadComplete = () => {
+                    toggleLaunchArea(false)
+                    if(hasRPC){
+                        DiscordWrapper.updateDetails('Loading game..')
+                    }
+                    proc.stdout.on('data', gameStateChange)
+                    proc.stdout.removeListener('data', tempListener)
+                    proc.stderr.removeListener('data', gameErrorListener)
+                }
+                const start = Date.now()
+
                 // Attach a temporary listener to the client output.
                 // Will wait for a certain bit of text meaning that
                 // the client application has started, and we can hide
                 // the progress bar stuff.
                 const tempListener = function(data){
                     if(GAME_LAUNCH_REGEX.test(data.trim())){
-                        toggleLaunchArea(false)
-                        if(hasRPC){
-                            DiscordWrapper.updateDetails('Loading game..')
+                        const diff = Date.now()-start
+                        if(diff < MIN_LINGER) {
+                            setTimeout(onLoadComplete, MIN_LINGER-diff)
+                        } else {
+                            onLoadComplete()
                         }
-                        proc.stdout.on('data', gameStateChange)
-                        proc.stdout.removeListener('data', tempListener)
-                        proc.stderr.removeListener('data', gameErrorListener)
                     }
                 }
 
