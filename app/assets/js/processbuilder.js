@@ -272,6 +272,18 @@ class ProcessBuilder {
         
     }
 
+    _processAutoConnectArg(args){
+        if(ConfigManager.getAutoConnect() && this.server.isAutoConnect()){
+            const serverURL = new URL('my://' + this.server.getAddress())
+            args.push('--server')
+            args.push(serverURL.hostname)
+            if(serverURL.port){
+                args.push('--port')
+                args.push(serverURL.port)
+            }
+        }
+    }
+
     /**
      * Construct the argument array that will be passed to the JVM process.
      * 
@@ -461,6 +473,13 @@ class ProcessBuilder {
             }
         }
 
+        // Autoconnect
+        if(Util.mcVersionAtLeast('1.15', this.server.getMinecraftVersion())) {
+            logger.error('Server autoconnect disabled on 1.15+ due to OpenGL Stack Overflow issue.')
+        } else {
+            this._processAutoConnectArg(args)
+        }
+
         // Forge Specific Arguments
         args = args.concat(this.forgeData.arguments.game)
 
@@ -526,15 +545,7 @@ class ProcessBuilder {
         }
 
         // Autoconnect to the selected server.
-        if(ConfigManager.getAutoConnect() && this.server.isAutoConnect()){
-            const serverURL = new URL('my://' + this.server.getAddress())
-            mcArgs.push('--server')
-            mcArgs.push(serverURL.hostname)
-            if(serverURL.port){
-                mcArgs.push('--port')
-                mcArgs.push(serverURL.port)
-            }
-        }
+        this._processAutoConnectArg(mcArgs)
 
         // Prepare game resolution
         if(ConfigManager.getFullscreen()){
