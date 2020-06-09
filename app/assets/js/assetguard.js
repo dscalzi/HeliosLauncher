@@ -166,6 +166,31 @@ class Util {
         return true
     }
 
+    static isForgeGradle3(mcVersion, forgeVersion) {
+
+        if(Util.mcVersionAtLeast('1.13', mcVersion)) {
+            return true
+        }
+
+        let forgeVer = null
+        try {
+            forgeVer = forgeVersion.split('-')[1]
+        } catch(err) {
+            throw new Error('Forge version is complex (changed).. launcher requires a patch.')
+        }
+
+        const maxFG2 = [14, 23, 5, 2847]
+        const verSplit = forgeVer.split('.').map(v => Number(v))
+
+        for(let i=0; i<maxFG2.length; i++) {
+            if(verSplit[i] > maxFG2[i]) {
+                return true
+            }
+        }
+        
+        return false
+    }
+
 }
 
 
@@ -1446,7 +1471,7 @@ class AssetGuard extends EventEmitter {
             for(let ob of modules){
                 const type = ob.getType()
                 if(type === DistroManager.Types.ForgeHosted || type === DistroManager.Types.Forge){
-                    if(Util.mcVersionAtLeast('1.13', server.getMinecraftVersion())){
+                    if(Util.isForgeGradle3(server.getMinecraftVersion(), ob.getVersion())){
                         // Read Manifest
                         for(let sub of ob.getSubModules()){
                             if(sub.getType() === DistroManager.Types.VersionManifest){

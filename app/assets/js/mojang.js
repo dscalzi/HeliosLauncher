@@ -7,51 +7,33 @@
  */
 // Requirements
 const request = require('request')
-const logger  = require('./loggerutil')('%c[Mojang]', 'color: #a02d2a; font-weight: bold')
+const logger  = require('./loggerutil')('%c[Etternal]', 'color: #a02d2a; font-weight: bold')
 
 // Constants
 const minecraftAgent = {
     name: 'Minecraft',
     version: 1
 }
-const authpath = 'https://authserver.mojang.com'
+const authpath = 'https://cuenta.etternal.red/api/yggdrasil/authserver'
 const statuses = [
     {
-        service: 'sessionserver.mojang.com',
+        service: 'mc.etternal.red',
         status: 'grey',
-        name: 'Multiplayer Session Service',
-        essential: true
-    },
-    {
-        service: 'authserver.mojang.com',
-        status: 'grey',
-        name: 'Authentication Service',
-        essential: true
-    },
-    {
-        service: 'textures.minecraft.net',
-        status: 'grey',
-        name: 'Minecraft Skins',
+        name: 'Servidor',
         essential: false
     },
     {
-        service: 'api.mojang.com',
+        service: 'cuenta.etternal.red/api/yggdrasil/sessionserver',
         status: 'grey',
-        name: 'Public API',
+        name: 'Servicio de Sesión',
         essential: false
     },
     {
-        service: 'minecraft.net',
+        service: 'cuenta.etternal.red/api/yggdrasil/authserver',
         status: 'grey',
-        name: 'Minecraft.net',
+        name: 'Servicio de Autentificación',
         essential: false
     },
-    {
-        service: 'account.mojang.com',
-        status: 'grey',
-        name: 'Mojang Accounts Website',
-        essential: false
-    }
 ]
 
 // Functions
@@ -88,7 +70,7 @@ exports.statusToHex = function(status){
  */
 exports.status = function(){
     return new Promise((resolve, reject) => {
-        request.get('https://status.mojang.com/check',
+        request.get('https://etternal.red/gamefiles/status.json',
             {
                 json: true,
                 timeout: 2500

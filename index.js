@@ -193,16 +193,19 @@ function createMenu() {
 }
 
 function getPlatformIcon(filename){
-    const opSys = process.platform
-    if (opSys === 'darwin') {
-        filename = filename + '.icns'
-    } else if (opSys === 'win32') {
-        filename = filename + '.ico'
-    } else {
-        filename = filename + '.png'
+    let ext
+    switch(process.platform) {
+        case 'win32':
+            ext = 'ico'
+            break
+        case 'darwin':
+        case 'linux':
+        default:
+            ext = 'png'
+            break
     }
 
-    return path.join(__dirname, 'app', 'assets', 'images', filename)
+    return path.join(__dirname, 'app', 'assets', 'images', `${filename}.${ext}`)
 }
 
 app.on('ready', createWindow)

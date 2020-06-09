@@ -1,14 +1,11 @@
 {
-  "name": "helioslauncher",
-  "version": "1.7.0",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "name": "etternal",
+  "version": "1.0.0",
+  "productName": "Etternal Launcher",
+  "description": "Launcher para jugar al servidor de Etternal",
+  "author": "Etternal Team & Daniel Scalzi",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
-  "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
-  },
+  "homepage": "https://etternal.red",
   "private": true,
   "main": "index.js",
   "scripts": {
@@ -41,9 +38,9 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "electron": "^9.0.0",
-    "electron-builder": "^22.6.1",
-    "eslint": "^7.0.0"
+    "electron": "^9.0.2",
+    "electron-builder": "^22.7.0",
+    "eslint": "^7.1.0"
   },
   "repository": {
     "type": "git",

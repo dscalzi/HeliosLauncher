@@ -3775,3 +3775,52 @@ input:checked + .toggleSwitchSlider:before {
 .rotating {
     animation: rotating 10s linear infinite;
 }
+
+/* Loading Etternal */
+/* Original from https://codepen.io/alanshortis/pen/eJLVXr */
+@-webkit-keyframes pulse {
+    50% {
+      background: white;
+    }
+  }
+  @keyframes pulse {
+    50% {
+      background: white;
+    }
+  }
+  html, body {
+    height: 100%;
+  }
+  
+  .loading-pulse {
+    position: relative;
+    width: 6px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    -webkit-animation: pulse 750ms infinite;
+            animation: pulse 750ms infinite;
+    -webkit-animation-delay: 250ms;
+            animation-delay: 250ms;
+  }
+  .loading-pulse:before, .loading-pulse:after {
+    content: '';
+    position: absolute;
+    display: block;
+    height: 16px;
+    width: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+    -webkit-animation: pulse 750ms infinite;
+            animation: pulse 750ms infinite;
+  }
+  .loading-pulse:before {
+    left: -12px;
+  }
+  .loading-pulse:after {
+    left: 12px;
+    -webkit-animation-delay: 500ms;
+            animation-delay: 500ms;
+  }
+  

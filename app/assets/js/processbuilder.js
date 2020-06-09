@@ -298,6 +298,7 @@ class ProcessBuilder {
     _constructJVMArguments112(mods, tempNativePath){
 
         let args = []
+        
 
         // Classpath Argument
         args.push('-cp')
@@ -339,6 +340,7 @@ class ProcessBuilder {
         // JVM Arguments First
         let args = this.versionData.arguments.jvm
 
+        args.push('-javaagent:patcher-1.jar=cuenta.etternal.red')
         //args.push('-Dlog4j.configurationFile=D:\\WesterosCraft\\game\\common\\assets\\log_configs\\client-1.12.xml')
 
         // Java Arguments
