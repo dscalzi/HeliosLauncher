@@ -1,0 +1,1054 @@
+/*******************************************************************************
+ *                                                                             *
+ * Landing View (Structural Styles)                                            *
+ *                                                                             *
+ ******************************************************************************/
+
+/* Main content container. */
+#landingContainer {
+    height: 100%;
+    position: relative;
+    transition: background 2s ease;
+    overflow-y: hidden;
+}
+
+/* Upper content container. */
+#landingContainer > #upper {
+    position: relative;
+    transition: top 2s ease;
+    top: 0px;
+    height: 77%;
+    display: flex;
+}
+#landingContainer > #upper > #left {
+    display: inline-flex;
+    width: 15%;
+    height: 100%;
+    justify-content: flex-end;
+}
+#landingContainer > #upper > #content {
+    display: inline-flex;
+    width: 70%;
+    height: 100%;
+}
+#landingContainer > #upper > #right {
+    display: inline-flex;
+    width: 15%;
+    height: 100%;
+}
+
+/* Lower content container. */
+#landingContainer > #lower {
+    height: 23%;
+    display: flex;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+#landingContainer > #lower > #left {
+    position: relative;
+    transition: top 2s ease;
+    top: 0px;
+    height: 100%;
+    width: 33%;
+    display: inline-flex;
+    justify-content: center;
+}
+#landingContainer > #lower > #left #content {
+    position: relative;
+    top: 25px;
+    display: inline-flex;
+    line-height: 24px;
+    left: 50px;
+}
+#landingContainer > #lower > #center {
+    position: relative;
+    transition: top 2s ease;
+    top: 0px;
+    height: 100%;
+    width: 34%;
+    display: inline-flex;
+    justify-content: center;
+}
+#landingContainer > #lower > #center #content {
+    position: relative;
+    z-index: 500;
+    transition: top 2s ease;
+    top: 10px;
+}
+#landingContainer > #lower > #right {
+    position: relative;
+    transition: top 2s ease;
+    top: 0px;
+    height: 100%;
+    width: 33%;
+    display: inline-flex;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Landing View (News Styles)                                                  *
+ *                                                                             *
+ ******************************************************************************/
+
+/* Main container. */
+#newsContainer {
+    position: absolute;
+    top: 100%;
+    height: 100%;
+    width: 100%;
+    transition: top 2s ease;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+/* News content container. */
+#newsContent {
+    height: 82vh;
+    width: 100%;
+    display: flex;
+    -webkit-user-select: initial;
+    position: relative;
+}
+
+/* Drop shadow displayed when content is scrolled out of view. */
+#newsContent:before {
+    content: '';
+    background: linear-gradient(rgba(0, 0, 0, 0.25), transparent);
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+#newsContent[scrolled]:before {
+    opacity: 1;
+}
+
+/* News article status container (left). */
+#newsStatusContainer {
+    width: calc(30% - 60px);
+    height: calc(100% - 30px);
+    padding: 15px 15px 15px 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* News status content. */
+#newsStatusContent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* News title wrapper. */
+#newsTitleContainer {
+    display: flex;
+    max-width: 90%;
+}
+
+/* News article title styles. */
+#newsArticleTitle {
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Avenir Medium';
+    color: white;
+    text-decoration: none;
+    transition: 0.25s ease;
+    outline: none;
+    text-align: right;
+}
+#newsArticleTitle:hover,
+#newsArticleTitle:focus {
+    text-shadow: 0px 0px 20px white;
+}
+#newsArticleTitle:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7;
+}
+
+/* News meta container. */
+#newsMetaContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Date and author wrappers. */
+#newsArticleDateWrapper,
+#newsArticleAuthorWrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Date and author shared styles. */
+#newsArticleDate,
+#newsArticleAuthor {
+    display: inline-block;
+    font-size: 10px;
+    padding: 0px 5px;
+    font-weight: bold;
+    border-radius: 2px;
+}
+
+/* Date styles. */
+#newsArticleDate {
+    background: white;
+    color: black;
+    margin-top: 5px;
+}
+
+/* Author styles. */
+#newsArticleAuthor {
+    background: #a02d2a;
+}
+
+/* News article comments styles. */
+#newsArticleComments {
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 10px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: 0.25s ease;
+    outline: none;
+    text-align: right;
+}
+#newsArticleComments:focus,
+#newsArticleComments:hover {
+    color: #e0e0e0;
+}
+#newsArticleComments:active {
+    color: #c7c7c7;
+}
+
+/* Article content container (right). */
+#newsArticleContainer {
+    width: calc(100% - 25px);
+    height: 100%;
+    margin: 0px 0px 0px 25px;
+}
+
+/* Article content styles. */
+#newsArticleContentScrollable {
+    font-size: 12px;
+    overflow-y: scroll;
+    height: 100%;
+    padding: 0px 15px 0px 15px;
+}
+#newsArticleContentScrollable img,
+#newsArticleContentScrollable iframe {
+    max-width: 95%;
+    display: block;
+    margin: 0 auto;
+}
+#newsArticleContentScrollable a {
+    color: rgba(202, 202, 202, 0.75);
+    transition: 0.25s ease;
+    outline: none;
+}
+#newsArticleContentScrollable a:hover,
+#newsArticleContentScrollable a:focus {
+    color: rgba(255, 255, 255, 0.75);
+}
+#newsArticleContentScrollable a:active {
+    color: rgba(165, 165, 165, 0.75);
+}
+#newsArticleContentScrollable::-webkit-scrollbar {
+    width: 2px;
+}
+#newsArticleContentScrollable::-webkit-scrollbar-track {
+    display: none;
+}
+#newsArticleContentScrollable::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
+}
+.bbCodeSpoilerButton {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.25s ease;
+    width: 100%;
+    border-bottom: 1px solid white;
+    padding-bottom: 15px;
+}
+.bbCodeSpoilerButton:hover,
+.bbCodeSpoilerButton:focus {
+    text-shadow: 0px 0px 20px #ffffff, 0px 0px 20px #ffffff, 0px 0px 20px #ffffff;
+}
+.bbCodeSpoilerButton:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+}
+.bbCodeSpoilerText {
+    display: none;
+    padding: 15px 0px;
+    border-bottom: 1px solid white;
+}
+
+
+#newsArticleContentWrapper {
+    width: 80%;
+}
+
+.newsArticleSpacerTop {
+    height: 15px;
+}
+
+/* Div to add spacing at the end of a news article. */
+.newsArticleSpacerBot {
+    height: 30px;
+}
+
+/* News navigation container. */
+#newsNavigationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    -webkit-user-select: none;
+    position: absolute;
+    bottom: 15px;
+    right: 0px;
+}
+
+/* Navigation status span. */
+#newsNavigationStatus {
+    font-size: 12px;
+    margin: 0px 15px;
+}
+
+/* Left and right navigation button styles. */
+#newsNavigateLeft,
+#newsNavigateRight {
+    background: none;
+    border: none;
+    outline: none;
+    height: 20px;
+    cursor: pointer;
+}
+#newsNavigateLeft:hover #newsNavigationLeftSVG,
+#newsNavigateLeft:focus #newsNavigationLeftSVG,
+#newsNavigateRight:hover #newsNavigationRightSVG,
+#newsNavigateRight:focus #newsNavigationRightSVG {
+    filter: drop-shadow(0px 0px 2px #fff);
+    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+}
+#newsNavigateLeft:active #newsNavigationLeftSVG .arrowLine,
+#newsNavigateRight:active #newsNavigationRightSVG .arrowLine {
+    stroke: #c7c7c7;
+}
+#newsNavigateLeft:active #newsNavigationLeftSVG,
+#newsNavigateRight:active #newsNavigationRightSVG {
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
+    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+}
+#newsNavigateLeft:disabled #newsNavigationLeftSVG .arrowLine,
+#newsNavigateRight:disabled #newsNavigationRightSVG .arrowLine {
+    stroke: rgba(255, 255, 255, 0.75);
+}
+#newsNavigationLeftSVG {
+    transform: rotate(-90deg);
+    width: 15px;
+}
+#newsNavigationRightSVG {
+    transform: rotate(90deg);
+    width: 15px;
+}
+
+/* News error (message) container. */
+#newsErrorContainer {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+#newsErrorFailed {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* News error content (message). */
+.newsErrorContent {
+    font-size: 20px;
+}
+#newsErrorLoading {
+    display: flex;
+    width: 168.92px;
+}
+#nELoadSpan {
+    white-space: pre;
+}
+/* News error retry button styles. */
+#newsErrorRetry {
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    transition: 0.25s ease;
+}
+#newsErrorRetry:focus,
+#newsErrorRetry:hover {
+    text-shadow: 0px 0px 20px white;
+}
+#newsErrorRetry:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Landing View (Top Styles)                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+/* * *
+* Landing View (Top Styles) | Left Content
+* * */
+
+/* Logo image. */
+#image_seal {
+    height: 70px;
+    width: auto;
+    position: relative;
+    border: 2px solid white;
+    box-sizing: border-box;
+    border-radius: 50%;
+}
+
+/* Logo container styles. */
+#image_seal_container {
+    position: relative;
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    margin-top: 50px;
+}
+
+/* Logo container styles w/ update. */
+#image_seal_container[update]{
+    cursor: pointer
+}
+#image_seal_container[update]:before,
+#image_seal_container[update]:after {
+    cursor: pointer;
+    position: absolute;
+    content: '';
+    height: 100%;
+    width: 100%;
+    top: 0%;
+    left: 0%;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #43c628;
+    animation: glow-grow 4s ease-out infinite;
+    background: rgba(0, 0, 0, 0.15);
+}
+#image_seal_container[update]:before {
+    animation-delay: 2s;
+}
+
+/* Update available tooltip styles. */
+#updateAvailableTooltip {
+    cursor: pointer;
+    visibility: hidden;
+    opacity: 0;
+    width: 100px;
+    height: 15px;
+    background-color: rgb(0, 0, 0);
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 2px;
+    position: absolute;
+    z-index: 1;
+    top: 115%;
+    left: -17.5px;
+    font-family: 'Avenir Medium';
+    font-size: 12px;
+    transition: visibility 0s linear 0.25s, opacity 0.25s ease;
+}
+#updateAvailableTooltip::after {
+    content: " ";
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent rgb(0, 0, 0) transparent;
+}
+#image_seal_container[update]:hover #updateAvailableTooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+/* Update available animation. */
+@keyframes glow-grow {
+    0% {
+        opacity: 0;
+        transform: scale(1);
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* * *
+* Landing View (Bottom Styles) | Right Content
+* * */
+
+/*  Wrapper container for top, right content. */
+#rightContainer {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    top: 50px;
+    align-items: flex-start;
+    height: calc(100% - 50px);
+}
+
+/* Right hand user content container. */
+#user_content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* User profile avatar container. */
+#avatarContainer {
+    border-radius: 50%;
+    border: 2px solid #cad7e1;
+    box-sizing: border-box;
+    background: rgba(1, 2, 1, 0.5);
+    height: 70px;
+    width: 70px;
+    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    overflow: hidden;
+    position: relative;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* Avatar edit overlay. */
+#avatarOverlay {
+    opacity: 0;
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.25s ease;
+    font-weight: bold;
+    letter-spacing: 2px;
+    background-color: rgba(0, 0, 0, 0.35);
+    -webkit-user-select: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+#avatarOverlay:hover,
+#avatarOverlay:focus {
+    opacity: 1;
+}
+#avatarOverlay:active {
+    background-color: rgba(0, 0, 0, 0.45);
+}
+
+/* User profile name text. */
+#user_text {
+    font-size: 12px;
+    min-width: 135px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-shadow: 0px 0px 20px black;
+    position: absolute;
+    right: 95px;
+    text-align: right;
+    -webkit-user-select: initial;
+}
+
+/* Social media icon content container. */
+#mediaContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+    height: calc(100% - 95px);
+    width: 70px;
+    align-items: center;
+}
+
+/* Social Media Icon division containers. */
+#internalMedia, #externalMedia {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container object which wraps an icon to ensure fluid transitions. */
+.mediaContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 27px;
+}
+
+/* Divider bar between the external and internal icons. */
+.mediaDivider {
+    height: 1px;
+    width: 14px;
+    background: rgb(255, 255, 255);
+    margin: 10px 0px;
+}
+
+/* Social media icon shared styles. */
+.mediaSVG {
+    fill: #ffffff;
+    height: 12px;
+    transition: 0.25s ease;
+    cursor: pointer;
+    height: 12px;
+    width: 25px;
+}
+.mediaSVG:hover,
+.mediaURL:focus .mediaSVG,
+.mediaSVG:active {
+    height: 20px;
+}
+
+/* Social media URL shared styles. */
+.mediaURL {
+    outline: none;
+}
+
+/* Internal media button shared styles. */
+.mediaButton {
+    background: none;
+    border: none;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    outline: none;
+}
+
+#settingsMediaContainer {
+    position: relative;
+}
+
+/* Settings icon colors. */
+#settingsSVG {
+    stroke: #ffffff;
+    height: 15px;
+}
+.mediaButton:hover #settingsSVG,
+.mediaButton:focus #settingsSVG,
+.mediaButton:active #settingsSVG {
+    height: 23px;
+}
+
+/* Settings tooltip styles. */
+#settingsTooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: 75px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.75);
+    text-align: center;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 1;
+    right: 130%;
+    font-size: 12px;
+    line-height: 20px;
+    transition: visibility 0s linear 0.25s, opacity 0.25s ease;
+}
+#settingsTooltip::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent transparent rgba(0, 0, 0, 0.75);
+}
+.mediaButton:hover #settingsTooltip,
+.mediaButton:focus #settingsTooltip,
+.mediaButton:active #settingsTooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay:0s;
+}
+
+/* Twitter icon colors. */
+#twitterSVG:hover,
+#twitterURL:focus #twitterSVG {
+    fill: #1da1f2;
+}
+#twitterSVG:active {
+    fill: #1b8dd4;
+}
+
+/* Instagram icon colors. */
+#instagramSVG:hover,
+#instagramURL:focus #instagramSVG {
+    fill: url('#instaFill')
+    /*fill: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); */
+}
+#instagramSVG:active {
+    fill: url('#instaFill')
+}
+
+/* Youtube icon colors. */
+#youtubeSVG:hover,
+#youtubeURL:focus #youtubeSVG {
+    fill: #f00;
+}
+#youtubeSVG:active {
+    fill: #ea0202;
+}
+
+/* Discord icon colors. */
+#discordSVG:hover,
+#discordURL:focus #discordSVG {
+    fill: #7288d9;
+}
+#discordSVG:active {
+    fill: #657ac4;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Landing View (Bottom Styles)                                                *
+ *                                                                             *
+ ******************************************************************************/
+
+/* Style for a general label on the bottom of the landing view. */
+.bot_label {
+    font-size: 9px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    text-shadow: 0px 0px 0px #bebcbb;
+}
+
+/* Divider used on the bottom of the landing view. */
+.bot_divider {
+    height: 25px;
+    width: 2px;
+    background: rgba(107, 105, 105, 0.7);
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* * *
+* Landing View (Bottom Styles) | Left Content
+* * */
+
+/* Maintains maximum width on the status bar. */
+#server_status_wrapper {
+    display: inline-flex;
+    width: 75px;
+}
+
+/* Span which displays the player count of the selected server. */
+#player_count {
+    color: #949494;
+    font-size: 8px;
+    font-weight: 900;
+    text-shadow: 0px 0px 20px #949494;
+    margin-left: 10px;
+}
+
+/* Wrapper container for the mojang status bar. */
+#mojangStatusWrapper {
+    position: relative;
+    display: flex;
+    cursor: pointer;
+}
+
+/* Icon which displays the status of the mojang services. */
+#mojang_status_icon {
+    font-size: 30px;
+    color: #848484;
+    margin-left: 15px;
+    font-family: 'sans-serif';
+}
+
+/* Tooltip which displays more details about the mojang statuses. */
+#mojangStatusTooltip {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    width: 145px;
+    min-height: 150px;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    border-radius: 4px;
+    padding: 5px 10px;
+    z-index: 1;
+    font-family: 'Avenir Medium';
+    font-size: 12px;
+    transition: visibility 0s linear 0.25s, opacity 0.25s ease;
+    bottom: calc(100% + 15px);
+    transform: translateX(-50%);
+    margin-left: 50%;
+    box-shadow: 0px 0px 20px rgb(0, 0, 0);
+    cursor: default;
+}
+#mojangStatusTooltip:after {
+    content: " ";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.75) transparent transparent transparent;
+}
+#mojangStatusWrapper:hover #mojangStatusTooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+/* Tooltip title for the mojang statuses. */
+#mojangStatusTooltipTitle {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+/* Wrapper container for the non essential services title. */
+#mojangStatusNEContainer {
+    display: flex;
+    align-items: center;
+    margin: 10px 0px;
+}
+
+/* White bar which surrounds the non essential service title. */
+.mojangStatusNEBar {
+    height: 1px;
+    width: 100%;
+    background: white;
+}
+
+/* Non essential service title text. */
+#mojangStatusNETitle {
+    font-size: 10px;
+    padding: 0px 3px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* Wrapper container for mojang service information. */
+.mojangStatusContainer {
+    display: flex;
+}
+
+/* Displays the name of the mojang service. */
+.mojangStatusName {
+    width: 100%;
+    font-size: 10px;
+    letter-spacing: 1px;
+    line-height: 12px;
+    padding: 6px 0px;
+}
+
+/* Displays the status of the mojang service. */
+.mojangStatusIcon {
+    margin-right: 10px;
+    font-size: 18.5px;
+    color: #848484;
+}
+
+/* * *
+* Landing View (Bottom Styles) | Center Content
+* * */
+
+/* Button which opens the news view. */
+#newsButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+#newsButton:hover #newsButtonText,
+#newsButton:focus #newsButtonText {
+    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
+}
+#newsButton:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+}
+
+#newsButton:hover #newsButtonSVG,
+#newsButton:focus #newsButtonSVG {
+    filter: drop-shadow(0px 0px 2px #fff);
+    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+}
+#newsButton:active #newsButtonSVG .arrowLine {
+    stroke: #c7c7c7;
+}
+#newsButton:active #newsButtonSVG {
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
+    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+}
+#newsButton:disabled #newsButtonSVG .arrowLine {
+    stroke: rgba(255, 255, 255, 0.75);
+}
+
+/* Icon which indicates there is new news. */
+#newsButtonAlert {
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    border-radius: 50%;
+    background: red;
+    right: -1px;
+    top: 50%;
+}
+
+/* Arrow image which floats above the news button. */
+#newsButtonSVG {
+    height: 11px;
+    margin-left: -2px;
+    transition: 0.25s ease;
+}
+
+/* Span which contains the news button text. */
+#newsButtonText {
+    color: white;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-shadow: 0px 0px 0px #bebcbb;
+    font-size: 11px;
+    line-height: 30px;
+    display: flex;
+    transition: 0.25s ease;
+}
+
+/* * *
+* Landing View (Bottom Styles) | Right Content
+* * */
+
+/* Main launch content container. */
+#landingContainer > #lower > #right #launch_content {
+    position: relative;
+    top: 25px;
+    display: inline-flex;
+}
+
+/* The launch button. */
+#launch_button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-shadow: 0px 0px 0px #bebcbb;
+    font-size: 20px;
+    padding: 0px;
+    transition: 0.25s ease;
+    outline: none;
+}
+#launch_button:hover,
+#launch_button:focus {
+    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
+}
+#launch_button:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+}
+#launch_button:disabled {
+    color: #c7c7c7;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Launch details main container, hidden until launch processing begins. */
+#launch_details {
+    position: relative;
+    top: 25px;
+    display: none;
+}
+ 
+/* Left side of launch details container, displays percentage and a divider. */
+#launch_details_left {
+    display: flex;
+}
+
+/* Span which displays percentage complete. */
+#launch_progress_label {
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-shadow: 0px 0px 0px #bebcbb;
+    font-size: 20px;
+    min-width: 53.21px;
+    max-width: 53.21px;
+    text-align: right;
+}
+
+/* Right side of launch details container, displays progress bar and details. */
+#launch_details_right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Button which opens the server selection view. */
+#server_selection_button {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    line-height: 24px;
+    padding: 0px;
+    transition: 0.25s ease;
+}
+#server_selection_button:hover,
+#server_selection_button:focus {
+    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff, 0px 0px 20px #fff;
+}
+#server_selection_button:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+}
+
+/* Progress bar styles. */
+#launch_progress[value] {
+    height: 3px;
+    width: 265px;
+    -webkit-appearance: none;
+}
+#launch_progress[value]::-webkit-progress-bar {
+    background-color: transparent;
+}
+#launch_progress[value]::-webkit-progress-value {
+    background-color: #fff;
+}
+
+/* Span which displays information about the status of the launch process. */
+#launch_details_text {
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
