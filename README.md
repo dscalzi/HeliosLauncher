@@ -190,6 +190,16 @@ We reserve the right to update these conditions at any time, please check back p
 
 ---
 
+### Note on Translations
+
+You can translate this project to use your own language. You can do that, cloning the existing en_US.json to the name of the language you want to translate to.
+
+For changing the language in the project, you can change the line 17 on ./assets/js/preloader.js
+
+Changing the original ejs if there is a entry on the [language].json file would render that change useless.
+
+---
+
 ## Resources
 
 * [Wiki][wiki]
