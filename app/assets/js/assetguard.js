@@ -194,6 +194,26 @@ class Util {
         }
     }
 
+    static isAutoconnectBroken(forgeVersion) {
+
+        const forgeVer = forgeVersion.split('-')[1]
+
+        const minWorking = [31, 2, 15]
+        const verSplit = forgeVer.split('.').map(v => Number(v))
+
+        if(verSplit[0] === 31) {
+            for(let i=0; i<minWorking.length; i++) {
+                if(verSplit[i] > minWorking[i]) {
+                    return false
+                } else if(verSplit[i] < minWorking[i]) {
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
 }
 
 

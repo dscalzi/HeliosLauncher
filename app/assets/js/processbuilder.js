@@ -474,11 +474,20 @@ class ProcessBuilder {
         }
 
         // Autoconnect
-        if(Util.mcVersionAtLeast('1.15', this.server.getMinecraftVersion())) {
-            logger.error('Server autoconnect disabled on 1.15+ due to OpenGL Stack Overflow issue.')
+        let isAutoconnectBroken
+        try {
+            isAutoconnectBroken = Util.isAutoconnectBroken(this.forgeData.id.split('-')[2])
+        } catch(err) {
+            logger.error('Forge version format changed.. assuming autoconnect works.')
+        }
+
+        if(isAutoconnectBroken) {
+            logger.error('Server autoconnect disabled on Forge 1.15.2 for builds earlier than 31.2.15 due to OpenGL Stack Overflow issue.')
+            logger.error('Please upgrade your Forge version to at least 31.2.15!')
         } else {
             this._processAutoConnectArg(args)
         }
+        
 
         // Forge Specific Arguments
         args = args.concat(this.forgeData.arguments.game)
