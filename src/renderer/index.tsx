@@ -15,7 +15,10 @@ document.body.appendChild(mainElement)
 ReactDOM.render(
     <AppContainer>
         <Provider store={store}>
-            <Application currentView={store.getState().currentView} />
+            <Application
+                currentView={store.getState().currentView}
+                overlayQueue={store.getState().overlayQueue}
+            />
         </Provider>
     </AppContainer>,
     mainElement

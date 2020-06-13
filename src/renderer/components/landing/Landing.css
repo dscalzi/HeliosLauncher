@@ -16,7 +16,7 @@
 #landingContainer > #upper {
     position: relative;
     transition: top 2s ease;
-    top: 0px;
+    top: 0;
     height: 77%;
     display: flex;
 }
@@ -46,7 +46,7 @@
 #landingContainer > #lower > #left {
     position: relative;
     transition: top 2s ease;
-    top: 0px;
+    top: 0;
     height: 100%;
     width: 33%;
     display: inline-flex;
@@ -62,7 +62,7 @@
 #landingContainer > #lower > #center {
     position: relative;
     transition: top 2s ease;
-    top: 0px;
+    top: 0;
     height: 100%;
     width: 34%;
     display: inline-flex;
@@ -77,7 +77,7 @@
 #landingContainer > #lower > #right {
     position: relative;
     transition: top 2s ease;
-    top: 0px;
+    top: 0;
     height: 100%;
     width: 33%;
     display: inline-flex;
@@ -161,11 +161,11 @@
 }
 #newsArticleTitle:hover,
 #newsArticleTitle:focus {
-    text-shadow: 0px 0px 20px white;
+    text-shadow: 0 0 20px white;
 }
 #newsArticleTitle:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7;
 }
 
 /* News meta container. */
@@ -186,7 +186,7 @@
 #newsArticleAuthor {
     display: inline-block;
     font-size: 10px;
-    padding: 0px 5px;
+    padding: 0 5px;
     font-weight: bold;
     border-radius: 2px;
 }
@@ -226,7 +226,7 @@
 #newsArticleContainer {
     width: calc(100% - 25px);
     height: 100%;
-    margin: 0px 0px 0px 25px;
+    margin: 0 0 0 25px;
 }
 
 /* Article content styles. */
@@ -234,7 +234,7 @@
     font-size: 12px;
     overflow-y: scroll;
     height: 100%;
-    padding: 0px 15px 0px 15px;
+    padding: 0 15px 0 15px;
 }
 #newsArticleContentScrollable img,
 #newsArticleContentScrollable iframe {
@@ -277,15 +277,15 @@
 }
 .bbCodeSpoilerButton:hover,
 .bbCodeSpoilerButton:focus {
-    text-shadow: 0px 0px 20px #ffffff, 0px 0px 20px #ffffff, 0px 0px 20px #ffffff;
+    text-shadow: 0 0 20px #ffffff, 0 0 20px #ffffff, 0 0 20px #ffffff;
 }
 .bbCodeSpoilerButton:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7, 0 0 20px #c7c7c7, 0 0 20px #c7c7c7;
 }
 .bbCodeSpoilerText {
     display: none;
-    padding: 15px 0px;
+    padding: 15px 0;
     border-bottom: 1px solid white;
 }
 
@@ -312,13 +312,13 @@
     -webkit-user-select: none;
     position: absolute;
     bottom: 15px;
-    right: 0px;
+    right: 0;
 }
 
 /* Navigation status span. */
 #newsNavigationStatus {
     font-size: 12px;
-    margin: 0px 15px;
+    margin: 0 15px;
 }
 
 /* Left and right navigation button styles. */
@@ -334,8 +334,8 @@
 #newsNavigateLeft:focus #newsNavigationLeftSVG,
 #newsNavigateRight:hover #newsNavigationRightSVG,
 #newsNavigateRight:focus #newsNavigationRightSVG {
-    filter: drop-shadow(0px 0px 2px #fff);
-    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0 2px #fff);
+    -webkit-filter: drop-shadow(0px 0 2px #fff);
 }
 #newsNavigateLeft:active #newsNavigationLeftSVG .arrowLine,
 #newsNavigateRight:active #newsNavigationRightSVG .arrowLine {
@@ -343,8 +343,8 @@
 }
 #newsNavigateLeft:active #newsNavigationLeftSVG,
 #newsNavigateRight:active #newsNavigationRightSVG {
-    filter: drop-shadow(0px 0px 2px #c7c7c7);
-    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0 2px #c7c7c7);
+    -webkit-filter: drop-shadow(0px 0 2px #c7c7c7);
 }
 #newsNavigateLeft:disabled #newsNavigationLeftSVG .arrowLine,
 #newsNavigateRight:disabled #newsNavigationRightSVG .arrowLine {
@@ -397,11 +397,11 @@
 }
 #newsErrorRetry:focus,
 #newsErrorRetry:hover {
-    text-shadow: 0px 0px 20px white;
+    text-shadow: 0 0 20px white;
 }
 #newsErrorRetry:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7;
 }
 
 /*******************************************************************************
@@ -537,7 +537,7 @@
     background: rgba(1, 2, 1, 0.5);
     height: 70px;
     width: 70px;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    box-shadow: 0 0 10px 0 rgb(0, 0, 0);
     overflow: hidden;
     position: relative;
     background-position: center;
@@ -578,7 +578,7 @@
     min-width: 135px;
     font-weight: 900;
     letter-spacing: 1px;
-    text-shadow: 0px 0px 20px black;
+    text-shadow: 0 0 20px black;
     position: absolute;
     right: 95px;
     text-align: right;
@@ -615,7 +615,7 @@
     height: 1px;
     width: 14px;
     background: rgb(255, 255, 255);
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 
 /* Social media icon shared styles. */
@@ -642,7 +642,7 @@
 .mediaButton {
     background: none;
     border: none;
-    padding: 0px;
+    padding: 0;
     display: flex;
     align-items: center;
     outline: none;
@@ -745,7 +745,7 @@
     font-size: 9px;
     letter-spacing: 1px;
     font-weight: bold;
-    text-shadow: 0px 0px 0px #bebcbb;
+    text-shadow: 0 0 0 #bebcbb;
 }
 
 /* Divider used on the bottom of the landing view. */
@@ -772,7 +772,7 @@
     color: #949494;
     font-size: 8px;
     font-weight: 900;
-    text-shadow: 0px 0px 20px #949494;
+    text-shadow: 0 0 20px #949494;
     margin-left: 10px;
 }
 
@@ -809,7 +809,7 @@
     bottom: calc(100% + 15px);
     transform: translateX(-50%);
     margin-left: 50%;
-    box-shadow: 0px 0px 20px rgb(0, 0, 0);
+    box-shadow: 0 0 20px rgb(0, 0, 0);
     cursor: default;
 }
 #mojangStatusTooltip:after {
@@ -840,7 +840,7 @@
 #mojangStatusNEContainer {
     display: flex;
     align-items: center;
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 
 /* White bar which surrounds the non essential service title. */
@@ -853,7 +853,7 @@
 /* Non essential service title text. */
 #mojangStatusNETitle {
     font-size: 10px;
-    padding: 0px 3px;
+    padding: 0 3px;
     text-align: center;
     letter-spacing: 1px;
 }
@@ -869,7 +869,7 @@
     font-size: 10px;
     letter-spacing: 1px;
     line-height: 12px;
-    padding: 6px 0px;
+    padding: 6px 0;
 }
 
 /* Displays the status of the mojang service. */
@@ -892,24 +892,24 @@
 }
 #newsButton:hover #newsButtonText,
 #newsButton:focus #newsButtonText {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
+    text-shadow: 0 0 20px #fff, 0 0 20px #fff;
 }
 #newsButton:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7, 0 0 20px #c7c7c7;
 }
 
 #newsButton:hover #newsButtonSVG,
 #newsButton:focus #newsButtonSVG {
-    filter: drop-shadow(0px 0px 2px #fff);
-    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0 2px #fff);
+    -webkit-filter: drop-shadow(0px 0 2px #fff);
 }
 #newsButton:active #newsButtonSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #newsButton:active #newsButtonSVG {
-    filter: drop-shadow(0px 0px 2px #c7c7c7);
-    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0 2px #c7c7c7);
+    -webkit-filter: drop-shadow(0px 0 2px #c7c7c7);
 }
 #newsButton:disabled #newsButtonSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -938,7 +938,7 @@
     color: white;
     font-weight: 900;
     letter-spacing: 2px;
-    text-shadow: 0px 0px 0px #bebcbb;
+    text-shadow: 0 0 0 #bebcbb;
     font-size: 11px;
     line-height: 30px;
     display: flex;
@@ -963,19 +963,19 @@
     cursor: pointer;
     font-weight: 900;
     letter-spacing: 2px;
-    text-shadow: 0px 0px 0px #bebcbb;
+    text-shadow: 0 0 0 #bebcbb;
     font-size: 20px;
-    padding: 0px;
+    padding: 0;
     transition: 0.25s ease;
     outline: none;
 }
 #launch_button:hover,
 #launch_button:focus {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
+    text-shadow: 0 0 20px #fff, 0 0 20px #fff;
 }
 #launch_button:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7, 0 0 20px #c7c7c7;
 }
 #launch_button:disabled {
     color: #c7c7c7;
@@ -999,7 +999,7 @@
 #launch_progress_label {
     font-weight: 900;
     letter-spacing: 1px;
-    text-shadow: 0px 0px 0px #bebcbb;
+    text-shadow: 0 0 0 #bebcbb;
     font-size: 20px;
     min-width: 53.21px;
     max-width: 53.21px;
@@ -1020,16 +1020,16 @@
     outline: none;
     cursor: pointer;
     line-height: 24px;
-    padding: 0px;
+    padding: 0;
     transition: 0.25s ease;
 }
 #server_selection_button:hover,
 #server_selection_button:focus {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff, 0px 0px 20px #fff;
+    text-shadow: 0 0 20px #fff, 0 0 20px #fff, 0 0 20px #fff;
 }
 #server_selection_button:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7, 0 0 20px #c7c7c7, 0 0 20px #c7c7c7;
 }
 
 /* Progress bar styles. */

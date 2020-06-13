@@ -15,3 +15,7 @@ export function setCurrentView(view: View): ChangeViewAction {
         payload: view
     }
 }
+
+export const ViewActionDispatch = {
+    setView: (x: View): ChangeViewAction => setCurrentView(x)
+}

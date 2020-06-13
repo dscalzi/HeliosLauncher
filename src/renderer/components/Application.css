@@ -2,6 +2,9 @@
     height: calc(100vh - 22px);
     background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
 }
+.appWrapper[overlay] {
+    filter: blur(3px) contrast(0.9) brightness(1.0);
+}
 
 .loader-enter {
     opacity: 0;

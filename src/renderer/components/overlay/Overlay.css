@@ -1,0 +1,12 @@
+/* Overlay container, placed over the main div. */
+#overlayContainer {
+    position: absolute;
+    z-index: 500;
+    top: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100% - 22px);
+    background: rgba(0, 0, 0, 0.50);
+}

@@ -1,8 +1,8 @@
-import { Mojang } from "common/mojang/mojang"
+import { Mojang } from 'common/mojang/mojang'
 import { expect } from 'chai'
 import nock from 'nock'
-import { Session } from "common/mojang/model/auth/Session"
-import { MojangResponseCode } from "common/mojang/model/internal/Response"
+import { Session } from 'common/mojang/model/auth/Session'
+import { MojangResponseCode } from 'common/mojang/model/internal/Response'
 
 function expectMojangResponse(res: any, responseCode: MojangResponseCode, negate = false) {
     expect(res).to.not.be.an('error')
@@ -29,7 +29,7 @@ describe('Mojang Errors', () => {
             .get('/check')
             .reply(500, 'Service temprarily offline.')
 
-        const res = await Mojang.status();
+        const res = await Mojang.status()
         expectMojangResponse(res, MojangResponseCode.SUCCESS, true)
         expect(res.data).to.be.an('array')
         expect(res.data).to.deep.equal(defStatusHack)
@@ -65,7 +65,7 @@ describe('Mojang Status', () => {
             .get('/check')
             .reply(200, defStatusHack)
 
-        const res = await Mojang.status();
+        const res = await Mojang.status()
         expectMojangResponse(res, MojangResponseCode.SUCCESS)
         expect(res.data).to.be.an('array')
         expect(res.data).to.deep.equal(defStatusHack)

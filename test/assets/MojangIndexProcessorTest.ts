@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import nock from 'nock'
 import { URL } from 'url'
 import { MojangIndexProcessor } from 'common/asset/processor/MojangIndexProcessor'

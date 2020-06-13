@@ -8,14 +8,16 @@ import Landing from './landing/Landing'
 import Login from './login/Login'
 import Loader from './loader/Loader'
 import Settings from './settings/Settings'
-
-import './Application.css'
 import { StoreType } from '../redux/store'
 import { CSSTransition } from 'react-transition-group'
-import { setCurrentView } from '../redux/actions/viewActions'
+import { ViewActionDispatch } from '../redux/actions/viewActions'
 import { throttle } from 'lodash'
 import { readdir } from 'fs-extra'
 import { join } from 'path'
+import Overlay from './overlay/Overlay'
+import { OverlayPushAction, OverlayActionDispatch } from '../redux/actions/overlayActions'
+
+import './Application.css'
 
 declare const __static: string
 
@@ -27,6 +29,7 @@ function setBackground(id: number) {
 
 interface ApplicationProps {
     currentView: View
+    overlayQueue: OverlayPushAction<unknown>[]
 }
 
 interface ApplicationState {
@@ -36,13 +39,15 @@ interface ApplicationState {
     workingView: View
 }
 
-const mapState = (state: StoreType) => {
+const mapState = (state: StoreType): Partial<ApplicationProps> => {
     return {
-        currentView: state.currentView
+        currentView: state.currentView,
+        overlayQueue: state.overlayQueue
     }
 }
 const mapDispatch = {
-    setView: (x: View) => setCurrentView(x)
+    ...ViewActionDispatch,
+    ...OverlayActionDispatch
 }
 
 class Application extends React.Component<ApplicationProps & typeof mapDispatch, ApplicationState> {
@@ -81,6 +86,10 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
         }
     }
 
+    private hasOverlay = (): boolean => {
+        return this.props.overlayQueue.length > 0
+    }
+
     private updateWorkingView = throttle(() => {
         this.setState({
             ...this.state,
@@ -109,7 +118,32 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                 })
                 // TODO temp
                 setTimeout(() => {
-                    this.props.setView(View.WELCOME)
+                    //this.props.setView(View.WELCOME)
+                    this.props.pushGenericOverlay({
+                        title: 'Test Title',
+                        description: 'Test Description',
+                        dismissible: true
+                    })
+                    this.props.pushGenericOverlay({
+                        title: 'Test Title 2',
+                        description: 'Test Description',
+                        dismissible: true
+                    })
+                    this.props.pushGenericOverlay({
+                        title: 'Test Title 3',
+                        description: 'Test Description',
+                        dismissible: true
+                    })
+                    this.props.pushGenericOverlay({
+                        title: 'Test Title 4',
+                        description: 'Test Description',
+                        dismissible: true
+                    })
+                    this.props.pushGenericOverlay({
+                        title: 'Test Title IMPORTANT',
+                        description: 'Test Description',
+                        dismissible: true
+                    }, true)
                 }, 5000)
             }
             const diff = Date.now() - start
@@ -132,7 +166,7 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                     classNames="appWrapper"
                     unmountOnExit
                 >
-                    <div className="appWrapper">
+                    <div className="appWrapper" {...(this.hasOverlay() ? {overlay: 'true'} : {})}>
                         <CSSTransition
                             in={this.props.currentView == this.state.workingView}
                             appear={true}
@@ -145,6 +179,15 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                         </CSSTransition>
                         
                     </div>
+                </CSSTransition>
+                <CSSTransition
+                    in={this.hasOverlay()}
+                    appear={true}
+                    timeout={500}
+                    classNames="appWrapper"
+                    unmountOnExit
+                >
+                    <Overlay overlayQueue={this.props.overlayQueue} />
                 </CSSTransition>
                 <CSSTransition
                     in={this.state.loading}
