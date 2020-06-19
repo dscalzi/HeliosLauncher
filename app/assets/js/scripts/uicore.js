@@ -48,7 +48,7 @@ if(!isDev){
                 loggerAutoUpdaterSuccess.log('New update available', info.version)
                 
                 if(process.platform === 'darwin'){
-                    info.darwindownload = `https://github.com/dscalzi/HeliosLauncher/releases/download/v${info.version}/helioslauncher-setup-${info.version}.dmg`
+                    info.darwindownload = `https://github.com/MastermDEV/NemesisMC-Launcher/releases/download/v${info.version}/nemesismclauncher-setup${info.version}.dmg`
                     showUpdateUI(info)
                 }
                 
