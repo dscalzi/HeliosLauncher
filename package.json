@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
+  "name": "ardacraftlauncher",
   "version": "1.7.0",
-  "productName": "Helios Launcher",
+  "productName": "ArdaCraft Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "author": "ArdaCraft (https://github.com/ArdaCraft)",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://ardacraft.me",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/ArdaCraft/ArdaCraftLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -47,6 +47,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/ArdaCraft/ArdaCraftLauncher.git"
   }
 }
