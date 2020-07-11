@@ -9,6 +9,7 @@ const AuthManager   = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
 const DistroManager = require('./assets/js/distromanager')
 const Lang          = require('./assets/js/langloader')
+const randomPuppy = require('random-puppy')
 
 let rscShouldLoad = false
 let fatalStartupError = false
@@ -67,7 +68,12 @@ function showMainUI(data){
     refreshServerStatus()
     setTimeout(() => {
         document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-        document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
+
+        randomPuppy('ardacraft').then(url => {
+            var urlString = 'url(' + url + ')';
+            document.body.style.backgroundImage = urlString;
+            document.body.style.transition = 'background-image 7s ease'
+        });
         $('#main').show()
 
         const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
