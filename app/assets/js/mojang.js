@@ -14,43 +14,25 @@ const minecraftAgent = {
     name: 'Minecraft',
     version: 1
 }
-const authpath = 'https://authserver.mojang.com'
+const authpath = 'https://terebrauth.ts3miki.fr'
 const statuses = [
     {
-        service: 'sessionserver.mojang.com',
+        service: 'terebros.fr',
         status: 'grey',
-        name: 'Multiplayer Session Service',
+        name: 'Site web',
+        essential: false
+    },
+    {
+        service: 'terebrauth.ts3miki.fr,
+        status: 'grey',
+        name: 'Serveur authentification',
         essential: true
     },
     {
-        service: 'authserver.mojang.com',
+        service: 'play.terebros.fr',
         status: 'grey',
-        name: 'Authentication Service',
+        name: 'Serveur Minecraft',
         essential: true
-    },
-    {
-        service: 'textures.minecraft.net',
-        status: 'grey',
-        name: 'Minecraft Skins',
-        essential: false
-    },
-    {
-        service: 'api.mojang.com',
-        status: 'grey',
-        name: 'Public API',
-        essential: false
-    },
-    {
-        service: 'minecraft.net',
-        status: 'grey',
-        name: 'Minecraft.net',
-        essential: false
-    },
-    {
-        service: 'account.mojang.com',
-        status: 'grey',
-        name: 'Mojang Accounts Website',
-        essential: false
     }
 ]
 
@@ -97,7 +79,7 @@ exports.status = function(){
 
                 if(error || response.statusCode !== 200){
                     logger.warn('Unable to retrieve Mojang status.')
-                    logger.debug('Error while retrieving Mojang statuses:', error)
+                    logger.debug('Error while retrieving Terebros statuses:', error)
                     //reject(error || response.statusCode)
                     for(let i=0; i<statuses.length; i++){
                         statuses[i].status = 'grey'

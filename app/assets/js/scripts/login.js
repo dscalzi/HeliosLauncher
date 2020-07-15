@@ -54,19 +54,7 @@ function shakeError(element){
  * @param {string} value The email value.
  */
 function validateEmail(value){
-    if(value){
-        if(!basicEmail.test(value) && !validUsername.test(value)){
-            showError(loginEmailError, Lang.queryJS('login.error.invalidValue'))
-            loginDisabled(true)
-            lu = false
-        } else {
-            loginEmailError.style.opacity = 0
-            lu = true
-            if(lp){
-                loginDisabled(false)
-            }
-        }
-    } else {
+    if(value){} else {
         lu = false
         showError(loginEmailError, Lang.queryJS('login.error.requiredValue'))
         loginDisabled(true)
