@@ -5,6 +5,8 @@ import { format } from 'url'
 import { autoUpdater } from 'electron-updater'
 import isdev from '../common/util/isdev'
 
+declare const __static: string
+
 const installExtensions = async () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const installer = require('electron-devtools-installer')
@@ -240,7 +242,7 @@ function getPlatformIcon(filename: string){
             break
     }
 
-    return join(__dirname, '..', 'assets', 'images', `${filename}.${ext}`)
+    return join(__static, 'images', `${filename}.${ext}`)
 }
 
 app.on('ready', createWindow)
