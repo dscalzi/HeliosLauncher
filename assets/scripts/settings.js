@@ -694,7 +694,7 @@ function bindDropinModFileSystemButton(){
     const fsBtn = document.getElementById('settingsDropinFileSystemButton')
     fsBtn.onclick = () => {
         DropinModUtil.validateDir(CACHE_SETTINGS_MODS_DIR)
-        shell.openItem(CACHE_SETTINGS_MODS_DIR)
+        shell.openPath(CACHE_SETTINGS_MODS_DIR)
     }
     fsBtn.ondragenter = e => {
         e.dataTransfer.dropEffect = 'move'
@@ -818,7 +818,7 @@ function bindShaderpackButton() {
     spBtn.onclick = () => {
         const p = path.join(CACHE_SETTINGS_INSTANCE_DIR, 'shaderpacks')
         DropinModUtil.validateDir(p)
-        shell.openItem(p)
+        shell.openPath(p)
     }
     spBtn.ondragenter = e => {
         e.dataTransfer.dropEffect = 'move'
