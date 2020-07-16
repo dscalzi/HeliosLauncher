@@ -23,7 +23,7 @@
     "lint": "eslint --ext=jsx,js,tsx,ts src",
     "dev": "electron-webpack dev",
     "compile": "electron-webpack",
-    "test": "cross-env TS_NODE_PROJECT='./tsconfig.test.json' mocha -r ts-node/register test/**/*.ts"
+    "test": "cross-env TS_NODE_PROJECT='./tsconfig.test.json' mocha -r ts-node/register -r tsconfig-paths/register test/**/*.ts"
   },
   "engines": {
     "node": "12.x.x"
@@ -87,6 +87,7 @@
     "redux": "^4.0.5",
     "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^3.9.6",
     "webpack": "^4.43.0"
   },
