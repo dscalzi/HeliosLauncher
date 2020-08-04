@@ -18,10 +18,10 @@ function getCurrentPlatform(){
 builder.build({
     targets: (process.argv[2] != null && Platform[process.argv[2]] != null ? Platform[process.argv[2]] : getCurrentPlatform()).createTarget(),
     config: {
-        appId: 'helioslauncher',
-        productName: 'Helios Launcher',
+        appId: 'Exatiumlauncher',
+        productName: 'Exatium Launcher',
         artifactName: '${productName}-setup-${version}.${ext}',
-        copyright: 'Copyright © 2018-2020 Daniel Scalzi',
+        copyright: 'Copyright © 2019-2020 Exatium',
         directories: {
             buildResources: 'build',
             output: 'dist'
@@ -46,8 +46,8 @@ builder.build({
         },
         linux: {
             target: 'AppImage',
-            maintainer: 'Daniel Scalzi',
-            vendor: 'Daniel Scalzi',
+            maintainer: 'Oxiyass',
+            vendor: 'Oxiyass',
             synopsis: 'Modded Minecraft Launcher',
             description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.',
             category: 'Game'
