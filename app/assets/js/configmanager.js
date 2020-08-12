@@ -44,8 +44,8 @@ exports.setDataDirectory = function(dataDirectory){
  *
  * @returns {string} The server code that has been put into the launcher
  */
-exports.getServerCode = function(def = false){
-    return !def ? config.settings.launcher.serverCode : DEFAULT_CONFIG.settings.launcher.serverCode
+exports.getServerCode = function(){
+    return config.settings.launcher.serverCode
 }
 
 /**
