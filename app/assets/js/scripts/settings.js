@@ -136,6 +136,8 @@ function initSettingsValues(){
                         v.value = gFn()
                     } else if (cVal === 'DataDirectory'){
                         v.value = gFn()
+                    } else if (cVal === 'ServerCode'){
+                        v.value = gFn()
                     } else if(cVal === 'JVMOptions'){
                         v.value = gFn().join(' ')
                     } else {
