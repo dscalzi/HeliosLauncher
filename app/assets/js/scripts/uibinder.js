@@ -110,14 +110,16 @@ function showFatalStartupError(){
             document.getElementById('overlayContainer').style.background = 'none'
             setOverlayContent(
                 'Fatal Error: Unable to Load Distribution Index',
-                'A connection could not be established to our servers to download the distribution index. No local copies were available to load. <br><br>The distribution index is an essential file which provides the latest server information. The launcher is unable to start without it. Ensure you are connected to the internet and relaunch the application.',
-                'Close'
+                'A connection could not be established to our servers to download the distribution index. No local copies were available to load. <br><br>The distribution index is an essential file which provides the latest server information. The launcher is unable to start without it. Ensure you are connected to the internet and relaunch the application. <br><br>It is very possible that the launcher has updated and changed the location for the distribution index file. If this is the case, it is recommended to install the latest version of the launcher from the releases page. <br><br>If you continue to have issues, please contact the developer of the launcher.',
+                'Download Latest Version',
+                'Close Launcher'
             )
             setOverlayHandler(() => {
                 const window = remote.getCurrentWindow()
                 window.close()
+                shell.openExternal('https://github.com/dscalzi/HeliosLauncher/releases')
             })
-            toggleOverlay(true)
+            toggleOverlay(true, true)
         })
     }, 750)
 }
