@@ -546,11 +546,11 @@ exports.pullRemote = function(){
         const distroDest = path.join(ConfigManager.getLauncherDirectory(), 'distribution.json')
         request(opts, (error, resp, body) => {
             if(!error){
-                
                 try {
                     data = DistroIndex.fromJSON(JSON.parse(body))
-                } catch (e) {
-                    reject(e)
+                    resolve(data)
+                } catch(e) {
+                    reject('We cannot parse the JSON in the remote distribution file')
                 }
 
                 fs.writeFile(distroDest, body, 'utf-8', (err) => {
@@ -574,8 +574,12 @@ exports.pullLocal = function(){
     return new Promise((resolve, reject) => {
         fs.readFile(DEV_MODE ? DEV_PATH : DISTRO_PATH, 'utf-8', (err, d) => {
             if(!err){
-                data = DistroIndex.fromJSON(JSON.parse(d))
-                resolve(data)
+                try {
+                    data = DistroIndex.fromJSON(JSON.parse(d))
+                    resolve(data)
+                } catch(e) {
+                    reject('We cannot parse the JSON in the local distribution file')
+                }
             } else {
                 reject(err)
             }
