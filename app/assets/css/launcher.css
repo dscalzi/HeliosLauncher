@@ -1279,26 +1279,46 @@ input:checked + .toggleSwitchSlider:before {
 .settingsServerCodeTitle {
     margin-bottom: 10px;
     font-size: 18px;
-    font-weight: bold;
+    font-family: 'Avenir Medium';
 }
 
 /* Wrapper container for the actionable elements. */
 .settingsServerCodeActions {
     display: flex;
-    width: 90%;
+    width: 60%;
 }
 
 /* Enabled text field which stores the secret code if available. */
-.settingsServerCodeVal {
+.settingsInputServerCodeVal {
     border-radius: 0px !important;
     width: 100%;
     padding: 5px 10px;
     font-size: 12px;
-    height: 30px;
+}
+
+.settingsInputServerCodeButton {
+    border: 0px;
+    border-radius: 3px 3px 3px 3px;
+    font-size: 12px;
+    padding: 0px 5px;
+    margin-left: 10px;
+    cursor: pointer;
+    background: rgba(126, 126, 126, 0.57);
+    transition: 0.25s ease;
+    white-space: nowrap;
+    outline: none;
+}
+.settingsInputServerCodeButton:hover,
+.settingInputServerCodeButton:focus {
+    text-shadow: 0px 0px 20px white;
+}
+.settingsInputServerCodeButton:active {
+    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
 }
 
 /* Description for the file selector. */
-.settingsServerCodeDesc {
+.settingsServerCodesDesc {
     margin: 20px 0px;
     color: grey;
     font-size: 14px;
@@ -1306,8 +1326,91 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 
-.settingsServerCodeDesc strong {
+.settingsServerCodesDesc strong {
     font-family: 'Avenir Medium';
+}
+
+#settingsServerCodesListContent {
+    font-size: 16px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 3px;
+    color: white;
+    margin-top: 10px;
+}
+
+.settingsServerCode {
+    padding: 8px 0px 8px 8px;
+}
+
+/* Main content container for server code element information. */
+.settingsServerCodeContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: opacity 0.25s ease;
+}
+
+/* Wrapper container for the left side of a server code element. */
+.settingsServerCodeMainWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.settingsServerCodeRemoveWrapper {
+    margin-right: 25px;
+}
+
+/* Server code valid/invalid status. */
+.settingsServerCodeStatus {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #c32625;
+    margin-right: 15px;
+    transition: 0.25s ease;
+}
+
+.settingsServerCode[valid] > .settingsServerCodeContent > .settingsServerCodeMainWrapper > .settingsServerCodeStatus {
+    background-color: #4ddd19;
+}
+
+/* Mod details container. */
+.settingsServerCodeDetails {
+    display: flex;
+    flex-direction: column;
+}
+
+.settingsServerCodeName {
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.settingsServerCode:not([valid]) > .settingsServerCodeContent > .settingsServerCodeMainWrapper > .settingsServerCodeDetails > .settingsServerCodeServerName {
+    color: red;
+}
+
+/* Button to remove drop-in mods. */
+.settingsServerCodeRemoveButton {
+    background: none;
+    border: none;
+    font-size: 14px;
+    text-align: right;
+    padding: 0px;
+    color: grey;
+    cursor: pointer;
+    outline: none;
+    transition: 0.25s ease;
+    font-weight: bold;
+}
+
+.settingsServerCodeRemoveButton:hover,
+.settingsServerCodeRemoveButton:focus {
+    color: red;
+}
+.settingsServerCodeRemoveButton:active {
+    color: #9b1f1f;
 }
 
 /* * *
@@ -1577,15 +1680,14 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Mod elements. */
 .settingsMod,
-.settingsDropinMod {
-    padding: 10px;
-}
 .settingsSubMod {
     padding: 10px 0px 10px 15px;
     margin-left: 20px;
     border-left: 1px solid rgba(255, 255, 255, 0.5);
 }
-
+.settingsDropinMod {
+    padding: 10px;
+}
 /* Main content container for mod element information. */
 .settingsModContent {
     display: flex;
@@ -1630,7 +1732,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Set the status color of an enabled mod. */
 .settingsBaseMod[enabled] > .settingsModContent > .settingsModMainWrapper > .settingsModStatus {
-    background-color: rgb(165, 195, 37);
+    background-color: #4ddd19;
 }
 
 /* Add opacity to submods of a disabled mod. */

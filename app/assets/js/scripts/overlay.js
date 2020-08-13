@@ -267,11 +267,8 @@ function populateServerListings(){
     const servers = distro.getServers()
     let htmlString = ''
     for(const serv of servers){
-        if(serv.getServerCode() != null && serv.getServerCode() === ''){
-            if(ConfigManager.getServerCode() !== serv.getServerCode()){
-                // skips any servers which the player hasn't got the code to access
-                continue
-            }
+        if(serv.getServerCode() && !ConfigManager.getServerCodes().includes(serv.getServerCode())){
+            continue
         }
         htmlString += `<button class="serverListing" servid="${serv.getID()}" ${serv.getID() === giaSel ? 'selected' : ''}>
             <img class="serverListingImg" src="${serv.getIcon()}"/>

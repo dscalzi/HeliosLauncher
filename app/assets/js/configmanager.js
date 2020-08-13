@@ -40,21 +40,21 @@ exports.setDataDirectory = function(dataDirectory){
 }
 
 /**
- * Get the launcher's server code if set. This will be used to load hidden servers.
+ * Get the launcher's available server codes. This will be used to load hidden servers.
  *
- * @returns {string} The server code that has been put into the launcher
+ * @returns {string[]} The server codes list that has been put into the launcher's configuration
  */
-exports.getServerCode = function(){
-    return config.settings.launcher.serverCode
+exports.getServerCodes = function(){
+    return config.settings.launcher.serverCodes
 }
 
 /**
  * Set the new server code
  *
- * @param {string} serverCode The new server code.
+ * @param {string[]} serverCodes The new server code list.
  */
-exports.setServerCode = function(serverCode){
-    config.settings.launcher.serverCode = serverCode
+exports.setServerCodes = function(serverCodes){
+    config.settings.launcher.serverCodes = serverCodes
 }
 
 const configPath = path.join(exports.getLauncherDirectory(), 'config.json')
@@ -110,7 +110,7 @@ const DEFAULT_CONFIG = {
         launcher: {
             allowPrerelease: false,
             dataDirectory: dataPath,
-            serverCode: null
+            serverCodes: []
         }
     },
     newsCache: {

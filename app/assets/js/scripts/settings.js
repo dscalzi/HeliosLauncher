@@ -5,6 +5,8 @@ const semver = require('semver')
 const { JavaGuard } = require('./assets/js/assetguard')
 const DropinModUtil  = require('./assets/js/dropinmodutil')
 
+const loggerSettings = LoggerUtil('%c[Settings]', 'color: #353232; font-weight: bold')
+
 const settingsState = {
     invalid: new Set()
 }
@@ -326,6 +328,43 @@ document.getElementById('settingsAddAccount').onclick = (e) => {
 }
 
 /**
+ * Binds the functionality within the server codes section of the launcher settings
+ */
+function bindServerCodeButtons(){
+    // Sets up the onclick listeners for the button to add codes
+    document.getElementById('settingsAddServerCode').onclick = () => {
+        for(let ele of document.getElementsByClassName('settingsInputServerCodeVal')){
+            const code = ele.value
+            if(!ConfigManager.getServerCodes().includes(code) && code){
+                ConfigManager.getServerCodes().push(code)
+                ConfigManager.save()
+                loggerSettings.log('Added server code to configuration and saved it')
+                prepareLauncherTab()
+            } else {
+                loggerSettings.log('Server code already exists or is empty, not adding.')
+            }
+        }
+    }
+
+    // Sets up the onclick listeners for each remove code buttons
+    const sEls = document.querySelectorAll('[remcode]')
+    Array.from(sEls).map((v, index, arr) => {
+        v.onclick = () => {
+            if(v.hasAttribute('remcode')){
+                const code = v.getAttribute('remcode')
+                if(ConfigManager.getServerCodes().includes(code)){
+                    ConfigManager.getServerCodes().splice(ConfigManager.getServerCodes().indexOf(code), 1)
+                    ConfigManager.save()
+                    loggerSettings.log('Added removed code from configuration and saved it')
+                    prepareLauncherTab()
+                }
+            }
+            loggerSettings.log('Server code doesnt exist!, not removing.')
+        }
+    })
+}
+
+/**
  * Bind functionality for the account selection buttons. If another account
  * is selected, the UI of the previously selected account will be updated.
  */
@@ -479,6 +518,14 @@ function prepareAccountsTab() {
     populateAuthAccounts()
     bindAuthAccountSelect()
     bindAuthAccountLogOut()
+}
+
+/**
+ * Prepare the accounts tab for display.
+ */
+function prepareLauncherTab() {
+    resolveServerCodesForUI()
+    bindServerCodeButtons()
 }
 
 /**
@@ -681,6 +728,32 @@ function resolveDropinModsForUI(){
     }
 
     document.getElementById('settingsDropinModsContent').innerHTML = dropinMods
+}
+
+function resolveServerCodesForUI(){
+    let servCodes = ''
+    for(let servCode of ConfigManager.getServerCodes()){
+        const serv = DistroManager.getDistribution().getServerFromCode(servCode)
+        servCodes +=
+            `
+                <div id="${servCode}" class="settingsServerCode" ${serv ? 'valid' : ''}>
+                    <div class="settingsServerCodeContent">
+                        <div class="settingsServerCodeMainWrapper">
+                            <div class="settingsServerCodeStatus"></div>
+                            <div class="settingsServerCodeDetails">
+                                <span class="settingsServerCodeName">${servCode}</span>
+                                <span class="settingsServerCodeServerName"> ${serv ? serv.getName() : 'Invalid Code'}</span> 
+                            </div>
+                        </div>
+                        <div class="settingsServerCodeRemoveWrapper">
+                            <button class="settingsServerCodeRemoveButton" id="settingsRemoveServerCode" remcode="${servCode}">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            `
+    }
+
+    document.getElementById('settingsServerCodesListContent').innerHTML = servCodes
 }
 
 /**
@@ -1344,6 +1417,7 @@ function prepareSettings(first = false) {
     initSettingsValues()
     prepareAccountsTab()
     prepareJavaTab()
+    prepareLauncherTab()
     prepareAboutTab()
 }
 
