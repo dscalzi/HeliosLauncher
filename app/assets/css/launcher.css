@@ -1254,7 +1254,7 @@ input:checked + .toggleSwitchSlider:before {
     color: rgba(255, 255, 255, 0.75);
 }
 
-/* Description for the file selector. */
+/* Description for the File selectors. */
 .settingsFileSelDesc {
     font-size: 10px;
     margin: 20px 0px;
@@ -1262,6 +1262,51 @@ input:checked + .toggleSwitchSlider:before {
     width: 89%;
 }
 .settingsFileSelDesc strong {
+    font-family: 'Avenir Medium';
+}
+
+/* Main container for File selectors. */
+.settingsServerCodeContainer {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.50);
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: 75%;
+}
+
+/* Server Code title. */
+.settingsServerCodeTitle {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Wrapper container for the actionable elements. */
+.settingsServerCodeActions {
+    display: flex;
+    width: 90%;
+}
+
+/* Enabled text field which stores the secret code if available. */
+.settingsServerCodeVal {
+    border-radius: 0px !important;
+    width: 100%;
+    padding: 5px 10px;
+    font-size: 12px;
+    height: 30px;
+}
+
+/* Description for the file selector. */
+.settingsServerCodeDesc {
+    margin: 20px 0px;
+    color: grey;
+    font-size: 14px;
+    width: 90%;
+}
+
+
+.settingsServerCodeDesc strong {
     font-family: 'Avenir Medium';
 }
 
