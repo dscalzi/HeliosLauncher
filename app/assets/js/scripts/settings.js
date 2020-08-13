@@ -335,6 +335,7 @@ function bindServerCodeButtons(){
     document.getElementById('settingsAddServerCode').onclick = () => {
         for(let ele of document.getElementsByClassName('settingsInputServerCodeVal')){
             const code = ele.value
+            ele.value = ''
             if(!ConfigManager.getServerCodes().includes(code) && code){
                 ConfigManager.getServerCodes().push(code)
                 ConfigManager.save()
