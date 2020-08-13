@@ -780,8 +780,10 @@ function checkCurrentServer(errorOverlay = true){
                             'Switch Server'
                         )
                         setOverlayHandler(() => {
-                            document.activeElement.blur()
                             toggleServerSelection(true)
+                        })
+                        setDismissHandler(() => {
+                            toggleOverlay(false)
                         })
                         toggleOverlay(true, true)
                     }
