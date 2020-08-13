@@ -85,7 +85,7 @@ function setLaunchEnabled(val){
 
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', function(e){
-    if(checkCurrentServer(false)){
+    if(checkCurrentServer(true)){
         loggerLanding.log('Launching game..')
         const mcVersion = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
         const jExe = ConfigManager.getJavaExecutable()
