@@ -548,7 +548,6 @@ exports.pullRemote = function(){
             if(!error){
                 try {
                     data = DistroIndex.fromJSON(JSON.parse(body))
-                    resolve(data)
                 } catch(e) {
                     reject('We cannot parse the JSON in the remote distribution file')
                 }
@@ -574,6 +573,7 @@ exports.pullLocal = function(){
     return new Promise((resolve, reject) => {
         fs.readFile(DEV_MODE ? DEV_PATH : DISTRO_PATH, 'utf-8', (err, d) => {
             if(!err){
+                logger.log(d)
                 try {
                     data = DistroIndex.fromJSON(JSON.parse(d))
                     resolve(data)
