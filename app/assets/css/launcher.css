@@ -1278,7 +1278,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Server Code title. */
 .settingsServerCodeTitle {
     margin-bottom: 10px;
-    font-size: 18px;
+    font-size: 14px;
     font-family: 'Avenir Medium';
 }
 
@@ -1321,7 +1321,7 @@ input:checked + .toggleSwitchSlider:before {
 .settingsServerCodesDesc {
     margin: 20px 0px;
     color: grey;
-    font-size: 14px;
+    font-size: 10px;
     width: 90%;
 }
 
@@ -1331,7 +1331,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 #settingsServerCodesListContent {
-    font-size: 16px;
+    font-size: 10px;
     background: rgba(0, 0, 0, 0.25);
     border-radius: 3px;
     color: white;
@@ -1383,7 +1383,7 @@ input:checked + .toggleSwitchSlider:before {
 .settingsServerCodeName {
     display: flex;
     flex-direction: column;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: bold;
 }
 
@@ -1395,7 +1395,7 @@ input:checked + .toggleSwitchSlider:before {
 .settingsServerCodeRemoveButton {
     background: none;
     border: none;
-    font-size: 14px;
+    font-size: 12px;
     text-align: right;
     padding: 0px;
     color: grey;
