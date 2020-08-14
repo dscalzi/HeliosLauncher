@@ -1387,7 +1387,16 @@ input:checked + .toggleSwitchSlider:before {
     font-weight: bold;
 }
 
-.settingsServerCode:not([valid]) > .settingsServerCodeContent > .settingsServerCodeMainWrapper > .settingsServerCodeDetails > .settingsServerCodeServerName {
+.settingsServerCodeServerNamesContent {
+    max-width: 650px;
+}
+
+.settingsServerCodeServerName {
+    margin-right: 35px;
+    font-size: 14px;
+}
+
+.settingsServerCode:not([valid]) > .settingsServerCodeContent > .settingsServerCodeMainWrapper > .settingsServerCodeDetails > .settingsServerCodeServerNamesContent > .settingsServerCodeServerName {
     color: red;
 }
 

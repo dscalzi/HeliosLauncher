@@ -732,18 +732,21 @@ function resolveDropinModsForUI(){
 }
 
 function resolveServerCodesForUI(){
+    /* Server Codes */
     let servCodes = ''
     for(let servCode of ConfigManager.getServerCodes()){
-        const serv = DistroManager.getDistribution().getServerFromCode(servCode)
+        const servs = DistroManager.getDistribution().getServersFromCode(servCode)
+        const valid = servs && servs.length
         servCodes +=
             `
-                <div id="${servCode}" class="settingsServerCode" ${serv ? 'valid' : ''}>
+                <div id="${servCode}" class="settingsServerCode" ${valid ? 'valid' : ''}>
                     <div class="settingsServerCodeContent">
                         <div class="settingsServerCodeMainWrapper">
                             <div class="settingsServerCodeStatus"></div>
                             <div class="settingsServerCodeDetails">
                                 <span class="settingsServerCodeName">${servCode}</span>
-                                <span class="settingsServerCodeServerName"> ${serv ? serv.getName() : 'Invalid Code'}</span> 
+                                <div class="settingsServerCodeServerNamesContent" code="${servCode}">                      
+                                </div>
                             </div>
                         </div>
                         <div class="settingsServerCodeRemoveWrapper">
@@ -755,8 +758,32 @@ function resolveServerCodesForUI(){
     }
 
     document.getElementById('settingsServerCodesListContent').innerHTML = servCodes
-}
 
+    /* Server Names List */
+    for(let ele of document.getElementsByClassName('settingsServerCodeServerNamesContent')){
+        servNames = ''
+        const code = ele.getAttribute('code')
+        const servs = DistroManager.getDistribution().getServersFromCode(code)
+        const valid = servs && servs.length
+        loggerSettings.log('valid: ' + valid)
+        if(valid){
+            for(let serv of servs){
+                loggerSettings.log('server: ' + serv.getName())
+                servNames +=
+                    `
+                    <span class="settingsServerCodeServerName">${serv.getName()}</span> 
+                    `
+            }
+        } else {
+            servNames =
+                `
+                    <span class="settingsServerCodeServerName">Invalid Code</span> 
+                `
+        }
+
+        ele.innerHTML = servNames
+    }
+}
 /**
  * Bind the remove button for each loaded drop-in mod.
  */

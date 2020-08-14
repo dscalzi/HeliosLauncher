@@ -512,15 +512,16 @@ class DistroIndex {
      *
      * @param {string} id The ID of the server.
      *
-     * @returns {Server} The server configuration with the given ID or null.
+     * @returns {Server[]} The server configuration with the given ID or null.
      */
-    getServerFromCode(code){
+    getServersFromCode(code){
+        let servs = []
         for(let serv of this.servers){
             if(serv.serverCode === code){
-                return serv
+                servs.push(serv)
             }
         }
-        return null
+        return servs
     }
 
     /**
