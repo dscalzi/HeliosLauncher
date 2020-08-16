@@ -1,5 +1,5 @@
 {
-  "name": "helioslauncher",
+  "name": "creeoponnia-launcher",
   "version": "1.7.0",
   "productName": "Creeponnia Launcher",
   "description": "Modded Minecraft Launcher",
@@ -47,6 +47,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/PinkFloyd1213/Creeponnia-Launcher.git"
   }
 }
