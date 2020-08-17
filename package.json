@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
-  "version": "1.7.0",
-  "productName": "Helios Launcher",
+  "name": "avalonconcordialauncher",
+  "version": "1.0.0",
+  "productName": "Avalon Concordia Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
-  "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "author": "Jay aka ASCIIcat (https://github.com/ASCIIcat/)",
+  "license": "MIT",
+  "homepage": "https://github.com/ASCIIcat/AvalonConcordiaLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/ASCIIcat/AvalonConcordiaLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -47,6 +47,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/ASCIIcat/AvalonConcordiaLauncher.git"
   }
 }

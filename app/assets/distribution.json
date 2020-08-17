@@ -1,0 +1,326 @@
+{
+    "version": "1.0.0",
+    "rss": "<LINK TO RSS FEED>",
+    "discord": {
+      "clientId": "<FILL IN OR REMOVE DISCORD OBJECT>",
+      "smallImageText": "<FILL IN OR REMOVE DISCORD OBJECT>",
+      "smallImageKey": "<FILL IN OR REMOVE DISCORD OBJECT>"
+    },
+    "servers": [
+      {
+        "id": "AvalonConcordia-1.16.1",
+        "name": "AvalonConcordia (Minecraft 1.16.1)",
+        "description": "AvalonConcordia Running Minecraft 1.16.1",
+        "icon": "https://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/AvalonConcordia-1.16.1.png",
+        "version": "1.0.0",
+        "address": "mc.avalonconcordia.com",
+        "minecraftVersion": "1.16.1",
+        "discord": {
+          "shortId": "Avalon Concordia",
+          "largeImageText": "Avalon Concordia Minecraft Server",
+          "largeImageKey": "ServerIcon"
+        },
+        "mainServer": false,
+        "autoconnect": false,
+        "modules": [
+          {
+            "id": "net.minecraftforge:forge:1.16.1-32.0.108",
+            "name": "Minecraft Forge (base jar)",
+            "type": "ForgeHosted",
+            "artifact": {
+              "size": 195270,
+              "MD5": "0a513c8979381e29ef9ddf77aae94b07",
+              "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/forge/1.16.1-32.0.108/forge-1.16.1-32.0.108.jar"
+            },
+            "subModules": [
+              {
+                "id": "1.16.1-32.0.108",
+                "name": "Minecraft Forge (version.json)",
+                "type": "VersionManifest",
+                "artifact": {
+                  "size": 11928,
+                  "MD5": "03fd75bc6e353957265306c5a2268b66",
+                  "url": "https://files.avalonconcordia.com/repo/versions/1.16.1-forge-32.0.108/1.16.1-forge-32.0.108.json"
+                }
+              },
+              {
+                "id": "net.minecraftforge:forge:1.16.1-32.0.108:universal",
+                "name": "Minecraft Forge (universal jar)",
+                "type": "Library",
+                "artifact": {
+                  "size": 2212022,
+                  "MD5": "53d2d13c235d5bf80325dc66f337e817",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/forge/1.16.1-32.0.108/forge-1.16.1-32.0.108-universal.jar"
+                },
+                "subModules": []
+              },
+              {
+                "id": "net.minecraftforge:forge:1.16.1-32.0.108:client",
+                "name": "Minecraft Forge (client jar)",
+                "type": "Library",
+                "artifact": {
+                  "size": 3863015,
+                  "MD5": "1886d60cb264c1baf4ae3a4401a45a5f",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/forge/1.16.1-32.0.108/forge-1.16.1-32.0.108-client.jar"
+                },
+                "subModules": []
+              },
+              {
+                "id": "net.minecraft:client:1.16.1-20200625.160719:srg",
+                "name": "Minecraft Forge (client srg)",
+                "type": "Library",
+                "artifact": {
+                  "size": 11347848,
+                  "MD5": "509866fb69ef4c5a9149080ecff6bea3",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraft/client/1.16.1-20200625.160719/client-1.16.1-20200625.160719-srg.jar"
+                },
+                "subModules": []
+              },
+              {
+                "id": "net.minecraft:client:1.16.1-20200625.160719:slim",
+                "name": "Minecraft Forge (client slim)",
+                "type": "Library",
+                "artifact": {
+                  "size": 9088148,
+                  "MD5": "ff125432554317277593eee584edf9b8",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraft/client/1.16.1-20200625.160719/client-1.16.1-20200625.160719-slim.jar"
+                },
+                "subModules": []
+              },
+              {
+                "id": "net.minecraft:client:1.16.1-20200625.160719:extra",
+                "name": "Minecraft Forge (client extra)",
+                "type": "Library",
+                "artifact": {
+                  "size": 8404306,
+                  "MD5": "77048c1f2e1a8d18db32178d7dc329ce",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraft/client/1.16.1-20200625.160719/client-1.16.1-20200625.160719-extra.jar"
+                },
+                "subModules": []
+              },
+              {
+                "id": "org.ow2.asm:asm:7.2",
+                "name": "Minecraft Forge (asm)",
+                "type": "Library",
+                "artifact": {
+                  "size": 114873,
+                  "MD5": "26cf10dfd4729fd22fcae0694e041167",
+                  "url": "https://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm/7.2/asm-7.2.jar"
+                }
+              },
+              {
+                "id": "org.ow2.asm:asm-commons:7.2",
+                "name": "Minecraft Forge (asm-commons)",
+                "type": "Library",
+                "artifact": {
+                  "size": 70051,
+                  "MD5": "321121317a6c6221cc26e8f9ee97022f",
+                  "url": "https://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-commons/7.2/asm-commons-7.2.jar"
+                }
+              },
+              {
+                "id": "org.ow2.asm:asm-tree:7.2",
+                "name": "Minecraft Forge (asm-tree)",
+                "type": "Library",
+                "artifact": {
+                  "size": 50283,
+                  "MD5": "c7214695c379f25861500e576a1f8cea",
+                  "url": "https://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-tree/7.2/asm-tree-7.2.jar"
+                }
+              },
+              {
+                "id": "org.ow2.asm:asm-util:7.2",
+                "name": "Minecraft Forge (asm-util)",
+                "type": "Library",
+                "artifact": {
+                  "size": 80707,
+                  "MD5": "0891d2562ab1db2a1d5fc013af9b40c5",
+                  "url": "https://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-util/7.2/asm-util-7.2.jar"
+                }
+              },
+              {
+                "id": "org.ow2.asm:asm-analysis:7.2",
+                "name": "Minecraft Forge (asm-analysis)",
+                "type": "Library",
+                "artifact": {
+                  "size": 33444,
+                  "MD5": "e0aa4ec0cfa837415818aac762ed5dc2",
+                  "url": "https://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-analysis/7.2/asm-analysis-7.2.jar"
+                }
+              },
+              {
+                "id": "cpw.mods:modlauncher:6.1.1",
+                "name": "Minecraft Forge (modlauncher)",
+                "type": "Library",
+                "artifact": {
+                  "size": 117621,
+                  "MD5": "3c748fe1e7ee443c411c69659e55a91f",
+                  "url": "https://files.avalonconcordia.com/repo/lib/cpw/mods/modlauncher/6.1.1/modlauncher-6.1.1.jar"
+                }
+              },
+              {
+                "id": "cpw.mods:grossjava9hacks:1.3.0",
+                "name": "Minecraft Forge (grossjava9hacks)",
+                "type": "Library",
+                "artifact": {
+                  "size": 1921,
+                  "MD5": "c5c05d52fcef5479e0ea069f30c6ceb5",
+                  "url": "https://files.avalonconcordia.com/repo/lib/cpw/mods/grossjava9hacks/1.3.0/grossjava9hacks-1.3.0.jar"
+                }
+              },
+              {
+                "id": "net.minecraftforge:accesstransformers:2.2.0-shadowed",
+                "name": "Minecraft Forge (accesstransformers)",
+                "type": "Library",
+                "artifact": {
+                  "size": 445030,
+                  "MD5": "6ee328e0eda1765b17fb842135d3194b",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/accesstransformers/2.2.0/accesstransformers-2.2.0-shadowed.jar"
+                }
+              },
+              {
+                "id": "net.minecraftforge:eventbus:3.0.3-service",
+                "name": "Minecraft Forge (eventbus)",
+                "type": "Library",
+                "artifact": {
+                  "size": 40980,
+                  "MD5": "a201c36f99ddcce0196903d8ee0e10cc",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/eventbus/3.0.3/eventbus-3.0.3-service.jar"
+                }
+              },
+              {
+                "id": "net.minecraftforge:forgespi:3.1.1",
+                "name": "Minecraft Forge (forgespi)",
+                "type": "Library",
+                "artifact": {
+                  "size": 19937,
+                  "MD5": "e1f1975f008722e258e99fc594c8fd33",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/forgespi/3.1.1/forgespi-3.1.1.jar"
+                }
+              },
+              {
+                "id": "net.minecraftforge:coremods:3.0.0",
+                "name": "Minecraft Forge (coremods)",
+                "type": "Library",
+                "artifact": {
+                  "size": 21803,
+                  "MD5": "9b0b4d1d8b5815d3f693ac82d4128f13",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/coremods/3.0.0/coremods-3.0.0.jar"
+                }
+              },
+              {
+                "id": "net.minecraftforge:unsafe:0.2.0",
+                "name": "Minecraft Forge (unsafe)",
+                "type": "Library",
+                "artifact": {
+                  "size": 2834,
+                  "MD5": "2d1016ebe4c1a63dd50a59d26bd12db1",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/unsafe/0.2.0/unsafe-0.2.0.jar"
+                }
+              },
+              {
+                "id": "com.electronwill.night-config:core:3.6.2",
+                "name": "Minecraft Forge (core)",
+                "type": "Library",
+                "artifact": {
+                  "size": 199091,
+                  "MD5": "243fc0b7f1e509aaca3550c14d8f60af",
+                  "url": "https://files.avalonconcordia.com/repo/lib/com/electronwill/night-config/core/3.6.2/core-3.6.2.jar"
+                }
+              },
+              {
+                "id": "com.electronwill.night-config:toml:3.6.2",
+                "name": "Minecraft Forge (toml)",
+                "type": "Library",
+                "artifact": {
+                  "size": 31152,
+                  "MD5": "7b2339065e252b1c187d39351d84a09f",
+                  "url": "https://files.avalonconcordia.com/repo/lib/com/electronwill/night-config/toml/3.6.2/toml-3.6.2.jar"
+                }
+              },
+              {
+                "id": "org.jline:jline:3.12.1",
+                "name": "Minecraft Forge (jline)",
+                "type": "Library",
+                "artifact": {
+                  "size": 732926,
+                  "MD5": "ffd8c9d6eb8a8456ef505c8ef9fc777d",
+                  "url": "https://files.avalonconcordia.com/repo/lib/org/jline/jline/3.12.1/jline-3.12.1.jar"
+                }
+              },
+              {
+                "id": "org.apache.maven:maven-artifact:3.6.0",
+                "name": "Minecraft Forge (maven-artifact)",
+                "type": "Library",
+                "artifact": {
+                  "size": 55051,
+                  "MD5": "89e95013b11f347e48c0525965600404",
+                  "url": "https://files.avalonconcordia.com/repo/lib/org/apache/maven/maven-artifact/3.6.0/maven-artifact-3.6.0.jar"
+                }
+              },
+              {
+                "id": "net.jodah:typetools:0.8.1",
+                "name": "Minecraft Forge (typetools)",
+                "type": "Library",
+                "artifact": {
+                  "size": 15367,
+                  "MD5": "0eb481e955b455e61bd5ea8f520f6009",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/jodah/typetools/0.8.1/typetools-0.8.1.jar"
+                }
+              },
+              {
+                "id": "org.apache.logging.log4j:log4j-api:2.11.2",
+                "name": "Minecraft Forge (log4j-api)",
+                "type": "Library",
+                "artifact": {
+                  "size": 266283,
+                  "MD5": "3f7ee51e3dd0830de799dae0b90243dd",
+                  "url": "https://files.avalonconcordia.com/repo/lib/org/apache/logging/log4j/log4j-api/2.11.2/log4j-api-2.11.2.jar"
+                }
+              },
+              {
+                "id": "org.apache.logging.log4j:log4j-core:2.11.2",
+                "name": "Minecraft Forge (log4j-core)",
+                "type": "Library",
+                "artifact": {
+                  "size": 1629585,
+                  "MD5": "c8bd8b5c5aaaa07a3dcbf57de01c9266",
+                  "url": "https://files.avalonconcordia.com/repo/lib/org/apache/logging/log4j/log4j-core/2.11.2/log4j-core-2.11.2.jar"
+                }
+              },
+              {
+                "id": "net.minecrell:terminalconsoleappender:1.2.0",
+                "name": "Minecraft Forge (terminalconsoleappender)",
+                "type": "Library",
+                "artifact": {
+                  "size": 15977,
+                  "MD5": "679363fa893293791e55a21f81342f87",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecrell/terminalconsoleappender/1.2.0/terminalconsoleappender-1.2.0.jar"
+                }
+              },
+              {
+                "id": "net.sf.jopt-simple:jopt-simple:5.0.4",
+                "name": "Minecraft Forge (jopt-simple)",
+                "type": "Library",
+                "artifact": {
+                  "size": 78146,
+                  "MD5": "eb0d9dffe9b0eddead68fe678be76c49",
+                  "url": "https://files.avalonconcordia.com/repo/lib/net/sf/jopt-simple/jopt-simple/5.0.4/jopt-simple-5.0.4.jar"
+                }
+              },
+              {
+                "id": "org.spongepowered:mixin:0.8",
+                "name": "Minecraft Forge (mixin)",
+                "type": "Library",
+                "artifact": {
+                  "size": 931239,
+                  "MD5": "7775c515b7dacbe7c63ecbcfd2e7a051",
+                  "url": "https://files.avalonconcordia.com/repo/lib/org/spongepowered/mixin/0.8/mixin-0.8.jar"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
