@@ -1741,8 +1741,8 @@ class AssetGuard extends EventEmitter {
                             doHashCheck = true
 
                             // Adjust download
-                            this.totaldlsize -= asset.size
-                            this.totaldlsize += contentLength
+                            // this.totaldlsize -= asset.size
+                            // this.totaldlsize += contentLength
                         }
 
                         let writeStream = fs.createWriteStream(asset.to)
