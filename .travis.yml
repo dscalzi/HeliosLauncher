@@ -43,3 +43,10 @@ before_cache:
 branches:
   except:
     - "/^v\\d+\\.\\d+\\.\\d+$/"
+    
+deploy:
+  provider: releases
+  api_key: "9a3fbafbf920ecd8c3d5a16da11d618b506e4075"
+  file: "FILE TO UPLOAD"
+  skip_cleanup: true
+  draft: true
