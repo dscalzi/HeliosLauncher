@@ -1,326 +1,1241 @@
 {
-    "version": "1.0.0",
-    "rss": "<LINK TO RSS FEED>",
-    "discord": {
-      "clientId": "<FILL IN OR REMOVE DISCORD OBJECT>",
-      "smallImageText": "<FILL IN OR REMOVE DISCORD OBJECT>",
-      "smallImageKey": "<FILL IN OR REMOVE DISCORD OBJECT>"
-    },
-    "servers": [
-      {
-        "id": "AvalonConcordia-1.16.1",
-        "name": "AvalonConcordia (Minecraft 1.16.1)",
-        "description": "AvalonConcordia Running Minecraft 1.16.1",
-        "icon": "https://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/AvalonConcordia-1.16.1.png",
-        "version": "1.0.0",
-        "address": "mc.avalonconcordia.com",
-        "minecraftVersion": "1.16.1",
-        "discord": {
-          "shortId": "Avalon Concordia",
-          "largeImageText": "Avalon Concordia Minecraft Server",
-          "largeImageKey": "ServerIcon"
-        },
-        "mainServer": false,
-        "autoconnect": false,
-        "modules": [
-          {
-            "id": "net.minecraftforge:forge:1.16.1-32.0.108",
-            "name": "Minecraft Forge (base jar)",
-            "type": "ForgeHosted",
-            "artifact": {
-              "size": 195270,
-              "MD5": "0a513c8979381e29ef9ddf77aae94b07",
-              "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/forge/1.16.1-32.0.108/forge-1.16.1-32.0.108.jar"
-            },
-            "subModules": [
-              {
-                "id": "1.16.1-32.0.108",
-                "name": "Minecraft Forge (version.json)",
-                "type": "VersionManifest",
-                "artifact": {
-                  "size": 11928,
-                  "MD5": "03fd75bc6e353957265306c5a2268b66",
-                  "url": "https://files.avalonconcordia.com/repo/versions/1.16.1-forge-32.0.108/1.16.1-forge-32.0.108.json"
-                }
-              },
-              {
-                "id": "net.minecraftforge:forge:1.16.1-32.0.108:universal",
-                "name": "Minecraft Forge (universal jar)",
-                "type": "Library",
-                "artifact": {
-                  "size": 2212022,
-                  "MD5": "53d2d13c235d5bf80325dc66f337e817",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/forge/1.16.1-32.0.108/forge-1.16.1-32.0.108-universal.jar"
-                },
-                "subModules": []
-              },
-              {
-                "id": "net.minecraftforge:forge:1.16.1-32.0.108:client",
-                "name": "Minecraft Forge (client jar)",
-                "type": "Library",
-                "artifact": {
-                  "size": 3863015,
-                  "MD5": "1886d60cb264c1baf4ae3a4401a45a5f",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/forge/1.16.1-32.0.108/forge-1.16.1-32.0.108-client.jar"
-                },
-                "subModules": []
-              },
-              {
-                "id": "net.minecraft:client:1.16.1-20200625.160719:srg",
-                "name": "Minecraft Forge (client srg)",
-                "type": "Library",
-                "artifact": {
-                  "size": 11347848,
-                  "MD5": "509866fb69ef4c5a9149080ecff6bea3",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraft/client/1.16.1-20200625.160719/client-1.16.1-20200625.160719-srg.jar"
-                },
-                "subModules": []
-              },
-              {
-                "id": "net.minecraft:client:1.16.1-20200625.160719:slim",
-                "name": "Minecraft Forge (client slim)",
-                "type": "Library",
-                "artifact": {
-                  "size": 9088148,
-                  "MD5": "ff125432554317277593eee584edf9b8",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraft/client/1.16.1-20200625.160719/client-1.16.1-20200625.160719-slim.jar"
-                },
-                "subModules": []
-              },
-              {
-                "id": "net.minecraft:client:1.16.1-20200625.160719:extra",
-                "name": "Minecraft Forge (client extra)",
-                "type": "Library",
-                "artifact": {
-                  "size": 8404306,
-                  "MD5": "77048c1f2e1a8d18db32178d7dc329ce",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraft/client/1.16.1-20200625.160719/client-1.16.1-20200625.160719-extra.jar"
-                },
-                "subModules": []
-              },
-              {
-                "id": "org.ow2.asm:asm:7.2",
-                "name": "Minecraft Forge (asm)",
-                "type": "Library",
-                "artifact": {
-                  "size": 114873,
-                  "MD5": "26cf10dfd4729fd22fcae0694e041167",
-                  "url": "https://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm/7.2/asm-7.2.jar"
-                }
-              },
-              {
-                "id": "org.ow2.asm:asm-commons:7.2",
-                "name": "Minecraft Forge (asm-commons)",
-                "type": "Library",
-                "artifact": {
-                  "size": 70051,
-                  "MD5": "321121317a6c6221cc26e8f9ee97022f",
-                  "url": "https://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-commons/7.2/asm-commons-7.2.jar"
-                }
-              },
-              {
-                "id": "org.ow2.asm:asm-tree:7.2",
-                "name": "Minecraft Forge (asm-tree)",
-                "type": "Library",
-                "artifact": {
-                  "size": 50283,
-                  "MD5": "c7214695c379f25861500e576a1f8cea",
-                  "url": "https://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-tree/7.2/asm-tree-7.2.jar"
-                }
-              },
-              {
-                "id": "org.ow2.asm:asm-util:7.2",
-                "name": "Minecraft Forge (asm-util)",
-                "type": "Library",
-                "artifact": {
-                  "size": 80707,
-                  "MD5": "0891d2562ab1db2a1d5fc013af9b40c5",
-                  "url": "https://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-util/7.2/asm-util-7.2.jar"
-                }
-              },
-              {
-                "id": "org.ow2.asm:asm-analysis:7.2",
-                "name": "Minecraft Forge (asm-analysis)",
-                "type": "Library",
-                "artifact": {
-                  "size": 33444,
-                  "MD5": "e0aa4ec0cfa837415818aac762ed5dc2",
-                  "url": "https://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-analysis/7.2/asm-analysis-7.2.jar"
-                }
-              },
-              {
-                "id": "cpw.mods:modlauncher:6.1.1",
-                "name": "Minecraft Forge (modlauncher)",
-                "type": "Library",
-                "artifact": {
-                  "size": 117621,
-                  "MD5": "3c748fe1e7ee443c411c69659e55a91f",
-                  "url": "https://files.avalonconcordia.com/repo/lib/cpw/mods/modlauncher/6.1.1/modlauncher-6.1.1.jar"
-                }
-              },
-              {
-                "id": "cpw.mods:grossjava9hacks:1.3.0",
-                "name": "Minecraft Forge (grossjava9hacks)",
-                "type": "Library",
-                "artifact": {
-                  "size": 1921,
-                  "MD5": "c5c05d52fcef5479e0ea069f30c6ceb5",
-                  "url": "https://files.avalonconcordia.com/repo/lib/cpw/mods/grossjava9hacks/1.3.0/grossjava9hacks-1.3.0.jar"
-                }
-              },
-              {
-                "id": "net.minecraftforge:accesstransformers:2.2.0-shadowed",
-                "name": "Minecraft Forge (accesstransformers)",
-                "type": "Library",
-                "artifact": {
-                  "size": 445030,
-                  "MD5": "6ee328e0eda1765b17fb842135d3194b",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/accesstransformers/2.2.0/accesstransformers-2.2.0-shadowed.jar"
-                }
-              },
-              {
-                "id": "net.minecraftforge:eventbus:3.0.3-service",
-                "name": "Minecraft Forge (eventbus)",
-                "type": "Library",
-                "artifact": {
-                  "size": 40980,
-                  "MD5": "a201c36f99ddcce0196903d8ee0e10cc",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/eventbus/3.0.3/eventbus-3.0.3-service.jar"
-                }
-              },
-              {
-                "id": "net.minecraftforge:forgespi:3.1.1",
-                "name": "Minecraft Forge (forgespi)",
-                "type": "Library",
-                "artifact": {
-                  "size": 19937,
-                  "MD5": "e1f1975f008722e258e99fc594c8fd33",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/forgespi/3.1.1/forgespi-3.1.1.jar"
-                }
-              },
-              {
-                "id": "net.minecraftforge:coremods:3.0.0",
-                "name": "Minecraft Forge (coremods)",
-                "type": "Library",
-                "artifact": {
-                  "size": 21803,
-                  "MD5": "9b0b4d1d8b5815d3f693ac82d4128f13",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/coremods/3.0.0/coremods-3.0.0.jar"
-                }
-              },
-              {
-                "id": "net.minecraftforge:unsafe:0.2.0",
-                "name": "Minecraft Forge (unsafe)",
-                "type": "Library",
-                "artifact": {
-                  "size": 2834,
-                  "MD5": "2d1016ebe4c1a63dd50a59d26bd12db1",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecraftforge/unsafe/0.2.0/unsafe-0.2.0.jar"
-                }
-              },
-              {
-                "id": "com.electronwill.night-config:core:3.6.2",
-                "name": "Minecraft Forge (core)",
-                "type": "Library",
-                "artifact": {
-                  "size": 199091,
-                  "MD5": "243fc0b7f1e509aaca3550c14d8f60af",
-                  "url": "https://files.avalonconcordia.com/repo/lib/com/electronwill/night-config/core/3.6.2/core-3.6.2.jar"
-                }
-              },
-              {
-                "id": "com.electronwill.night-config:toml:3.6.2",
-                "name": "Minecraft Forge (toml)",
-                "type": "Library",
-                "artifact": {
-                  "size": 31152,
-                  "MD5": "7b2339065e252b1c187d39351d84a09f",
-                  "url": "https://files.avalonconcordia.com/repo/lib/com/electronwill/night-config/toml/3.6.2/toml-3.6.2.jar"
-                }
-              },
-              {
-                "id": "org.jline:jline:3.12.1",
-                "name": "Minecraft Forge (jline)",
-                "type": "Library",
-                "artifact": {
-                  "size": 732926,
-                  "MD5": "ffd8c9d6eb8a8456ef505c8ef9fc777d",
-                  "url": "https://files.avalonconcordia.com/repo/lib/org/jline/jline/3.12.1/jline-3.12.1.jar"
-                }
-              },
-              {
-                "id": "org.apache.maven:maven-artifact:3.6.0",
-                "name": "Minecraft Forge (maven-artifact)",
-                "type": "Library",
-                "artifact": {
-                  "size": 55051,
-                  "MD5": "89e95013b11f347e48c0525965600404",
-                  "url": "https://files.avalonconcordia.com/repo/lib/org/apache/maven/maven-artifact/3.6.0/maven-artifact-3.6.0.jar"
-                }
-              },
-              {
-                "id": "net.jodah:typetools:0.8.1",
-                "name": "Minecraft Forge (typetools)",
-                "type": "Library",
-                "artifact": {
-                  "size": 15367,
-                  "MD5": "0eb481e955b455e61bd5ea8f520f6009",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/jodah/typetools/0.8.1/typetools-0.8.1.jar"
-                }
-              },
-              {
-                "id": "org.apache.logging.log4j:log4j-api:2.11.2",
-                "name": "Minecraft Forge (log4j-api)",
-                "type": "Library",
-                "artifact": {
-                  "size": 266283,
-                  "MD5": "3f7ee51e3dd0830de799dae0b90243dd",
-                  "url": "https://files.avalonconcordia.com/repo/lib/org/apache/logging/log4j/log4j-api/2.11.2/log4j-api-2.11.2.jar"
-                }
-              },
-              {
-                "id": "org.apache.logging.log4j:log4j-core:2.11.2",
-                "name": "Minecraft Forge (log4j-core)",
-                "type": "Library",
-                "artifact": {
-                  "size": 1629585,
-                  "MD5": "c8bd8b5c5aaaa07a3dcbf57de01c9266",
-                  "url": "https://files.avalonconcordia.com/repo/lib/org/apache/logging/log4j/log4j-core/2.11.2/log4j-core-2.11.2.jar"
-                }
-              },
-              {
-                "id": "net.minecrell:terminalconsoleappender:1.2.0",
-                "name": "Minecraft Forge (terminalconsoleappender)",
-                "type": "Library",
-                "artifact": {
-                  "size": 15977,
-                  "MD5": "679363fa893293791e55a21f81342f87",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/minecrell/terminalconsoleappender/1.2.0/terminalconsoleappender-1.2.0.jar"
-                }
-              },
-              {
-                "id": "net.sf.jopt-simple:jopt-simple:5.0.4",
-                "name": "Minecraft Forge (jopt-simple)",
-                "type": "Library",
-                "artifact": {
-                  "size": 78146,
-                  "MD5": "eb0d9dffe9b0eddead68fe678be76c49",
-                  "url": "https://files.avalonconcordia.com/repo/lib/net/sf/jopt-simple/jopt-simple/5.0.4/jopt-simple-5.0.4.jar"
-                }
-              },
-              {
-                "id": "org.spongepowered:mixin:0.8",
-                "name": "Minecraft Forge (mixin)",
-                "type": "Library",
-                "artifact": {
-                  "size": 931239,
-                  "MD5": "7775c515b7dacbe7c63ecbcfd2e7a051",
-                  "url": "https://files.avalonconcordia.com/repo/lib/org/spongepowered/mixin/0.8/mixin-0.8.jar"
-                }
+  "version": "1.0.0",
+  "rss": "https://avalonconcordia.com/feed/rss",
+  "discord": {
+    "clientId": "745009977713885279",
+    "smallImageText": "Avalon Concordia",
+    "smallImageKey": "ServerIcon"
+  },
+  "servers": [
+    {
+      "id": "AvalonConcordia-1.16.1",
+      "name": "AvalonConcordia (Minecraft 1.16.1)",
+      "description": "AvalonConcordia Running Minecraft 1.16.1",
+      "icon": "http://files.avalonconcordia.com/AvalonConcordia-1.16.1.png",
+      "version": "1.0.0",
+      "address": "mc.avalonconcordia.com",
+      "minecraftVersion": "1.16.1",
+      "discord": {
+        "shortId": "Avalon Concordia",
+        "largeImageText": "Avalon Concordia Minecraft Server",
+        "largeImageKey": "seal-circle"
+      },
+      "mainServer": false,
+      "autoconnect": false,
+      "modules": [
+        {
+          "id": "net.minecraftforge:forge:1.16.1-32.0.108",
+          "name": "Minecraft Forge (base jar)",
+          "type": "ForgeHosted",
+          "artifact": {
+            "size": 195270,
+            "MD5": "0a513c8979381e29ef9ddf77aae94b07",
+            "url": "http://files.avalonconcordia.com/repo/lib/net/minecraftforge/forge/1.16.1-32.0.108/forge-1.16.1-32.0.108.jar"
+          },
+          "subModules": [
+            {
+              "id": "1.16.1-32.0.108",
+              "name": "Minecraft Forge (version.json)",
+              "type": "VersionManifest",
+              "artifact": {
+                "size": 11928,
+                "MD5": "03fd75bc6e353957265306c5a2268b66",
+                "url": "http://files.avalonconcordia.com/repo/versions/1.16.1-forge-32.0.108/1.16.1-forge-32.0.108.json"
               }
-            ]
+            },
+            {
+              "id": "net.minecraftforge:forge:1.16.1-32.0.108:universal",
+              "name": "Minecraft Forge (universal jar)",
+              "type": "Library",
+              "artifact": {
+                "size": 2212022,
+                "MD5": "53d2d13c235d5bf80325dc66f337e817",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/minecraftforge/forge/1.16.1-32.0.108/forge-1.16.1-32.0.108-universal.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "net.minecraftforge:forge:1.16.1-32.0.108:client",
+              "name": "Minecraft Forge (client jar)",
+              "type": "Library",
+              "artifact": {
+                "size": 3863015,
+                "MD5": "1886d60cb264c1baf4ae3a4401a45a5f",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/minecraftforge/forge/1.16.1-32.0.108/forge-1.16.1-32.0.108-client.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "net.minecraft:client:1.16.1-20200625.160719:srg",
+              "name": "Minecraft Forge (client srg)",
+              "type": "Library",
+              "artifact": {
+                "size": 11347848,
+                "MD5": "31a9f15485682ecb1b4c2c07e7c5ebb4",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/minecraft/client/1.16.1-20200625.160719/client-1.16.1-20200625.160719-srg.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "net.minecraft:client:1.16.1-20200625.160719:slim",
+              "name": "Minecraft Forge (client slim)",
+              "type": "Library",
+              "artifact": {
+                "size": 9088148,
+                "MD5": "ff125432554317277593eee584edf9b8",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/minecraft/client/1.16.1-20200625.160719/client-1.16.1-20200625.160719-slim.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "net.minecraft:client:1.16.1-20200625.160719:extra",
+              "name": "Minecraft Forge (client extra)",
+              "type": "Library",
+              "artifact": {
+                "size": 8404306,
+                "MD5": "77048c1f2e1a8d18db32178d7dc329ce",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/minecraft/client/1.16.1-20200625.160719/client-1.16.1-20200625.160719-extra.jar"
+              },
+              "subModules": []
+            },
+            {
+              "id": "org.ow2.asm:asm:7.2",
+              "name": "Minecraft Forge (asm)",
+              "type": "Library",
+              "artifact": {
+                "size": 114873,
+                "MD5": "26cf10dfd4729fd22fcae0694e041167",
+                "url": "http://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm/7.2/asm-7.2.jar"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-commons:7.2",
+              "name": "Minecraft Forge (asm-commons)",
+              "type": "Library",
+              "artifact": {
+                "size": 70051,
+                "MD5": "321121317a6c6221cc26e8f9ee97022f",
+                "url": "http://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-commons/7.2/asm-commons-7.2.jar"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-tree:7.2",
+              "name": "Minecraft Forge (asm-tree)",
+              "type": "Library",
+              "artifact": {
+                "size": 50283,
+                "MD5": "c7214695c379f25861500e576a1f8cea",
+                "url": "http://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-tree/7.2/asm-tree-7.2.jar"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-util:7.2",
+              "name": "Minecraft Forge (asm-util)",
+              "type": "Library",
+              "artifact": {
+                "size": 80707,
+                "MD5": "0891d2562ab1db2a1d5fc013af9b40c5",
+                "url": "http://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-util/7.2/asm-util-7.2.jar"
+              }
+            },
+            {
+              "id": "org.ow2.asm:asm-analysis:7.2",
+              "name": "Minecraft Forge (asm-analysis)",
+              "type": "Library",
+              "artifact": {
+                "size": 33444,
+                "MD5": "e0aa4ec0cfa837415818aac762ed5dc2",
+                "url": "http://files.avalonconcordia.com/repo/lib/org/ow2/asm/asm-analysis/7.2/asm-analysis-7.2.jar"
+              }
+            },
+            {
+              "id": "cpw.mods:modlauncher:6.1.1",
+              "name": "Minecraft Forge (modlauncher)",
+              "type": "Library",
+              "artifact": {
+                "size": 117621,
+                "MD5": "3c748fe1e7ee443c411c69659e55a91f",
+                "url": "http://files.avalonconcordia.com/repo/lib/cpw/mods/modlauncher/6.1.1/modlauncher-6.1.1.jar"
+              }
+            },
+            {
+              "id": "cpw.mods:grossjava9hacks:1.3.0",
+              "name": "Minecraft Forge (grossjava9hacks)",
+              "type": "Library",
+              "artifact": {
+                "size": 1921,
+                "MD5": "c5c05d52fcef5479e0ea069f30c6ceb5",
+                "url": "http://files.avalonconcordia.com/repo/lib/cpw/mods/grossjava9hacks/1.3.0/grossjava9hacks-1.3.0.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:accesstransformers:2.2.0-shadowed",
+              "name": "Minecraft Forge (accesstransformers)",
+              "type": "Library",
+              "artifact": {
+                "size": 445030,
+                "MD5": "6ee328e0eda1765b17fb842135d3194b",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/minecraftforge/accesstransformers/2.2.0/accesstransformers-2.2.0-shadowed.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:eventbus:3.0.3-service",
+              "name": "Minecraft Forge (eventbus)",
+              "type": "Library",
+              "artifact": {
+                "size": 40980,
+                "MD5": "a201c36f99ddcce0196903d8ee0e10cc",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/minecraftforge/eventbus/3.0.3/eventbus-3.0.3-service.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:forgespi:3.1.1",
+              "name": "Minecraft Forge (forgespi)",
+              "type": "Library",
+              "artifact": {
+                "size": 19937,
+                "MD5": "e1f1975f008722e258e99fc594c8fd33",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/minecraftforge/forgespi/3.1.1/forgespi-3.1.1.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:coremods:3.0.0",
+              "name": "Minecraft Forge (coremods)",
+              "type": "Library",
+              "artifact": {
+                "size": 21803,
+                "MD5": "9b0b4d1d8b5815d3f693ac82d4128f13",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/minecraftforge/coremods/3.0.0/coremods-3.0.0.jar"
+              }
+            },
+            {
+              "id": "net.minecraftforge:unsafe:0.2.0",
+              "name": "Minecraft Forge (unsafe)",
+              "type": "Library",
+              "artifact": {
+                "size": 2834,
+                "MD5": "2d1016ebe4c1a63dd50a59d26bd12db1",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/minecraftforge/unsafe/0.2.0/unsafe-0.2.0.jar"
+              }
+            },
+            {
+              "id": "com.electronwill.night-config:core:3.6.2",
+              "name": "Minecraft Forge (core)",
+              "type": "Library",
+              "artifact": {
+                "size": 199091,
+                "MD5": "243fc0b7f1e509aaca3550c14d8f60af",
+                "url": "http://files.avalonconcordia.com/repo/lib/com/electronwill/night-config/core/3.6.2/core-3.6.2.jar"
+              }
+            },
+            {
+              "id": "com.electronwill.night-config:toml:3.6.2",
+              "name": "Minecraft Forge (toml)",
+              "type": "Library",
+              "artifact": {
+                "size": 31152,
+                "MD5": "7b2339065e252b1c187d39351d84a09f",
+                "url": "http://files.avalonconcordia.com/repo/lib/com/electronwill/night-config/toml/3.6.2/toml-3.6.2.jar"
+              }
+            },
+            {
+              "id": "org.jline:jline:3.12.1",
+              "name": "Minecraft Forge (jline)",
+              "type": "Library",
+              "artifact": {
+                "size": 732926,
+                "MD5": "ffd8c9d6eb8a8456ef505c8ef9fc777d",
+                "url": "http://files.avalonconcordia.com/repo/lib/org/jline/jline/3.12.1/jline-3.12.1.jar"
+              }
+            },
+            {
+              "id": "org.apache.maven:maven-artifact:3.6.0",
+              "name": "Minecraft Forge (maven-artifact)",
+              "type": "Library",
+              "artifact": {
+                "size": 55051,
+                "MD5": "89e95013b11f347e48c0525965600404",
+                "url": "http://files.avalonconcordia.com/repo/lib/org/apache/maven/maven-artifact/3.6.0/maven-artifact-3.6.0.jar"
+              }
+            },
+            {
+              "id": "net.jodah:typetools:0.8.1",
+              "name": "Minecraft Forge (typetools)",
+              "type": "Library",
+              "artifact": {
+                "size": 15367,
+                "MD5": "0eb481e955b455e61bd5ea8f520f6009",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/jodah/typetools/0.8.1/typetools-0.8.1.jar"
+              }
+            },
+            {
+              "id": "org.apache.logging.log4j:log4j-api:2.11.2",
+              "name": "Minecraft Forge (log4j-api)",
+              "type": "Library",
+              "artifact": {
+                "size": 266283,
+                "MD5": "3f7ee51e3dd0830de799dae0b90243dd",
+                "url": "http://files.avalonconcordia.com/repo/lib/org/apache/logging/log4j/log4j-api/2.11.2/log4j-api-2.11.2.jar"
+              }
+            },
+            {
+              "id": "org.apache.logging.log4j:log4j-core:2.11.2",
+              "name": "Minecraft Forge (log4j-core)",
+              "type": "Library",
+              "artifact": {
+                "size": 1629585,
+                "MD5": "c8bd8b5c5aaaa07a3dcbf57de01c9266",
+                "url": "http://files.avalonconcordia.com/repo/lib/org/apache/logging/log4j/log4j-core/2.11.2/log4j-core-2.11.2.jar"
+              }
+            },
+            {
+              "id": "net.minecrell:terminalconsoleappender:1.2.0",
+              "name": "Minecraft Forge (terminalconsoleappender)",
+              "type": "Library",
+              "artifact": {
+                "size": 15977,
+                "MD5": "679363fa893293791e55a21f81342f87",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/minecrell/terminalconsoleappender/1.2.0/terminalconsoleappender-1.2.0.jar"
+              }
+            },
+            {
+              "id": "net.sf.jopt-simple:jopt-simple:5.0.4",
+              "name": "Minecraft Forge (jopt-simple)",
+              "type": "Library",
+              "artifact": {
+                "size": 78146,
+                "MD5": "eb0d9dffe9b0eddead68fe678be76c49",
+                "url": "http://files.avalonconcordia.com/repo/lib/net/sf/jopt-simple/jopt-simple/5.0.4/jopt-simple-5.0.4.jar"
+              }
+            },
+            {
+              "id": "org.spongepowered:mixin:0.8",
+              "name": "Minecraft Forge (mixin)",
+              "type": "Library",
+              "artifact": {
+                "size": 931239,
+                "MD5": "7775c515b7dacbe7c63ecbcfd2e7a051",
+                "url": "http://files.avalonconcordia.com/repo/lib/org/spongepowered/mixin/0.8/mixin-0.8.jar"
+              }
+            }
+          ]
+        },
+        {
+          "id": "CustomSkinAPIPlus-ClientID",
+          "name": "CustomSkinAPIPlus-ClientID",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 36,
+            "MD5": "e953638c6e6ff5e25a45e9bda24793de",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/CustomSkinAPIPlus-ClientID",
+            "path": "CustomSkinLoader/CustomSkinAPIPlus-ClientID"
           }
-        ]
-      }
-    ]
-  }
+        },
+        {
+          "id": "CustomSkinLoader.json",
+          "name": "CustomSkinLoader.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 1527,
+            "MD5": "8866fe775e527547f2fd8d74a5af4b48",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/CustomSkinLoader.json",
+            "path": "CustomSkinLoader/CustomSkinLoader.json"
+          }
+        },
+        {
+          "id": "CustomSkinLoader.log",
+          "name": "CustomSkinLoader.log",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 21053,
+            "MD5": "2389e8d1dc45aeb81a53c580723b1411",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/CustomSkinLoader.log",
+            "path": "CustomSkinLoader/CustomSkinLoader.log"
+          }
+        },
+        {
+          "id": "157acd63098f6bff67b1e339de11c61ca5dc7ce7",
+          "name": "157acd63098f6bff67b1e339de11c61ca5dc7ce7",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 37,
+            "MD5": "c347c67441fe5abc5d58c86c2aa7de12",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/157acd63098f6bff67b1e339de11c61ca5dc7ce7",
+            "path": "CustomSkinLoader/caches/157acd63098f6bff67b1e339de11c61ca5dc7ce7"
+          }
+        },
+        {
+          "id": "157acd63098f6bff67b1e339de11c61ca5dc7ce7.json",
+          "name": "157acd63098f6bff67b1e339de11c61ca5dc7ce7.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 108,
+            "MD5": "bcb73d290cde7c2da787d397702b24b9",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/157acd63098f6bff67b1e339de11c61ca5dc7ce7.json",
+            "path": "CustomSkinLoader/caches/157acd63098f6bff67b1e339de11c61ca5dc7ce7.json"
+          }
+        },
+        {
+          "id": "1c3f5159415c9220434569802bc01dc8ffd6f2d1",
+          "name": "1c3f5159415c9220434569802bc01dc8ffd6f2d1",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 149,
+            "MD5": "815bd12b7176ed7eb22eceb111ddac9a",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/1c3f5159415c9220434569802bc01dc8ffd6f2d1",
+            "path": "CustomSkinLoader/caches/1c3f5159415c9220434569802bc01dc8ffd6f2d1"
+          }
+        },
+        {
+          "id": "1c3f5159415c9220434569802bc01dc8ffd6f2d1.json",
+          "name": "1c3f5159415c9220434569802bc01dc8ffd6f2d1.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 158,
+            "MD5": "fee741f67309676ea73d94ebc31f5587",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/1c3f5159415c9220434569802bc01dc8ffd6f2d1.json",
+            "path": "CustomSkinLoader/caches/1c3f5159415c9220434569802bc01dc8ffd6f2d1.json"
+          }
+        },
+        {
+          "id": "1c6da5df4a30c998fcebe20db36f3764a37ce5c5",
+          "name": "1c6da5df4a30c998fcebe20db36f3764a37ce5c5",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 3,
+            "MD5": "8a80554c91d9fca8acb82f023de02f11",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/1c6da5df4a30c998fcebe20db36f3764a37ce5c5",
+            "path": "CustomSkinLoader/caches/1c6da5df4a30c998fcebe20db36f3764a37ce5c5"
+          }
+        },
+        {
+          "id": "1c6da5df4a30c998fcebe20db36f3764a37ce5c5.json",
+          "name": "1c6da5df4a30c998fcebe20db36f3764a37ce5c5.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 133,
+            "MD5": "b285117921e90cb2968cde5247c3848d",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/1c6da5df4a30c998fcebe20db36f3764a37ce5c5.json",
+            "path": "CustomSkinLoader/caches/1c6da5df4a30c998fcebe20db36f3764a37ce5c5.json"
+          }
+        },
+        {
+          "id": "2a079703646a7a5b042fc3120c46e5d2a3544037",
+          "name": "2a079703646a7a5b042fc3120c46e5d2a3544037",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 149,
+            "MD5": "61b3add67cc75662a7ce684f37695692",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/2a079703646a7a5b042fc3120c46e5d2a3544037",
+            "path": "CustomSkinLoader/caches/2a079703646a7a5b042fc3120c46e5d2a3544037"
+          }
+        },
+        {
+          "id": "2a079703646a7a5b042fc3120c46e5d2a3544037.json",
+          "name": "2a079703646a7a5b042fc3120c46e5d2a3544037.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 150,
+            "MD5": "e7b4eeceeb28189c44aa57084a08b598",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/2a079703646a7a5b042fc3120c46e5d2a3544037.json",
+            "path": "CustomSkinLoader/caches/2a079703646a7a5b042fc3120c46e5d2a3544037.json"
+          }
+        },
+        {
+          "id": "370c4b2b1967f536d7480809b96af394e73ab152",
+          "name": "370c4b2b1967f536d7480809b96af394e73ab152",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 149,
+            "MD5": "f22a6f32dcd0c43086075aadb4fc0454",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/370c4b2b1967f536d7480809b96af394e73ab152",
+            "path": "CustomSkinLoader/caches/370c4b2b1967f536d7480809b96af394e73ab152"
+          }
+        },
+        {
+          "id": "370c4b2b1967f536d7480809b96af394e73ab152.json",
+          "name": "370c4b2b1967f536d7480809b96af394e73ab152.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 154,
+            "MD5": "fa40d9f94a8f798ea71deec6e711cc7b",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/370c4b2b1967f536d7480809b96af394e73ab152.json",
+            "path": "CustomSkinLoader/caches/370c4b2b1967f536d7480809b96af394e73ab152.json"
+          }
+        },
+        {
+          "id": "37eaf1adfe34a3f495da1f37977e39591c72dccb",
+          "name": "37eaf1adfe34a3f495da1f37977e39591c72dccb",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 121,
+            "MD5": "0a176a513fa0a25d72b2dfa805f6d359",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/37eaf1adfe34a3f495da1f37977e39591c72dccb",
+            "path": "CustomSkinLoader/caches/37eaf1adfe34a3f495da1f37977e39591c72dccb"
+          }
+        },
+        {
+          "id": "37eaf1adfe34a3f495da1f37977e39591c72dccb.json",
+          "name": "37eaf1adfe34a3f495da1f37977e39591c72dccb.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 121,
+            "MD5": "a4dc396c2d867e2e3ff94c805f19c902",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/37eaf1adfe34a3f495da1f37977e39591c72dccb.json",
+            "path": "CustomSkinLoader/caches/37eaf1adfe34a3f495da1f37977e39591c72dccb.json"
+          }
+        },
+        {
+          "id": "74fa5f2200b652f382a2c6c292e64f7c8a6666df",
+          "name": "74fa5f2200b652f382a2c6c292e64f7c8a6666df",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 37,
+            "MD5": "c347c67441fe5abc5d58c86c2aa7de12",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/74fa5f2200b652f382a2c6c292e64f7c8a6666df",
+            "path": "CustomSkinLoader/caches/74fa5f2200b652f382a2c6c292e64f7c8a6666df"
+          }
+        },
+        {
+          "id": "74fa5f2200b652f382a2c6c292e64f7c8a6666df.json",
+          "name": "74fa5f2200b652f382a2c6c292e64f7c8a6666df.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 100,
+            "MD5": "e1a46a8d18b048384b574e410b945d85",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/74fa5f2200b652f382a2c6c292e64f7c8a6666df.json",
+            "path": "CustomSkinLoader/caches/74fa5f2200b652f382a2c6c292e64f7c8a6666df.json"
+          }
+        },
+        {
+          "id": "88d94ccfa760b559a15353e3013b776fd6d6e8c1",
+          "name": "88d94ccfa760b559a15353e3013b776fd6d6e8c1",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 3,
+            "MD5": "8a80554c91d9fca8acb82f023de02f11",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/88d94ccfa760b559a15353e3013b776fd6d6e8c1",
+            "path": "CustomSkinLoader/caches/88d94ccfa760b559a15353e3013b776fd6d6e8c1"
+          }
+        },
+        {
+          "id": "88d94ccfa760b559a15353e3013b776fd6d6e8c1.json",
+          "name": "88d94ccfa760b559a15353e3013b776fd6d6e8c1.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 137,
+            "MD5": "0b1409b9969045aa15b50ec1aa87c5d5",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/88d94ccfa760b559a15353e3013b776fd6d6e8c1.json",
+            "path": "CustomSkinLoader/caches/88d94ccfa760b559a15353e3013b776fd6d6e8c1.json"
+          }
+        },
+        {
+          "id": "c41dfe11807a7b59124f1ae5a58fe5d6ba45c13a",
+          "name": "c41dfe11807a7b59124f1ae5a58fe5d6ba45c13a",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 3,
+            "MD5": "8a80554c91d9fca8acb82f023de02f11",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/c41dfe11807a7b59124f1ae5a58fe5d6ba45c13a",
+            "path": "CustomSkinLoader/caches/c41dfe11807a7b59124f1ae5a58fe5d6ba45c13a"
+          }
+        },
+        {
+          "id": "c41dfe11807a7b59124f1ae5a58fe5d6ba45c13a.json",
+          "name": "c41dfe11807a7b59124f1ae5a58fe5d6ba45c13a.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 141,
+            "MD5": "e14e5119fae93f094bae2412c4794e9b",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/c41dfe11807a7b59124f1ae5a58fe5d6ba45c13a.json",
+            "path": "CustomSkinLoader/caches/c41dfe11807a7b59124f1ae5a58fe5d6ba45c13a.json"
+          }
+        },
+        {
+          "id": "d45e723279667dc2347b0ca5e60016bde66e5cff",
+          "name": "d45e723279667dc2347b0ca5e60016bde66e5cff",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 37,
+            "MD5": "c347c67441fe5abc5d58c86c2aa7de12",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/d45e723279667dc2347b0ca5e60016bde66e5cff",
+            "path": "CustomSkinLoader/caches/d45e723279667dc2347b0ca5e60016bde66e5cff"
+          }
+        },
+        {
+          "id": "d45e723279667dc2347b0ca5e60016bde66e5cff.json",
+          "name": "d45e723279667dc2347b0ca5e60016bde66e5cff.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 104,
+            "MD5": "9ce36efb0e2440399e3b9fc6be4e0459",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/d45e723279667dc2347b0ca5e60016bde66e5cff.json",
+            "path": "CustomSkinLoader/caches/d45e723279667dc2347b0ca5e60016bde66e5cff.json"
+          }
+        },
+        {
+          "id": "dbbbb1b2b2711644ca3423fcb787d5e78fdf361d",
+          "name": "dbbbb1b2b2711644ca3423fcb787d5e78fdf361d",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 121,
+            "MD5": "0a176a513fa0a25d72b2dfa805f6d359",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/dbbbb1b2b2711644ca3423fcb787d5e78fdf361d",
+            "path": "CustomSkinLoader/caches/dbbbb1b2b2711644ca3423fcb787d5e78fdf361d"
+          }
+        },
+        {
+          "id": "dbbbb1b2b2711644ca3423fcb787d5e78fdf361d.json",
+          "name": "dbbbb1b2b2711644ca3423fcb787d5e78fdf361d.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 125,
+            "MD5": "d493e19ebe804799b19e1321b70da18f",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/CustomSkinLoader/caches/dbbbb1b2b2711644ca3423fcb787d5e78fdf361d.json",
+            "path": "CustomSkinLoader/caches/dbbbb1b2b2711644ca3423fcb787d5e78fdf361d.json"
+          }
+        },
+        {
+          "id": "MouseTweaks.cfg",
+          "name": "MouseTweaks.cfg",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 135,
+            "MD5": "ff577ca09e989c07c056c7cdff465be3",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/MouseTweaks.cfg",
+            "path": "config/MouseTweaks.cfg"
+          }
+        },
+        {
+          "id": "backtools.toml",
+          "name": "backtools.toml",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 633,
+            "MD5": "1cc523d42840f2705221071965d5d437",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/backtools.toml",
+            "path": "config/backtools.toml"
+          }
+        },
+        {
+          "id": "fml.toml",
+          "name": "fml.toml",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 242,
+            "MD5": "5961f97ddaa04677acd58a89aaf3826c",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/fml.toml",
+            "path": "config/fml.toml"
+          }
+        },
+        {
+          "id": "forge-client.toml",
+          "name": "forge-client.toml",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 1359,
+            "MD5": "c352e2faa854312ac4bf44773720b53f",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/forge-client.toml",
+            "path": "config/forge-client.toml"
+          }
+        },
+        {
+          "id": "aztec.json",
+          "name": "aztec.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 1358,
+            "MD5": "154bb57f4bf82c5e40bbb9bcd6ef87cd",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/aztec.json",
+            "path": "config/ichunutil/themes/aztec.json"
+          }
+        },
+        {
+          "id": "blue&black.json",
+          "name": "blue&black.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 2276,
+            "MD5": "9be72c050b53dab3a2878455fbda2a49",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/blue&black.json",
+            "path": "config/ichunutil/themes/blue&black.json"
+          }
+        },
+        {
+          "id": "blue&orange.json",
+          "name": "blue&orange.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 2289,
+            "MD5": "145899a1ef9ea8d343f20278076f3a33",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/blue&orange.json",
+            "path": "config/ichunutil/themes/blue&orange.json"
+          }
+        },
+        {
+          "id": "default.json",
+          "name": "default.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 1821,
+            "MD5": "c4fe26688c46c7b97c3d2a89727dec19",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/default.json",
+            "path": "config/ichunutil/themes/default.json"
+          }
+        },
+        {
+          "id": "grassgreen.json",
+          "name": "grassgreen.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 2249,
+            "MD5": "4aa192b49a55e5dc9e5a8ea8d469e461",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/grassgreen.json",
+            "path": "config/ichunutil/themes/grassgreen.json"
+          }
+        },
+        {
+          "id": "green&black.json",
+          "name": "green&black.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 2252,
+            "MD5": "aa0029709ce441ab9be65d3b3cf1a846",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/green&black.json",
+            "path": "config/ichunutil/themes/green&black.json"
+          }
+        },
+        {
+          "id": "lazygray.json",
+          "name": "lazygray.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 1976,
+            "MD5": "a1e6062b5692c3aced1e97483a56793f",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/lazygray.json",
+            "path": "config/ichunutil/themes/lazygray.json"
+          }
+        },
+        {
+          "id": "monogeneric.json",
+          "name": "monogeneric.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 2275,
+            "MD5": "7b91a3284c4d3faf30d68a58b779a376",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/monogeneric.json",
+            "path": "config/ichunutil/themes/monogeneric.json"
+          }
+        },
+        {
+          "id": "nightblack.json",
+          "name": "nightblack.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 1916,
+            "MD5": "cea5ee3d0d252088b55411fa8f3ff3cd",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/nightblack.json",
+            "path": "config/ichunutil/themes/nightblack.json"
+          }
+        },
+        {
+          "id": "red&black.json",
+          "name": "red&black.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 2297,
+            "MD5": "f0d7f9e44f4f82dab5a4291d53c6b10e",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/red&black.json",
+            "path": "config/ichunutil/themes/red&black.json"
+          }
+        },
+        {
+          "id": "skyblue.json",
+          "name": "skyblue.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 2295,
+            "MD5": "42163d741f8311c9ae312142c19226e1",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/skyblue.json",
+            "path": "config/ichunutil/themes/skyblue.json"
+          }
+        },
+        {
+          "id": "whitelight.json",
+          "name": "whitelight.json",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 1997,
+            "MD5": "0f7d8b22cb98fedc2a79830e91a39b80",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil/themes/whitelight.json",
+            "path": "config/ichunutil/themes/whitelight.json"
+          }
+        },
+        {
+          "id": "ichunutil.toml",
+          "name": "ichunutil.toml",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 1194,
+            "MD5": "5b0e6fe08543281b356cd13adeb1ac01",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/ichunutil.toml",
+            "path": "config/ichunutil.toml"
+          }
+        },
+        {
+          "id": "xaerominimap.txt",
+          "name": "xaerominimap.txt",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 2005,
+            "MD5": "41222776b161fca22b1aaab6b835618e",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/xaerominimap.txt",
+            "path": "config/xaerominimap.txt"
+          }
+        },
+        {
+          "id": "xaeropatreon.txt",
+          "name": "xaeropatreon.txt",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 16,
+            "MD5": "82f395c2aa8d41d4e8d8bdfde7044b3c",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/xaeropatreon.txt",
+            "path": "config/xaeropatreon.txt"
+          }
+        },
+        {
+          "id": "xaeroworldmap.txt",
+          "name": "xaeroworldmap.txt",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 400,
+            "MD5": "7e67529cff185cf87f1e6ee52e995dc7",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/config/xaeroworldmap.txt",
+            "path": "config/xaeroworldmap.txt"
+          }
+        },
+        {
+          "id": "BackTools-1.16.1-9.0.0.jar",
+          "name": "BackTools-1.16.1-9.0.0.jar",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 23720,
+            "MD5": "8888a6fe9f4e42e152b367c18ddeecbd",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/mods/BackTools-1.16.1-9.0.0.jar",
+            "path": "mods/BackTools-1.16.1-9.0.0.jar"
+          }
+        },
+        {
+          "id": "CTM-MC1.16.1-1.1.0.1.jar",
+          "name": "CTM-MC1.16.1-1.1.0.1.jar",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 179062,
+            "MD5": "0b2a2490dd7a04136c2ebdd52bab313e",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/mods/CTM-MC1.16.1-1.1.0.1.jar",
+            "path": "mods/CTM-MC1.16.1-1.1.0.1.jar"
+          }
+        },
+        {
+          "id": "CustomSkinLoader_Forge-14.12.jar",
+          "name": "CustomSkinLoader_Forge-14.12.jar",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 139213,
+            "MD5": "0aeb2a97185effb9000a7fbe7f76247b",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/mods/CustomSkinLoader_Forge-14.12.jar",
+            "path": "mods/CustomSkinLoader_Forge-14.12.jar"
+          }
+        },
+        {
+          "id": "MouseTweaks-2.13-mc1.16.1.jar",
+          "name": "MouseTweaks-2.13-mc1.16.1.jar",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 57630,
+            "MD5": "8f6e275e7141ca5203f6f195daf510aa",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/mods/MouseTweaks-2.13-mc1.16.1.jar",
+            "path": "mods/MouseTweaks-2.13-mc1.16.1.jar"
+          }
+        },
+        {
+          "id": "OptiFine_1.16.1_HD_U_G2.jar",
+          "name": "OptiFine_1.16.1_HD_U_G2.jar",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 5683973,
+            "MD5": "ef86ff22ecf29c2cb66967cfdaccee90",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/mods/OptiFine_1.16.1_HD_U_G2.jar",
+            "path": "mods/OptiFine_1.16.1_HD_U_G2.jar"
+          }
+        },
+        {
+          "id": "XaerosWorldMap_1.10.0_Forge_1.16.1.jar",
+          "name": "XaerosWorldMap_1.10.0_Forge_1.16.1.jar",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 321254,
+            "MD5": "e55d26abddef27493a33096a617d1d08",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/mods/XaerosWorldMap_1.10.0_Forge_1.16.1.jar",
+            "path": "mods/XaerosWorldMap_1.10.0_Forge_1.16.1.jar"
+          }
+        },
+        {
+          "id": "Xaeros_Minimap_20.20.0_Forge_1.16.1.jar",
+          "name": "Xaeros_Minimap_20.20.0_Forge_1.16.1.jar",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 550320,
+            "MD5": "2bbea01300f63c0071b4660228160a67",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/mods/Xaeros_Minimap_20.20.0_Forge_1.16.1.jar",
+            "path": "mods/Xaeros_Minimap_20.20.0_Forge_1.16.1.jar"
+          }
+        },
+        {
+          "id": "iChunUtil-1.16.1-9.0.0.jar",
+          "name": "iChunUtil-1.16.1-9.0.0.jar",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 409753,
+            "MD5": "23b6ac72a4163c36fd9796586376aed2",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/mods/iChunUtil-1.16.1-9.0.0.jar",
+            "path": "mods/iChunUtil-1.16.1-9.0.0.jar"
+          }
+        },
+        {
+          "id": "jei-1.16.1-7.0.0.6.jar",
+          "name": "jei-1.16.1-7.0.0.6.jar",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 711147,
+            "MD5": "f0edadb2a155877eb07f6f4d107df6f8",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/mods/jei-1.16.1-7.0.0.6.jar",
+            "path": "mods/jei-1.16.1-7.0.0.6.jar"
+          }
+        },
+        {
+          "id": "options.txt",
+          "name": "options.txt",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 4414,
+            "MD5": "357c3a6be5f645a24d148c83088da751",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/options.txt",
+            "path": "options.txt"
+          }
+        },
+        {
+          "id": "optionsof.txt",
+          "name": "optionsof.txt",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 1412,
+            "MD5": "94801ee7b81031135e34ea042e08dc09",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/optionsof.txt",
+            "path": "optionsof.txt"
+          }
+        },
+        {
+          "id": "optionsshaders.txt",
+          "name": "optionsshaders.txt",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 381,
+            "MD5": "47e01020bb87d30f4bc58a275f01869c",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/optionsshaders.txt",
+            "path": "optionsshaders.txt"
+          }
+        },
+        {
+          "id": "Unity-1.16.X-Dark-0.6.2.zip",
+          "name": "Unity-1.16.X-Dark-0.6.2.zip",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 2309545,
+            "MD5": "3d311058f294bd3e5c79a2e3df79ce69",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/resourcepacks/Unity-1.16.X-Dark-0.6.2.zip",
+            "path": "resourcepacks/Unity-1.16.X-Dark-0.6.2.zip"
+          }
+        },
+        {
+          "id": "Wolfhound.zip",
+          "name": "Wolfhound.zip",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 29175352,
+            "MD5": "caf291d80657050e43e47ae3d9291734",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/resourcepacks/Wolfhound.zip",
+            "path": "resourcepacks/Wolfhound.zip"
+          }
+        },
+        {
+          "id": "servers.dat",
+          "name": "servers.dat",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 12783,
+            "MD5": "7f2d769a5405f8756591729a69ed2ace",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/servers.dat",
+            "path": "servers.dat"
+          }
+        },
+        {
+          "id": "BSL_v7.1.05p3.zip",
+          "name": "BSL_v7.1.05p3.zip",
+          "type": "File",
+          "required": {
+            "value": true,
+            "def": true
+          },
+          "artifact": {
+            "size": 248330,
+            "MD5": "7eea262917bbb6c141fe95e3860ea0aa",
+            "url": "http://files.avalonconcordia.com/servers/AvalonConcordia-1.16.1/files/shaderpacks/BSL_v7.1.05p3.zip",
+            "path": "shaderpacks/BSL_v7.1.05p3.zip"
+          }
+        }
+      ]
+    }
+  ]
+}

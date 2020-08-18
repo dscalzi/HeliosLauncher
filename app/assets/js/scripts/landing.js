@@ -1088,16 +1088,19 @@ function loadNews(){
         const distroData = DistroManager.getDistribution()
         const newsFeed = distroData.getRSS()
         const newsHost = new URL(newsFeed).origin + '/'
-        $.ajax({
-            url: newsFeed,
+        $.ajax(newsFeed,{
+            accepts: {
+                xml: "application/rss+xml"
+            },
+            dataType: "xml",
+            timeout: 2500,
+            // url: newsFeed,
             success: (data) => {
                 const items = $(data).find('item')
                 const articles = []
-
                 for(let i=0; i<items.length; i++){
                 // JQuery Element
                     const el = $(items[i])
-
                     // Resolve date.
                     const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
 
@@ -1133,9 +1136,9 @@ function loadNews(){
                 resolve({
                     articles
                 })
-            },
-            timeout: 2500
+            }
         }).catch(err => {
+            console.log(err);
             resolve({
                 articles: null
             })
