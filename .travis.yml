@@ -1,0 +1,47 @@
+matrix:
+  include:
+  - os: osx
+    osx_image: xcode11.3
+    language: node_js
+    node_js: '12'
+    env:
+    - ELECTRON_CACHE=$HOME/.cache/electron
+    - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+    - ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true
+    - CSC_IDENTITY_AUTO_DISCOVERY=false
+  - os: linux
+    services: docker
+    language: generic
+    node_js: '12'
+    env:
+    - ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true
+cache:
+  directories:
+  - node_modules
+  - "$HOME/.cache/electron"
+  - "$HOME/.cache/electron-builder"
+script:
+- |
+  if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+    ENVS=`env | grep -iE '(DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_)' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
+    docker run $ENVS --rm \
+      -v ${PWD}:/project \
+      -v ~/.cache/electron:/root/.cache/electron \
+      -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+      electronuserland/builder:wine \
+      /bin/bash -c "node -v && npm ci && npm run cilinux"
+  else
+    npm run cidarwin
+  fi
+before_cache:
+- rm -rf $HOME/.cache/electron-builder/wine
+branches:
+  except:
+  - "/^v\\d+\\.\\d+\\.\\d+$/"
+deploy:
+  provider: releases
+  api_key:
+    secure: Yz543nr+2jR/vlX8fWOcTn/gXu744N1k6MeN98HwPBuYL0Tk81ZjZibaEdcMVHSGJ7MI0WRXB3cKRFPEjRhpSu6vGiDPJ5p/BB81TUNKZGLchjT0jSfcA3s+zISuUG7wdlCmPgJH9cfUhnL34HAD9TWvrl1WJ0HnuQ2BYLn1tFz1F1H+LzzvTT2Vpuok9B7iFCcv48bX2B/AlyT6OGqUew8vcpZIZlqB9Sib2SGWr3rsRAAgPfBVdTmZmIc25AP1rYJa/tnwJZhUViHjHhDgzPQeYzDoq0GdS000eYIq3Fiu7fpcM26HNlSOSoUtXZX5BFzPUEofIL55GpAaZMESSVa6ymQeQ1hL8MRal5GL5fRbHKefWGjpUsg2rtd3RmqRaF0ZYN1Q5eBTPoSL9RIhHr90BC8wqoAqn8q4llcRPNBeJlJjTjiM0P7/EY9N3i1tQPFMe3ExZIofM4+83CqYNijZ7Z+tneDwelNtrIbNUeJWONN9IaChxg/tVRLCqSpIY8tHx6CcTroeInroQ0CV3pdod9KuCtwTU6vgMQ9ioncvO9W7Fz0wqO/TBPuPwXMqqsmUGD/JNUMCLzvFYd3vysppk0/m+P695WBjr6kXnU4D6ZQeab16wJwzGuiqpgPFC4Mv7deZXz13vT0hwRpR3sPqkYZGD5t4kW2P5PsRtuA=
+  on:
+    repo: PinkFloyd1213/Creeponnia-Launcher
+  cleanup: 'false'
