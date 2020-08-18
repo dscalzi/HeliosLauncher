@@ -44,6 +44,6 @@ deploy:
   provider: releases
   api_key: 0630484bce2cd9f13016ad7d0d43b7f0df2d9905
   file: "FILE TO UPLOAD"
-  skip_cleanup: true
+  cleanup: false
   on:
     tags: true
