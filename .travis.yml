@@ -46,4 +46,4 @@ deploy:
   file: directory/**/*
   on:
     repo: PinkFloyd1213/Creeponnia-Launcher
-  skip_cleanup: 'true'
+  cleanup: 'false'
