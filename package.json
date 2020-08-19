@@ -1,6 +1,6 @@
 {
   "name": "creeoponnia-launcher",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "productName": "Creeponnia Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
@@ -11,6 +11,7 @@
   },
   "private": true,
   "main": "index.js",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "scripts": {
     "start": "electron .",
     "cilinux": "node build.js WINDOWS && node build.js LINUX",
