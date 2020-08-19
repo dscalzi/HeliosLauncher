@@ -45,5 +45,4 @@ deploy:
   api_key: $GITHUB_TOKEN
   file: "FILE TO UPLOAD"
   cleanup: false
-  on:
-    tags: true
+
