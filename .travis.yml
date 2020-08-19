@@ -42,7 +42,7 @@ branches:
     
 deploy:
   provider: releases
-  api_key: 0630484bce2cd9f13016ad7d0d43b7f0df2d9905
+  api_key: "GITHUB OAUTH TOKEN"
   file: "FILE TO UPLOAD"
   cleanup: false
   on:
