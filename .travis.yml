@@ -43,3 +43,13 @@ before_cache:
 branches:
   except:
     - "/^v\\d+\\.\\d+\\.\\d+$/"
+
+
+deploy:
+  provider: releases
+  user: PinkFloyd1213
+  password:
+    secure: f/w2TugHnZkbRQ+3KLasRF082ipPxeL8jn3W52sqY+sTyICLD5PYLHq2rwZwYsgfJZPSL9INOkDxzUNmUq8ph7TCdOzm4E9mjXYD/ZeJ5qRL0Q767HDslEnUJLEv/PSV7bJ3+hIabEn39k6cMH9Ve4s6a5cnp34iejW5CX1zCBcMAeKRq4EFhOqb0oXgXQJWP+EgKsAA+Lo/TvRlUu+4L175i/tQ6h0O/Eafix9N3u2WxCLAey/Lf0oVnsMy8gdZh5oDGwr1DkIqBDsRKfeDnJwweXYizqlESfCiU2yX4ZULnzMxeZ9cqtEJ90XfmtaYFr97EAaseaQYFvYKjo2zwkGXoc5hwASHC0PNHYM87+oB7jHLd/wOkWBreSyHajOdmbkUAeUVVUjh039e+cX4KR56aP/648REN6RISsKW/I0ZEVgs/lg59sakh2Tf8AZKVIqxwAnMziXlWX/+0XcOTQ5d1svvzTqS5msXLXYCwUzF5mZqeQSTgpj9r7ENgiUhcagyhAVJVcgIsuJn7QXvi0jeW0GgiwqDtRvjU3wegeWPohDZOHfBfQ28UniaIHiTNtHuSrvMpI9AqmbEyUovJYlP+aN4jkenQq4eHPvApPTiVqqX1OH/0zYLYZq+uYV4qKi2tl3ZTZb2ICCN0b0mkojWQ8k8lnlAeYZOjVJP7W8=
+  file: dist/*
+  cleanup: false
+  draft: true
