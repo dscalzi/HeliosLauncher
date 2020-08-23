@@ -1,0 +1,75 @@
+{
+    "version": "1.0.1",
+    "discord": {
+        "clientId": "385581240906022916",
+        "smallImageText": "WesterosCraft",
+        "smallImageKey": "seal-circle"
+    },
+    "java": {
+        "oracle": "http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html"
+    },
+    "rss": "https://forum.mc-nexus.de/index.php?board-feed/",
+    "servers": [
+        {
+            "id": "MC-Nexus",
+            "name": "MC-Nexus",
+            "description": "BlablaBla2",
+            "icon": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/server-prod.png",
+            "version": "1.0",
+            "address": "mc-nexus.de",
+            "minecraftVersion": "1.15.2",
+            "discord": {
+                "shortId": "1.12.2 Production Server",
+                "largeImageText": "WesterosCraft 1.12.2 Production Server",
+                "largeImageKey": "server-prod"
+            },
+            "mainServer": true,
+            "autoconnect": true,
+            "optifineVersion": "1.15.2_HD_U_G1_pre30",
+            "launchWrapperVersion": "2.1",
+            "modules": [
+                {
+                    "id": "optifine:Optifine:1.15.2_HD_U_G1_pre30",
+                    "name": "Optifine",
+                    "type": "Library",
+                    "artifact": {
+                        "size": 5042818,
+                        "MD5": "28010dd97334d44ac949028f80f6c9aa",
+                        "url": "https://ChickenDevLab.github.io/NexusLauncher/data/libs/optifine/Optifine/1.15.2_HD_U_G1_pre30/optifine.jar"
+                    }
+                },
+                {
+                    "id": "optifine:launchwrapper-of:2.1",
+                    "name": "Launchwrapper",
+                    "type": "Library",
+                    "artifact": {
+                        "size": 15638,
+                        "MD5": "df32100e0d67fd1a7133153c976edbcf",
+                        "url": "https://ChickenDevLab.github.io/NexusLauncher/data/libs/optifine/launchwrapper-of/2.1/launchwrapper.jar"
+                    }
+                },
+                {
+                    "id": "options.txt",
+                    "type": "File",
+                    "artifact": {
+                        "size": 2967,
+                        "MD5": "7cae28e6d7e6849e193319ea53f42624",
+                        "path": "options.txt",
+                        "url": "https://ChickenDevLab.github.io/NexusLauncher/data/files/options.txt" 
+                    }
+                },
+                {
+                    "id": "de.mcnexus:NexusPack:1.1",
+                    "name": "MC-Nexus.de - Resourcepack",
+                    "type": "File",
+                    "artifact": {
+                        "size": 34557884,
+                        "MD5": "15ad7a66f0c491822f055e7c7f50ff5b",
+                        "path": "resourcepacks/NexusPack.zip",
+                        "url": "https://ChickenDevLab.github.io/NexusLauncher/data/resourcepacks/NexusPack/v1.1/v1.1.zip"
+                    }
+                }
+            ]
+        }
+    ]
+}
