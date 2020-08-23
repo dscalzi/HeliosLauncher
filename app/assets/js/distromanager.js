@@ -406,6 +406,14 @@ class Server {
         return this.autoconnect
     }
 
+    getOptifineVersion(){
+        return this.optifineVersion
+    }
+
+    getLaunchWrapperVersion(){
+        return this.launchWrapperVersion
+    }
+
     /**
      * @returns {Array.<Module>} An array of modules for this server.
      */
@@ -482,6 +490,8 @@ class DistroIndex {
         return this.servers
     }
 
+    
+
     /**
      * Get a server configuration by its ID. If it does not
      * exist, null will be returned.
@@ -537,7 +547,7 @@ exports.pullRemote = function(){
         return exports.pullLocal()
     }
     return new Promise((resolve, reject) => {
-        const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/distribution.json'
+        const distroURL = 'http://ChickenDevLab.github.io/NexusLauncher/data/distribution.json'
         //const distroURL = 'https://gist.githubusercontent.com/dscalzi/53b1ba7a11d26a5c353f9d5ae484b71b/raw/'
         const opts = {
             url: distroURL,

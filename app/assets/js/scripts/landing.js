@@ -631,22 +631,15 @@ function dlAsync(login = true){
             let allGood = true
 
             // If these properties are not defined it's likely an error.
-            if(m.result.forgeData == null || m.result.versionData == null){
-                loggerLaunchSuite.error('Error during validation:', m.result)
+            
 
-                loggerLaunchSuite.error('Error during launch', m.result.error)
-                showLaunchFailure('Error During Launch', 'Please check the console (CTRL + Shift + i) for more details.')
-
-                allGood = false
-            }
-
-            forgeData = m.result.forgeData
+            // forgeData = m.result.forgeData
             versionData = m.result.versionData
 
             if(login && allGood) {
                 const authUser = ConfigManager.getSelectedAccount()
                 loggerLaunchSuite.log(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
-                let pb = new ProcessBuilder(serv, versionData, forgeData, authUser, remote.app.getVersion())
+                let pb = new ProcessBuilder(serv, versionData, authUser, remote.app.getVersion())
                 setLaunchDetails('Launching game..')
 
                 const onLoadComplete = () => {

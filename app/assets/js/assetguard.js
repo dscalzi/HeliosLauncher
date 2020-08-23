@@ -1,3 +1,4 @@
+
 // Requirements
 const AdmZip        = require('adm-zip')
 const async         = require('async')
@@ -1485,7 +1486,7 @@ class AssetGuard extends EventEmitter {
      * @param {string} server The Server to load Forge data for.
      * @returns {Promise.<Object>} A promise which resolves to Forge's version.json data.
      */
-    loadForgeData(server){
+    /*  loadForgeData(server){
         const self = this
         return new Promise(async (resolve, reject) => {
             const modules = server.getModules()
@@ -1518,7 +1519,7 @@ class AssetGuard extends EventEmitter {
             }
             reject('No forge module found!')
         })
-    }
+    } */
 
     _parseForgeLibraries(){
         /* TODO
@@ -1882,17 +1883,14 @@ class AssetGuard extends EventEmitter {
             this.emit('validate', 'files')
             await this.processDlQueues()
             //this.emit('complete', 'download')
-            const forgeData = await this.loadForgeData(server)
-        
+                    
             return {
-                versionData,
-                forgeData
+                versionData
             }
 
         } catch (err){
             return {
                 versionData: null,
-                forgeData: null,
                 error: err
             }
         }
