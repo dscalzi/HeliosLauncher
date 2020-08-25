@@ -28,7 +28,7 @@
     "adm-zip": "^0.4.16",
     "async": "^3.2.0",
     "discord-rpc": "^3.1.3",
-    "ejs": "^3.1.3",
+    "ejs": "^3.1.5",
     "ejs-electron": "^2.1.1",
     "electron-updater": "^4.3.4",
     "fs-extra": "^9.0.1",
@@ -41,9 +41,9 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "electron": "^9.2.0",
+    "electron": "^9.2.1",
     "electron-builder": "^22.8.0",
-    "eslint": "^7.6.0"
+    "eslint": "^7.7.0"
   },
   "repository": {
     "type": "git",
