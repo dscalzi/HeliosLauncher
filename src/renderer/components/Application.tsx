@@ -17,6 +17,8 @@ import { join } from 'path'
 import Overlay from './overlay/Overlay'
 import { OverlayPushAction, OverlayActionDispatch } from '../redux/actions/overlayActions'
 
+import { DistributionAPI } from 'common/distribution/distribution'
+
 import './Application.css'
 
 declare const __static: string
@@ -120,9 +122,14 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                 setTimeout(() => {
                     //this.props.setView(View.WELCOME)
                     this.props.pushGenericOverlay({
-                        title: 'Test Title',
-                        description: 'Test Description',
-                        dismissible: true
+                        title: 'Load Distribution',
+                        description: 'This is a test. Will load the distribution.',
+                        dismissible: false,
+                        acknowledgeCallback: async () => {
+                            const distro = new DistributionAPI('C:\\Users\\user\\AppData\\Roaming\\Helios Launcher')
+                            const x = await distro.testLoad()
+                            console.log(x)
+                        }
                     })
                     this.props.pushGenericOverlay({
                         title: 'Test Title 2',

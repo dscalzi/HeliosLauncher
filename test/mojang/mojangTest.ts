@@ -1,17 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Mojang } from 'common/mojang/mojang'
 import { expect } from 'chai'
 import nock from 'nock'
 import { Session } from 'common/mojang/model/auth/Session'
-import { MojangResponseCode } from 'common/mojang/model/internal/Response'
+import { MojangErrorCode, MojangResponse } from 'common/mojang/model/internal/MojangResponse'
+import { RestResponseStatus, RestResponse } from 'common/got/RestResponse'
 
-function expectMojangResponse(res: any, responseCode: MojangResponseCode, negate = false) {
+function assertResponse(res: RestResponse<unknown>) {
     expect(res).to.not.be.an('error')
     expect(res).to.be.an('object')
-    expect(res).to.have.property('responseCode')
+}
+
+function expectSuccess(res: RestResponse<unknown>) {
+    assertResponse(res)
+    expect(res).to.have.property('responseStatus')
+    expect(res.responseStatus).to.equal(RestResponseStatus.SUCCESS)
+}
+
+function expectFailure(res: RestResponse<unknown>) {
+    expect(res.responseStatus).to.not.equal(RestResponseStatus.SUCCESS)
+}
+
+function expectMojangResponse(res: MojangResponse<unknown>, responseCode: MojangErrorCode, negate = false) {
+    assertResponse(res)
+    expect(res).to.have.property('mojangErrorCode')
     if(!negate) {
-        expect(res.responseCode).to.equal(responseCode)
+        expect(res.mojangErrorCode).to.equal(responseCode)
     } else {
-        expect(res.responseCode).to.not.equal(responseCode)
+        expect(res.mojangErrorCode).to.not.equal(responseCode)
     }
 }
 
@@ -30,7 +46,7 @@ describe('Mojang Errors', () => {
             .reply(500, 'Service temprarily offline.')
 
         const res = await Mojang.status()
-        expectMojangResponse(res, MojangResponseCode.SUCCESS, true)
+        expectFailure(res)
         expect(res.data).to.be.an('array')
         expect(res.data).to.deep.equal(defStatusHack)
 
@@ -40,7 +56,8 @@ describe('Mojang Errors', () => {
 
         nock(Mojang.AUTH_ENDPOINT)
             .post('/authenticate')
-            .reply(403, (uri, requestBody: any): { error: string, errorMessage: string } => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            .reply(403, (uri, requestBody: unknown): { error: string, errorMessage: string } => {
                 return {
                     error: 'ForbiddenOperationException',
                     errorMessage: 'Invalid credentials. Invalid username or password.'
@@ -48,7 +65,7 @@ describe('Mojang Errors', () => {
             })
 
         const res = await Mojang.authenticate('user', 'pass', 'xxx', true)
-        expectMojangResponse(res, MojangResponseCode.ERROR_INVALID_CREDENTIALS)
+        expectMojangResponse(res, MojangErrorCode.ERROR_INVALID_CREDENTIALS)
         expect(res.data).to.be.a('null')
         expect(res.error).to.not.be.a('null')
 
@@ -66,7 +83,7 @@ describe('Mojang Status', () => {
             .reply(200, defStatusHack)
 
         const res = await Mojang.status()
-        expectMojangResponse(res, MojangResponseCode.SUCCESS)
+        expectSuccess(res)
         expect(res.data).to.be.an('array')
         expect(res.data).to.deep.equal(defStatusHack)
 
@@ -101,7 +118,7 @@ describe('Mojang Auth', () => {
             })
 
         const res = await Mojang.authenticate('user', 'pass', 'xxx', true)
-        expectMojangResponse(res, MojangResponseCode.SUCCESS)
+        expectSuccess(res)
         expect(res.data!.clientToken).to.equal('xxx')
         expect(res.data).to.have.property('user')
 
@@ -120,13 +137,13 @@ describe('Mojang Auth', () => {
 
         const res = await Mojang.validate('abc', 'def')
 
-        expectMojangResponse(res, MojangResponseCode.SUCCESS)
+        expectSuccess(res)
         expect(res.data).to.be.a('boolean')
         expect(res.data).to.equal(true)
 
         const res2 = await Mojang.validate('def', 'def')
 
-        expectMojangResponse(res2, MojangResponseCode.SUCCESS)
+        expectSuccess(res2)
         expect(res2.data).to.be.a('boolean')
         expect(res2.data).to.equal(false)
 
@@ -140,7 +157,7 @@ describe('Mojang Auth', () => {
 
         const res = await Mojang.invalidate('adc', 'def')
 
-        expectMojangResponse(res, MojangResponseCode.SUCCESS)
+        expectSuccess(res)
 
     })
 
@@ -169,7 +186,7 @@ describe('Mojang Auth', () => {
             })
 
         const res = await Mojang.refresh('gfd', 'xxx', true)
-        expectMojangResponse(res, MojangResponseCode.SUCCESS)
+        expectSuccess(res)
         expect(res.data!.clientToken).to.equal('xxx')
         expect(res.data).to.have.property('user')
 

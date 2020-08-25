@@ -113,7 +113,9 @@ async function createWindow() {
         webPreferences: {
             preload: join(__dirname, '..', 'out', 'preloader.js'),
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            enableRemoteModule: true,
+            worldSafeExecuteJavaScript: true
         },
         backgroundColor: '#171614'
     })

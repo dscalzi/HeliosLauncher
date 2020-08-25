@@ -10,8 +10,8 @@ export interface GenericOverlayProps {
     acknowledgeText?: string
     dismissText?: string
     dismissible: boolean
-    acknowledgeCallback?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-    dismissCallback?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+    acknowledgeCallback?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => Promise<void>
+    dismissCallback?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => Promise<void>
 }
 
 const mapDispatch = {
@@ -30,16 +30,16 @@ class GenericOverlay extends React.Component<InternalGenericOverlayProps> {
         return this.props.dismissText || 'Dismiss'
     }
 
-    private onAcknowledgeClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    private onAcknowledgeClick = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
         if(this.props.acknowledgeCallback) {
-            this.props.acknowledgeCallback(event)
+            await this.props.acknowledgeCallback(event)
         }
         this.props.popOverlayContent()
     }
 
-    private onDismissClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    private onDismissClick = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
         if(this.props.dismissCallback) {
-            this.props.dismissCallback(event)
+            await this.props.dismissCallback(event)
         }
         this.props.popOverlayContent()
     }

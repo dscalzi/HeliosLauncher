@@ -1,7 +1,11 @@
 import { createLogger, format, transports, Logger } from 'winston'
-import { SPLAT } from 'triple-beam'
+import { SPLAT as SPLAT_Symbol } from 'triple-beam'
 import moment from 'moment'
 import { inspect } from 'util'
+
+// Workaround until fixed.
+// https://github.com/winstonjs/logform/issues/111
+const SPLAT = SPLAT_Symbol as unknown as string
 
 export class LoggerUtil {
 

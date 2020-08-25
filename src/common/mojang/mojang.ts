@@ -1,10 +1,11 @@
 import { LoggerUtil } from '../logging/loggerutil'
 import { Agent } from './model/auth/Agent'
 import { Status, StatusColor } from './model/internal/Status'
-import got, { RequestError, HTTPError, TimeoutError, ParseError } from 'got'
+import got, { RequestError, HTTPError } from 'got'
 import { Session } from './model/auth/Session'
 import { AuthPayload } from './model/auth/AuthPayload'
-import { MojangResponse, MojangResponseCode, deciperResponseCode, isInternalError, MojangErrorBody } from './model/internal/Response'
+import { MojangResponse, MojangErrorCode, decipherErrorCode, isInternalError, MojangErrorBody } from './model/internal/MojangResponse'
+import { RestResponseStatus, handleGotError } from 'common/got/RestResponse'
 
 export class Mojang {
 
@@ -90,31 +91,16 @@ export class Mojang {
     }
 
     private static handleGotError<T>(operation: string, error: RequestError, dataProvider: () => T): MojangResponse<T> {
-        const response: MojangResponse<T> = {
-            data: dataProvider(),
-            responseCode: MojangResponseCode.ERROR,
-            error
-        }
-        
+
+        const response: MojangResponse<T> = handleGotError(operation, error, Mojang.logger, dataProvider)
+
         if(error instanceof HTTPError) {
-            response.responseCode = deciperResponseCode(error.response.body as MojangErrorBody)
-            Mojang.logger.error(`Error during ${operation} request (HTTP Response ${error.response.statusCode})`, error)
-            Mojang.logger.debug('Response Details:')
-            Mojang.logger.debug('Body:', error.response.body)
-            Mojang.logger.debug('Headers:', error.response.headers)
-        } else if(Object.getPrototypeOf(error) instanceof RequestError) {
-            Mojang.logger.error(`${operation} request recieved no response (${error.code}).`, error)
-        } else if(error instanceof TimeoutError) {
-            Mojang.logger.error(`${operation} request timed out (${error.timings.phases.total}ms).`)
-        } else if(error instanceof ParseError) {
-            Mojang.logger.error(`${operation} request recieved unexepected body (Parse Error).`)
+            response.mojangErrorCode = decipherErrorCode(error.response.body as MojangErrorBody)
         } else {
-            // CacheError, ReadError, MaxRedirectsError, UnsupportedProtocolError, CancelError
-            Mojang.logger.error(`Error during ${operation} request.`, error)
+            response.mojangErrorCode = MojangErrorCode.UNKNOWN
         }
-
-        response.isInternalError = isInternalError(response.responseCode)
-
+        response.isInternalError = isInternalError(response.mojangErrorCode)
+    
         return response
     }
 
@@ -151,7 +137,7 @@ export class Mojang {
 
             return {
                 data: Mojang.statuses,
-                responseCode: MojangResponseCode.SUCCESS
+                responseStatus: RestResponseStatus.SUCCESS
             }
 
         } catch(error) {
@@ -201,7 +187,7 @@ export class Mojang {
             Mojang.expectSpecificSuccess('Mojang Authenticate', 200, res.statusCode)
             return {
                 data: res.body,
-                responseCode: MojangResponseCode.SUCCESS
+                responseStatus: RestResponseStatus.SUCCESS
             }
 
         } catch(err) {
@@ -233,14 +219,14 @@ export class Mojang {
 
             return {
                 data: res.statusCode === 204,
-                responseCode: MojangResponseCode.SUCCESS
+                responseStatus: RestResponseStatus.SUCCESS
             }
 
         } catch(err) {
             if(err instanceof HTTPError && err.response.statusCode === 403) {
                 return {
                     data: false,
-                    responseCode: MojangResponseCode.SUCCESS
+                    responseStatus: RestResponseStatus.SUCCESS
                 }
             }
             return Mojang.handleGotError('Mojang Validate', err, () => false)
@@ -271,7 +257,7 @@ export class Mojang {
 
             return {
                 data: undefined,
-                responseCode: MojangResponseCode.SUCCESS
+                responseStatus: RestResponseStatus.SUCCESS
             }
 
         } catch(err) {
@@ -306,7 +292,7 @@ export class Mojang {
 
             return {
                 data: res.body,
-                responseCode: MojangResponseCode.SUCCESS
+                responseStatus: RestResponseStatus.SUCCESS
             }
 
         } catch(err) {
