@@ -1,8 +1,114 @@
 import * as React from 'react'
 
+import { Status, StatusColor } from 'common/mojang/model/internal/Status'
+import { MojangResponse } from 'common/mojang/model/internal/MojangResponse'
+import { Mojang } from 'common/mojang/mojang'
+import { RestResponseStatus } from 'common/got/RestResponse'
+import { LoggerUtil } from 'common/logging/loggerutil'
+
 import './Landing.css'
 
-export default class Landing extends React.Component {
+interface LandingState {
+    mojangStatuses: Status[]
+}
+
+export default class Landing extends React.Component<unknown, LandingState> {
+
+    private static readonly logger = LoggerUtil.getLogger('Landing')
+
+    private mojangStatusInterval!: NodeJS.Timeout
+
+    constructor(props: unknown) {
+        super(props)
+        this.state = {
+            mojangStatuses: []
+        }
+    }
+
+    async componentDidMount(): Promise<void> {
+
+        // Load Mojang statuses and setup refresh interval.
+        Landing.logger.info('Loading mojang statuses..')
+        await this.loadMojangStatuses()
+        this.mojangStatusInterval = setInterval(async () => {
+            Landing.logger.info('Refreshing Mojang Statuses..')
+            await this.loadMojangStatuses()
+        }, 300000)
+
+    }
+
+    componentWillUnmount(): void {
+
+        // Clean up intervals.
+        clearInterval(this.mojangStatusInterval)
+
+    }
+
+    private loadMojangStatuses = async (): Promise<void> => {
+        const response: MojangResponse<Status[]> = await Mojang.status()
+
+        if(response.responseStatus !== RestResponseStatus.SUCCESS) {
+            Landing.logger.warn('Failed to retrieve Mojang Statuses.')
+        }
+
+        // TODO Temp workaround because their status checker always shows
+        // this as red. https://bugs.mojang.com/browse/WEB-2303
+        const statuses = response.data
+        for(const status of statuses) {
+            if(status.service === 'sessionserver.mojang.com' || status.service === 'minecraft.net') {
+                status.status = StatusColor.GREEN
+            }
+        }
+
+        this.setState({
+            ...this.state,
+            mojangStatuses: response.data
+        })
+
+    }
+
+    private getMainMojangStatusColor = (): string => {
+        const essential = this.state.mojangStatuses.filter(s => s.essential)
+
+        if(this.state.mojangStatuses.length === 0) {
+            return Mojang.statusToHex(StatusColor.GREY)
+        }
+
+        // If any essential are red, it's red.
+        if(essential.filter(s => s.status === StatusColor.RED).length > 0) {
+            return Mojang.statusToHex(StatusColor.RED)
+        }
+        // If any essential are yellow, it's yellow.
+        if(essential.filter(s => s.status === StatusColor.YELLOW).length > 0) {
+            return Mojang.statusToHex(StatusColor.YELLOW)
+        }
+        // If any non-essential are not green, return yellow.
+        if(this.state.mojangStatuses.filter(s => s.status !== StatusColor.GREEN && s.status !== StatusColor.GREY).length > 0) {
+            return Mojang.statusToHex(StatusColor.YELLOW)
+        }
+        // if all are grey, return grey.
+        if(this.state.mojangStatuses.filter(s => s.status === StatusColor.GREY).length === this.state.mojangStatuses.length) {
+            return Mojang.statusToHex(StatusColor.GREY)
+        }
+
+        return Mojang.statusToHex(StatusColor.GREEN)
+    }
+
+    private getMojangStatusesAsJSX = (essential: boolean): JSX.Element[] => {
+        
+        const statuses: JSX.Element[] = []
+        for(const status of this.state.mojangStatuses.filter(s => s.essential === essential)) {
+            statuses.push(
+                <>
+                    <div className="mojangStatusContainer">
+                        <span className="mojangStatusIcon" style={{color: Mojang.statusToHex(status.status)}}>&#8226;</span>
+                        <span className="mojangStatusName">{status.name}</span>
+                    </div>
+                </>
+            )
+        }
+        return statuses
+    }
 
     render(): JSX.Element {
         return <>
@@ -111,11 +217,11 @@ export default class Landing extends React.Component {
                                 <div className="bot_divider"></div>
                                 <div id="mojangStatusWrapper">
                                     <span className="bot_label">MOJANG STATUS</span>
-                                    <span id="mojang_status_icon">&#8226;</span>
+                                    <span id="mojang_status_icon" style={{color: this.getMainMojangStatusColor()}}>&#8226;</span>
                                     <div id="mojangStatusTooltip">
                                         <div id="mojangStatusTooltipTitle">Services</div>
                                         <div id="mojangStatusEssentialContainer">
-                                            {/* Essential Mojang services are populated here. */}
+                                            {this.getMojangStatusesAsJSX(true)}
                                         </div>
                                         <div id="mojangStatusNEContainer">
                                             <div className="mojangStatusNEBar"></div>
@@ -123,7 +229,7 @@ export default class Landing extends React.Component {
                                             <div className="mojangStatusNEBar"></div>
                                         </div>
                                         <div id="mojangStatusNonEssentialContainer">
-                                            {/* Non Essential Mojang services are populated here. */}
+                                            {this.getMojangStatusesAsJSX(false)}
                                         </div>
                                     </div>
                                 </div>
