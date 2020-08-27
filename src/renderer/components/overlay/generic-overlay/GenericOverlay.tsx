@@ -2,6 +2,8 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { OverlayActionDispatch } from '../../../redux/actions/overlayActions'
 
+import { LoggerUtil } from 'common/logging/loggerutil'
+
 import './GenericOverlay.css'
 
 export interface GenericOverlayProps {
@@ -22,6 +24,8 @@ type InternalGenericOverlayProps = GenericOverlayProps & typeof mapDispatch
 
 class GenericOverlay extends React.Component<InternalGenericOverlayProps> {
 
+    private readonly logger = LoggerUtil.getLogger('GenericOverlay')
+
     private getAcknowledgeText = (): string => {
         return this.props.acknowledgeText || 'OK'
     }
@@ -32,14 +36,22 @@ class GenericOverlay extends React.Component<InternalGenericOverlayProps> {
 
     private onAcknowledgeClick = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
         if(this.props.acknowledgeCallback) {
-            await this.props.acknowledgeCallback(event)
+            try {
+                await this.props.acknowledgeCallback(event)
+            } catch(err) {
+                this.logger.error('Uncaught error in acknowledgement', err)
+            }
         }
         this.props.popOverlayContent()
     }
 
     private onDismissClick = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
         if(this.props.dismissCallback) {
-            await this.props.dismissCallback(event)
+            try {
+                await this.props.dismissCallback(event)
+            } catch(err) {
+                this.logger.error('Uncaught error in dismission', err)
+            }
         }
         this.props.popOverlayContent()
     }

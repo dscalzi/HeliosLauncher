@@ -18,6 +18,7 @@ import Overlay from './overlay/Overlay'
 import { OverlayPushAction, OverlayActionDispatch } from '../redux/actions/overlayActions'
 
 import { DistributionAPI } from 'common/distribution/distribution'
+import { getServerStatus } from 'common/util/ServerStatusUtil'
 
 import './Application.css'
 
@@ -129,6 +130,8 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                             const distro = new DistributionAPI('C:\\Users\\user\\AppData\\Roaming\\Helios Launcher')
                             const x = await distro.testLoad()
                             console.log(x)
+                            const serverStatus = await getServerStatus(47, 'mc.westeroscraft.com', 25565)
+                            console.log(serverStatus)
                         }
                     })
                     this.props.pushGenericOverlay({
