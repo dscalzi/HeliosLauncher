@@ -243,73 +243,64 @@ export function getServerStatus(protocol: number, address: string, port = 25565)
 
         const maxTries = 2
         let iterations = 0
-
-        let inboundPacket!: ClientBoundPacket
-        let packetLength = 0
         let bytesLeft = -1
 
-        socket.on('data', (data) => {
+        socket.once('data', (data) => {
 
-            if(iterations > maxTries) {
-                socket.destroy()
-                reject(new Error(`Data read from ${address}:${port} exceeded ${maxTries} iterations, closing connection.`))
-            }
-
-            let doAppend = true
-
-            // First delivery
-            if(bytesLeft == -1) {
-
-                inboundPacket = new ClientBoundPacket(data)
-
-                // First VarInt is packet length.
-                // Length of Packet ID + Data
-                packetLength = inboundPacket.readVarInt()
-
-                // Second VarInt is packet type.
-                const packetType = inboundPacket.readVarInt()
-
-                console.log(packetType, packetLength)
-
-                if(packetType !== 0x00) {
-                    // TODO
-                    socket.destroy()
-                    reject(new Error(`Invalid response. Expected packet type ${0x00}, received ${packetType}!`))
-                    return
-                }
-
-                bytesLeft = packetLength + getVarIntSize(packetLength)
-                doAppend = false
-
-            } 
-
-            if(bytesLeft > 0) {
-
-                ++iterations
-                bytesLeft -= data.length
-                if(doAppend) {
-                    inboundPacket.append(data)
-                }
-                console.log(bytesLeft, data.toString('utf-8'))
-            }
-
-            if(bytesLeft === 0) {
-                
-                // Remainder of Buffer is the server status json.
-                const result = inboundPacket.readString()
-
-                try {
-                    const parsed = JSON.parse(result)
-                    socket.end()
-                    resolve(unifyStatusResponse(parsed))
-                } catch(err) {
-                    socket.destroy()
-                    logger.error('Failed to parse server status JSON', err)
-                    console.log(result)
-                    reject(new Error('Failed to parse server status JSON'))
-                }
+            const inboundPacket = new ClientBoundPacket(data)
             
+            // Length of Packet ID + Data
+            const packetLength = inboundPacket.readVarInt() // First VarInt is packet length.
+            const packetType = inboundPacket.readVarInt()   // Second VarInt is packet type.
+
+            if(packetType !== 0x00) {
+                // TODO
+                socket.destroy()
+                reject(new Error(`Invalid response. Expected packet type ${0x00}, received ${packetType}!`))
+                return
             }
+
+            // Size of packetLength VarInt is not included in the packetLength.
+            bytesLeft = packetLength + getVarIntSize(packetLength)
+
+            // Listener to keep reading until we have read all the bytes into the buffer.
+            const packetReadListener = (nextData: Buffer, doAppend: boolean) => {
+
+                if(iterations > maxTries) {
+                    socket.destroy()
+                    reject(new Error(`Data read from ${address}:${port} exceeded ${maxTries} iterations, closing connection.`))
+                }
+                ++iterations
+
+                if(bytesLeft > 0) {
+                    bytesLeft -= nextData.length
+                    if(doAppend) {
+                        inboundPacket.append(nextData)
+                    }
+                }
+
+                // All bytes read, attempt conversion.
+                if(bytesLeft === 0) {
+            
+                    // Remainder of Buffer is the server status json.
+                    const result = inboundPacket.readString()
+
+                    try {
+                        const parsed = JSON.parse(result)
+                        socket.end()
+                        resolve(unifyStatusResponse(parsed))
+                    } catch(err) {
+                        socket.destroy()
+                        logger.error('Failed to parse server status JSON', err)
+                        reject(new Error('Failed to parse server status JSON'))
+                    }
+                }
+            }
+
+            // Read the data we just received.
+            packetReadListener(data, false)
+            // Add a listener to keep reading if the data is too long.
+            socket.on('data', (data) => packetReadListener(data, true))
 
         })
 
