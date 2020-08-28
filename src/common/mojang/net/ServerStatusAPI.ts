@@ -123,6 +123,7 @@ export function getServerStatus(protocol: number, address: string, port = 25565)
                 if(iterations > maxTries) {
                     socket.destroy()
                     reject(new Error(`Data read from ${address}:${port} exceeded ${maxTries} iterations, closing connection.`))
+                    return
                 }
                 ++iterations
 
