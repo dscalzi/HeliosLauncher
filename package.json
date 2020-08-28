@@ -23,7 +23,7 @@
     "lint": "eslint --ext=jsx,js,tsx,ts src",
     "dev": "electron-webpack dev",
     "compile": "electron-webpack",
-    "test": "cross-env TS_NODE_PROJECT='./tsconfig.test.json' mocha -r ts-node/register -r tsconfig-paths/register test/**/*.ts"
+    "test": "cross-env TS_NODE_PROJECT='./tsconfig.test.json' NODE_ENV=test mocha -r ts-node/register -r tsconfig-paths/register test/**/*.ts"
   },
   "engines": {
     "node": "12.x.x"
@@ -51,6 +51,7 @@
     "@types/adm-zip": "^0.4.33",
     "@types/async": "^3.2.3",
     "@types/chai": "^4.2.12",
+    "@types/chai-as-promised": "^7.1.3",
     "@types/discord-rpc": "^3.0.4",
     "@types/fs-extra": "^9.0.1",
     "@types/jquery": "^3.5.1",
@@ -68,6 +69,7 @@
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
     "electron": "^9.2.1",
     "electron-builder": "^22.8.0",

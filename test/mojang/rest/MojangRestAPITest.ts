@@ -31,7 +31,7 @@ function expectMojangResponse(res: MojangResponse<unknown>, responseCode: Mojang
     }
 }
 
-describe('Mojang Errors', () => {
+describe('[Mojang Rest API] Errors', () => {
 
     after(() => {
         nock.cleanAll()
@@ -72,7 +72,7 @@ describe('Mojang Errors', () => {
     })
 })
 
-describe('Mojang Status', () => {
+describe('[Mojang Rest API] Status', () => {
 
     it('Status (Online)', async () => {
 
@@ -91,7 +91,7 @@ describe('Mojang Status', () => {
 
 })
 
-describe('Mojang Auth', () => {
+describe('[Mojang Rest API] Auth', () => {
     
     it('Authenticate', async () => {
 

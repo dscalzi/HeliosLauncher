@@ -35,7 +35,7 @@ export class LoggerUtil {
                     return `[${moment().format('YYYY-MM-DD hh:mm:ss').trim()}] [${info.level}] [${info.label}]: ${info.message}${info.stack ? `\n${info.stack}` : ''}`
                 })
             ),
-            level: 'debug',
+            level: process.env.NODE_ENV === 'test' ? 'emerg' : 'debug',
             transports: [
                 new transports.Console()
             ]

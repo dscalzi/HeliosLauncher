@@ -89,7 +89,7 @@ export function getServerStatus(protocol: number, address: string, port = 25565)
             socket.write(getRequestPacket())
         })
 
-        socket.setTimeout(10000, () => {
+        socket.setTimeout(5000, () => {
             socket.destroy()
             logger.error(`Server Status Socket timed out (${address}:${port})`)
             reject(new Error(`Server Status Socket timed out (${address}:${port})`))
