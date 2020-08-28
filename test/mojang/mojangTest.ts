@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Mojang } from 'common/mojang/mojang'
+import { MojangRestAPI } from 'common/mojang/rest/MojangRestAPI'
 import { expect } from 'chai'
 import nock from 'nock'
-import { Session } from 'common/mojang/model/auth/Session'
-import { MojangErrorCode, MojangResponse } from 'common/mojang/model/internal/MojangResponse'
+import { Session } from 'common/mojang/rest/Auth'
+import { MojangErrorCode, MojangResponse } from 'common/mojang/rest/internal/MojangResponse'
 import { RestResponseStatus, RestResponse } from 'common/got/RestResponse'
 
 function assertResponse(res: RestResponse<unknown>) {
@@ -39,13 +39,13 @@ describe('Mojang Errors', () => {
 
     it('Status (Offline)', async () => {
 
-        const defStatusHack = Mojang['statuses']
+        const defStatusHack = MojangRestAPI['statuses']
 
-        nock(Mojang.STATUS_ENDPOINT)
+        nock(MojangRestAPI.STATUS_ENDPOINT)
             .get('/check')
             .reply(500, 'Service temprarily offline.')
 
-        const res = await Mojang.status()
+        const res = await MojangRestAPI.status()
         expectFailure(res)
         expect(res.data).to.be.an('array')
         expect(res.data).to.deep.equal(defStatusHack)
@@ -54,7 +54,7 @@ describe('Mojang Errors', () => {
 
     it('Authenticate (Invalid Credentials)', async () => {
 
-        nock(Mojang.AUTH_ENDPOINT)
+        nock(MojangRestAPI.AUTH_ENDPOINT)
             .post('/authenticate')
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             .reply(403, (uri, requestBody: unknown): { error: string, errorMessage: string } => {
@@ -64,7 +64,7 @@ describe('Mojang Errors', () => {
                 }
             })
 
-        const res = await Mojang.authenticate('user', 'pass', 'xxx', true)
+        const res = await MojangRestAPI.authenticate('user', 'pass', 'xxx', true)
         expectMojangResponse(res, MojangErrorCode.ERROR_INVALID_CREDENTIALS)
         expect(res.data).to.be.a('null')
         expect(res.error).to.not.be.a('null')
@@ -76,13 +76,13 @@ describe('Mojang Status', () => {
 
     it('Status (Online)', async () => {
 
-        const defStatusHack = Mojang['statuses']
+        const defStatusHack = MojangRestAPI['statuses']
 
-        nock(Mojang.STATUS_ENDPOINT)
+        nock(MojangRestAPI.STATUS_ENDPOINT)
             .get('/check')
             .reply(200, defStatusHack)
 
-        const res = await Mojang.status()
+        const res = await MojangRestAPI.status()
         expectSuccess(res)
         expect(res.data).to.be.an('array')
         expect(res.data).to.deep.equal(defStatusHack)
@@ -95,7 +95,7 @@ describe('Mojang Auth', () => {
     
     it('Authenticate', async () => {
 
-        nock(Mojang.AUTH_ENDPOINT)
+        nock(MojangRestAPI.AUTH_ENDPOINT)
             .post('/authenticate')
             .reply(200, (uri, requestBody: any): Session => {
                 const mockResponse: Session = {
@@ -117,7 +117,7 @@ describe('Mojang Auth', () => {
                 return mockResponse
             })
 
-        const res = await Mojang.authenticate('user', 'pass', 'xxx', true)
+        const res = await MojangRestAPI.authenticate('user', 'pass', 'xxx', true)
         expectSuccess(res)
         expect(res.data!.clientToken).to.equal('xxx')
         expect(res.data).to.have.property('user')
@@ -126,7 +126,7 @@ describe('Mojang Auth', () => {
 
     it('Validate', async () => {
 
-        nock(Mojang.AUTH_ENDPOINT)
+        nock(MojangRestAPI.AUTH_ENDPOINT)
             .post('/validate')
             .times(2)
             .reply((uri, requestBody: any) => {
@@ -135,13 +135,13 @@ describe('Mojang Auth', () => {
                 ]
             })
 
-        const res = await Mojang.validate('abc', 'def')
+        const res = await MojangRestAPI.validate('abc', 'def')
 
         expectSuccess(res)
         expect(res.data).to.be.a('boolean')
         expect(res.data).to.equal(true)
 
-        const res2 = await Mojang.validate('def', 'def')
+        const res2 = await MojangRestAPI.validate('def', 'def')
 
         expectSuccess(res2)
         expect(res2.data).to.be.a('boolean')
@@ -151,11 +151,11 @@ describe('Mojang Auth', () => {
 
     it('Invalidate', async () => {
 
-        nock(Mojang.AUTH_ENDPOINT)
+        nock(MojangRestAPI.AUTH_ENDPOINT)
             .post('/invalidate')
             .reply(204)
 
-        const res = await Mojang.invalidate('adc', 'def')
+        const res = await MojangRestAPI.invalidate('adc', 'def')
 
         expectSuccess(res)
 
@@ -163,7 +163,7 @@ describe('Mojang Auth', () => {
 
     it('Refresh', async () => {
 
-        nock(Mojang.AUTH_ENDPOINT)
+        nock(MojangRestAPI.AUTH_ENDPOINT)
             .post('/refresh')
             .reply(200, (uri, requestBody: any): Session => {
                 const mockResponse: Session = {
@@ -185,7 +185,7 @@ describe('Mojang Auth', () => {
                 return mockResponse
             })
 
-        const res = await Mojang.refresh('gfd', 'xxx', true)
+        const res = await MojangRestAPI.refresh('gfd', 'xxx', true)
         expectSuccess(res)
         expect(res.data!.clientToken).to.equal('xxx')
         expect(res.data).to.have.property('user')

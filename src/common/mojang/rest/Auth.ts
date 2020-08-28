@@ -1,3 +1,20 @@
+export interface Agent {
+
+    name: 'Minecraft'
+    version: number
+
+}
+
+export interface AuthPayload {
+
+    agent: Agent
+    username: string
+    password: string
+    clientToken?: string
+    requestUser?: boolean
+
+}
+
 export interface Session {
 
     accessToken: string

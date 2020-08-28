@@ -1,15 +1,15 @@
 import * as React from 'react'
 
-import { Status, StatusColor } from 'common/mojang/model/internal/Status'
-import { MojangResponse } from 'common/mojang/model/internal/MojangResponse'
-import { Mojang } from 'common/mojang/mojang'
+import { MojangStatus, MojangStatusColor } from 'common/mojang/rest/internal/MojangStatus'
+import { MojangResponse } from 'common/mojang/rest/internal/MojangResponse'
+import { MojangRestAPI } from 'common/mojang/rest/MojangRestAPI'
 import { RestResponseStatus } from 'common/got/RestResponse'
 import { LoggerUtil } from 'common/logging/loggerutil'
 
 import './Landing.css'
 
 interface LandingState {
-    mojangStatuses: Status[]
+    mojangStatuses: MojangStatus[]
 }
 
 export default class Landing extends React.Component<unknown, LandingState> {
@@ -45,7 +45,7 @@ export default class Landing extends React.Component<unknown, LandingState> {
     }
 
     private loadMojangStatuses = async (): Promise<void> => {
-        const response: MojangResponse<Status[]> = await Mojang.status()
+        const response: MojangResponse<MojangStatus[]> = await MojangRestAPI.status()
 
         if(response.responseStatus !== RestResponseStatus.SUCCESS) {
             Landing.logger.warn('Failed to retrieve Mojang Statuses.')
@@ -56,7 +56,7 @@ export default class Landing extends React.Component<unknown, LandingState> {
         const statuses = response.data
         for(const status of statuses) {
             if(status.service === 'sessionserver.mojang.com' || status.service === 'minecraft.net') {
-                status.status = StatusColor.GREEN
+                status.status = MojangStatusColor.GREEN
             }
         }
 
@@ -71,27 +71,27 @@ export default class Landing extends React.Component<unknown, LandingState> {
         const essential = this.state.mojangStatuses.filter(s => s.essential)
 
         if(this.state.mojangStatuses.length === 0) {
-            return Mojang.statusToHex(StatusColor.GREY)
+            return MojangRestAPI.statusToHex(MojangStatusColor.GREY)
         }
 
         // If any essential are red, it's red.
-        if(essential.filter(s => s.status === StatusColor.RED).length > 0) {
-            return Mojang.statusToHex(StatusColor.RED)
+        if(essential.filter(s => s.status === MojangStatusColor.RED).length > 0) {
+            return MojangRestAPI.statusToHex(MojangStatusColor.RED)
         }
         // If any essential are yellow, it's yellow.
-        if(essential.filter(s => s.status === StatusColor.YELLOW).length > 0) {
-            return Mojang.statusToHex(StatusColor.YELLOW)
+        if(essential.filter(s => s.status === MojangStatusColor.YELLOW).length > 0) {
+            return MojangRestAPI.statusToHex(MojangStatusColor.YELLOW)
         }
         // If any non-essential are not green, return yellow.
-        if(this.state.mojangStatuses.filter(s => s.status !== StatusColor.GREEN && s.status !== StatusColor.GREY).length > 0) {
-            return Mojang.statusToHex(StatusColor.YELLOW)
+        if(this.state.mojangStatuses.filter(s => s.status !== MojangStatusColor.GREEN && s.status !== MojangStatusColor.GREY).length > 0) {
+            return MojangRestAPI.statusToHex(MojangStatusColor.YELLOW)
         }
         // if all are grey, return grey.
-        if(this.state.mojangStatuses.filter(s => s.status === StatusColor.GREY).length === this.state.mojangStatuses.length) {
-            return Mojang.statusToHex(StatusColor.GREY)
+        if(this.state.mojangStatuses.filter(s => s.status === MojangStatusColor.GREY).length === this.state.mojangStatuses.length) {
+            return MojangRestAPI.statusToHex(MojangStatusColor.GREY)
         }
 
-        return Mojang.statusToHex(StatusColor.GREEN)
+        return MojangRestAPI.statusToHex(MojangStatusColor.GREEN)
     }
 
     private getMojangStatusesAsJSX = (essential: boolean): JSX.Element[] => {
@@ -101,7 +101,7 @@ export default class Landing extends React.Component<unknown, LandingState> {
             statuses.push(
                 <>
                     <div className="mojangStatusContainer">
-                        <span className="mojangStatusIcon" style={{color: Mojang.statusToHex(status.status)}}>&#8226;</span>
+                        <span className="mojangStatusIcon" style={{color: MojangRestAPI.statusToHex(status.status)}}>&#8226;</span>
                         <span className="mojangStatusName">{status.name}</span>
                     </div>
                 </>

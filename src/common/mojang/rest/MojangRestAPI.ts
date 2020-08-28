@@ -1,13 +1,11 @@
-import { LoggerUtil } from '../logging/loggerutil'
-import { Agent } from './model/auth/Agent'
-import { Status, StatusColor } from './model/internal/Status'
+import { LoggerUtil } from '../../logging/loggerutil'
+import { MojangStatus, MojangStatusColor } from './internal/MojangStatus'
 import got, { RequestError, HTTPError } from 'got'
-import { Session } from './model/auth/Session'
-import { AuthPayload } from './model/auth/AuthPayload'
-import { MojangResponse, MojangErrorCode, decipherErrorCode, isInternalError, MojangErrorBody } from './model/internal/MojangResponse'
+import { MojangResponse, MojangErrorCode, decipherErrorCode, isInternalError, MojangErrorBody } from './internal/MojangResponse'
 import { RestResponseStatus, handleGotError } from 'common/got/RestResponse'
+import { Agent, AuthPayload, Session } from './Auth'
 
-export class Mojang {
+export class MojangRestAPI {
 
     private static readonly logger = LoggerUtil.getLogger('Mojang')
 
@@ -17,12 +15,12 @@ export class Mojang {
     public static readonly STATUS_ENDPOINT = 'https://status.mojang.com'
 
     private static authClient = got.extend({
-        prefixUrl: Mojang.AUTH_ENDPOINT,
+        prefixUrl: MojangRestAPI.AUTH_ENDPOINT,
         responseType: 'json',
         retry: 0
     })
     private static statusClient = got.extend({
-        prefixUrl: Mojang.STATUS_ENDPOINT,
+        prefixUrl: MojangRestAPI.STATUS_ENDPOINT,
         responseType: 'json',
         retry: 0
     })
@@ -32,40 +30,40 @@ export class Mojang {
         version: 1
     }
 
-    protected static statuses: Status[] = [
+    protected static statuses: MojangStatus[] = [
         {
             service: 'sessionserver.mojang.com',
-            status: StatusColor.GREY,
+            status: MojangStatusColor.GREY,
             name: 'Multiplayer Session Service',
             essential: true
         },
         {
             service: 'authserver.mojang.com',
-            status: StatusColor.GREY,
+            status: MojangStatusColor.GREY,
             name: 'Authentication Service',
             essential: true
         },
         {
             service: 'textures.minecraft.net',
-            status: StatusColor.GREY,
+            status: MojangStatusColor.GREY,
             name: 'Minecraft Skins',
             essential: false
         },
         {
             service: 'api.mojang.com',
-            status: StatusColor.GREY,
+            status: MojangStatusColor.GREY,
             name: 'Public API',
             essential: false
         },
         {
             service: 'minecraft.net',
-            status: StatusColor.GREY,
+            status: MojangStatusColor.GREY,
             name: 'Minecraft.net',
             essential: false
         },
         {
             service: 'account.mojang.com',
-            status: StatusColor.GREY,
+            status: MojangStatusColor.GREY,
             name: 'Mojang Accounts Website',
             essential: false
         }
@@ -78,13 +76,13 @@ export class Mojang {
      */
     public static statusToHex(status: string): string {
         switch(status.toLowerCase()){
-            case StatusColor.GREEN:
+            case MojangStatusColor.GREEN:
                 return '#a5c325'
-            case StatusColor.YELLOW:
+            case MojangStatusColor.YELLOW:
                 return '#eac918'
-            case StatusColor.RED:
+            case MojangStatusColor.RED:
                 return '#c32625'
-            case StatusColor.GREY:
+            case MojangStatusColor.GREY:
             default:
                 return '#848484'
         }
@@ -92,7 +90,7 @@ export class Mojang {
 
     private static handleGotError<T>(operation: string, error: RequestError, dataProvider: () => T): MojangResponse<T> {
 
-        const response: MojangResponse<T> = handleGotError(operation, error, Mojang.logger, dataProvider)
+        const response: MojangResponse<T> = handleGotError(operation, error, MojangRestAPI.logger, dataProvider)
 
         if(error instanceof HTTPError) {
             response.mojangErrorCode = decipherErrorCode(error.response.body as MojangErrorBody)
@@ -106,7 +104,7 @@ export class Mojang {
 
     private static expectSpecificSuccess(operation: string, expected: number, actual: number) {
         if(actual !== expected) {
-            Mojang.logger.warn(`${operation} expected ${expected} response, recieved ${actual}.`)
+            MojangRestAPI.logger.warn(`${operation} expected ${expected} response, recieved ${actual}.`)
         }
     }
 
@@ -118,35 +116,35 @@ export class Mojang {
      * 
      * @see http://wiki.vg/Mojang_API#API_Status
      */
-    public static async status(): Promise<MojangResponse<Status[]>>{
+    public static async status(): Promise<MojangResponse<MojangStatus[]>>{
         try {
 
-            const res = await Mojang.statusClient.get<{[service: string]: StatusColor}[]>('check')
+            const res = await MojangRestAPI.statusClient.get<{[service: string]: MojangStatusColor}[]>('check')
 
-            Mojang.expectSpecificSuccess('Mojang Status', 200, res.statusCode)
+            MojangRestAPI.expectSpecificSuccess('Mojang Status', 200, res.statusCode)
 
             res.body.forEach(status => {
                 const entry = Object.entries(status)[0]
-                for(let i=0; i<Mojang.statuses.length; i++) {
-                    if(Mojang.statuses[i].service === entry[0]) {
-                        Mojang.statuses[i].status = entry[1]
+                for(let i=0; i<MojangRestAPI.statuses.length; i++) {
+                    if(MojangRestAPI.statuses[i].service === entry[0]) {
+                        MojangRestAPI.statuses[i].status = entry[1]
                         break
                     }
                 }
             })
 
             return {
-                data: Mojang.statuses,
+                data: MojangRestAPI.statuses,
                 responseStatus: RestResponseStatus.SUCCESS
             }
 
         } catch(error) {
 
-            return Mojang.handleGotError('Mojang Status', error, () => {
-                for(let i=0; i<Mojang.statuses.length; i++){
-                    Mojang.statuses[i].status = StatusColor.GREY
+            return MojangRestAPI.handleGotError('Mojang Status', error, () => {
+                for(let i=0; i<MojangRestAPI.statuses.length; i++){
+                    MojangRestAPI.statuses[i].status = MojangStatusColor.GREY
                 }
-                return Mojang.statuses
+                return MojangRestAPI.statuses
             })
         }
         
@@ -168,7 +166,7 @@ export class Mojang {
         password: string,
         clientToken: string | null,
         requestUser = true,
-        agent: Agent = Mojang.MINECRAFT_AGENT
+        agent: Agent = MojangRestAPI.MINECRAFT_AGENT
     ): Promise<MojangResponse<Session | null>> {
 
         try {
@@ -183,15 +181,15 @@ export class Mojang {
                 json.clientToken = clientToken
             }
 
-            const res = await Mojang.authClient.post<Session>('authenticate', { json, responseType: 'json' })
-            Mojang.expectSpecificSuccess('Mojang Authenticate', 200, res.statusCode)
+            const res = await MojangRestAPI.authClient.post<Session>('authenticate', { json, responseType: 'json' })
+            MojangRestAPI.expectSpecificSuccess('Mojang Authenticate', 200, res.statusCode)
             return {
                 data: res.body,
                 responseStatus: RestResponseStatus.SUCCESS
             }
 
         } catch(err) {
-            return Mojang.handleGotError('Mojang Authenticate', err, () => null)
+            return MojangRestAPI.handleGotError('Mojang Authenticate', err, () => null)
         }
 
     }
@@ -214,8 +212,8 @@ export class Mojang {
                 clientToken
             }
 
-            const res = await Mojang.authClient.post('validate', { json })
-            Mojang.expectSpecificSuccess('Mojang Validate', 204, res.statusCode)
+            const res = await MojangRestAPI.authClient.post('validate', { json })
+            MojangRestAPI.expectSpecificSuccess('Mojang Validate', 204, res.statusCode)
 
             return {
                 data: res.statusCode === 204,
@@ -229,7 +227,7 @@ export class Mojang {
                     responseStatus: RestResponseStatus.SUCCESS
                 }
             }
-            return Mojang.handleGotError('Mojang Validate', err, () => false)
+            return MojangRestAPI.handleGotError('Mojang Validate', err, () => false)
         }
 
     }
@@ -252,8 +250,8 @@ export class Mojang {
                 clientToken
             }
 
-            const res = await Mojang.authClient.post('invalidate', { json })
-            Mojang.expectSpecificSuccess('Mojang Invalidate', 204, res.statusCode)
+            const res = await MojangRestAPI.authClient.post('invalidate', { json })
+            MojangRestAPI.expectSpecificSuccess('Mojang Invalidate', 204, res.statusCode)
 
             return {
                 data: undefined,
@@ -261,7 +259,7 @@ export class Mojang {
             }
 
         } catch(err) {
-            return Mojang.handleGotError('Mojang Invalidate', err, () => undefined)
+            return MojangRestAPI.handleGotError('Mojang Invalidate', err, () => undefined)
         }
 
     }
@@ -287,8 +285,8 @@ export class Mojang {
                 requestUser
             }
 
-            const res = await Mojang.authClient.post<Session>('refresh', { json, responseType: 'json' })
-            Mojang.expectSpecificSuccess('Mojang Refresh', 200, res.statusCode)
+            const res = await MojangRestAPI.authClient.post<Session>('refresh', { json, responseType: 'json' })
+            MojangRestAPI.expectSpecificSuccess('Mojang Refresh', 200, res.statusCode)
 
             return {
                 data: res.body,
@@ -296,7 +294,7 @@ export class Mojang {
             }
 
         } catch(err) {
-            return Mojang.handleGotError('Mojang Refresh', err, () => null)
+            return MojangRestAPI.handleGotError('Mojang Refresh', err, () => null)
         }
 
     }
