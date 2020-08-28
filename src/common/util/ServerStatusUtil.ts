@@ -124,6 +124,10 @@ class ClientBoundPacket {
         this.buffer = [...buffer]
     }
 
+    public append(buffer: Buffer): void {
+        this.buffer.push(...buffer)
+    }
+
     public readByte(): number {
         return this.buffer.shift()!
     }
@@ -169,6 +173,18 @@ class ClientBoundPacket {
 
 }
 
+export function getVarIntSize(value: number): number {
+    let size = 0
+
+    do {
+        value >>>= 7
+
+        size++
+    } while (value != 0)
+
+    return size
+}
+
 /**
  * Get the handshake packet.
  * 
@@ -201,6 +217,15 @@ function getRequestPacket(): Buffer {
         .toBuffer()
 }
 
+function unifyStatusResponse(resp: ServerStatus): ServerStatus {
+    if(typeof resp.description === 'string') {
+        resp.description = {
+            text: resp.description
+        }
+    }
+    return resp
+}
+
 export function getServerStatus(protocol: number, address: string, port = 25565): Promise<ServerStatus | null> {
 
     return new Promise((resolve, reject) => {
@@ -210,31 +235,82 @@ export function getServerStatus(protocol: number, address: string, port = 25565)
             socket.write(getRequestPacket())
         })
 
-        socket.setTimeout(2500, () => {
+        socket.setTimeout(10000, () => {
             socket.destroy()
             logger.error(`Server Status Socket timed out (${address}:${port})`)
             reject(new Error(`Server Status Socket timed out (${address}:${port})`))
         })
 
+        const maxTries = 2
+        let iterations = 0
+
+        let inboundPacket!: ClientBoundPacket
+        let packetLength = 0
+        let bytesLeft = -1
+
         socket.on('data', (data) => {
 
-            const inboundPacket = new ClientBoundPacket(data)
-
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const packetLength = inboundPacket.readVarInt() // First VarInt is packet length.
-            const packetType = inboundPacket.readVarInt()   // Second VarInt is packet type.
-
-            if(packetType !== 0x00) {
-                // TODO
+            if(iterations > maxTries) {
                 socket.destroy()
-                reject(new Error(`Invalid response. Expected packet type ${0x00}, received ${packetType}!`))
-                return
+                reject(new Error(`Data read from ${address}:${port} exceeded ${maxTries} iterations, closing connection.`))
             }
 
-            const res = inboundPacket.readString() // Remainder of Buffer is the server status json.
+            let doAppend = true
 
-            socket.end()
-            resolve(JSON.parse(res))
+            // First delivery
+            if(bytesLeft == -1) {
+
+                inboundPacket = new ClientBoundPacket(data)
+
+                // First VarInt is packet length.
+                // Length of Packet ID + Data
+                packetLength = inboundPacket.readVarInt()
+
+                // Second VarInt is packet type.
+                const packetType = inboundPacket.readVarInt()
+
+                console.log(packetType, packetLength)
+
+                if(packetType !== 0x00) {
+                    // TODO
+                    socket.destroy()
+                    reject(new Error(`Invalid response. Expected packet type ${0x00}, received ${packetType}!`))
+                    return
+                }
+
+                bytesLeft = packetLength + getVarIntSize(packetLength)
+                doAppend = false
+
+            } 
+
+            if(bytesLeft > 0) {
+
+                ++iterations
+                bytesLeft -= data.length
+                if(doAppend) {
+                    inboundPacket.append(data)
+                }
+                console.log(bytesLeft, data.toString('utf-8'))
+            }
+
+            if(bytesLeft === 0) {
+                
+                // Remainder of Buffer is the server status json.
+                const result = inboundPacket.readString()
+
+                try {
+                    const parsed = JSON.parse(result)
+                    socket.end()
+                    resolve(unifyStatusResponse(parsed))
+                } catch(err) {
+                    socket.destroy()
+                    logger.error('Failed to parse server status JSON', err)
+                    console.log(result)
+                    reject(new Error('Failed to parse server status JSON'))
+                }
+            
+            }
+
         })
 
         socket.on('error', (err: NodeJS.ErrnoException) => {
@@ -251,7 +327,7 @@ export function getServerStatus(protocol: number, address: string, port = 25565)
                 resolve(null)
                 return
             } else {
-                logger.error(`Error trying to pull server status (${address}:${port}})`, err)
+                logger.error(`Error trying to pull server status (${address}:${port})`, err)
                 resolve(null)
                 return
             }
