@@ -1,21 +1,21 @@
-import { ChangeLoadStateAction, AppActionType, AppAction } from '../actions/appActions'
+import { AppActionType, AppAction, SetDistributionAction } from '../actions/appActions'
 import { Reducer } from 'redux'
+import { HeliosDistribution } from 'common/distribution/DistributionFactory'
 
 export interface AppState {
-    loading: boolean
+    distribution: HeliosDistribution | null
 }
 
 const defaultAppState: AppState = {
-    loading: true
+    distribution: null!
 }
 
-// TODO remove loading from global state. Keeping as an example...
 const AppReducer: Reducer<AppState, AppAction> = (state = defaultAppState, action) => {
     switch(action.type) {
-        case AppActionType.ChangeLoadState:
+        case AppActionType.SetDistribution:
             return {
                 ...state,
-                loading: (action as ChangeLoadStateAction).payload
+                distribution: (action as SetDistributionAction).payload
             }
     }
     return state

@@ -1,14 +1,16 @@
-import { IndexProcessor } from '../model/engine/IndexProcessor'
-import got, { HTTPError, RequestError, ParseError, TimeoutError } from 'got'
-import { LoggerUtil } from 'common/logging/loggerutil'
-import { pathExists, readFile, ensureDir, writeFile, readJson } from 'fs-extra'
-import { MojangVersionManifest } from '../model/mojang/VersionManifest'
-import { calculateHash, getVersionJsonPath, validateLocalFile, getLibraryDir, getVersionJarPath } from 'common/util/FileUtils'
+import got from 'got'
 import { dirname, join } from 'path'
-import { VersionJson, AssetIndex, LibraryArtifact } from '../model/mojang/VersionJson'
-import { AssetGuardError } from '../model/engine/AssetGuardError'
-import { Asset } from '../model/engine/Asset'
-import { isLibraryCompatible, getMojangOS } from 'common/util/MojangUtils'
+import { ensureDir, pathExists, readFile, readJson, writeFile } from 'fs-extra'
+
+import { Asset } from 'common/asset/model/engine/Asset'
+import { AssetGuardError } from 'common/asset/model/engine/AssetGuardError'
+import { IndexProcessor } from 'common/asset/model/engine/IndexProcessor'
+import { MojangVersionManifest } from 'common/asset/model/mojang/VersionManifest'
+import { handleGotError } from 'common/got/RestResponse'
+import { AssetIndex, LibraryArtifact, VersionJson } from 'common/asset/model/mojang/VersionJson'
+import { calculateHash, getLibraryDir, getVersionJarPath, getVersionJsonPath, validateLocalFile } from 'common/util/FileUtils'
+import { getMojangOS, isLibraryCompatible } from 'common/util/MojangUtils'
+import { LoggerUtil } from 'common/logging/loggerutil'
 
 export class MojangIndexProcessor extends IndexProcessor {
 
@@ -16,33 +18,13 @@ export class MojangIndexProcessor extends IndexProcessor {
     public static readonly VERSION_MANIFEST_ENDPOINT = 'https://launchermeta.mojang.com/mc/game/version_manifest.json'
     public static readonly ASSET_RESOURCE_ENDPOINT = 'http://resources.download.minecraft.net'
 
-    private readonly logger = LoggerUtil.getLogger('MojangIndexProcessor')
+    private static readonly logger = LoggerUtil.getLogger('MojangIndexProcessor')
 
     private versionJson!: VersionJson
     private assetIndex!: AssetIndex
     private client = got.extend({
         responseType: 'json'
     })
-
-    private handleGotError<T>(operation: string, error: RequestError, dataProvider: () => T): T {
-        if(error instanceof HTTPError) {
-            this.logger.error(`Error during ${operation} request (HTTP Response ${error.response.statusCode})`, error)
-            this.logger.debug('Response Details:')
-            this.logger.debug('Body:', error.response.body)
-            this.logger.debug('Headers:', error.response.headers)
-        } else if(Object.getPrototypeOf(error) instanceof RequestError) {
-            this.logger.error(`${operation} request recieved no response (${error.code}).`, error)
-        } else if(error instanceof TimeoutError) {
-            this.logger.error(`${operation} request timed out (${error.timings.phases.total}ms).`)
-        } else if(error instanceof ParseError) {
-            this.logger.error(`${operation} request recieved unexepected body (Parse Error).`)
-        } else {
-            // CacheError, ReadError, MaxRedirectsError, UnsupportedProtocolError, CancelError
-            this.logger.error(`Error during ${operation} request.`, error)
-        }
-
-        return dataProvider()
-    }
 
     private assetPath: string
 
@@ -148,7 +130,7 @@ export class MojangIndexProcessor extends IndexProcessor {
 
             return res.body
         } catch(error) {
-            return this.handleGotError(url, error, () => null)
+            return handleGotError(url, error, MojangIndexProcessor.logger, () => null).data
         }
 
     }
@@ -158,7 +140,7 @@ export class MojangIndexProcessor extends IndexProcessor {
             const res = await this.client.get<MojangVersionManifest>(MojangIndexProcessor.VERSION_MANIFEST_ENDPOINT)
             return res.body
         } catch(error) {
-            return this.handleGotError('Load Mojang Version Manifest', error, () => null)
+            return handleGotError('Load Mojang Version Manifest', error, MojangIndexProcessor.logger, () => null).data
         }
     }
 
@@ -187,7 +169,7 @@ export class MojangIndexProcessor extends IndexProcessor {
 
     //  TODO progress tracker
     // TODO type return object
-    public async validate(): Promise<any> {
+    public async validate(): Promise<{[category: string]: Asset[]}> {
 
         const assets = await this.validateAssets(this.assetIndex)
         const libraries = await this.validateLibraries(this.versionJson)

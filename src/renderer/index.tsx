@@ -1,11 +1,21 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
+import { Provider } from 'react-redux'
+// import { shell } from 'electron'
 import store from './redux/store'
-import './index.css'
 
 import Application from './components/Application'
-import { Provider } from 'react-redux'
+
+import './index.css'
+
+
+// document.addEventListener('click', (event: MouseEvent) => {
+//     if ((event.target as HTMLElement)?.tagName === 'A' && (event.target as HTMLAnchorElement)?.href.startsWith('http')) {
+//         event.preventDefault()
+//         shell.openExternal((event.target as HTMLAnchorElement).href)
+//     }
+// })
 
 // Create main element
 const mainElement = document.createElement('div')

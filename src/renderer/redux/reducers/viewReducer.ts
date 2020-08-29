@@ -2,7 +2,7 @@ import { Reducer } from 'redux'
 import { View } from '../../meta/Views'
 import { ChangeViewAction, ViewActionType } from '../actions/viewActions'
 
-const defaultView = View.LANDING
+const defaultView = View.NONE
 
 const ViewReducer: Reducer<View, ChangeViewAction> = (state = defaultView, action) => {
     switch(action.type) {

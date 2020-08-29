@@ -1,0 +1,320 @@
+/*******************************************************************************
+ *                                                                             *
+ * Landing View (News Styles)                                                  *
+ *                                                                             *
+ ******************************************************************************/
+
+/* Main container. */
+#newsContainer {
+    position: absolute;
+    top: 100%;
+    height: 100%;
+    width: 100%;
+    transition: top 2s ease;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+/* News content container. */
+#newsContent {
+    height: 82vh;
+    width: 100%;
+    display: flex;
+    -webkit-user-select: initial;
+    position: relative;
+}
+
+/* Drop shadow displayed when content is scrolled out of view. */
+#newsContent:before {
+    content: '';
+    background: linear-gradient(rgba(0, 0, 0, 0.25), transparent);
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+#newsContent[scrolled]:before {
+    opacity: 1;
+}
+
+/* News article status container (left). */
+#newsStatusContainer {
+    width: calc(30% - 60px);
+    height: calc(100% - 30px);
+    padding: 15px 15px 15px 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* News status content. */
+#newsStatusContent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* News title wrapper. */
+#newsTitleContainer {
+    display: flex;
+    max-width: 90%;
+}
+
+/* News article title styles. */
+#newsArticleTitle {
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Avenir Medium';
+    color: white;
+    text-decoration: none;
+    transition: 0.25s ease;
+    outline: none;
+    text-align: right;
+}
+#newsArticleTitle:hover,
+#newsArticleTitle:focus {
+    text-shadow: 0 0 20px white;
+}
+#newsArticleTitle:active {
+    color: #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7;
+}
+
+/* News meta container. */
+#newsMetaContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Date and author wrappers. */
+#newsArticleDateWrapper,
+#newsArticleAuthorWrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Date and author shared styles. */
+#newsArticleDate,
+#newsArticleAuthor {
+    display: inline-block;
+    font-size: 10px;
+    padding: 0 5px;
+    font-weight: bold;
+    border-radius: 2px;
+}
+
+/* Date styles. */
+#newsArticleDate {
+    background: white;
+    color: black;
+    margin-top: 5px;
+}
+
+/* Author styles. */
+#newsArticleAuthor {
+    background: #a02d2a;
+}
+
+/* News article comments styles. */
+#newsArticleComments {
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 10px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: 0.25s ease;
+    outline: none;
+    text-align: right;
+}
+#newsArticleComments:focus,
+#newsArticleComments:hover {
+    color: #e0e0e0;
+}
+#newsArticleComments:active {
+    color: #c7c7c7;
+}
+
+/* Article content container (right). */
+#newsArticleContainer {
+    width: calc(100% - 25px);
+    height: 100%;
+    margin: 0 0 0 25px;
+}
+
+/* Article content styles. */
+#newsArticleContentScrollable {
+    font-size: 12px;
+    overflow-y: scroll;
+    height: 100%;
+    padding: 0 15px 0 15px;
+}
+#newsArticleContentScrollable img,
+#newsArticleContentScrollable iframe {
+    max-width: 95%;
+    display: block;
+    margin: 0 auto;
+}
+#newsArticleContentScrollable a {
+    color: rgba(202, 202, 202, 0.75);
+    transition: 0.25s ease;
+    outline: none;
+}
+#newsArticleContentScrollable a:hover,
+#newsArticleContentScrollable a:focus {
+    color: rgba(255, 255, 255, 0.75);
+}
+#newsArticleContentScrollable a:active {
+    color: rgba(165, 165, 165, 0.75);
+}
+#newsArticleContentScrollable::-webkit-scrollbar {
+    width: 2px;
+}
+#newsArticleContentScrollable::-webkit-scrollbar-track {
+    display: none;
+}
+#newsArticleContentScrollable::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
+}
+.bbCodeSpoilerButton {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.25s ease;
+    width: 100%;
+    border-bottom: 1px solid white;
+    padding-bottom: 15px;
+}
+.bbCodeSpoilerButton:hover,
+.bbCodeSpoilerButton:focus {
+    text-shadow: 0 0 20px #ffffff, 0 0 20px #ffffff, 0 0 20px #ffffff;
+}
+.bbCodeSpoilerButton:active {
+    color: #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7, 0 0 20px #c7c7c7, 0 0 20px #c7c7c7;
+}
+.bbCodeSpoilerText {
+    display: none;
+    padding: 15px 0;
+    border-bottom: 1px solid white;
+}
+
+
+#newsArticleContentWrapper {
+    width: 80%;
+}
+
+.newsArticleSpacerTop {
+    height: 15px;
+}
+
+/* Div to add spacing at the end of a news article. */
+.newsArticleSpacerBot {
+    height: 30px;
+}
+
+/* News navigation container. */
+#newsNavigationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    -webkit-user-select: none;
+    position: absolute;
+    bottom: 15px;
+    right: 0;
+}
+
+/* Navigation status span. */
+#newsNavigationStatus {
+    font-size: 12px;
+    margin: 0 15px;
+}
+
+/* Left and right navigation button styles. */
+#newsNavigateLeft,
+#newsNavigateRight {
+    background: none;
+    border: none;
+    outline: none;
+    height: 20px;
+    cursor: pointer;
+}
+#newsNavigateLeft:hover #newsNavigationLeftSVG,
+#newsNavigateLeft:focus #newsNavigationLeftSVG,
+#newsNavigateRight:hover #newsNavigationRightSVG,
+#newsNavigateRight:focus #newsNavigationRightSVG {
+    filter: drop-shadow(0px 0 2px #fff);
+    -webkit-filter: drop-shadow(0px 0 2px #fff);
+}
+#newsNavigateLeft:active #newsNavigationLeftSVG .arrowLine,
+#newsNavigateRight:active #newsNavigationRightSVG .arrowLine {
+    stroke: #c7c7c7;
+}
+#newsNavigateLeft:active #newsNavigationLeftSVG,
+#newsNavigateRight:active #newsNavigationRightSVG {
+    filter: drop-shadow(0px 0 2px #c7c7c7);
+    -webkit-filter: drop-shadow(0px 0 2px #c7c7c7);
+}
+#newsNavigateLeft:disabled #newsNavigationLeftSVG .arrowLine,
+#newsNavigateRight:disabled #newsNavigationRightSVG .arrowLine {
+    stroke: rgba(255, 255, 255, 0.75);
+}
+#newsNavigationLeftSVG {
+    transform: rotate(-90deg);
+    width: 15px;
+}
+#newsNavigationRightSVG {
+    transform: rotate(90deg);
+    width: 15px;
+}
+
+/* News error (message) container. */
+#newsErrorContainer {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+#newsErrorFailed {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* News error content (message). */
+.newsErrorContent {
+    font-size: 20px;
+}
+#newsErrorLoading {
+    display: flex;
+    width: 168.92px;
+}
+#nELoadSpan {
+    white-space: pre;
+}
+/* News error retry button styles. */
+#newsErrorRetry {
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    transition: 0.25s ease;
+}
+#newsErrorRetry:focus,
+#newsErrorRetry:hover {
+    text-shadow: 0 0 20px white;
+}
+#newsErrorRetry:active {
+    color: #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7;
+}

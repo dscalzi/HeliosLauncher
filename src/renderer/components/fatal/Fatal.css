@@ -1,0 +1,124 @@
+#fatalContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+#fatalContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    top: 0;
+    height: 100%;
+    padding-top: 2.5rem;
+    box-sizing: border-box;
+    position: relative;
+}
+
+#fatalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0 1rem 0;
+    width: 70%;
+    margin-bottom: .5rem;
+    border-bottom: 0.0625rem solid rgba(126, 126, 126, 0.57);
+}
+
+#fatalLeft {
+    display: flex;
+}
+#fatalErrorImg {
+    width: 3.125rem;
+}
+
+#fatalRight {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0.625rem;
+}
+
+#fatalErrorLabel {
+    font-size: .75rem;
+    font-weight: bold;
+}
+#fatalErrorText {
+    font-size: 1.75rem;
+}
+
+#fatalBody {
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#fatalDescription {
+    text-align: justify;
+    font-size: 0.875rem;
+}
+
+#fatalChecklistContainer {
+    width: 100%;
+    font-size: 0.875rem;
+}
+
+/* Div which contains action buttons. */
+#fatalActionContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 2rem;
+}
+
+/* Fatal acknowledge button styles. */
+#fatalAcknowledge {
+    background: none;
+    border: 0.0625rem solid #ffffff;
+    color: white;
+    font-family: 'Avenir Medium';
+    font-weight: bold;
+    border-radius: .125rem;
+    padding: 0 .6rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+#fatalAcknowledge:hover,
+#fatalAcknowledge:focus {
+    box-shadow: 0 0 .625rem 0 #fff;
+    outline: none;
+}
+#fatalAcknowledge:active {
+    border-color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+#fatalDismissWrapper {
+    display: flex;
+    justify-content: center;
+}
+
+/* Fatal dismiss option styles. */
+#fatalDismiss {
+    font-weight: bold;
+    font-size: 0.875rem;
+    text-decoration: none;
+    padding-top: 0.375rem;
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: rgba(202, 202, 202, 0.75);
+    transition: 0.25s ease;
+}
+#fatalDismiss:hover,
+#fatalDismiss:focus {
+    color: rgba(255, 255, 255, 0.75);
+}
+#fatalDismiss:active {
+    color: rgba(165, 165, 165, 0.75);
+}

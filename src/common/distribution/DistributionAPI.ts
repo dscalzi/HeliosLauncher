@@ -5,6 +5,9 @@ import { LoggerUtil } from 'common/logging/loggerutil'
 import { RestResponse, handleGotError, RestResponseStatus } from 'common/got/RestResponse'
 import { pathExists, readFile, writeFile } from 'fs-extra'
 
+// TODO Option to check endpoint for hash of distro for local compare
+// Useful if distro is large (MBs)
+
 export class DistributionAPI {
 
     private static readonly logger = LoggerUtil.getLogger('DistributionAPI')

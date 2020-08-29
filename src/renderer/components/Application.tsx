@@ -8,17 +8,21 @@ import Landing from './landing/Landing'
 import Login from './login/Login'
 import Loader from './loader/Loader'
 import Settings from './settings/Settings'
+import Overlay from './overlay/Overlay'
+import Fatal from './fatal/Fatal'
 import { StoreType } from '../redux/store'
 import { CSSTransition } from 'react-transition-group'
 import { ViewActionDispatch } from '../redux/actions/viewActions'
 import { throttle } from 'lodash'
 import { readdir } from 'fs-extra'
 import { join } from 'path'
-import Overlay from './overlay/Overlay'
+import { AppActionDispatch } from '../redux/actions/appActions'
 import { OverlayPushAction, OverlayActionDispatch } from '../redux/actions/overlayActions'
 
-import { DistributionAPI } from 'common/distribution/distribution'
+import { DistributionAPI } from 'common/distribution/DistributionAPI'
 import { getServerStatus } from 'common/mojang/net/ServerStatusAPI'
+import { Distribution } from 'helios-distribution-types'
+import { HeliosDistribution } from 'common/distribution/DistributionFactory'
 
 import './Application.css'
 
@@ -49,6 +53,7 @@ const mapState = (state: StoreType): Partial<ApplicationProps> => {
     }
 }
 const mapDispatch = {
+    ...AppActionDispatch,
     ...ViewActionDispatch,
     ...OverlayActionDispatch
 }
@@ -68,6 +73,8 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
     }
 
     getViewElement(): JSX.Element {
+        // TODO debug remove
+        console.log('loading', this.props.currentView, this.state.workingView)
         switch(this.state.workingView) {
             case View.WELCOME:
                 return <>
@@ -85,6 +92,12 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                 return <>
                     <Settings />
                 </>
+            case View.FATAL:
+                return <>
+                    <Fatal />
+                </>
+            case View.NONE:
+                return <></>
 
         }
     }
@@ -94,6 +107,8 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
     }
 
     private updateWorkingView = throttle(() => {
+        // TODO debug remove
+        console.log('Setting to', this.props.currentView)
         this.setState({
             ...this.state,
             workingView: this.props.currentView
@@ -101,8 +116,14 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
         
     }, 200)
 
+    private finishLoad = (): void => {
+        if(this.props.currentView !== View.FATAL) {
+            setBackground(this.bkid)
+        }
+        this.showMain()
+    }
+
     private showMain = (): void => {
-        setBackground(this.bkid)
         this.setState({
             ...this.state,
             showMain: true
@@ -113,23 +134,53 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
         if(this.state.loading) {
             const MIN_LOAD = 800
             const start = Date.now()
-            this.bkid = Math.floor((Math.random() * (await readdir(join(__static, 'images', 'backgrounds'))).length))
-            const endLoad = () => {
+
+            // Initial distribution load.
+            const distroAPI = new DistributionAPI('C:\\Users\\user\\AppData\\Roaming\\Helios Launcher')
+            let rawDisto: Distribution
+            try {
+                rawDisto = await distroAPI.testLoad()
+                console.log('distro', distroAPI)
+            } catch(err) {
+                console.log('EXCEPTION IN DISTRO LOAD TODO TODO TODO', err)
+                rawDisto = null!
+            }
+
+            // Fatal error
+            if(rawDisto == null) {
+                this.props.setView(View.FATAL)
                 this.setState({
                     ...this.state,
-                    loading: false
+                    loading: false,
+                    workingView: View.FATAL
+                })
+                return
+            } else {
+                this.props.setDistribution(new HeliosDistribution(rawDisto))
+            }
+
+            // TODO Setup hook for distro refresh every ~ 5 mins.
+
+            // Pick a background id.
+            this.bkid = Math.floor((Math.random() * (await readdir(join(__static, 'images', 'backgrounds'))).length))
+
+            const endLoad = () => {
+                // TODO determine correct view
+                // either welcome, landing, or login
+                this.props.setView(View.LANDING)
+                this.setState({
+                    ...this.state,
+                    loading: false,
+                    workingView: View.LANDING
                 })
                 // TODO temp
                 setTimeout(() => {
                     //this.props.setView(View.WELCOME)
                     this.props.pushGenericOverlay({
                         title: 'Load Distribution',
-                        description: 'This is a test. Will load the distribution.',
+                        description: 'This is a test.',
                         dismissible: false,
                         acknowledgeCallback: async () => {
-                            const distro = new DistributionAPI('C:\\Users\\user\\AppData\\Roaming\\Helios Launcher')
-                            const x = await distro.testLoad()
-                            console.log(x)
                             const serverStatus = await getServerStatus(47, 'play.hypixel.net', 25565)
                             console.log(serverStatus)
                         }
@@ -206,7 +257,7 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                     classNames="loader"
                     unmountOnExit
                     onEnter={this.initLoad}
-                    onExited={this.showMain}
+                    onExited={this.finishLoad}
                 >
                     <Loader />
                 </CSSTransition>
