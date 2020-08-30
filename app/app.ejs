@@ -27,14 +27,14 @@
     </style>
 </head>
 <body bkid="<%=bkid%>">
-    <% include frame.ejs %>
+    <%- include('frame') %>
     <div id="main">
-        <% include welcome.ejs %>
-        <% include login.ejs %>
-        <% include settings.ejs %>
-        <% include landing.ejs %>
+        <%- include('welcome') %>
+        <%- include('login') %>
+        <%- include('settings') %>
+        <%- include('landing') %>
     </div>
-    <% include overlay.ejs %>
+    <%- include('overlay') %>
     <div id="loadingContainer">
         <div id="loadingContent">
             <div id="loadSpinnerContainer">

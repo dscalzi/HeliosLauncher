@@ -102,7 +102,9 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js'),
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            enableRemoteModule: true,
+            worldSafeExecuteJavaScript: false
         },
         backgroundColor: '#171614'
     })
