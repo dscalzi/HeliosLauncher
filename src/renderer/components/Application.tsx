@@ -23,7 +23,7 @@ import { LoggerUtil } from 'common/logging/loggerutil'
 import { DistributionAPI } from 'common/distribution/DistributionAPI'
 import { getServerStatus } from 'common/mojang/net/ServerStatusAPI'
 import { Distribution } from 'helios-distribution-types'
-import { HeliosDistribution } from 'common/distribution/DistributionFactory'
+import { HeliosDistribution, HeliosServer } from 'common/distribution/DistributionFactory'
 
 import './Application.css'
 
@@ -39,6 +39,7 @@ interface ApplicationProps {
     currentView: View
     overlayQueue: OverlayPushAction<unknown>[]
     distribution: HeliosDistribution
+    selectedServer: HeliosServer
 }
 
 interface ApplicationState {
@@ -52,7 +53,8 @@ const mapState = (state: StoreType): Partial<ApplicationProps> => {
     return {
         currentView: state.currentView,
         overlayQueue: state.overlayQueue,
-        distribution: state.app.distribution!
+        distribution: state.app.distribution!,
+        selectedServer: state.app.selectedServer!
     }
 }
 const mapDispatch = {
@@ -63,7 +65,7 @@ const mapDispatch = {
 
 class Application extends React.Component<ApplicationProps & typeof mapDispatch, ApplicationState> {
 
-    private readonly logger = LoggerUtil.getLogger('Application')
+    private static readonly logger = LoggerUtil.getLogger('ApplicationTSX')
 
     private bkid!: number
 
@@ -87,7 +89,7 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                 </>
             case View.LANDING:
                 return <>
-                    <Landing />
+                    <Landing distribution={this.props.distribution} selectedServer={this.props.selectedServer} />
                 </>
             case View.LOGIN:
                 return <>
@@ -161,7 +163,11 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                 })
                 return
             } else {
-                this.props.setDistribution(new HeliosDistribution(rawDisto))
+                const distro = new HeliosDistribution(rawDisto)
+                this.props.setDistribution(distro)
+                // TODO TEMP USE CONFIG
+                // TODO TODO TODO TODO
+                this.props.setSelectedServer(distro.servers[0])
             }
 
             // TODO Setup hook for distro refresh every ~ 5 mins.
@@ -190,23 +196,8 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                             console.log(serverStatus)
                         }
                     })
-                    this.props.pushServerSelectOverlay({
-                        servers: this.props.distribution.servers,
-                        selectedId: this.props.distribution.servers[0].rawServer.id,
-                        onSelection: (serverId: string) => this.logger.info('Server Selection Change:', serverId)
-                    })
                     // this.props.pushGenericOverlay({
                     //     title: 'Test Title 2',
-                    //     description: 'Test Description',
-                    //     dismissible: true
-                    // })
-                    // this.props.pushGenericOverlay({
-                    //     title: 'Test Title 3',
-                    //     description: 'Test Description',
-                    //     dismissible: true
-                    // })
-                    // this.props.pushGenericOverlay({
-                    //     title: 'Test Title 4',
                     //     description: 'Test Description',
                     //     dismissible: true
                     // })

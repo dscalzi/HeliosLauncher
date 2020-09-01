@@ -1,25 +1,49 @@
 import * as React from 'react'
-import News from '../news/News'
+import { connect } from 'react-redux'
 
+import { StoreType } from '../../redux/store'
+import { AppActionDispatch } from '../..//redux/actions/appActions'
+import { OverlayActionDispatch } from '../../redux/actions/overlayActions'
+import { HeliosDistribution, HeliosServer } from 'common/distribution/DistributionFactory'
 import { MojangStatus, MojangStatusColor } from 'common/mojang/rest/internal/MojangStatus'
 import { MojangResponse } from 'common/mojang/rest/internal/MojangResponse'
 import { MojangRestAPI } from 'common/mojang/rest/MojangRestAPI'
 import { RestResponseStatus } from 'common/got/RestResponse'
 import { LoggerUtil } from 'common/logging/loggerutil'
 
+import News from '../news/News'
+
 import './Landing.css'
+
+interface LandingProps {
+    distribution: HeliosDistribution
+    selectedServer: HeliosServer
+}
 
 interface LandingState {
     mojangStatuses: MojangStatus[]
 }
 
-export default class Landing extends React.Component<unknown, LandingState> {
+const mapState = (state: StoreType): Partial<LandingProps> => {
+    return {
+        distribution: state.app.distribution!,
+        selectedServer: state.app.selectedServer!
+    }
+}
+const mapDispatch = {
+    ...AppActionDispatch,
+    ...OverlayActionDispatch
+}
 
-    private static readonly logger = LoggerUtil.getLogger('Landing')
+type InternalLandingProps = LandingProps & typeof mapDispatch
+
+class Landing extends React.Component<InternalLandingProps, LandingState> {
+
+    private static readonly logger = LoggerUtil.getLogger('LandingTSX')
 
     private mojangStatusInterval!: NodeJS.Timeout
 
-    constructor(props: unknown) {
+    constructor(props: InternalLandingProps) {
         super(props)
         this.state = {
             mojangStatuses: []
@@ -107,6 +131,25 @@ export default class Landing extends React.Component<unknown, LandingState> {
             )
         }
         return statuses
+    }
+
+    private openServerSelect = (): void => {
+        this.props.pushServerSelectOverlay({
+            servers: this.props.distribution.servers,
+            selectedId: this.props.selectedServer.rawServer.id,
+            onSelection: (serverId: string) => {
+                Landing.logger.info('Server Selection Change:', serverId)
+                this.props.setSelectedServer(this.props.distribution.getServerById(serverId)!)
+            }
+        })
+    }
+
+    private getSelectedServerText = (): string => {
+        if(this.props.selectedServer != null) {
+            return `• ${this.props.selectedServer.rawServer.id}`
+        } else {
+            return '• No Server Selected'
+        }
     }
 
     render(): JSX.Element {
@@ -254,7 +297,7 @@ export default class Landing extends React.Component<unknown, LandingState> {
                             <div id="launch_content">
                                 <button id="launch_button">PLAY</button>
                                 <div className="bot_divider"></div>
-                                <button id="server_selection_button" className="bot_label">&#8226; No Server Selected</button>
+                                <button onClick={this.openServerSelect} id="server_selection_button" className="bot_label">{this.getSelectedServerText()}</button>
                             </div>
                             <div id="launch_details">
                                 <div id="launch_details_left">
@@ -277,3 +320,5 @@ export default class Landing extends React.Component<unknown, LandingState> {
     }
 
 }
+
+export default connect<unknown, typeof mapDispatch>(mapState, mapDispatch)(Landing)

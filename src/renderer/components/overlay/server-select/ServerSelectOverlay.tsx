@@ -47,7 +47,7 @@ class ServerSelectOverlay extends React.Component<InternalServerSelectOverlayPro
         this.props.popOverlayContent()
     }
 
-    getMainServerStar(): JSX.Element {
+    private getMainServerStar(): JSX.Element {
         return (
             <div className="serverListingStarWrapper">
                 <svg id="mainServerSVG" viewBox="0 0 107.45 104.74" width="20px" height="20px">
@@ -59,7 +59,7 @@ class ServerSelectOverlay extends React.Component<InternalServerSelectOverlayPro
         )
     }
 
-    getServers(): JSX.Element[] {
+    private getServerListings(): JSX.Element[] {
         const servers: JSX.Element[] = []
 
         for(const { rawServer: raw } of this.props.servers) {
@@ -89,7 +89,7 @@ class ServerSelectOverlay extends React.Component<InternalServerSelectOverlayPro
                     <span id="serverSelectHeader">Available Servers</span>
                     <div id="serverSelectList">
                         <div id="serverSelectListScrollable">
-                            {this.getServers()}
+                            {this.getServerListings()}
                         </div>
                     </div>
                     <div id="serverSelectActions">

@@ -1,13 +1,15 @@
-import { AppActionType, AppAction, SetDistributionAction } from '../actions/appActions'
+import { AppActionType, AppAction, SetDistributionAction, SetSelectedServerAction } from '../actions/appActions'
 import { Reducer } from 'redux'
-import { HeliosDistribution } from 'common/distribution/DistributionFactory'
+import { HeliosDistribution, HeliosServer } from 'common/distribution/DistributionFactory'
 
 export interface AppState {
     distribution: HeliosDistribution | null
+    selectedServer: HeliosServer | null
 }
 
 const defaultAppState: AppState = {
-    distribution: null!
+    distribution: null,
+    selectedServer: null
 }
 
 const AppReducer: Reducer<AppState, AppAction> = (state = defaultAppState, action) => {
@@ -16,6 +18,11 @@ const AppReducer: Reducer<AppState, AppAction> = (state = defaultAppState, actio
             return {
                 ...state,
                 distribution: (action as SetDistributionAction).payload
+            }
+        case AppActionType.SetSelectedServer:
+            return {
+                ...state,
+                selectedServer: (action as SetSelectedServerAction).payload
             }
     }
     return state
