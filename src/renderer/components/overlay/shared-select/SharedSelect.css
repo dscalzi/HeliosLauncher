@@ -68,7 +68,7 @@
     position: relative;
     background: rgba(131, 131, 131, 0.25);
 }
-.serverListing[selected] {
+.serverListing[selectedserver] {
     cursor: default;
     opacity: 1.0;
 }

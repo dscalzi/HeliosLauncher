@@ -42,6 +42,8 @@ class Overlay extends React.Component<OverlayProps> {
             <>
                 <ServerSelectOverlay
                     servers={action.payload.servers}
+                    selectedId={action.payload.selectedId}
+                    onSelection={action.payload.onSelection}
                 />
             </>
         )

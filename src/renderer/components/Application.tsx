@@ -19,6 +19,7 @@ import { join } from 'path'
 import { AppActionDispatch } from '../redux/actions/appActions'
 import { OverlayPushAction, OverlayActionDispatch } from '../redux/actions/overlayActions'
 
+import { LoggerUtil } from 'common/logging/loggerutil'
 import { DistributionAPI } from 'common/distribution/DistributionAPI'
 import { getServerStatus } from 'common/mojang/net/ServerStatusAPI'
 import { Distribution } from 'helios-distribution-types'
@@ -37,6 +38,7 @@ function setBackground(id: number) {
 interface ApplicationProps {
     currentView: View
     overlayQueue: OverlayPushAction<unknown>[]
+    distribution: HeliosDistribution
 }
 
 interface ApplicationState {
@@ -49,7 +51,8 @@ interface ApplicationState {
 const mapState = (state: StoreType): Partial<ApplicationProps> => {
     return {
         currentView: state.currentView,
-        overlayQueue: state.overlayQueue
+        overlayQueue: state.overlayQueue,
+        distribution: state.app.distribution!
     }
 }
 const mapDispatch = {
@@ -59,6 +62,8 @@ const mapDispatch = {
 }
 
 class Application extends React.Component<ApplicationProps & typeof mapDispatch, ApplicationState> {
+
+    private readonly logger = LoggerUtil.getLogger('Application')
 
     private bkid!: number
 
@@ -185,26 +190,31 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                             console.log(serverStatus)
                         }
                     })
-                    this.props.pushGenericOverlay({
-                        title: 'Test Title 2',
-                        description: 'Test Description',
-                        dismissible: true
+                    this.props.pushServerSelectOverlay({
+                        servers: this.props.distribution.servers,
+                        selectedId: this.props.distribution.servers[0].rawServer.id,
+                        onSelection: (serverId: string) => this.logger.info('Server Selection Change:', serverId)
                     })
-                    this.props.pushGenericOverlay({
-                        title: 'Test Title 3',
-                        description: 'Test Description',
-                        dismissible: true
-                    })
-                    this.props.pushGenericOverlay({
-                        title: 'Test Title 4',
-                        description: 'Test Description',
-                        dismissible: true
-                    })
-                    this.props.pushGenericOverlay({
-                        title: 'Test Title IMPORTANT',
-                        description: 'Test Description',
-                        dismissible: true
-                    }, true)
+                    // this.props.pushGenericOverlay({
+                    //     title: 'Test Title 2',
+                    //     description: 'Test Description',
+                    //     dismissible: true
+                    // })
+                    // this.props.pushGenericOverlay({
+                    //     title: 'Test Title 3',
+                    //     description: 'Test Description',
+                    //     dismissible: true
+                    // })
+                    // this.props.pushGenericOverlay({
+                    //     title: 'Test Title 4',
+                    //     description: 'Test Description',
+                    //     dismissible: true
+                    // })
+                    // this.props.pushGenericOverlay({
+                    //     title: 'Test Title IMPORTANT',
+                    //     description: 'Test Description',
+                    //     dismissible: true
+                    // }, true)
                 }, 5000)
             }
             const diff = Date.now() - start

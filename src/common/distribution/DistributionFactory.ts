@@ -1,28 +1,43 @@
 import { Distribution, Server, Module, Type, Required as HeliosRequired } from 'helios-distribution-types'
 import { MavenComponents, MavenUtil } from 'common/util/MavenUtil'
 import { join } from 'path'
+import { LoggerUtil } from 'common/logging/loggerutil'
+
+const logger = LoggerUtil.getLogger('DistributionFactory')
 
 export class HeliosDistribution {
 
-    private mainServerIndex: number
+    private mainServerIndex!: number
 
     public readonly servers: HeliosServer[]
 
     constructor(
         public readonly rawDistribution: Distribution
     ) {
-
+        this.resolveMainServerIndex()
         this.servers = this.rawDistribution.servers.map(s => new HeliosServer(s))
-        this.mainServerIndex = this.indexOfMainServer()
     }
 
-    private indexOfMainServer(): number {
-        for(let i=0; i<this.servers.length; i++) {
-            if(this.servers[i].rawServer.mainServer) {
-                return i
+    private resolveMainServerIndex(): void {
+
+        if(this.rawDistribution.servers.length > 0) {
+            for(let i=0; i<this.rawDistribution.servers.length; i++) {
+                if(this.mainServerIndex == null) {
+                    if(this.rawDistribution.servers[i].mainServer) {
+                        this.mainServerIndex = i
+                    }
+                } else {
+                    this.rawDistribution.servers[i].mainServer = false
+                }
             }
+            if(this.mainServerIndex == null) {
+                this.mainServerIndex = 0
+                this.rawDistribution.servers[this.mainServerIndex].mainServer = true
+            }
+        } else {
+            logger.warn('Distribution has 0 configured servers. This doesnt seem right..')
+            this.mainServerIndex = 0
         }
-        return 0
     }
 
     public getMainServer(): HeliosServer | null {
