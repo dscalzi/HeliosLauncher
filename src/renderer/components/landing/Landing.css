@@ -1,3 +1,19 @@
+.serverStatusWrapper-enter {
+    opacity: 0;
+}
+.serverStatusWrapper-enter-active {
+    opacity: 1;
+    transition: opacity 500ms, transform 500ms;
+}
+.serverStatusWrapper-exit {
+    opacity: 1;
+}
+.serverStatusWrapper-exit-active {
+    opacity: 0;
+    transition: opacity 500ms, transform 500ms;
+}
+
+
 /*******************************************************************************
  *                                                                             *
  * Landing View (Structural Styles)                                            *

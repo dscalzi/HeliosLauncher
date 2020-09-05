@@ -53,11 +53,32 @@ export class HeliosDistribution {
 export class HeliosServer {
 
     public readonly modules: HeliosModule[]
+    public readonly hostname: string
+    public readonly port: number
 
     constructor(
         public readonly rawServer: Server
     ) {
+        const { hostname, port } = this.parseAddress()
+        this.hostname = hostname
+        this.port = port
         this.modules = rawServer.modules.map(m => new HeliosModule(m, rawServer.id))
+    }
+
+    private parseAddress(): { hostname: string, port: number } {
+        // Srv record lookup here if needed.
+        if(this.rawServer.address.includes(':')) {
+            const pieces = this.rawServer.address.split(':')
+            const port = Number(pieces[1])
+
+            if(!Number.isInteger(port)) {
+                throw new Error(`Malformed server address for ${this.rawServer.id}. Port must be an integer!`)
+            }
+
+            return { hostname: pieces[0], port }
+        } else {
+            return { hostname: this.rawServer.address, port: 25565 }
+        }
     }
 
 }

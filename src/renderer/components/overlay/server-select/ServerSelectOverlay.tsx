@@ -10,7 +10,7 @@ import '../shared-select/SharedSelect.css'
 export interface ServerSelectOverlayProps {
     servers: HeliosServer[]
     selectedId: string
-    onSelection: (serverId: string) => void
+    onSelection: (serverId: string) => Promise<void>
 }
 
 interface ServerSelectOverlayState {
@@ -36,7 +36,7 @@ class ServerSelectOverlay extends React.Component<InternalServerSelectOverlayPro
 
     private onSelectClick = async (): Promise<void> => {
         try {
-            this.props.onSelection(this.state.selectedId)
+            await this.props.onSelection(this.state.selectedId)
         } catch(err) {
             this.logger.error('Uncaught error in server select confirmation.', err)
         }

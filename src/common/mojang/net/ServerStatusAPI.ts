@@ -35,17 +35,17 @@ export interface ServerStatus {
  * Get the handshake packet.
  * 
  * @param protocol The client's protocol version.
- * @param address The server address.
+ * @param hostname The server hostname.
  * @param port The server port.
  * 
  * @see https://wiki.vg/Server_List_Ping#Handshake
  */
-function getHandshakePacket(protocol: number, address: string, port: number): Buffer {
+function getHandshakePacket(protocol: number, hostname: string, port: number): Buffer {
 
     return ServerBoundPacket.build()
         .writeVarInt(0x00)         // Packet Id 
         .writeVarInt(protocol)
-        .writeString(address)
+        .writeString(hostname)
         .writeUnsignedShort(port)
         .writeVarInt(1)            // State, 1 = status
         .toBuffer()
@@ -80,19 +80,19 @@ function unifyStatusResponse(resp: ServerStatus): ServerStatus {
     return resp
 }
 
-export function getServerStatus(protocol: number, address: string, port = 25565): Promise<ServerStatus | null> {
+export function getServerStatus(protocol: number, hostname: string, port = 25565): Promise<ServerStatus | undefined> {
 
     return new Promise((resolve, reject) => {
 
-        const socket = connect(port, address, () => {
-            socket.write(getHandshakePacket(protocol, address, port))
+        const socket = connect(port, hostname, () => {
+            socket.write(getHandshakePacket(protocol, hostname, port))
             socket.write(getRequestPacket())
         })
 
         socket.setTimeout(5000, () => {
             socket.destroy()
-            logger.error(`Server Status Socket timed out (${address}:${port})`)
-            reject(new Error(`Server Status Socket timed out (${address}:${port})`))
+            logger.error(`Server Status Socket timed out (${hostname}:${port})`)
+            reject(new Error(`Server Status Socket timed out (${hostname}:${port})`))
         })
 
         const maxTries = 2
@@ -122,7 +122,7 @@ export function getServerStatus(protocol: number, address: string, port = 25565)
 
                 if(iterations > maxTries) {
                     socket.destroy()
-                    reject(new Error(`Data read from ${address}:${port} exceeded ${maxTries} iterations, closing connection.`))
+                    reject(new Error(`Data read from ${hostname}:${port} exceeded ${maxTries} iterations, closing connection.`))
                     return
                 }
                 ++iterations
@@ -141,7 +141,7 @@ export function getServerStatus(protocol: number, address: string, port = 25565)
                     const result = inboundPacket.readString()
 
                     try {
-                        const parsed = JSON.parse(result)
+                        const parsed: ServerStatus = JSON.parse(result)
                         socket.end()
                         resolve(unifyStatusResponse(parsed))
                     } catch(err) {
@@ -164,17 +164,17 @@ export function getServerStatus(protocol: number, address: string, port = 25565)
 
             if(err.code === 'ENOTFOUND') {
                 // ENOTFOUND = Unable to resolve.
-                logger.error(`Server ${address}:${port} not found!`)
-                resolve(null)
+                logger.error(`Server ${hostname}:${port} not found!`)
+                resolve(undefined)
                 return
             } else if(err.code === 'ECONNREFUSED') {
                 // ECONNREFUSED = Unable to connect to port.
-                logger.error(`Server ${address}:${port} refused to connect, is the port correct?`)
-                resolve(null)
+                logger.error(`Server ${hostname}:${port} refused to connect, is the port correct?`)
+                resolve(undefined)
                 return
             } else {
-                logger.error(`Error trying to pull server status (${address}:${port})`, err)
-                resolve(null)
+                logger.error(`Error trying to pull server status (${hostname}:${port})`, err)
+                resolve(undefined)
                 return
             }
         })

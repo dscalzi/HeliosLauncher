@@ -1,10 +1,12 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { CSSTransition } from 'react-transition-group'
 
 import { StoreType } from '../../redux/store'
 import { AppActionDispatch } from '../..//redux/actions/appActions'
 import { OverlayActionDispatch } from '../../redux/actions/overlayActions'
 import { HeliosDistribution, HeliosServer } from 'common/distribution/DistributionFactory'
+import { ServerStatus, getServerStatus } from 'common/mojang/net/ServerStatusAPI'
 import { MojangStatus, MojangStatusColor } from 'common/mojang/rest/internal/MojangStatus'
 import { MojangResponse } from 'common/mojang/rest/internal/MojangResponse'
 import { MojangRestAPI } from 'common/mojang/rest/MojangRestAPI'
@@ -18,16 +20,19 @@ import './Landing.css'
 interface LandingProps {
     distribution: HeliosDistribution
     selectedServer: HeliosServer
+    selectedServerStatus: ServerStatus
 }
 
 interface LandingState {
     mojangStatuses: MojangStatus[]
+    outdatedServerStatus: boolean
 }
 
 const mapState = (state: StoreType): Partial<LandingProps> => {
     return {
         distribution: state.app.distribution!,
-        selectedServer: state.app.selectedServer!
+        selectedServer: state.app.selectedServer!,
+        selectedServerStatus: state.app.selectedServerStatus!
     }
 }
 const mapDispatch = {
@@ -42,11 +47,13 @@ class Landing extends React.Component<InternalLandingProps, LandingState> {
     private static readonly logger = LoggerUtil.getLogger('LandingTSX')
 
     private mojangStatusInterval!: NodeJS.Timeout
+    private serverStatusInterval!: NodeJS.Timeout
 
     constructor(props: InternalLandingProps) {
         super(props)
         this.state = {
-            mojangStatuses: []
+            mojangStatuses: [],
+            outdatedServerStatus: false
         }
     }
 
@@ -60,12 +67,21 @@ class Landing extends React.Component<InternalLandingProps, LandingState> {
             await this.loadMojangStatuses()
         }, 300000)
 
+        this.serverStatusInterval = setInterval(async () => {
+            Landing.logger.info('Refreshing selected server status..')
+            this.setState({
+                ...this.state,
+                outdatedServerStatus: true
+            })
+        }, 300000)
+
     }
 
     componentWillUnmount(): void {
 
         // Clean up intervals.
         clearInterval(this.mojangStatusInterval)
+        clearInterval(this.serverStatusInterval)
 
     }
 
@@ -90,6 +106,34 @@ class Landing extends React.Component<InternalLandingProps, LandingState> {
             mojangStatuses: response.data
         })
 
+    }
+
+    private syncServerStatus = async (): Promise<void> => {
+        let serverStatus: ServerStatus | undefined
+
+        if(this.props.selectedServer != null) {
+            const { hostname, port } = this.props.selectedServer
+            try {
+                serverStatus = await getServerStatus(
+                    47,
+                    hostname,
+                    port
+                )
+            } catch(err) {
+                Landing.logger.error('Error while refreshing server status', err)
+            }
+            
+        } else {
+            serverStatus = undefined
+        }
+
+        this.props.setSelectedServerStatus(serverStatus)
+    }
+    private finishServerSync = async (): Promise<void> => {
+        this.setState({
+            ...this.state,
+            outdatedServerStatus: false
+        })
     }
 
     private getMainMojangStatusColor = (): string => {
@@ -137,9 +181,14 @@ class Landing extends React.Component<InternalLandingProps, LandingState> {
         this.props.pushServerSelectOverlay({
             servers: this.props.distribution.servers,
             selectedId: this.props.selectedServer.rawServer.id,
-            onSelection: (serverId: string) => {
+            onSelection: async (serverId: string) => {
                 Landing.logger.info('Server Selection Change:', serverId)
-                this.props.setSelectedServer(this.props.distribution.getServerById(serverId)!)
+                const next: HeliosServer = this.props.distribution.getServerById(serverId)!
+                this.props.setSelectedServer(next)
+                this.setState({
+                    ...this.state,
+                    outdatedServerStatus: true
+                })
             }
         })
     }
@@ -149,6 +198,19 @@ class Landing extends React.Component<InternalLandingProps, LandingState> {
             return `• ${this.props.selectedServer.rawServer.id}`
         } else {
             return '• No Server Selected'
+        }
+    }
+
+    private getSelectedServerStatusText = (): string => {
+        return this.props.selectedServerStatus != null ? 'PLAYERS' : 'SERVER'
+    }
+
+    private getSelectedServerCount = (): string => {
+        if(this.props.selectedServerStatus != null) {
+            const { online, max } = this.props.selectedServerStatus.players
+            return `${online}/${max}`
+        } else {
+            return 'OFFLINE'
         }
     }
 
@@ -252,10 +314,21 @@ class Landing extends React.Component<InternalLandingProps, LandingState> {
                     <div id="left">
                         <div className="bot_wrapper">
                             <div id="content">
-                                <div id="server_status_wrapper">
-                                    <span className="bot_label" id="landingPlayerLabel">SERVER</span>
-                                    <span id="player_count">OFFLINE</span>
-                                </div>
+                                
+                                <CSSTransition
+                                    in={!this.state.outdatedServerStatus}
+                                    timeout={500}
+                                    classNames="serverStatusWrapper"
+                                    unmountOnExit
+                                    onEnter={this.syncServerStatus}
+                                    onExited={this.finishServerSync}
+                                >
+                                    <div id="server_status_wrapper">
+                                        <span className="bot_label" id="landingPlayerLabel">{this.getSelectedServerStatusText()}</span>
+                                        <span id="player_count">{this.getSelectedServerCount()}</span>
+                                    </div>
+                                </CSSTransition>
+                                
                                 <div className="bot_divider"></div>
                                 <div id="mojangStatusWrapper">
                                     <span className="bot_label">MOJANG STATUS</span>

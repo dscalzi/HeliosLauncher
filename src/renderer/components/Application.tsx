@@ -21,7 +21,7 @@ import { OverlayPushAction, OverlayActionDispatch } from '../redux/actions/overl
 
 import { LoggerUtil } from 'common/logging/loggerutil'
 import { DistributionAPI } from 'common/distribution/DistributionAPI'
-import { getServerStatus } from 'common/mojang/net/ServerStatusAPI'
+import { getServerStatus, ServerStatus } from 'common/mojang/net/ServerStatusAPI'
 import { Distribution } from 'helios-distribution-types'
 import { HeliosDistribution, HeliosServer } from 'common/distribution/DistributionFactory'
 
@@ -40,6 +40,7 @@ interface ApplicationProps {
     overlayQueue: OverlayPushAction<unknown>[]
     distribution: HeliosDistribution
     selectedServer: HeliosServer
+    selectedServerStatus: ServerStatus
 }
 
 interface ApplicationState {
@@ -79,7 +80,7 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
         }
     }
 
-    getViewElement(): JSX.Element {
+    private getViewElement = (): JSX.Element => {
         // TODO debug remove
         console.log('loading', this.props.currentView, this.state.workingView)
         switch(this.state.workingView) {
@@ -89,7 +90,11 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                 </>
             case View.LANDING:
                 return <>
-                    <Landing distribution={this.props.distribution} selectedServer={this.props.selectedServer} />
+                    <Landing
+                        distribution={this.props.distribution}
+                        selectedServer={this.props.selectedServer}
+                        selectedServerStatus={this.props.selectedServerStatus}
+                    />
                 </>
             case View.LOGIN:
                 return <>
@@ -164,10 +169,19 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                 return
             } else {
                 const distro = new HeliosDistribution(rawDisto)
-                this.props.setDistribution(distro)
                 // TODO TEMP USE CONFIG
                 // TODO TODO TODO TODO
-                this.props.setSelectedServer(distro.servers[0])
+                const selectedServer: HeliosServer = distro.servers[0]
+                const { hostname, port } = selectedServer
+                let selectedServerStatus
+                try {
+                    selectedServerStatus = await getServerStatus(47, hostname, port)
+                } catch(err) {
+                    Application.logger.error('Failed to refresh server status', selectedServerStatus)
+                }
+                this.props.setDistribution(distro)
+                this.props.setSelectedServer(selectedServer)
+                this.props.setSelectedServerStatus(selectedServerStatus)
             }
 
             // TODO Setup hook for distro refresh every ~ 5 mins.
@@ -186,16 +200,16 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                 })
                 // TODO temp
                 setTimeout(() => {
-                    //this.props.setView(View.WELCOME)
-                    this.props.pushGenericOverlay({
-                        title: 'Load Distribution',
-                        description: 'This is a test.',
-                        dismissible: false,
-                        acknowledgeCallback: async () => {
-                            const serverStatus = await getServerStatus(47, 'play.hypixel.net', 25565)
-                            console.log(serverStatus)
-                        }
-                    })
+                    // this.props.setView(View.WELCOME)
+                    // this.props.pushGenericOverlay({
+                    //     title: 'Load Distribution',
+                    //     description: 'This is a test.',
+                    //     dismissible: false,
+                    //     acknowledgeCallback: async () => {
+                    //         const serverStatus = await getServerStatus(47, 'play.hypixel.net', 25565)
+                    //         console.log(serverStatus)
+                    //     }
+                    // })
                     // this.props.pushGenericOverlay({
                     //     title: 'Test Title 2',
                     //     description: 'Test Description',

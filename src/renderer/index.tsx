@@ -30,6 +30,7 @@ ReactDOM.render(
                 overlayQueue={store.getState().overlayQueue}
                 distribution={store.getState().app.distribution!}
                 selectedServer={store.getState().app.selectedServer!}
+                selectedServerStatus={store.getState().app.selectedServerStatus!}
             />
         </Provider>
     </AppContainer>,
