@@ -48,7 +48,7 @@ if(!isDev){
                 loggerAutoUpdaterSuccess.log('New update available', info.version)
                 
                 if(process.platform === 'darwin'){
-                    info.darwindownload = `https://github.com/PinkFloyd1213/Creeponnia-Launcher/releases/download/v${info.version}/CreeponniaLauncher-setup-${info.version}.dmg`
+                    info.darwindownload = `https://github.com/PinkFloyd1213/Creeponnia-Launcher/releases/download/v${info.version}/Creeponnia-Launcher-setup-${info.version}.dmg`
                     showUpdateUI(info)
                 }
                 
