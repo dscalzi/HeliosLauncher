@@ -266,13 +266,26 @@ class JavaGuard extends EventEmitter {
      */
 
     /**
-     * Fetch the last open JDK binary. Uses https://api.adoptopenjdk.net/
+     * Fetch the last open JDK binary.
+     * 
+     * HOTFIX: Uses Corretto 8 for macOS.
+     * See: https://github.com/dscalzi/HeliosLauncher/issues/70
+     * See: https://github.com/AdoptOpenJDK/openjdk-support/issues/101
      * 
      * @param {string} major The major version of Java to fetch.
      * 
      * @returns {Promise.<OpenJDKData>} Promise which resolved to an object containing the JRE download data.
      */
     static _latestOpenJDK(major = '8'){
+
+        if(process.platform === 'darwin') {
+            return this._latestCorretto(major)
+        } else {
+            return this._latestAdoptOpenJDK(major)
+        }
+    }
+
+    static _latestAdoptOpenJDK(major) {
 
         const sanitizedOS = process.platform === 'win32' ? 'windows' : (process.platform === 'darwin' ? 'mac' : process.platform)
 
@@ -291,6 +304,48 @@ class JavaGuard extends EventEmitter {
                 }
             })
         })
+
+    }
+
+    static _latestCorretto(major) {
+
+        let sanitizedOS, ext
+
+        switch(process.platform) {
+            case 'win32':
+                sanitizedOS = 'windows'
+                ext = 'zip'
+                break
+            case 'darwin':
+                sanitizedOS = 'macos'
+                ext = 'tar.gz'
+                break
+            case 'linux':
+                sanitizedOS = 'linux'
+                ext = 'tar.gz'
+                break
+            default:
+                sanitizedOS = process.platform
+                ext = 'tar.gz'
+                break
+        }
+
+        const url = `https://corretto.aws/downloads/latest/amazon-corretto-${major}-x64-${sanitizedOS}-jdk.${ext}`
+
+        return new Promise((resolve, reject) => {
+            request.head({url, json: true}, (err, resp) => {
+                if(!err && resp.statusCode === 200){
+                    resolve({
+                        uri: url,
+                        size: parseInt(resp.headers['content-length']),
+                        name: url.substr(url.lastIndexOf('/')+1)
+                    })
+                } else {
+                    resolve(null)
+                }
+            })
+        })
+
     }
 
     /**
@@ -455,6 +510,11 @@ class JavaGuard extends EventEmitter {
                         } */
                     }
                 }
+                // Space included so we get only the vendor.
+            } else if(props[i].lastIndexOf('java.vendor ') > -1) {
+                let vendorName = props[i].split('=')[1].trim()
+                console.log(props[i].trim())
+                meta.vendor = vendorName
             }
         }
 
