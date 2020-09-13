@@ -29,6 +29,7 @@ export interface ServerStatus {
             version: string
         }[]
     }
+    retrievedAt: number     // Internal tracking
 }
 
 /**
@@ -77,6 +78,7 @@ function unifyStatusResponse(resp: ServerStatus): ServerStatus {
             text: resp.description
         }
     }
+    resp.retrievedAt = (new Date()).getTime()
     return resp
 }
 

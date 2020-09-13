@@ -6,11 +6,9 @@ import { StoreType } from '../../redux/store'
 import { AppActionDispatch } from '../..//redux/actions/appActions'
 import { OverlayActionDispatch } from '../../redux/actions/overlayActions'
 import { HeliosDistribution, HeliosServer } from 'common/distribution/DistributionFactory'
-import { ServerStatus, getServerStatus } from 'common/mojang/net/ServerStatusAPI'
+import { ServerStatus } from 'common/mojang/net/ServerStatusAPI'
 import { MojangStatus, MojangStatusColor } from 'common/mojang/rest/internal/MojangStatus'
-import { MojangResponse } from 'common/mojang/rest/internal/MojangResponse'
 import { MojangRestAPI } from 'common/mojang/rest/MojangRestAPI'
-import { RestResponseStatus } from 'common/got/RestResponse'
 import { LoggerUtil } from 'common/logging/loggerutil'
 
 import News from '../news/News'
@@ -19,20 +17,21 @@ import './Landing.css'
 
 interface LandingProps {
     distribution: HeliosDistribution
-    selectedServer: HeliosServer
-    selectedServerStatus: ServerStatus
+    selectedServer?: HeliosServer
+    selectedServerStatus?: ServerStatus
+    mojangStatuses: MojangStatus[]
 }
 
 interface LandingState {
-    mojangStatuses: MojangStatus[]
-    outdatedServerStatus: boolean
+    workingServerStatus?: ServerStatus
 }
 
 const mapState = (state: StoreType): Partial<LandingProps> => {
     return {
         distribution: state.app.distribution!,
-        selectedServer: state.app.selectedServer!,
-        selectedServerStatus: state.app.selectedServerStatus!
+        selectedServer: state.app.selectedServer,
+        selectedServerStatus: state.app.selectedServerStatus,
+        mojangStatuses: state.app.mojangStatuses
     }
 }
 const mapDispatch = {
@@ -44,102 +43,21 @@ type InternalLandingProps = LandingProps & typeof mapDispatch
 
 class Landing extends React.Component<InternalLandingProps, LandingState> {
 
-    private static readonly logger = LoggerUtil.getLogger('LandingTSX')
-
-    private mojangStatusInterval!: NodeJS.Timeout
-    private serverStatusInterval!: NodeJS.Timeout
+    private static readonly logger = LoggerUtil.getLogger('Landing')
 
     constructor(props: InternalLandingProps) {
         super(props)
         this.state = {
-            mojangStatuses: [],
-            outdatedServerStatus: false
+            workingServerStatus: props.selectedServerStatus
         }
     }
 
-    async componentDidMount(): Promise<void> {
-
-        // Load Mojang statuses and setup refresh interval.
-        Landing.logger.info('Loading mojang statuses..')
-        await this.loadMojangStatuses()
-        this.mojangStatusInterval = setInterval(async () => {
-            Landing.logger.info('Refreshing Mojang Statuses..')
-            await this.loadMojangStatuses()
-        }, 300000)
-
-        this.serverStatusInterval = setInterval(async () => {
-            Landing.logger.info('Refreshing selected server status..')
-            this.setState({
-                ...this.state,
-                outdatedServerStatus: true
-            })
-        }, 300000)
-
-    }
-
-    componentWillUnmount(): void {
-
-        // Clean up intervals.
-        clearInterval(this.mojangStatusInterval)
-        clearInterval(this.serverStatusInterval)
-
-    }
-
-    private loadMojangStatuses = async (): Promise<void> => {
-        const response: MojangResponse<MojangStatus[]> = await MojangRestAPI.status()
-
-        if(response.responseStatus !== RestResponseStatus.SUCCESS) {
-            Landing.logger.warn('Failed to retrieve Mojang Statuses.')
-        }
-
-        // TODO Temp workaround because their status checker always shows
-        // this as red. https://bugs.mojang.com/browse/WEB-2303
-        const statuses = response.data
-        for(const status of statuses) {
-            if(status.service === 'sessionserver.mojang.com' || status.service === 'minecraft.net') {
-                status.status = MojangStatusColor.GREEN
-            }
-        }
-
-        this.setState({
-            ...this.state,
-            mojangStatuses: response.data
-        })
-
-    }
-
-    private syncServerStatus = async (): Promise<void> => {
-        let serverStatus: ServerStatus | undefined
-
-        if(this.props.selectedServer != null) {
-            const { hostname, port } = this.props.selectedServer
-            try {
-                serverStatus = await getServerStatus(
-                    47,
-                    hostname,
-                    port
-                )
-            } catch(err) {
-                Landing.logger.error('Error while refreshing server status', err)
-            }
-            
-        } else {
-            serverStatus = undefined
-        }
-
-        this.props.setSelectedServerStatus(serverStatus)
-    }
-    private finishServerSync = async (): Promise<void> => {
-        this.setState({
-            ...this.state,
-            outdatedServerStatus: false
-        })
-    }
+    /* Mojang Status Methods */
 
     private getMainMojangStatusColor = (): string => {
-        const essential = this.state.mojangStatuses.filter(s => s.essential)
+        const essential = this.props.mojangStatuses.filter(s => s.essential)
 
-        if(this.state.mojangStatuses.length === 0) {
+        if(this.props.mojangStatuses.length === 0) {
             return MojangRestAPI.statusToHex(MojangStatusColor.GREY)
         }
 
@@ -152,11 +70,11 @@ class Landing extends React.Component<InternalLandingProps, LandingState> {
             return MojangRestAPI.statusToHex(MojangStatusColor.YELLOW)
         }
         // If any non-essential are not green, return yellow.
-        if(this.state.mojangStatuses.filter(s => s.status !== MojangStatusColor.GREEN && s.status !== MojangStatusColor.GREY).length > 0) {
+        if(this.props.mojangStatuses.filter(s => s.status !== MojangStatusColor.GREEN && s.status !== MojangStatusColor.GREY).length > 0) {
             return MojangRestAPI.statusToHex(MojangStatusColor.YELLOW)
         }
         // if all are grey, return grey.
-        if(this.state.mojangStatuses.filter(s => s.status === MojangStatusColor.GREY).length === this.state.mojangStatuses.length) {
+        if(this.props.mojangStatuses.filter(s => s.status === MojangStatusColor.GREY).length === this.props.mojangStatuses.length) {
             return MojangRestAPI.statusToHex(MojangStatusColor.GREY)
         }
 
@@ -166,7 +84,7 @@ class Landing extends React.Component<InternalLandingProps, LandingState> {
     private getMojangStatusesAsJSX = (essential: boolean): JSX.Element[] => {
         
         const statuses: JSX.Element[] = []
-        for(const status of this.state.mojangStatuses.filter(s => s.essential === essential)) {
+        for(const status of this.props.mojangStatuses.filter(s => s.essential === essential)) {
             statuses.push(
                 <div className="mojangStatusContainer" key={status.service}>
                     <span className="mojangStatusIcon" style={{color: MojangRestAPI.statusToHex(status.status)}}>&#8226;</span>
@@ -177,18 +95,23 @@ class Landing extends React.Component<InternalLandingProps, LandingState> {
         return statuses
     }
 
+    /* Selected Server Methods */
+
+    private updateWorkingServerStatus = (): void => {
+        this.setState({
+            ...this.state,
+            workingServerStatus: this.props.selectedServerStatus
+        })
+    }
+
     private openServerSelect = (): void => {
         this.props.pushServerSelectOverlay({
             servers: this.props.distribution.servers,
-            selectedId: this.props.selectedServer.rawServer.id,
+            selectedId: this.props.selectedServer?.rawServer.id,
             onSelection: async (serverId: string) => {
                 Landing.logger.info('Server Selection Change:', serverId)
                 const next: HeliosServer = this.props.distribution.getServerById(serverId)!
                 this.props.setSelectedServer(next)
-                this.setState({
-                    ...this.state,
-                    outdatedServerStatus: true
-                })
             }
         })
     }
@@ -202,17 +125,19 @@ class Landing extends React.Component<InternalLandingProps, LandingState> {
     }
 
     private getSelectedServerStatusText = (): string => {
-        return this.props.selectedServerStatus != null ? 'PLAYERS' : 'SERVER'
+        return this.state.workingServerStatus != null ? 'PLAYERS' : 'SERVER'
     }
 
     private getSelectedServerCount = (): string => {
-        if(this.props.selectedServerStatus != null) {
-            const { online, max } = this.props.selectedServerStatus.players
+        if(this.state.workingServerStatus != null) {
+            const { online, max } = this.state.workingServerStatus.players
             return `${online}/${max}`
         } else {
             return 'OFFLINE'
         }
     }
+
+    /* Render */
 
     render(): JSX.Element {
         return <>
@@ -316,12 +241,11 @@ class Landing extends React.Component<InternalLandingProps, LandingState> {
                             <div id="content">
                                 
                                 <CSSTransition
-                                    in={!this.state.outdatedServerStatus}
+                                    in={this.props.selectedServerStatus?.retrievedAt === this.state.workingServerStatus?.retrievedAt}
                                     timeout={500}
                                     classNames="serverStatusWrapper"
                                     unmountOnExit
-                                    onEnter={this.syncServerStatus}
-                                    onExited={this.finishServerSync}
+                                    onExited={this.updateWorkingServerStatus}
                                 >
                                     <div id="server_status_wrapper">
                                         <span className="bot_label" id="landingPlayerLabel">{this.getSelectedServerStatusText()}</span>

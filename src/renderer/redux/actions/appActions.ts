@@ -1,11 +1,13 @@
 import { Action } from 'redux'
 import { HeliosDistribution, HeliosServer } from 'common/distribution/DistributionFactory'
 import { ServerStatus } from 'common/mojang/net/ServerStatusAPI'
+import { MojangStatus } from 'common/mojang/rest/internal/MojangStatus'
 
 export enum AppActionType {
     SetDistribution = 'SET_DISTRIBUTION',
     SetSelectedServer = 'SET_SELECTED_SERVER',
-    SetSelectedServerStatus = 'SET_SELECTED_SERVER_STATUS'
+    SetSelectedServerStatus = 'SET_SELECTED_SERVER_STATUS',
+    SetMojangStatuses = 'SET_MOJANG_STATUSES'
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -21,6 +23,10 @@ export interface SetSelectedServerAction extends AppAction {
 
 export interface SetSelectedServerStatusAction extends AppAction {
     payload?: ServerStatus
+}
+
+export interface SetMojangStatusesAction extends AppAction {
+    payload: MojangStatus[]
 }
 
 export function setDistribution(distribution?: HeliosDistribution): SetDistributionAction {
@@ -44,8 +50,16 @@ export function setSelectedServerStatus(serverStatus?: ServerStatus): SetSelecte
     }
 }
 
+export function setMojangStatuses(mojangStatuses: MojangStatus[]): SetMojangStatusesAction {
+    return {
+        type: AppActionType.SetMojangStatuses,
+        payload: mojangStatuses
+    }
+}
+
 export const AppActionDispatch = {
     setDistribution: (d?: HeliosDistribution): SetDistributionAction => setDistribution(d),
     setSelectedServer: (s?: HeliosServer): SetSelectedServerAction => setSelectedServer(s),
-    setSelectedServerStatus: (ss?: ServerStatus): SetSelectedServerStatusAction => setSelectedServerStatus(ss)
+    setSelectedServerStatus: (ss?: ServerStatus): SetSelectedServerStatusAction => setSelectedServerStatus(ss),
+    setMojangStatuses: (ms: MojangStatus[]): SetMojangStatusesAction => setMojangStatuses(ms)
 }

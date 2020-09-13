@@ -31,6 +31,7 @@ ReactDOM.render(
                 distribution={store.getState().app.distribution!}
                 selectedServer={store.getState().app.selectedServer!}
                 selectedServerStatus={store.getState().app.selectedServerStatus!}
+                mojangStatuses={store.getState().app.mojangStatuses!}
             />
         </Provider>
     </AppContainer>,

@@ -30,44 +30,48 @@ export class MojangRestAPI {
         version: 1
     }
 
-    protected static statuses: MojangStatus[] = [
-        {
-            service: 'sessionserver.mojang.com',
-            status: MojangStatusColor.GREY,
-            name: 'Multiplayer Session Service',
-            essential: true
-        },
-        {
-            service: 'authserver.mojang.com',
-            status: MojangStatusColor.GREY,
-            name: 'Authentication Service',
-            essential: true
-        },
-        {
-            service: 'textures.minecraft.net',
-            status: MojangStatusColor.GREY,
-            name: 'Minecraft Skins',
-            essential: false
-        },
-        {
-            service: 'api.mojang.com',
-            status: MojangStatusColor.GREY,
-            name: 'Public API',
-            essential: false
-        },
-        {
-            service: 'minecraft.net',
-            status: MojangStatusColor.GREY,
-            name: 'Minecraft.net',
-            essential: false
-        },
-        {
-            service: 'account.mojang.com',
-            status: MojangStatusColor.GREY,
-            name: 'Mojang Accounts Website',
-            essential: false
-        }
-    ]
+    protected static statuses: MojangStatus[] = MojangRestAPI.getDefaultStatuses()
+
+    public static getDefaultStatuses(): MojangStatus[] {
+        return [
+            {
+                service: 'sessionserver.mojang.com',
+                status: MojangStatusColor.GREY,
+                name: 'Multiplayer Session Service',
+                essential: true
+            },
+            {
+                service: 'authserver.mojang.com',
+                status: MojangStatusColor.GREY,
+                name: 'Authentication Service',
+                essential: true
+            },
+            {
+                service: 'textures.minecraft.net',
+                status: MojangStatusColor.GREY,
+                name: 'Minecraft Skins',
+                essential: false
+            },
+            {
+                service: 'api.mojang.com',
+                status: MojangStatusColor.GREY,
+                name: 'Public API',
+                essential: false
+            },
+            {
+                service: 'minecraft.net',
+                status: MojangStatusColor.GREY,
+                name: 'Minecraft.net',
+                essential: false
+            },
+            {
+                service: 'account.mojang.com',
+                status: MojangStatusColor.GREY,
+                name: 'Mojang Accounts Website',
+                essential: false
+            }
+        ]
+    }
 
     /**
      * Converts a Mojang status color to a hex value. Valid statuses

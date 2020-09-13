@@ -24,6 +24,10 @@ import { DistributionAPI } from 'common/distribution/DistributionAPI'
 import { getServerStatus, ServerStatus } from 'common/mojang/net/ServerStatusAPI'
 import { Distribution } from 'helios-distribution-types'
 import { HeliosDistribution, HeliosServer } from 'common/distribution/DistributionFactory'
+import { MojangResponse } from 'common/mojang/rest/internal/MojangResponse'
+import { MojangStatus, MojangStatusColor } from 'common/mojang/rest/internal/MojangStatus'
+import { MojangRestAPI } from 'common/mojang/rest/MojangRestAPI'
+import { RestResponseStatus } from 'common/got/RestResponse'
 
 import './Application.css'
 
@@ -39,8 +43,9 @@ interface ApplicationProps {
     currentView: View
     overlayQueue: OverlayPushAction<unknown>[]
     distribution: HeliosDistribution
-    selectedServer: HeliosServer
-    selectedServerStatus: ServerStatus
+    selectedServer?: HeliosServer
+    selectedServerStatus?: ServerStatus
+    mojangStatuses: MojangStatus[]
 }
 
 interface ApplicationState {
@@ -54,8 +59,9 @@ const mapState = (state: StoreType): Partial<ApplicationProps> => {
     return {
         currentView: state.currentView,
         overlayQueue: state.overlayQueue,
-        distribution: state.app.distribution!,
-        selectedServer: state.app.selectedServer!
+        distribution: state.app.distribution,
+        selectedServer: state.app.selectedServer,
+        mojangStatuses: state.app.mojangStatuses
     }
 }
 const mapDispatch = {
@@ -64,13 +70,18 @@ const mapDispatch = {
     ...OverlayActionDispatch
 }
 
-class Application extends React.Component<ApplicationProps & typeof mapDispatch, ApplicationState> {
+type InternalApplicationProps = ApplicationProps & typeof mapDispatch
+
+class Application extends React.Component<InternalApplicationProps, ApplicationState> {
 
     private static readonly logger = LoggerUtil.getLogger('ApplicationTSX')
 
+    private mojangStatusInterval!: NodeJS.Timeout
+    private serverStatusInterval!: NodeJS.Timeout
+
     private bkid!: number
 
-    constructor(props: ApplicationProps & typeof mapDispatch) {
+    constructor(props: InternalApplicationProps) {
         super(props)
         this.state = {
             loading: true,
@@ -78,6 +89,83 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
             renderMain: false,
             workingView: props.currentView
         }
+    }
+
+    async componentDidMount(): Promise<void> {
+
+        this.mojangStatusInterval = setInterval(async () => {
+            Application.logger.info('Refreshing Mojang Statuses..')
+            await this.loadMojangStatuses()
+        }, 300000)
+
+        this.serverStatusInterval = setInterval(async () => {
+            Application.logger.info('Refreshing selected server status..')
+            await this.syncServerStatus()
+        }, 300000)
+
+    }
+
+    componentWillUnmount(): void {
+
+        // Clean up intervals.
+        clearInterval(this.mojangStatusInterval)
+        clearInterval(this.serverStatusInterval)
+
+    }
+
+    async componentDidUpdate(prevProps: InternalApplicationProps): Promise<void> {
+
+        if(this.props.selectedServer?.rawServer.id !== prevProps.selectedServer?.rawServer.id) {
+            await this.syncServerStatus()
+        }
+
+    }
+
+    /**
+     * Load the mojang statuses and add them to the global store.
+     */
+    private loadMojangStatuses = async (): Promise<void> => {
+        const response: MojangResponse<MojangStatus[]> = await MojangRestAPI.status()
+
+        if(response.responseStatus !== RestResponseStatus.SUCCESS) {
+            Application.logger.warn('Failed to retrieve Mojang Statuses.')
+        }
+
+        // TODO Temp workaround because their status checker always shows
+        // this as red. https://bugs.mojang.com/browse/WEB-2303
+        const statuses = response.data
+        for(const status of statuses) {
+            if(status.service === 'sessionserver.mojang.com' || status.service === 'minecraft.net') {
+                status.status = MojangStatusColor.GREEN
+            }
+        }
+
+        this.props.setMojangStatuses(response.data)
+    }
+
+    /**
+     * Fetch the status of the selected server and store it in the global store.
+     */
+    private syncServerStatus = async (): Promise<void> => {
+        let serverStatus: ServerStatus | undefined
+
+        if(this.props.selectedServer != null) {
+            const { hostname, port } = this.props.selectedServer
+            try {
+                serverStatus = await getServerStatus(
+                    47,
+                    hostname,
+                    port
+                )
+            } catch(err) {
+                Application.logger.error('Error while refreshing server status', err)
+            }
+            
+        } else {
+            serverStatus = undefined
+        }
+
+        this.props.setSelectedServerStatus(serverStatus)
     }
 
     private getViewElement = (): JSX.Element => {
@@ -94,6 +182,7 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                         distribution={this.props.distribution}
                         selectedServer={this.props.selectedServer}
                         selectedServerStatus={this.props.selectedServerStatus}
+                        mojangStatuses={this.props.mojangStatuses}
                     />
                 </>
             case View.LOGIN:
@@ -183,6 +272,10 @@ class Application extends React.Component<ApplicationProps & typeof mapDispatch,
                 this.props.setSelectedServer(selectedServer)
                 this.props.setSelectedServerStatus(selectedServerStatus)
             }
+
+            // Load initial mojang statuses.
+            Application.logger.info('Loading mojang statuses..')
+            await this.loadMojangStatuses()
 
             // TODO Setup hook for distro refresh every ~ 5 mins.
 

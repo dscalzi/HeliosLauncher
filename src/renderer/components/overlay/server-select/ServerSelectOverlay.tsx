@@ -9,7 +9,7 @@ import '../shared-select/SharedSelect.css'
 
 export interface ServerSelectOverlayProps {
     servers: HeliosServer[]
-    selectedId: string
+    selectedId?: string
     onSelection: (serverId: string) => Promise<void>
 }
 
@@ -30,7 +30,7 @@ class ServerSelectOverlay extends React.Component<InternalServerSelectOverlayPro
     constructor(props: InternalServerSelectOverlayProps) {
         super(props)
         this.state = {
-            selectedId: props.selectedId
+            selectedId: props.selectedId!
         }
     }
 
