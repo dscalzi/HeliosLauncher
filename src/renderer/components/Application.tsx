@@ -74,7 +74,7 @@ type InternalApplicationProps = ApplicationProps & typeof mapDispatch
 
 class Application extends React.Component<InternalApplicationProps, ApplicationState> {
 
-    private static readonly logger = LoggerUtil.getLogger('ApplicationTSX')
+    private static readonly logger = LoggerUtil.getLogger('Application')
 
     private mojangStatusInterval!: NodeJS.Timeout
     private serverStatusInterval!: NodeJS.Timeout
@@ -257,6 +257,13 @@ class Application extends React.Component<InternalApplicationProps, ApplicationS
                 })
                 return
             } else {
+
+                // For debugging display.
+                // for(let i=0; i<10; i++) {
+                //     rawDisto.servers.push(rawDisto.servers[1])
+                // }
+
+
                 const distro = new HeliosDistribution(rawDisto)
                 // TODO TEMP USE CONFIG
                 // TODO TODO TODO TODO

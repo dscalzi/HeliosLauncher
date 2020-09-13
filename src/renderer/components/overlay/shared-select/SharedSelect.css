@@ -16,10 +16,10 @@
 #serverSelectHeader,
 #accountSelectHeader {
     font-family: 'Avenir Medium';
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: bold;
     color: #fff;
-    margin-bottom: 25px;
+    margin-bottom: 1.5rem;
 }
 
 /* Wrapper div for the list of available servers. */
@@ -36,12 +36,12 @@
 /* Scrollable div which lists the available servers. */
 #serverSelectListScrollable,
 #accountSelectListScrollable {
-    padding: 0px 5px;
+    padding: 0 0.25rem;
     overflow-y: scroll;
 }
 #serverSelectListScrollable::-webkit-scrollbar,
 #accountSelectListScrollable::-webkit-scrollbar {
-    width: 2px;
+    width: 0.3125rem;
 }
 #serverSelectListScrollable::-webkit-scrollbar-track,
 #accountSelectListScrollable::-webkit-scrollbar-track {
@@ -50,15 +50,15 @@
 #serverSelectListScrollable::-webkit-scrollbar-thumb,
 #accountSelectListScrollable::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
+    box-shadow: inset 0 0 0.625rem rgba(255, 255, 255, 0.50);
 }
 
 /* Content container for a server listing. */
 .serverListing {
     border: none;
-    padding: 0px;
-    width: 375px;
-    min-height: 60px;
+    padding: 0;
+    width: 23.5rem;
+    min-height: 3.75rem;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -82,8 +82,8 @@
     color: white;
     border: 1px solid rgba(126, 126, 126, 0.57);
     border-radius: 3px;
-    padding: 5px 45px;
-    width: 250px;
+    padding: 0.3125rem 2.8125rem;
+    width: 15.625rem;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -107,29 +107,29 @@
     display: flex;
     height: 100%;
     width: 100%;
-    padding-left: 10px;
+    padding-left: 0.625rem;
 }
 
 /* Add spacing between server listings. */
 #serverSelectListScrollable > .serverListing:not(:first-child):not(:last-child),
 #accountSelectListScrollable > .accountListing:not(:first-child):not(:last-child) {
-    margin: 5px 0px;
+    margin: 0.3125rem 0;
 }
 #serverSelectListScrollable > .serverListing:first-child,
 #accountSelectListScrollable > .accountListing:first-child {
-    margin-bottom: 5px;
+    margin-bottom: 0.3125rem;
 }
 #serverSelectListScrollable > .serverListing:last-child,
 #accountSelectListScrollable > .accountListing:last-child {
-    margin-top: 5px;
+    margin-top: 0.3125rem;
 }
 
 /* Server listing image. */
 .serverListingImg {
-    margin: 0px 10px 0px 5px;
+    margin: 0 0.625rem 0 0.3125rem;
     border: 1px solid #fff;
-    height: 50px;
-    width: 50px;
+    height: 3.125rem;
+    width: 3.125rem;
 }
 
 /* Content container for the server listing's details. */
@@ -138,19 +138,19 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-    height: 50px;
+    height: 3.125rem;
 }
 
 /* The name of the server listing. */
 .serverListingName {
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: bold;
 }
 
 /* Description for the server listing. */
 .serverListingDescription {
-    font-size: 10px;
-    line-height: 10px;
+    font-size: 0.625rem;
+    line-height: 0.625rem;
     font-weight: bold;
 }
 
@@ -163,24 +163,24 @@
 
 /* The minecraft version of the server listing. */
 .serverListingVersion {
-    font-size: 10px;
+    font-size: 0.625rem;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    line-height: 12px;
-    height: 12px;
+    line-height: 0.75rem;
+    height: 0.75rem;
     border-radius: 2px;
     background: rgba(31, 140, 11, 0.8);
-    padding: 0px 2px;
+    padding: 0 0.125rem;
 }
 
 /* The revision version of the server's manifest. */
 .serverListingRevision {
     color: #969696;
-    font-size: 10px;
-    line-height: 12px;
-    padding: 0px 5px;
+    font-size: 0.625rem;
+    line-height: 0.75rem;
+    padding: 0 0.3125rem;
 }
 
 /* Star which indicates the default (main) server. */
@@ -188,21 +188,21 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-    height: 12px;
+    height: 0.75rem;
     position: relative;
 }
 /* Tooltip which displays when hovering over the star. */
 .serverListingStarTooltip {
     visibility: hidden;
     opacity: 0;
-    width: 65px;
+    width: 4.0625rem;
     background-color: rgba(0, 0, 0, 0.40);
     text-align: center;
-    border-radius: 4px;
+    border-radius: 0.25rem;
     position: absolute;
     z-index: 1;
     left: 130%;
-    font-size: 10px;
+    font-size: 0.625rem;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
 }
 .serverListingStarTooltip::after {
@@ -210,8 +210,8 @@
     position: absolute;
     top: 50%;
     right: 100%; /* To the left of the tooltip */
-    margin-top: -5px;
-    border-width: 5px;
+    margin-top: -0.3125rem;
+    border-width: 0.3125rem;
     border-style: solid;
     border-color: transparent rgba(0, 0, 0, 0.40) transparent transparent;
 }
@@ -228,7 +228,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 25px;
+    margin-top: 1.5625rem;
 }
 
 /* Server selection confirm button styles. */
@@ -240,16 +240,17 @@
     font-family: 'Avenir Medium';
     font-weight: bold;
     border-radius: 2px;
-    padding: 0px 8.1px;
+    padding: 0 0.5rem;
     cursor: pointer;
     transition: 0.25s ease;
-    min-height: 20.67px;
+    min-height: 1.25rem;
+    font-size: 0.875rem;
 }
 #serverSelectConfirm:hover,
 #serverSelectConfirm:focus,
 #accountSelectConfirm:hover,
 #accountSelectConfirm:focus {
-    box-shadow: 0px 0px 10px 0px #fff;
+    box-shadow: 0 0 0.625rem 0 #fff;
     outline: none;
 }
 #serverSelectConfirm:active,
@@ -262,9 +263,9 @@
 #serverSelectCancel,
 #accountSelectCancel {
     font-weight: bold;
-    font-size: 10px;
+    font-size: 0.625rem;
     text-decoration: none;
-    padding-top: 2.5px;
+    padding-top: 0.15625rem;
     color: rgba(202, 202, 202, 0.75);
     transition: 0.25s ease;
     background: none;
