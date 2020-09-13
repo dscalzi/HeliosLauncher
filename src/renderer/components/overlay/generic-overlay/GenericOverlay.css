@@ -5,10 +5,10 @@
     flex-direction: column;
     align-items: center;
     /*justify-content: space-between;*/
-    width: 300px;
+    width: 20rem;
     /*height: 35%;*/
     box-sizing: border-box;
-    padding: 15px 0px;
+    padding: 1rem 0;
     /* background-color: #424242; */
     text-align: center;
 }
@@ -31,19 +31,19 @@
 
 /* Add spacing between overlay content elements. */
 #overlayContent > *:first-child {
-    margin-top: 0px !important;
+    margin-top: 0 !important;
 }
 #overlayContent > *:last-child {
-    margin-bottom: 0px !important;
+    margin-bottom: 0 !important;
 }
 #overlayContent > * {
-    margin: 8px 0px;
+    margin: 0.5rem 0;
 }
 
 /* Overlay title styles. */
 #overlayTitle {
     font-family: 'Avenir Medium';
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: bold;
     letter-spacing: 1px;
     -webkit-user-select: initial;
@@ -51,7 +51,7 @@
 
 /* Overlay description styles. */
 #overlayDesc {
-    font-size: 12px;
+    font-size: .75rem;
     font-weight: bold;
     -webkit-user-select: initial;
 }
@@ -71,13 +71,14 @@
     font-family: 'Avenir Medium';
     font-weight: bold;
     border-radius: 2px;
-    padding: 0px 8.1px;
+    padding: 0 0.5rem;
     cursor: pointer;
     transition: 0.25s ease;
+    font-size: 0.875rem;
 }
 #overlayAcknowledge:hover,
 #overlayAcknowledge:focus {
-    box-shadow: 0px 0px 10px 0px #fff;
+    box-shadow: 0 0 0.625rem 0 #fff;
     outline: none;
 }
 #overlayAcknowledge:active {
@@ -88,9 +89,9 @@
 /* Overlay dismiss option styles. */
 #overlayDismiss {
     font-weight: bold;
-    font-size: 10px;
+    font-size: 0.625rem;
     text-decoration: none;
-    padding-top: 2.5px;
+    padding-top: 0.15625rem;
     background: none;
     border: none;
     outline: none;
