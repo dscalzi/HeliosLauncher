@@ -104,7 +104,7 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false,
             enableRemoteModule: true,
-            worldSafeExecuteJavaScript: false
+            worldSafeExecuteJavaScript: true
         },
         backgroundColor: '#171614'
     })
