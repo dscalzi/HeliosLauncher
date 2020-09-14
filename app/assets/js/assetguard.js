@@ -709,51 +709,26 @@ class JavaGuard extends EventEmitter {
      * @returns {Promise.<Set.<string>>} A promise which resolves to a set of the discovered
      * root JVM folders.
      */
-    static _scanFileSystem(scanDir){
-        return new Promise((resolve, reject) => {
+    static async _scanFileSystem(scanDir){
 
-            fs.exists(scanDir, (e) => {
+        let res = new Set()
 
-                let res = new Set()
-                
-                if(e){
-                    fs.readdir(scanDir, (err, files) => {
-                        if(err){
-                            resolve(res)
-                            console.log(err)
-                        } else {
-                            let pathsDone = 0
+        if(await fs.pathExists(scanDir)) {
 
-                            for(let i=0; i<files.length; i++){
+            const files = await fs.readdir(scanDir)
+            for(let i=0; i<files.length; i++){
 
-                                const combinedPath = path.join(scanDir, files[i])
-                                const execPath = JavaGuard.javaExecFromRoot(combinedPath)
+                const combinedPath = path.join(scanDir, files[i])
+                const execPath = JavaGuard.javaExecFromRoot(combinedPath)
 
-                                fs.exists(execPath, (v) => {
-
-                                    if(v){
-                                        res.add(combinedPath)
-                                    }
-
-                                    ++pathsDone
-
-                                    if(pathsDone === files.length){
-                                        resolve(res)
-                                    }
-
-                                })
-                            }
-                            if(pathsDone === files.length){
-                                resolve(res)
-                            }
-                        }
-                    })
-                } else {
-                    resolve(res)
+                if(await fs.pathExists(execPath)) {
+                    res.add(combinedPath)
                 }
-            })
+            }
+        }
 
-        })
+        return res
+
     }
 
     /**
@@ -859,9 +834,13 @@ class JavaGuard extends EventEmitter {
 
         // Get possible paths from the registry.
         let pathSet1 = await JavaGuard._scanRegistry()
-        if(pathSet1.length === 0){
+        if(pathSet1.size === 0){
             // Do a manual file system scan of program files.
-            pathSet1 = JavaGuard._scanFileSystem('C:\\Program Files\\Java')
+            pathSet1 = new Set([
+                ...pathSet1,
+                ...(await JavaGuard._scanFileSystem('C:\\Program Files\\Java')),
+                ...(await JavaGuard._scanFileSystem('C:\\Program Files\\AdoptOpenJDK'))
+            ])
         }
 
         // Get possible paths from the data directory.

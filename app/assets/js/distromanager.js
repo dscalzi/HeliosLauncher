@@ -551,17 +551,21 @@ exports.pullRemote = function(){
                     data = DistroIndex.fromJSON(JSON.parse(body))
                 } catch (e) {
                     reject(e)
+                    return
                 }
 
                 fs.writeFile(distroDest, body, 'utf-8', (err) => {
                     if(!err){
                         resolve(data)
+                        return
                     } else {
                         reject(err)
+                        return
                     }
                 })
             } else {
                 reject(error)
+                return
             }
         })
     })
@@ -576,8 +580,10 @@ exports.pullLocal = function(){
             if(!err){
                 data = DistroIndex.fromJSON(JSON.parse(d))
                 resolve(data)
+                return
             } else {
                 reject(err)
+                return
             }
         })
     })
