@@ -2,20 +2,21 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { Provider } from 'react-redux'
-// import { shell } from 'electron'
+import { shell } from 'electron'
 import store from './redux/store'
 
 import Application from './components/Application'
 
 import './index.css'
 
-
-// document.addEventListener('click', (event: MouseEvent) => {
-//     if ((event.target as HTMLElement)?.tagName === 'A' && (event.target as HTMLAnchorElement)?.href.startsWith('http')) {
-//         event.preventDefault()
-//         shell.openExternal((event.target as HTMLAnchorElement).href)
-//     }
-// })
+// Open anchor hrefs in the default browser.
+document.addEventListener('click', (event: MouseEvent) => {
+    const anchor: HTMLAnchorElement | null = (event.target as HTMLElement).closest('a')
+    if(anchor != null && anchor.hasAttribute('href') && anchor.getAttribute('href')!.toLowerCase().startsWith('http')) {
+        event.preventDefault()
+        shell.openExternal(anchor.href)
+    }
+})
 
 // Create main element
 const mainElement = document.createElement('div')
