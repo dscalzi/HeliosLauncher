@@ -1,0 +1,131 @@
+/* Container object which wraps an icon to ensure fluid transitions. */
+.mediaContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 27px;
+    position: relative;
+}
+
+/* Social media icon shared styles. */
+.mediaSVG {
+    fill: #ffffff;
+    height: 12px;
+    transition: 0.25s ease;
+    cursor: pointer;
+    height: 12px;
+    width: 25px;
+}
+.mediaSVG:hover,
+.mediaURL:focus .mediaSVG,
+.mediaSVG:active {
+    height: 20px;
+}
+
+/* Social media URL shared styles. */
+.mediaURL {
+    outline: none;
+    display: flex;
+    align-items: center;
+}
+
+/* Internal media button shared styles. */
+.mediaButton {
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    outline: none;
+}
+
+/* Twitter icon colors. */
+.twitterSVG:hover,
+.twitterURL:focus .twitterSVG {
+    fill: #1da1f2;
+}
+.twitterSVG:active {
+    fill: #1b8dd4;
+}
+
+/* Instagram icon colors. */
+.instagramSVG:hover,
+.instagramURL:focus .instagramSVG {
+    fill: url('#instaFill')
+    /*fill: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); */
+}
+.instagramSVG:active {
+    fill: url('#instaFill')
+}
+
+/* Youtube icon colors. */
+.youtubeSVG:hover,
+.youtubeURL:focus .youtubeSVG {
+    fill: #f00;
+}
+.youtubeSVG:active {
+    fill: #ea0202;
+}
+
+/* Discord icon colors. */
+.discordSVG:hover,
+.discordURL:focus .discordSVG {
+    fill: #7288d9;
+}
+.discordSVG:active {
+    fill: #657ac4;
+}
+
+/* Settings icon colors. */
+.settingsSVG {
+    stroke: #ffffff;
+    height: 15px;
+}
+.mediaButton:hover .settingsSVG,
+.mediaButton:focus .settingsSVG,
+.mediaButton:active .settingsSVG {
+    height: 23px;
+}
+
+.mediaTooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: 75px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.75);
+    text-align: center;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 1;
+    right: 130%;
+    font-size: 12px;
+    line-height: 20px;
+    transition: visibility 0s linear 0.25s, opacity 0.25s ease;
+    color: #fff;
+}
+.mediaTooltip::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent transparent rgba(0, 0, 0, 0.75);
+}
+
+.mediaURL:hover .mediaTooltip,
+.mediaURL:focus .mediaTooltip,
+.mediaURL:active .mediaTooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay:0s;
+}
+
+.mediaButton:hover .mediaTooltip,
+.mediaButton:focus .mediaTooltip,
+.mediaButton:active .mediaTooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay:0s;
+}
