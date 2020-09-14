@@ -3,23 +3,22 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 27px;
+    height: 1.6875rem;
     position: relative;
 }
 
 /* Social media icon shared styles. */
 .mediaSVG {
     fill: #ffffff;
-    height: 12px;
     transition: 0.25s ease;
     cursor: pointer;
-    height: 12px;
-    width: 25px;
+    height: 0.75rem;
+    width: 1.5625rem;
 }
 .mediaSVG:hover,
 .mediaURL:focus .mediaSVG,
 .mediaSVG:active {
-    height: 20px;
+    height: 1.25rem;
 }
 
 /* Social media URL shared styles. */
@@ -79,27 +78,27 @@
 /* Settings icon colors. */
 .settingsSVG {
     stroke: #ffffff;
-    height: 15px;
+    height: 0.9375rem;
 }
 .mediaButton:hover .settingsSVG,
 .mediaButton:focus .settingsSVG,
 .mediaButton:active .settingsSVG {
-    height: 23px;
+    height: 1.4375rem;
 }
 
 .mediaTooltip {
     visibility: hidden;
     opacity: 0;
-    width: 75px;
-    height: 20px;
+    width: 4.6875rem;
+    height: 1.25rem;
     background-color: rgba(0, 0, 0, 0.75);
     text-align: center;
     border-radius: 4px;
     position: absolute;
     z-index: 1;
     right: 130%;
-    font-size: 12px;
-    line-height: 20px;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
     color: #fff;
 }
@@ -108,8 +107,8 @@
     position: absolute;
     top: 50%;
     left: 100%;
-    margin-top: -5px;
-    border-width: 5px;
+    margin-top: -0.3125rem;
+    border-width: 0.3125rem;
     border-style: solid;
     border-color: transparent transparent transparent rgba(0, 0, 0, 0.75);
 }

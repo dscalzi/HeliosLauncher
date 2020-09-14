@@ -285,8 +285,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    margin-top: 25px;
-    height: calc(100% - 95px);
+    margin-top: 1.5625rem;
     width: 70px;
     align-items: center;
 }
@@ -299,10 +298,10 @@
 
 /* Divider bar between the external and internal icons. */
 .mediaDivider {
-    height: 1px;
-    width: 14px;
+    height: 0.0625rem;
+    width: 0.875rem;
     background: rgb(255, 255, 255);
-    margin: 10px 0;
+    margin: 0.625rem 0;
 }
 
 /*******************************************************************************
