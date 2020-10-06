@@ -1,11 +1,7 @@
 import { createLogger, format, transports, Logger } from 'winston'
-import { SPLAT as SPLAT_Symbol } from 'triple-beam'
-import moment from 'moment'
+import { SPLAT } from 'triple-beam'
+import { DateTime } from 'luxon'
 import { inspect } from 'util'
-
-// Workaround until fixed.
-// https://github.com/winstonjs/logform/issues/111
-const SPLAT = SPLAT_Symbol as unknown as string
 
 export class LoggerUtil {
 
@@ -32,7 +28,7 @@ export class LoggerUtil {
                             }).join(' ')
                         }
                     }
-                    return `[${moment().format('YYYY-MM-DD hh:mm:ss').trim()}] [${info.level}] [${info.label}]: ${info.message}${info.stack ? `\n${info.stack}` : ''}`
+                    return `[${DateTime.local().toFormat('yyyy-MM-dd TT').trim()}] [${info.level}] [${info.label}]: ${info.message}${info.stack ? `\n${info.stack}` : ''}`
                 })
             ),
             level: process.env.NODE_ENV === 'test' ? 'emerg' : 'debug',
