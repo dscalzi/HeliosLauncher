@@ -19,25 +19,25 @@ const statuses = [
     {
         service: 'sessionserver.mojang.com',
         status: 'grey',
-        name: 'Multiplayer Session Service',
+        name: 'Sessions multijoueurs',
         essential: true
     },
     {
         service: 'authserver.mojang.com',
         status: 'grey',
-        name: 'Authentication Service',
+        name: 'Serveur d\'Authentification',
         essential: true
     },
     {
         service: 'textures.minecraft.net',
         status: 'grey',
-        name: 'Minecraft Skins',
+        name: 'Serveur des skin',
         essential: false
     },
     {
         service: 'api.mojang.com',
         status: 'grey',
-        name: 'Public API',
+        name: 'Serveur d\'API',
         essential: false
     },
     {
@@ -49,7 +49,7 @@ const statuses = [
     {
         service: 'account.mojang.com',
         status: 'grey',
-        name: 'Mojang Accounts Website',
+        name: 'Gestion du compte Mojang',
         essential: false
     }
 ]
@@ -96,8 +96,8 @@ exports.status = function(){
             function(error, response, body){
 
                 if(error || response.statusCode !== 200){
-                    logger.warn('Unable to retrieve Mojang status.')
-                    logger.debug('Error while retrieving Mojang statuses:', error)
+                    logger.warn('Impossible de récupérer l\'état des serveur Mojang.')
+                    logger.debug('Erreur lors de la récupération de l\'état des serveur Mojang :', error)
                     //reject(error || response.statusCode)
                     for(let i=0; i<statuses.length; i++){
                         statuses[i].status = 'grey'
@@ -151,7 +151,7 @@ exports.authenticate = function(username, password, clientToken, requestUser = t
             },
             function(error, response, body){
                 if(error){
-                    logger.error('Error during authentication.', error)
+                    logger.error('Erreur durant l\'authentification.', error)
                     reject(error)
                 } else {
                     if(response.statusCode === 200){
@@ -185,7 +185,7 @@ exports.validate = function(accessToken, clientToken){
             },
             function(error, response, body){
                 if(error){
-                    logger.error('Error during validation.', error)
+                    logger.error('Erreur durant la validation.', error)
                     reject(error)
                 } else {
                     if(response.statusCode === 403){
@@ -220,7 +220,7 @@ exports.invalidate = function(accessToken, clientToken){
             },
             function(error, response, body){
                 if(error){
-                    logger.error('Error during invalidation.', error)
+                    logger.error('Erreur durant l\'invalidation.', error)
                     reject(error)
                 } else {
                     if(response.statusCode === 204){
@@ -257,7 +257,7 @@ exports.refresh = function(accessToken, clientToken, requestUser = true){
             },
             function(error, response, body){
                 if(error){
-                    logger.error('Error during refresh.', error)
+                    logger.error('Erreur durant le rafraichissement.', error)
                     reject(error)
                 } else {
                     if(response.statusCode === 200){

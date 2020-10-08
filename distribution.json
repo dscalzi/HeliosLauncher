@@ -1,0 +1,31 @@
+{
+    "version": "1.0.0",
+    "discord": {
+        "clientId": "385581240906022916",
+        "smallImageText": "AdventureCraft",
+        "smallImageKey": "seal-circle"
+    },
+    "java": {
+        "oracle": "http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html"
+    },
+    "rss": "",
+    "servers": [
+        {
+            "id": "AdventureCraft",
+            "name": "AdventureCraft 1.16.3",
+            "description": "Serveur officiel d'AdventureCraft",
+            "icon": "https://www.adventurecraft.fr/files/launcher/logo_mini.png",
+            "version": "1.0.0",
+            "address": "play.adventurecraft.fr:25716",
+            "minecraftVersion": "1.16.3",
+            "discord": {
+                "shortId": "1.16.3 Production Server",
+                "largeImageText": "AdventureCraft 1.16.3 Production Server",
+                "largeImageKey": "server-prod"
+            },
+            "mainServer": true,
+            "autoconnect": true,
+            "modules": []
+        }
+    ]
+}

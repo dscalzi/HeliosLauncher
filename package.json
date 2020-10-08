@@ -1,13 +1,13 @@
 {
   "name": "adventurecraftlauncher",
-  "version": "1.8.0",
+  "version": "1.0.0",
   "productName": "AdventureCraft Launcher",
   "description": "Launcher du serveur AdventureCraft",
   "author": "Daniel Scalzi (https://github.com/dscalzi/) | Katalijst",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/Katalijst/AdventureCraftLauncher",
+  "homepage": "https://www.adventurecraft.fr",
   "bugs": {
-    "url": "https://github.com/Katalijst/AdventureCraftLauncher/issues"
+    "url": "https://www.adventurecraft.fr/support/tickets"
   },
   "private": true,
   "main": "index.js",

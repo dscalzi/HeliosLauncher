@@ -36,8 +36,8 @@
                 }
             },
             "login": "CONNEXION",
-            "loggingIn": "CONNEXION",
-            "success": "SUCCES",
+            "loggingIn": "CONNEXION...",
+            "success": "CONNECTÉ",
             "tryAgain": "Réessayer"
         },
         "landing": {
