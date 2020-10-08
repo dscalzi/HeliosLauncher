@@ -8,13 +8,13 @@ const DistroManager = require('./distromanager')
 const LangLoader    = require('./langloader')
 const logger        = require('./loggerutil')('%c[Preloader]', 'color: #a02d2a; font-weight: bold')
 
-logger.log('Loading..')
+logger.log('Chargement...')
 
 // Load ConfigManager
 ConfigManager.load()
 
 // Load Strings
-LangLoader.loadLanguage('en_US')
+LangLoader.loadLanguage('fr_FR')
 
 function onDistroLoad(data){
     if(data != null){

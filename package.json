@@ -1,7 +1,7 @@
 {
-  "name": "helioslauncher",
+  "name": "adventurecraftlauncher",
   "version": "1.8.0",
-  "productName": "Helios Launcher",
+  "productName": "AdventureCraft Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
   "license": "UNLICENSED",
