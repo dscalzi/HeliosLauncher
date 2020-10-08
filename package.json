@@ -2,12 +2,12 @@
   "name": "adventurecraftlauncher",
   "version": "1.8.0",
   "productName": "AdventureCraft Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "description": "Launcher du serveur AdventureCraft",
+  "author": "Daniel Scalzi (https://github.com/dscalzi/) | Katalijst",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/Katalijst/AdventureCraftLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/Katalijst/AdventureCraftLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -47,6 +47,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/Katalijst/AdventureCraftLauncher.git"
   }
 }
