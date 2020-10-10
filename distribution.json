@@ -1,14 +1,14 @@
 {
     "version": "1.0.0",
     "discord": {
-        "clientId": "385581240906022916",
+        "clientId": "763884519463190548",
         "smallImageText": "AdventureCraft",
         "smallImageKey": "seal-circle"
     },
     "java": {
         "oracle": "http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html"
     },
-    "rss": "",
+    "rss": "https://fr-minecraft.net/minecraft_net_rss.xml",
     "servers": [
         {
             "id": "AdventureCraft",
@@ -25,7 +25,30 @@
             },
             "mainServer": true,
             "autoconnect": true,
-            "modules": []
+            "modules": [
+                {
+                    "id": "com.adventurecraft:serverpack:1.16.3-201009",
+                    "name": "AdventureCraft Resource Pack",
+                    "type": "File",
+                    "artifact": {
+                        "size": 164843222,
+                        "MD5": "c2e1da5e8d915bf9a2cd98b8714cd5c7",
+                        "path": "resourcepacks/ServerPack.zip",
+                        "url": "https://www.adventurecraft.fr/files/resourcepacks/ServerPack 201009.zip"
+                    }
+                },
+                {
+                    "id": "servers.dat",
+                    "name": "Saved Client Servers",
+                    "type": "File",
+                    "artifact": {
+                        "size": 13283,
+                        "MD5": "d4d7d3eac05aa0e8c7380ee0f70a22ee",
+                        "path": "servers.dat",
+                        "url": "https://www.adventurecraft.fr/files/launcher/servers.dat" 
+                    }
+                }
+            ]
         }
     ]
 }
