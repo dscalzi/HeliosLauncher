@@ -48,8 +48,8 @@ builder.build({
             target: 'AppImage',
             maintainer: 'Daniel Scalzi, Kamesuta',
             vendor: 'Daniel Scalzi, Kamesuta',
-            synopsis: 'Modded Minecraft Launcher',
-            description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.',
+            synopsis: '沼でも使えるMinecraftランチャー',
+            description: '参加型に参加するためのすべてがここに。Mod、コンフィグ、アップデートが全自動で揃います。',
             category: 'Game'
         },
         compression: 'maximum',
