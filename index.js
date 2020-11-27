@@ -88,6 +88,9 @@ app.disableHardwareAcceleration()
 // https://github.com/electron/electron/issues/18397
 app.allowRendererProcessReuse = true
 
+// https://github.com/electron/electron/issues/18214
+app.commandLine.appendSwitch('disable-site-isolation-trials')
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -128,6 +131,22 @@ function createWindow() {
     win.on('closed', () => {
         win = null
     })
+
+    // We set an intercept on incoming requests to disable x-frame-options
+    // headers.
+    win.webContents.session.webRequest.onHeadersReceived({ urls: [ 'https://www.notion.so/teamkun/*' ] },
+        (d, c)=>{
+            if(d.responseHeaders['X-Frame-Options']){
+                delete d.responseHeaders['X-Frame-Options']
+            } else if(d.responseHeaders['x-frame-options']) {
+                delete d.responseHeaders['x-frame-options']
+            }
+
+            d.responseHeaders['Access-Control-Allow-Origin'] = ['null']
+
+            c({cancel: false, responseHeaders: d.responseHeaders});
+        }
+    )
 }
 
 function createMenu() {

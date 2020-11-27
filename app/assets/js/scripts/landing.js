@@ -20,6 +20,7 @@ const launch_progress_label   = document.getElementById('launch_progress_label')
 const launch_details_text     = document.getElementById('launch_details_text')
 const server_selection_button = document.getElementById('server_selection_button')
 const user_text               = document.getElementById('user_text')
+const notion                  = document.getElementById('notion')
 
 const loggerLanding = LoggerUtil('%c[Landing]', 'color: #000668; font-weight: bold')
 
@@ -1149,3 +1150,29 @@ function loadNews(){
         })
     })
 }
+
+
+/**
+ * Notion injection
+ */
+notion.contentWindow.localStorage.setItem('theme','{"mode":"dark"}')
+notion.contentWindow.addEventListener('DOMContentLoaded', event => {
+    const notionDoc = notion.contentWindow.document
+
+    // CSS
+    {
+        // Create the <style> tag
+        const style = notionDoc.createElement('style')
+
+        style.innerHTML += '.notion-topbar { display: none !important; }'
+        style.innerHTML += '.notion-page-content { align-items: start !important; padding-left: 0 !important; padding-right: 0 !important; padding-bottom: 0 !important; }'
+        style.innerHTML += '.notion-scroller > :not(.notion-page-content) { display: none !important; }'
+        style.innerHTML += '.notion-scroller > div > div { padding-left: 0 !important; padding-right: 0 !important; }'
+        style.innerHTML += '.notion-cursor-listener { background: transparent !important; }'
+        style.innerHTML += '.notion-frame { background: transparent !important; }'
+        style.innerHTML += 'body { background: transparent !important; }'
+
+        // Add the <style> element to the page
+        notionDoc.head.appendChild(style)
+    }
+})
