@@ -146,14 +146,14 @@ function updateSelectedServer(serv){
     }
     ConfigManager.setSelectedServer(serv != null ? serv.getID() : null)
     ConfigManager.save()
-    server_selection_button_status.innerHTML = '\u2022 ' + (serv != null ? serv.getName() : 'No Server Selected')
+    server_selection_button_status.innerHTML = '\u2022 ' + (serv != null ? serv.getName() : 'Modパックが選択されていません')
     if(getCurrentView() === VIEWS.settings){
         animateModsTabRefresh()
     }
     setLaunchEnabled(serv != null)
 }
 // Real text is set in uibinder.js on distributionIndexDone.
-server_selection_button_status.innerHTML = '\u2022 Loading..'
+server_selection_button_status.innerHTML = '\u2022 ロード中..'
 server_selection_button.onclick = (e) => {
     e.target.blur()
     toggleServerSelection(true)
@@ -234,7 +234,7 @@ const refreshServerStatus = async function(fade = false){
         const serverURL = new URL('my://' + serv.getAddress())
         const servStat = await ServerStatus.getStatus(serverURL.hostname, serverURL.port)
         if(servStat.online){
-            pLabel = 'PLAYERS'
+            pLabel = 'プレイヤー'
             pVal = servStat.onlinePlayers + '/' + servStat.maxPlayers
         }
 
@@ -272,7 +272,7 @@ function showLaunchFailure(title, desc){
     setOverlayContent(
         title,
         desc,
-        'Okay'
+        '了解'
     )
     setOverlayHandler(null)
     toggleOverlay(true)
@@ -294,7 +294,7 @@ let extractListener
  */
 function asyncSystemScan(mcVersion, launchAfter = true){
 
-    setLaunchDetails('Please wait..')
+    setLaunchDetails('しばらくお待ち下さい..')
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
@@ -329,13 +329,13 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 // If the result is null, no valid Java installation was found.
                 // Show this information to the user.
                 setOverlayContent(
-                    'No Compatible<br>Java Installation Found',
-                    'In order to join WesterosCraft, you need a 64-bit installation of Java 8. Would you like us to install a copy? By installing, you accept <a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">Oracle\'s license agreement</a>.',
-                    'Install Java',
+                    '対応したJava<br>がインストールされていません',
+                    '参加するためには64ビット版Javaのインストールが必要です。インストールしますか?インストールには<a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">Oracleライセンス条項</a>に同意する必要があります。',
+                    'Javaをインストール',
                     'Install Manually'
                 )
                 setOverlayHandler(() => {
-                    setLaunchDetails('Preparing Java Download..')
+                    setLaunchDetails('Javaダウンロードの準備中..')
                     sysAEx.send({task: 'changeContext', class: 'AssetGuard', args: [ConfigManager.getCommonDirectory(),ConfigManager.getJavaExecutable()]})
                     sysAEx.send({task: 'execute', function: '_enqueueOpenJDK', argsArr: [ConfigManager.getDataDirectory()]})
                     toggleOverlay(false)
@@ -344,8 +344,8 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                     $('#overlayContent').fadeOut(250, () => {
                         //$('#overlayDismiss').toggle(false)
                         setOverlayContent(
-                            'Java is Required<br>to Launch',
-                            'A valid x64 installation of Java 8 is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.',
+                            '起動には<br>Javaが必要です',
+                            '起動には64ビット版Javaのインストールが必要です。<br><br>手動インストールは <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide (英語)</a> を参考にしてください。',
                             'I Understand',
                             'Go Back'
                         )
@@ -382,7 +382,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
             if(m.result === true){
 
                 // Oracle JRE enqueued successfully, begin download.
-                setLaunchDetails('Downloading Java..')
+                setLaunchDetails('Javaをダウンロード中..')
                 sysAEx.send({task: 'execute', function: 'processDlQueues', argsArr: [[{id:'java', limit:1}]]})
 
             } else {
@@ -390,9 +390,9 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 // Oracle JRE enqueue failed. Probably due to a change in their website format.
                 // User will have to follow the guide to install Java.
                 setOverlayContent(
-                    'Unexpected Issue:<br>Java Download Failed',
-                    'Unfortunately we\'ve encountered an issue while attempting to install Java. You will need to manually install a copy. Please check out our <a href="https://github.com/dscalzi/HeliosLauncher/wiki">Troubleshooting Guide</a> for more details and instructions.',
-                    'I Understand'
+                    '問題発生:<br>Javaのダウンロードに失敗した',
+                    '不幸なことにJavaのインストールに失敗してしまいました。手動でインストールする必要があります。手動インストールは <a href="https://github.com/dscalzi/HeliosLauncher/wiki">Troubleshooting Guide (英語)</a> を参考にしてください。',
+                    'わかりました'
                 )
                 setOverlayHandler(() => {
                     toggleOverlay(false)
@@ -420,7 +420,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                     remote.getCurrentWindow().setProgressBar(2)
 
                     // Wait for extration to complete.
-                    const eLStr = 'Extracting'
+                    const eLStr = '展開中'
                     let dotStr = ''
                     setLaunchDetails(eLStr)
                     extractListener = setInterval(() => {
@@ -446,7 +446,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                         extractListener = null
                     }
 
-                    setLaunchDetails('Java Installed!')
+                    setLaunchDetails('Javaのインストール完了!')
 
                     if(launchAfter){
                         dlAsync()
@@ -462,7 +462,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
     })
 
     // Begin system Java scan.
-    setLaunchDetails('Checking system info..')
+    setLaunchDetails('システムをスキャン中..')
     sysAEx.send({task: 'execute', function: 'validateJava', argsArr: [ConfigManager.getDataDirectory()]})
 
 }
@@ -527,12 +527,12 @@ function dlAsync(login = true){
     })
     aEx.on('error', (err) => {
         loggerLaunchSuite.error('Error during launch', err)
-        showLaunchFailure('Error During Launch', err.message || 'See console (CTRL + Shift + i) for more details.')
+        showLaunchFailure('起動中に問題が発生しました', err.message || '(CTRL + Shift + i) でコンソールを開けば何かがわかるかもしれません。')
     })
     aEx.on('close', (code, signal) => {
         if(code !== 0){
             loggerLaunchSuite.error(`AssetExec exited with code ${code}, assuming error.`)
-            showLaunchFailure('Error During Launch', 'See console (CTRL + Shift + i) for more details.')
+            showLaunchFailure('起動中に問題が発生しました', '(CTRL + Shift + i) でコンソールを開けば何かがわかるかもしれません。')
         }
     })
 
@@ -544,27 +544,27 @@ function dlAsync(login = true){
                 case 'distribution':
                     setLaunchPercentage(20, 100)
                     loggerLaunchSuite.log('Validated distibution index.')
-                    setLaunchDetails('Loading version information..')
+                    setLaunchDetails('バージョン情報を読込中..')
                     break
                 case 'version':
                     setLaunchPercentage(40, 100)
                     loggerLaunchSuite.log('Version data loaded.')
-                    setLaunchDetails('Validating asset integrity..')
+                    setLaunchDetails('アセットを検証中..')
                     break
                 case 'assets':
                     setLaunchPercentage(60, 100)
                     loggerLaunchSuite.log('Asset Validation Complete')
-                    setLaunchDetails('Validating library integrity..')
+                    setLaunchDetails('ライブラリを検証中..')
                     break
                 case 'libraries':
                     setLaunchPercentage(80, 100)
                     loggerLaunchSuite.log('Library validation complete.')
-                    setLaunchDetails('Validating miscellaneous file integrity..')
+                    setLaunchDetails('ファイルを検証中..')
                     break
                 case 'files':
                     setLaunchPercentage(100, 100)
                     loggerLaunchSuite.log('File validation complete.')
-                    setLaunchDetails('Downloading files..')
+                    setLaunchDetails('ファイルをダウンロード中..')
                     break
             }
         } else if(m.context === 'progress'){
@@ -582,7 +582,7 @@ function dlAsync(login = true){
                     remote.getCurrentWindow().setProgressBar(2)
 
                     // Download done, extracting.
-                    const eLStr = 'Extracting libraries'
+                    const eLStr = 'ライブラリを展開中'
                     let dotStr = ''
                     setLaunchDetails(eLStr)
                     progressListener = setInterval(() => {
@@ -606,7 +606,7 @@ function dlAsync(login = true){
                         progressListener = null
                     }
 
-                    setLaunchDetails('Preparing to launch..')
+                    setLaunchDetails('起動の準備中..')
                     break
             }
         } else if(m.context === 'error'){
@@ -616,13 +616,13 @@ function dlAsync(login = true){
                     
                     if(m.error.code === 'ENOENT'){
                         showLaunchFailure(
-                            'Download Error',
-                            'Could not connect to the file server. Ensure that you are connected to the internet and try again.'
+                            'ダウンロードエラー',
+                            'ファイルサーバーに接続できません。インターネットに繋がれているか確認し、もう一度お試しください。'
                         )
                     } else {
                         showLaunchFailure(
-                            'Download Error',
-                            'Check the console (CTRL + Shift + i) for more details. Please try again.'
+                            'ダウンロードエラー',
+                            '(CTRL + Shift + i) でコンソールを開けば何かがわかるかもしれません。もう一度お試しください。'
                         )
                     }
 
@@ -641,7 +641,7 @@ function dlAsync(login = true){
                 loggerLaunchSuite.error('Error during validation:', m.result)
 
                 loggerLaunchSuite.error('Error during launch', m.result.error)
-                showLaunchFailure('Error During Launch', 'Please check the console (CTRL + Shift + i) for more details.')
+                showLaunchFailure('起動中に問題が発生しました', '(CTRL + Shift + i) でコンソールを開けば何かがわかるかもしれません。')
 
                 allGood = false
             }
@@ -698,7 +698,7 @@ function dlAsync(login = true){
                     data = data.trim()
                     if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
                         loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
-                        showLaunchFailure('Error During Launch', 'The main file, LaunchWrapper, failed to download properly. As a result, the game cannot launch.<br><br>To fix this issue, temporarily turn off your antivirus software and launch the game again.<br><br>If you have time, please <a href="https://github.com/dscalzi/HeliosLauncher/issues">submit an issue</a> and let us know what antivirus software you use. We\'ll contact them and try to straighten things out.')
+                        showLaunchFailure('起動中に問題が発生しました', '重要なファイルであるLaunchWrapperのダウンロードに失敗したため、ゲームを起動できません。<br><br>このエラーを直すためには一旦、ウィルス対策ソフトを無効にして起動し直してみてください。')
                     }
                 }
 
@@ -710,7 +710,7 @@ function dlAsync(login = true){
                     proc.stdout.on('data', tempListener)
                     proc.stderr.on('data', gameErrorListener)
 
-                    setLaunchDetails('Done. Enjoy the server!')
+                    setLaunchDetails('準備OK。よいマイクラライフを！')
 
                     // Init Discord Hook
                     const distro = DistroManager.getDistribution()
@@ -728,7 +728,7 @@ function dlAsync(login = true){
                 } catch(err) {
 
                     loggerLaunchSuite.error('Error during launch', err)
-                    showLaunchFailure('Error During Launch', 'Please check the console (CTRL + Shift + i) for more details.')
+                    showLaunchFailure('起動中に問題が発生しました', '(CTRL + Shift + i) でコンソールを開けば何かがわかるかもしれません。')
 
                 }
             }
@@ -742,7 +742,7 @@ function dlAsync(login = true){
     // Begin Validations
 
     // Validate Forge files.
-    setLaunchDetails('Loading server information..')
+    setLaunchDetails('Modパックの情報をロード中..')
 
     refreshDistributionIndex(true, (data) => {
         onDistroRefresh(data)
@@ -757,7 +757,7 @@ function dlAsync(login = true){
         }, (err) => {
             loggerLaunchSuite.error('Unable to refresh distribution index.', err)
             if(DistroManager.getDistribution() == null){
-                showLaunchFailure('Fatal Error', 'Could not load a copy of the distribution index. See the console (CTRL + Shift + i) for more details.')
+                showLaunchFailure('致命的なエラー', '配布マニフェストの読み込みに失敗したため失敗しました。(CTRL + Shift + i) でコンソールを開けば何かがわかるかもしれません。')
 
                 // Disconnect from AssetExec
                 aEx.disconnect()
