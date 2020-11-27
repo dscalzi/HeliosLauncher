@@ -485,12 +485,9 @@ body, button {
 
 /* Logo on login form. */
 #loginImageSeal {
-    border-radius: 50%;
-    border: 2px solid #cad7e1;
-    background: rgba(1, 2, 1, 0.5);
+    border-radius: 5%;
     height: 125px;
     width: 125px;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
     margin-bottom: 20px;
 }
 
@@ -2308,7 +2305,6 @@ input:checked + .toggleSwitchSlider:before {
     top: 25px;
     display: inline-flex;
     line-height: 24px;
-    left: 50px;
 }
 #landingContainer > #lower > #center {
     position: relative;
@@ -2668,9 +2664,8 @@ input:checked + .toggleSwitchSlider:before {
     height: 70px;
     width: auto;
     position: relative;
-    border: 2px solid white;
     box-sizing: border-box;
-    border-radius: 50%;
+    border-radius: 5%;
 }
 
 /* Logo container styles. */
@@ -3752,10 +3747,19 @@ input:checked + .toggleSwitchSlider:before {
     position: absolute;
     width: 277px;
     height: auto;
+    z-index: 402;
 }
 
 /* Rotating image for the spinner. */
 #loadSpinnerImage {
+    width: 280px;
+    height: auto;
+    z-index: 401;
+}
+
+/* Rotating image for the spinner. */
+#loadSpinnerImageBack {
+    position: absolute;
     width: 280px;
     height: auto;
     z-index: 400;
@@ -3771,7 +3775,20 @@ input:checked + .toggleSwitchSlider:before {
     }
 }
 
+@keyframes rotatingBack {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
 /* Class which is applied when the spinner image is spinning. */
 .rotating {
-    animation: rotating 10s linear infinite;
+    animation: rotating 32s linear infinite;
+}
+
+.rotatingBack {
+    animation: rotatingBack 25s linear infinite;
 }

@@ -1,0 +1,49 @@
+{
+    "html": {
+        "avatarOverlay": "編集"
+    },
+    "js": {
+        "login": {
+            "error": {
+                "invalidValue": "* 無効な値",
+                "requiredValue": "* 必須項目",
+                "userMigrated": {
+                    "title": "ログイン失敗:<br>無効な認証",
+                    "desc": "今のMinecraftアカウントはプレイヤー名ではなくメールアドレスを使う必要があります。"
+                },
+                "invalidCredentials": {
+                    "title": "ログイン失敗:<br>無効な認証",
+                    "desc": "メールアドレスかパスワードが間違っています。もう一度やり直してください。"
+                },
+                "rateLimit": {
+                    "title": "ログイン失敗:<br>間違えすぎ",
+                    "desc": "パスワードを間違えすぎたため今はログインできません。時間を置いてやり直してください。"
+                },
+                "noInternet": {
+                    "title": "ログイン失敗:<br>ネットに繋いでください",
+                    "desc": "ログインにはインターネットが必要です。インターネットに接続してもう一度やり直してください。"
+                },
+                "authDown": {
+                    "title": "ログイン失敗:<br>Minecraft認証鯖が死んでいる",
+                    "desc": "Mojang の認証鯖が落ちている可能性があります。少し待ってやり直してみてください。"
+                },
+                "notPaid": {
+                    "title": "ログイン失敗:<br>Minecraft未購入",
+                    "desc": "Minecraft未購入のアカウントでログインしようとしています。<br><a href=\"https://minecraft.net/\">Minecraft.net</a> でMinecraftを買ってください。"
+                },
+                "unknown": {
+                    "title": "ログイン失敗:<br>なんかよくわからないエラー"
+                }
+            },
+            "login": "ログイン",
+            "loggingIn": "ログイン中",
+            "success": "ログイン成功",
+            "tryAgain": "OK"
+        },
+        "landing": {
+            "launch": {
+                "pleaseWait": "しばらくお待ち下さい.."
+            }
+        }
+    }
+}
