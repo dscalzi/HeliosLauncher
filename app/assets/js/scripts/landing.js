@@ -710,7 +710,7 @@ function dlAsync(login = true){
                     proc.stdout.on('data', tempListener)
                     proc.stderr.on('data', gameErrorListener)
 
-                    setLaunchDetails('準備OK。よいマイクラライフを！')
+                    setLaunchDetails('準備OK。参加勢集合！')
 
                     // Init Discord Hook
                     const distro = DistroManager.getDistribution()
