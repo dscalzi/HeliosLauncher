@@ -3792,3 +3792,25 @@ input:checked + .toggleSwitchSlider:before {
 .rotatingBack {
     animation: rotatingBack 25s linear infinite;
 }
+
+/* Notion */
+#notionContainer {
+    margin-top: 120px;
+    width: 100%;
+    height: calc(100% - 120px);
+    overflow: hidden;
+}
+
+#notion {
+    width: calc(100% / 0.65);
+    height: calc(100% / 0.65);
+    border: 0;
+
+    zoom: 1.00;
+    -moz-transform: scale(0.65);
+    -moz-transform-origin: 0 0;
+    -o-transform: scale(0.65);
+    -o-transform-origin: 0 0;
+    -webkit-transform: scale(0.65);
+    -webkit-transform-origin: 0 0;
+}
