@@ -105,11 +105,13 @@
         <div id="left">
             <div class="bot_wrapper">
                 <div id="content">
-                    <div id="server_status_wrapper" style="display: none;">
-                        <span class="bot_label" id="landingPlayerLabel">サーバー</span>
-                        <span id="player_count">オフライン</span>
+                    <div style="display: none;">
+                        <div id="server_status_wrapper">
+                            <span class="bot_label" id="landingPlayerLabel">サーバー</span>
+                            <span id="player_count">オフライン</span>
+                        </div>
+                        <!--<div class="bot_divider"></div>-->
                     </div>
-                    <!--<div class="bot_divider"></div>-->
                     <div id="mojangStatusWrapper">
                         <span class="bot_label">MOJANGステータス</span>
                         <span id="mojang_status_icon">&#8226;</span>
@@ -151,9 +153,15 @@
         <div id="right">
             <div class="bot_wrapper">
                 <div id="launch_content">
-                    <button id="launch_button">PLAY</button>
+                    <button id="launch_button">
+                        <div>PLAY</div>
+                        <div class="launch_ruby">▲ゲーム起動</div>
+                    </button>
                     <div class="bot_divider"></div>
-                    <button id="server_selection_button" class="bot_label">&#8226; No Server Selected</button>
+                    <button id="server_selection_button" class="bot_label">
+                        <div id="server_selection_button_status">&#8226; No Server Selected</div>
+                        <div class="launch_ruby">▲Modパック/バージョン選択</div>
+                    </button>
                 </div>
                 <div id="launch_details">
                     <div id="launch_details_left">

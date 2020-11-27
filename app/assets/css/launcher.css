@@ -3255,6 +3255,13 @@ input:checked + .toggleSwitchSlider:before {
     justify-content: center;
 }
 
+.launch_ruby {
+    font-size: 6px;
+}
+#server_selection_button .launch_ruby {
+    line-height: 12px;
+}
+
 /* Button which opens the server selection view. */
 #server_selection_button {
     background: none;
