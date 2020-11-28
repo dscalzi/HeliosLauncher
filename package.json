@@ -1,52 +1,52 @@
 {
-  "name": "helioslauncher",
-  "version": "1.8.0",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
-  "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
-  "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
-  },
-  "private": true,
-  "main": "index.js",
-  "scripts": {
-    "start": "electron .",
-    "cilinux": "node build.js WINDOWS && node build.js LINUX",
-    "cidarwin": "node build.js MAC",
-    "dist": "cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true node build.js",
-    "dist:win": "npm run dist -- WINDOWS",
-    "dist:mac": "npm run dist -- MAC",
-    "dist:linux": "npm run dist -- LINUX",
-    "lint": "eslint --config .eslintrc.json ."
-  },
-  "engines": {
-    "node": "12.x.x"
-  },
-  "dependencies": {
-    "adm-zip": "^0.4.16",
-    "async": "^3.2.0",
-    "discord-rpc": "^3.1.4",
-    "ejs": "^3.1.5",
-    "ejs-electron": "^2.1.1",
-    "electron-updater": "^4.3.5",
-    "fs-extra": "^9.0.1",
-    "github-syntax-dark": "^0.5.0",
-    "jquery": "^3.5.1",
-    "request": "^2.88.2",
-    "semver": "^7.3.2",
-    "tar-fs": "^2.1.1",
-    "winreg": "^1.2.4"
-  },
-  "devDependencies": {
-    "cross-env": "^7.0.2",
-    "electron": "^11.0.0",
-    "electron-builder": "^22.9.1",
-    "eslint": "^7.13.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
-  }
+    "name": "skygameslauncher",
+    "version": "1.1.2",
+    "productName": "SkyGames Launcher",
+    "description": "SkyGames Launcher",
+    "author": "FullGreen (https://github.com/dscalzi/)",
+    "license": "UNLICENSED",
+    "homepage": "https://github.com/FullGreenDev/SkyGamesLauncher",
+    "bugs": {
+        "url": "https://github.com/FullGreenDev/SkyGamesLauncher/issues"
+    },
+    "private": true,
+    "main": "index.js",
+    "scripts": {
+        "start": "electron .",
+        "cilinux": "node build.js WINDOWS && node build.js LINUX",
+        "cidarwin": "node build.js MAC",
+        "dist": "cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true node build.js",
+        "dist:win": "npm run dist -- WINDOWS",
+        "dist:mac": "npm run dist -- MAC",
+        "dist:linux": "npm run dist -- LINUX",
+        "lint": "eslint --config .eslintrc.json ."
+    },
+    "engines": {
+        "node": "12.x.x"
+    },
+    "dependencies": {
+        "adm-zip": "^0.4.16",
+        "async": "^3.2.0",
+        "discord-rpc": "^3.1.4",
+        "ejs": "^3.1.5",
+        "ejs-electron": "^2.1.1",
+        "electron-updater": "^4.3.5",
+        "fs-extra": "^9.0.1",
+        "github-syntax-dark": "^0.5.0",
+        "jquery": "^3.5.1",
+        "request": "^2.88.2",
+        "semver": "^7.3.2",
+        "tar-fs": "^2.1.1",
+        "winreg": "^1.2.4"
+    },
+    "devDependencies": {
+        "cross-env": "^7.0.2",
+        "electron": "^11.0.0",
+        "electron-builder": "^22.9.1",
+        "eslint": "^7.13.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/FullGreenDev/SkyGamesLauncher.git"
+    }
 }
