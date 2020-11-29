@@ -1,8 +1,8 @@
 const builder = require('electron-builder')
 const Platform = builder.Platform
 
-function getCurrentPlatform(){
-    switch(process.platform){
+function getCurrentPlatform() {
+    switch (process.platform) {
         case 'win32':
             return Platform.WINDOWS
         case 'darwin':
@@ -18,8 +18,8 @@ function getCurrentPlatform(){
 builder.build({
     targets: (process.argv[2] != null && Platform[process.argv[2]] != null ? Platform[process.argv[2]] : getCurrentPlatform()).createTarget(),
     config: {
-        appId: 'helioslauncher',
-        productName: 'Helios Launcher',
+        appId: 'skygameslauncher',
+        productName: 'SkyGames Launcher',
         artifactName: '${productName}-setup-${version}.${ext}',
         copyright: 'Copyright © 2018-2020 Daniel Scalzi',
         directories: {
@@ -27,12 +27,10 @@ builder.build({
             output: 'dist'
         },
         win: {
-            target: [
-                {
-                    target: 'nsis',
-                    arch: 'x64'
-                }
-            ]
+            target: [{
+                target: 'nsis',
+                arch: 'x64'
+            }]
         },
         nsis: {
             oneClick: false,
@@ -46,10 +44,10 @@ builder.build({
         },
         linux: {
             target: 'AppImage',
-            maintainer: 'Daniel Scalzi',
-            vendor: 'Daniel Scalzi',
+            maintainer: 'FullGreen',
+            vendor: 'FullGreen',
             synopsis: 'Modded Minecraft Launcher',
-            description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.',
+            description: 'SkyGames Launcher',
             category: 'Game'
         },
         compression: 'maximum',
