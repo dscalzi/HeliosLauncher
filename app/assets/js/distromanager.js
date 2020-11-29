@@ -3,14 +3,14 @@ const path = require('path')
 const request = require('request')
 
 const ConfigManager = require('./configmanager')
-const logger        = require('./loggerutil')('%c[DistroManager]', 'color: #a02d2a; font-weight: bold')
+const logger = require('./loggerutil')('%c[DistroManager]', 'color: #a02d2a; font-weight: bold')
 
 /**
  * Represents the download information
  * for a specific module.
  */
 class Artifact {
-    
+
     /**
      * Parse a JSON object into an Artifact.
      * 
@@ -18,7 +18,7 @@ class Artifact {
      * 
      * @returns {Artifact} The parsed Artifact.
      */
-    static fromJSON(json){
+    static fromJSON(json) {
         return Object.assign(new Artifact(), json)
     }
 
@@ -29,28 +29,28 @@ class Artifact {
      * 
      * @returns {string} The MD5 hash of the Artifact or undefined.
      */
-    getHash(){
+    getHash() {
         return this.MD5
     }
 
     /**
      * @returns {number} The download size of the artifact.
      */
-    getSize(){
+    getSize() {
         return this.size
     }
 
     /**
      * @returns {string} The download url of the artifact.
      */
-    getURL(){
+    getURL() {
         return this.url
     }
 
     /**
      * @returns {string} The artifact's destination path.
      */
-    getPath(){
+    getPath() {
         return this.path
     }
 
@@ -62,7 +62,7 @@ exports.Artifact
  * of a module.
  */
 class Required {
-    
+
     /**
      * Parse a JSON object into a Required object.
      * 
@@ -70,15 +70,15 @@ class Required {
      * 
      * @returns {Required} The parsed Required object.
      */
-    static fromJSON(json){
-        if(json == null){
+    static fromJSON(json) {
+        if (json == null) {
             return new Required(true, true)
         } else {
             return new Required(json.value == null ? true : json.value, json.def == null ? true : json.def)
         }
     }
 
-    constructor(value, def){
+    constructor(value, def) {
         this.value = value
         this.default = def
     }
@@ -90,14 +90,14 @@ class Required {
      * 
      * @returns {boolean} The default enabled value.
      */
-    isDefault(){
+    isDefault() {
         return this.default
     }
 
     /**
      * @returns {boolean} Whether or not the module is required.
      */
-    isRequired(){
+    isRequired() {
         return this.value
     }
 
@@ -117,7 +117,7 @@ class Module {
      * 
      * @returns {Module} The parsed Module.
      */
-    static fromJSON(json, serverid){
+    static fromJSON(json, serverid) {
         return new Module(json.id, json.name, json.type, json.required, json.artifact, json.subModules, serverid)
     }
 
@@ -128,7 +128,7 @@ class Module {
      * 
      * @return {string} The default extension for the given type.
      */
-    static _resolveDefaultExtension(type){
+    static _resolveDefaultExtension(type) {
         switch (type) {
             case exports.Types.Library:
             case exports.Types.ForgeHosted:
@@ -154,7 +154,7 @@ class Module {
         this._resolveSubModules(subModules, serverid)
     }
 
-    _resolveMetaData(){
+    _resolveMetaData() {
         try {
 
             const m0 = this.identifier.split('@')
@@ -174,8 +174,8 @@ class Module {
         }
     }
 
-    _resolveArtifactPath(artifactPath, serverid){
-        const pth = artifactPath == null ? path.join(...this.getGroup().split('.'), this.getID(), this.getVersion(), `${this.getID()}-${this.getVersion()}${this.artifactClassifier != undefined ? `-${this.artifactClassifier}` : ''}.${this.getExtension()}`) : artifactPath
+    _resolveArtifactPath(artifactPath, serverid) {
+            const pth = artifactPath == null ? path.join(...this.getGroup().split('.'), this.getID(), this.getVersion(), `${this.getID()}-${this.getVersion()}${this.artifactClassifier != undefined ? `-${this.artifactClassifier}` : ''}.${this.getExtension()}`) : artifactPath
 
         switch (this.type){
             case exports.Types.Library:
@@ -537,7 +537,7 @@ exports.pullRemote = function(){
         return exports.pullLocal()
     }
     return new Promise((resolve, reject) => {
-        const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/distribution.json'
+        const distroURL = 'http://mc.skygames.fr/7AZi725mvlcY9V3Q/launcher/distribution.json'
         //const distroURL = 'https://gist.githubusercontent.com/dscalzi/53b1ba7a11d26a5c353f9d5ae484b71b/raw/'
         const opts = {
             url: distroURL,
