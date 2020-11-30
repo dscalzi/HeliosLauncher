@@ -327,13 +327,14 @@ function asyncSystemScan(mcVersion, launchAfter = true) {
                 // If the result is null, no valid Java installation was found.
                 // Show this information to the user.
                 setOverlayContent(
-                    'No Compatible<br>Java Installation Found',
-                    'In order to join WesterosCraft, you need a 64-bit installation of Java 8. Would you like us to install a copy? By installing, you accept <a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">Oracle\'s license agreement</a>.',
-                    'Install Java',
-                    'Install Manually'
+
+                    'Aucune installation compatible <br> Java trouvée',
+                    'Pour rejoindre WesterosCraft, vous avez besoin d\'une installation 64 bits de Java 8. Souhaitez - vous que nous en installions une copie ? En installant, vous acceptez l\' < a href = "http://www.oracle.com/technetwork/java/javase/terms/license/index.html" > contrat de licence d\'Oracle < /a>.',
+                    'Installer Java',
+                    'Installer manuellement'
                 )
                 setOverlayHandler(() => {
-                    setLaunchDetails('Preparing Java Download..')
+                    setLaunchDetails('Préparation du téléchargement Java..')
                     sysAEx.send({ task: 'changeContext', class: 'AssetGuard', args: [ConfigManager.getCommonDirectory(), ConfigManager.getJavaExecutable()] })
                     sysAEx.send({ task: 'execute', function: '_enqueueOpenJDK', argsArr: [ConfigManager.getDataDirectory()] })
                     toggleOverlay(false)
@@ -342,10 +343,11 @@ function asyncSystemScan(mcVersion, launchAfter = true) {
                     $('#overlayContent').fadeOut(250, () => {
                         //$('#overlayDismiss').toggle(false)
                         setOverlayContent(
-                            'Java is Required<br>to Launch',
-                            'A valid x64 installation of Java 8 is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.',
-                            'I Understand',
-                            'Go Back'
+
+                            "Java est requis pour démarrer",
+                            'Une installation x64 valide de Java 8 est requise pour le lancement. <br> <br> Veuillez consulter notre <a href = "https://github.com/FullGreenDev/SkyGamesLauncher/wiki/Java-Management#manually-installing- a-valid-version-of-java "> Guide de gestion Java </a> pour savoir comment installer manuellement Java. ',
+                            'Je comprends',
+                            'Retourner'
                         )
                         setOverlayHandler(() => {
                             toggleLaunchArea(false)
@@ -394,9 +396,10 @@ function asyncSystemScan(mcVersion, launchAfter = true) {
                 // Oracle JRE enqueue failed. Probably due to a change in their website format.
                 // User will have to follow the guide to install Java.
                 setOverlayContent(
-                    'Unexpected Issue:<br>Java Download Failed',
-                    'Unfortunately we\'ve encountered an issue while attempting to install Java. You will need to manually install a copy. Please check out our <a href="https://github.com/dscalzi/HeliosLauncher/wiki">Troubleshooting Guide</a> for more details and instructions.',
-                    'I Understand'
+
+                    "Problème inattendu: échec du téléchargement Java",
+                    'Malheureusement, nous avons rencontré un problème lors de la tentative d\'installation de Java. Vous devrez installer manuellement une copie. Veuillez consulter notre <a href="https://github.com/FullGreenDev/SkyGamesLauncher"> Guide de dépannage </a> pour plus de détails et d\'instructions. ',
+                    'Je comprends'
                 )
                 setOverlayHandler(() => {
                     toggleOverlay(false)
@@ -496,12 +499,12 @@ function dlAsync(login = true) {
 
     if (login) {
         if (ConfigManager.getSelectedAccount() == null) {
-            loggerLanding.error('You must be logged into an account.')
+            loggerLanding.error('Vous devez être connecté à un compte.')
             return
         }
     }
 
-    setLaunchDetails('Please wait..')
+    setLaunchDetails('S\'il vous plaît, attendez..')
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
