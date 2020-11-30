@@ -504,9 +504,13 @@ body, button {
 .loginFieldContainer {
     position: relative;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    flex-direction: row;
+    justify-content: start;
+    align-items: start;
+    margin-bottom: 20px;
+    border-width: 0px 0px 1px 0px;
+    border-style: solid;
+    border-color: #fff;
 }
 
 /* SVG icons on the login view. */
@@ -522,10 +526,10 @@ body, button {
     font-weight: bold;
     font-size: 8px;
     color: #ff1b0c;
-    width: 100%;
-    text-align: right;
     position: absolute;
-    top: 7px;
+    text-align: right;
+    width: 100%;
+    top: -5px;
     opacity: 0;
     transition: 0.25s ease;
 }
@@ -556,18 +560,16 @@ body, button {
 .loginField {
     font-family: 'Avenir Book';
     background: none;
-    border-width: 1.5px 0px 0px 0px;
-    border-style: solid;
+    border: 0;
     width: 250px;
-    margin-bottom: 20px;
-    border-color: #fff;
     color: rgba(255, 255, 255, 0.75);
     font-weight: bold;
     text-align: center;
     box-sizing: border-box;
-    padding: 7.5px;
+    padding: 3px;
     font-size: 10px;
     letter-spacing: 1px;
+    z-index: 10;
 }
 .loginField:focus {
     outline: none;

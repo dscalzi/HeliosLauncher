@@ -359,10 +359,10 @@ function bindAuthAccountLogOut(){
             if(Object.keys(ConfigManager.getAuthAccounts()).length === 1){
                 isLastAccount = true
                 setOverlayContent(
-                    'Warning<br>This is Your Last Account',
-                    'In order to use the launcher you must be logged into at least one account. You will need to login again after.<br><br>Are you sure you want to log out?',
-                    'I\'m Sure',
-                    'Cancel'
+                    '注意<br>これはログインしている最後のアカウントです',
+                    '沼ランチャーを使うためには、最低1個のアカウントにログインしている必要があります。<br>ログアウトしたら、もう一度ログインしないといけなくなります。<br><br>本当にログアウトする？',
+                    '分かってるよそんなこと',
+                    'やっぱやめとく'
                 )
                 setOverlayHandler(() => {
                     processLogOut(val, isLastAccount)
@@ -694,9 +694,9 @@ function bindDropinModsRemoveButton(){
                 document.getElementById(fullName).remove()
             } else {
                 setOverlayContent(
-                    `Failed to Delete<br>Drop-in Mod ${fullName}`,
-                    'Make sure the file is not in use and try again.',
-                    'Okay'
+                    `ドロップ・インMod ${fullName}<br>の削除に失敗した`,
+                    'ファイルが開かれていないことを確認してやり直してね',
+                    'OK'
                 )
                 setOverlayHandler(null)
                 toggleOverlay(true)
@@ -749,9 +749,9 @@ function saveDropinModConfiguration(){
                 DropinModUtil.toggleDropinMod(CACHE_SETTINGS_MODS_DIR, dropin.fullName, dropinUIEnabled).catch(err => {
                     if(!isOverlayVisible()){
                         setOverlayContent(
-                            'Failed to Toggle<br>One or More Drop-in Mods',
+                            '1つ以上のドロップ・インMod<br>のON/OFFに失敗しました',
                             err.message,
-                            'Okay'
+                            'OK'
                         )
                         setOverlayHandler(null)
                         toggleOverlay(true)
@@ -1146,7 +1146,7 @@ function populateJavaExecDetails(execPath){
                 settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major}.${v.version.minor}.${v.version.revision} (x${v.arch})${vendor}`
             }
         } else {
-            settingsJavaExecDetails.innerHTML = 'Invalid Selection'
+            settingsJavaExecDetails.innerHTML = '無効なJava'
         }
     })
 }

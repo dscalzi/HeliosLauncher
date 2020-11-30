@@ -332,7 +332,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                     '対応したJava<br>がインストールされていません',
                     '参加するためには64ビット版Javaのインストールが必要です。インストールしますか?インストールには<a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">Oracleライセンス条項</a>に同意する必要があります。',
                     'Javaをインストール',
-                    'Install Manually'
+                    '手動でインストール'
                 )
                 setOverlayHandler(() => {
                     setLaunchDetails('Javaダウンロードの準備中..')
@@ -346,8 +346,8 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                         setOverlayContent(
                             '起動には<br>Javaが必要です',
                             '起動には64ビット版Javaのインストールが必要です。<br><br>手動インストールは <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide (英語)</a> を参考にしてください。',
-                            'I Understand',
-                            'Go Back'
+                            '分かりました',
+                            '戻る'
                         )
                         setOverlayHandler(() => {
                             toggleLaunchArea(false)
