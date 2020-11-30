@@ -4,9 +4,43 @@ on:
   push:
     tags:
       - 'v*'
+
 jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      ##Tag Number input
+      - name: Get latest release version tag number
+        id: get_version
+        uses: battila7/get-version-action@v2
+
+      ##ReleaseChannel - go!
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          release_name: NumaLauncher - ${{ steps.get_version.outputs.version }}
+          body: |
+            ### ▼ご使用のOSのインストーラーをダウンロードしてください。
+            [Windows](https://github.com/${{ github.repository }}/releases/download/${{ steps.get_version.outputs.version }}/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.exe)
+            [Mac OS X](https://github.com/${{ github.repository }}/releases/download/${{ steps.get_version.outputs.version }}/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.dmg)
+            [Linux](https://github.com/${{ github.repository }}/releases/download/${{ steps.get_version.outputs.version }}/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.AppImage)
+
+            ### ビルド情報
+            ${{ steps.get_version.outputs.version }} by ${{ github.actor }}
+          draft: false
+          prerelease: false
+
+
   build:
     runs-on: ${{ matrix.os }}
+
+    needs:
+      - release
 
     strategy:
       matrix:
@@ -27,37 +61,10 @@ jobs:
         with:
           node-version: '12.18.3'
 
-          
-
       ##Tag Number input
       - name: Get latest release version tag number
         id: get_version
         uses: battila7/get-version-action@v2
-
-
-
-      ##ReleaseChannel - go!
-      - name: Create Release
-        if: matrix.os == 'macos-latest'
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.get_version.outputs.version }}
-          release_name: NumaLauncher - ${{ steps.get_version.outputs.version }}
-          body: |
-            ### ▼ご使用のOSのインストーラーをダウンロードしてください。
-            [Windows](https://github.com/${{ github.repository }}/releases/download/${{ steps.get_version.outputs.version }}/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.exe)
-            [Mac OS X](https://github.com/${{ github.repository }}/releases/download/${{ steps.get_version.outputs.version }}/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.dmg)
-            [Linux](https://github.com/${{ github.repository }}/releases/download/${{ steps.get_version.outputs.version }}/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.AppImage)
-
-            ### ビルド情報
-            ${{ steps.get_version.outputs.version }} by ${{ github.actor }}
-          draft: false
-          prerelease: false
-
-
 
       ##CreateAPP - yarn release
       - name: NPM install
@@ -81,7 +88,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-
       ##ActionRelease - zip
       - uses: actions/upload-artifact@v1
         name: Action-Upload-MacOS1
@@ -104,26 +110,11 @@ jobs:
           name: Linux Release
           path: dist
 
-
       - uses: AButler/upload-release-assets@v2.0
         name: Upload Release File - MacOS1
         if: matrix.os == 'macos-latest'
         with:
-          files: dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.dmg.blockmap
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ steps.get_version.outputs.version }}
-      - uses: AButler/upload-release-assets@v2.0
-        name: Upload Release File - MacOS2
-        if: matrix.os == 'macos-latest'
-        with:
-          files: dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.dmg
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ steps.get_version.outputs.version }}
-      - uses: AButler/upload-release-assets@v2.0
-        name: Upload Release File - MacOS3
-        if: matrix.os == 'macos-latest'
-        with:
-          files: dist/latest-mac.yml
+          files: dist/latest-mac.yml;dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.{dmg,dmg.blockmap}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: ${{ steps.get_version.outputs.version }}
 
@@ -131,21 +122,7 @@ jobs:
         name: Upload Release File - Windows1
         if: matrix.os == 'windows-latest'
         with:
-          files: dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.exe.blockmap
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ steps.get_version.outputs.version }}
-      - uses: AButler/upload-release-assets@v2.0
-        name: Upload Release File - Windows2
-        if: matrix.os == 'windows-latest'
-        with:
-          files: dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.exe
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ steps.get_version.outputs.version }}
-      - uses: AButler/upload-release-assets@v2.0
-        name: Upload Release File - Windows3
-        if: matrix.os == 'windows-latest'
-        with:
-          files: dist/latest.yml
+          files: dist/latest.yml;dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.{exe,exe.blockmap}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: ${{ steps.get_version.outputs.version }}
 
@@ -153,147 +130,19 @@ jobs:
         name: Upload Release File - Ubuntu1
         if: matrix.os == 'ubuntu-latest'
         with:
-          files: dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.AppImage
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ steps.get_version.outputs.version }}
-      - uses: AButler/upload-release-assets@v2.0
-        name: Upload Release File - Ubuntu2
-        if: matrix.os == 'ubuntu-latest'
-        with:
-          files: dist/latest-linux.yml
+          files: dist/latest-linux.yml;dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.AppImage
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: ${{ steps.get_version.outputs.version }}
 
-#      - uses: xresloader/upload-to-github-release@v1
-#        name: Upload Release File - MacOS
-#        if: matrix.os == 'macos-latest'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          file: "dist/*"
-#          tags: true
-#          draft: false
-#          tag_name: ${{ steps.get_version.outputs.version }}
-#      - uses: xresloader/upload-to-github-release@v1
-#        name: Upload Release File - Windows
-#        if: matrix.os == 'windows-latest'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          file: "dist/*"
-#          tags: true
-#          draft: false
-#          tag_name: ${{ steps.get_version.outputs.version }}
-#      - uses: xresloader/upload-to-github-release@v1
-#        name: Upload Release File - Ubuntu
-#        if: matrix.os == 'ubuntu-18.04'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          file: "dist/*"
-#          tags: true
-#          draft: false
-#          tag_name: ${{ steps.get_version.outputs.version }}
+  notification:
+    runs-on: ubuntu-latest
 
-#      - uses: xresloader/upload-to-github-release@v1
-#        name: Upload Release File - MacOS1
-#        if: matrix.os == 'macos-latest'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          file: "dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.dmg.blockmap"
-#          tags: true
-#          draft: false
-#          tag_name: ${{ steps.get_version.outputs.version }}
-#
-#      - uses: xresloader/upload-to-github-release@v1
-#        name: Upload Release File - MacOS2
-#        if: matrix.os == 'macos-latest'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          file: "dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.dmg"
-#          tags: true
-#          draft: false
-#          tag_name: ${{ steps.get_version.outputs.version }}
-#
-#      - uses: xresloader/upload-to-github-release@v1
-#        name: Upload Release File - MacOS3
-#        if: matrix.os == 'macos-latest'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          file: "dist/latest-mac.yml"
-#          tags: true
-#          draft: false
-#          tag_name: ${{ steps.get_version.outputs.version }}
+    needs:
+      - build
 
-
-
-
-#      - uses: xresloader/upload-to-github-release@v1
-#        name: Upload Release File - Windows1
-#        if: matrix.os == 'windows-latest'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          file: "dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.exe.blockmap"
-#          tags: true
-#          draft: false
-#          tag_name: ${{ steps.get_version.outputs.version }}
-#
-#      - uses: xresloader/upload-to-github-release@v1
-#        name: Upload Release File - Windows2
-#        if: matrix.os == 'windows-latest'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          file: "dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.exe"
-#          tags: true
-#          draft: false
-#          tag_name: ${{ steps.get_version.outputs.version }}
-#
-#      - uses: xresloader/upload-to-github-release@v1
-#        name: Upload Release File - Windows3
-#        if: matrix.os == 'windows-latest'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          file: "dist/latest.yml"
-#          tags: true
-#          draft: false
-#          tag_name: ${{ steps.get_version.outputs.version }}
-
-
-
-
-#      - uses: xresloader/upload-to-github-release@v1
-#        name: Upload Release File - Ubuntu1
-#        if: matrix.os == 'ubuntu-18.04'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          file: "dist/NumaLauncher-setup-${{ steps.get_version.outputs.version-without-v }}.AppImage"
-#          tags: true
-#          draft: false
-#          tag_name: ${{ steps.get_version.outputs.version }}
-#
-#      - uses: xresloader/upload-to-github-release@v1
-#        name: Upload Release File - Ubuntu2
-#        if: matrix.os == 'ubuntu-18.04'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          file: "dist/latest-linux.yml"
-#          tags: true
-#          draft: false
-#          tag_name: ${{ steps.get_version.outputs.version }}
-
-
-
+    steps:
       - uses: actions/setup-ruby@v1
       - name: Send Webhook Notification
-        if: matrix.os == 'windows-latest'
         env:
           JOB_STATUS: ${{ job.status }}
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
