@@ -1152,6 +1152,16 @@ function loadNews(){
     })
 }
 
+/**
+ * Bind functionality to the file system button for the selected
+ * server configuration.
+ */
+document.getElementById('settingsFileSystemButton').onclick = () => {
+    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+    const CACHE_SETTINGS_MODS_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.getID())
+    DropinModUtil.validateDir(CACHE_SETTINGS_MODS_DIR)
+    shell.openPath(CACHE_SETTINGS_MODS_DIR)
+}
 
 /**
  * Notion injection
