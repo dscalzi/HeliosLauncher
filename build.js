@@ -21,7 +21,7 @@ builder.build({
         appId: 'skygameslauncher',
         productName: 'SkyGames Launcher',
         artifactName: '${productName}-setup-${version}.${ext}',
-        copyright: 'Copyright © 2018-2020 Daniel Scalzi',
+        copyright: 'Copyright © 2019-2020 SkyGames',
         directories: {
             buildResources: 'build',
             output: 'dist'
