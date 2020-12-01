@@ -454,7 +454,7 @@ function asyncSystemScan(mcVersion, launchAfter = true) {
                         extractListener = null
                     }
 
-                    setLaunchDetails('Java Installed!')
+                    setLaunchDetails('Java installé!')
 
                     if (launchAfter) {
                         dlAsync()
@@ -534,13 +534,13 @@ function dlAsync(login = true) {
         loggerAEx.log(data)
     })
     aEx.on('error', (err) => {
-        loggerLaunchSuite.error('Error during launch', err)
-        showLaunchFailure('Error During Launch', err.message || 'See console (CTRL + Shift + i) for more details.')
+        loggerLaunchSuite.error('Erreur lors du lancement', err)
+        showLaunchFailure('Erreur lors du lancement', err.message || 'Voir console (CTRL + Shift + i) pour plus de détails.')
     })
     aEx.on('close', (code, signal) => {
         if (code !== 0) {
-            loggerLaunchSuite.error(`AssetExec exited with code ${code}, assuming error.`)
-            showLaunchFailure('Error During Launch', 'See console (CTRL + Shift + i) for more details.')
+            loggerLaunchSuite.error(`AssetExec est sorti avec le code ${code}, en supposant une erreur.`)
+            showLaunchFailure('Erreur lors du lancement', 'Voir console (CTRL + Shift + i) pour plus de détails.')
         }
     })
 
@@ -551,27 +551,27 @@ function dlAsync(login = true) {
             switch (m.data) {
                 case 'distribution':
                     setLaunchPercentage(20, 100)
-                    loggerLaunchSuite.log('Validated distibution index.')
+                    loggerLaunchSuite.log('Indice de distribution validé.')
                     setLaunchDetails('Chargement des informations de version..')
                     break
                 case 'version':
                     setLaunchPercentage(40, 100)
-                    loggerLaunchSuite.log('Version data loaded.')
+                    loggerLaunchSuite.log('Données de version chargées.')
                     setLaunchDetails('Valider l\'intégrité des actifs..')
                     break
                 case 'assets':
                     setLaunchPercentage(60, 100)
-                    loggerLaunchSuite.log('Asset Validation Complete')
+                    loggerLaunchSuite.log('Validation des actifs terminée')
                     setLaunchDetails('Validation de l\'intégrité de la bibliothèque..')
                     break
                 case 'libraries':
                     setLaunchPercentage(80, 100)
-                    loggerLaunchSuite.log('Library validation complete.')
+                    loggerLaunchSuite.log('Validation de la bibliothèque terminée.')
                     setLaunchDetails('Validation de l\'intégrité des fichiers divers..')
                     break
                 case 'files':
                     setLaunchPercentage(100, 100)
-                    loggerLaunchSuite.log('File validation complete.')
+                    loggerLaunchSuite.log('Validation du fichier terminée.')
                     setLaunchDetails('Téléchargement de fichiers..')
                     break
             }
@@ -616,23 +616,23 @@ function dlAsync(login = true) {
                         progressListener = null
                     }
 
-                    setLaunchDetails('Preparing to launch..')
+                    setLaunchDetails('Preparation au lancement..')
                     break
             }
         } else if (m.context === 'error') {
             switch (m.data) {
                 case 'download':
-                    loggerLaunchSuite.error('Error while downloading:', m.error)
+                    loggerLaunchSuite.error('Erreur lors du téléchargement:', m.error)
 
                     if (m.error.code === 'ENOENT') {
                         showLaunchFailure(
-                            'Download Error',
-                            'Could not connect to the file server. Ensure that you are connected to the internet and try again.'
+                            'Erreur de téléchargement',
+                            'Impossible de se connecter au serveur de fichiers. Assurez-vous que vous êtes connecté à Internet et réessayez.'
                         )
                     } else {
                         showLaunchFailure(
-                            'Download Error',
-                            'Check the console (CTRL + Shift + i) for more details. Please try again.'
+                            'Erreur de téléchargement',
+                            'Vérifiez la console (CTRL + Shift + i) pour plus de détails. Veuillez réessayer.'
                         )
                     }
 

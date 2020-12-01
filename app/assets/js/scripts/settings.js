@@ -1,16 +1,16 @@
 // Requirements
-const os     = require('os')
+const os = require('os')
 const semver = require('semver')
 
 const { JavaGuard } = require('./assets/js/assetguard')
-const DropinModUtil  = require('./assets/js/dropinmodutil')
+const DropinModUtil = require('./assets/js/dropinmodutil')
 
 const settingsState = {
     invalid: new Set()
 }
 
-function bindSettingsSelect(){
-    for(let ele of document.getElementsByClassName('settingsSelectContainer')) {
+function bindSettingsSelect() {
+    for (let ele of document.getElementsByClassName('settingsSelectContainer')) {
         const selectedDiv = ele.getElementsByClassName('settingsSelectSelected')[0]
 
         selectedDiv.onclick = (e) => {
@@ -22,12 +22,12 @@ function bindSettingsSelect(){
     }
 }
 
-function closeSettingsSelect(el){
-    for(let ele of document.getElementsByClassName('settingsSelectContainer')) {
+function closeSettingsSelect(el) {
+    for (let ele of document.getElementsByClassName('settingsSelectContainer')) {
         const selectedDiv = ele.getElementsByClassName('settingsSelectSelected')[0]
         const optionsDiv = ele.getElementsByClassName('settingsSelectOptions')[0]
 
-        if(!(selectedDiv === el)) {
+        if (!(selectedDiv === el)) {
             selectedDiv.classList.remove('select-arrow-active')
             optionsDiv.setAttribute('hidden', '')
         }
@@ -41,9 +41,9 @@ document.addEventListener('click', closeSettingsSelect)
 bindSettingsSelect()
 
 
-function bindFileSelectors(){
-    for(let ele of document.getElementsByClassName('settingsFileSelButton')){
-        
+function bindFileSelectors() {
+    for (let ele of document.getElementsByClassName('settingsFileSelButton')) {
+
         ele.onclick = async e => {
             const isJavaExecSel = ele.id === 'settingsJavaExecSel'
             const directoryDialog = ele.hasAttribute('dialogDirectory') && ele.getAttribute('dialogDirectory') == 'true'
@@ -53,11 +53,11 @@ function bindFileSelectors(){
                 properties
             }
 
-            if(ele.hasAttribute('dialogTitle')) {
+            if (ele.hasAttribute('dialogTitle')) {
                 options.title = ele.getAttribute('dialogTitle')
             }
 
-            if(isJavaExecSel && process.platform === 'win32') {
+            if (isJavaExecSel && process.platform === 'win32') {
                 options.filters = [
                     { name: 'Executables', extensions: ['exe'] },
                     { name: 'All Files', extensions: ['*'] }
@@ -65,9 +65,9 @@ function bindFileSelectors(){
             }
 
             const res = await remote.dialog.showOpenDialog(remote.getCurrentWindow(), options)
-            if(!res.canceled) {
+            if (!res.canceled) {
                 ele.previousElementSibling.value = res.filePaths[0]
-                if(isJavaExecSel) {
+                if (isJavaExecSel) {
                     populateJavaExecDetails(ele.previousElementSibling.value)
                 }
             }
@@ -83,30 +83,30 @@ bindFileSelectors()
  */
 
 /**
-  * Bind value validators to the settings UI elements. These will
-  * validate against the criteria defined in the ConfigManager (if
-  * and). If the value is invalid, the UI will reflect this and saving
-  * will be disabled until the value is corrected. This is an automated
-  * process. More complex UI may need to be bound separately.
-  */
-function initSettingsValidators(){
+ * Bind value validators to the settings UI elements. These will
+ * validate against the criteria defined in the ConfigManager (if
+ * and). If the value is invalid, the UI will reflect this and saving
+ * will be disabled until the value is corrected. This is an automated
+ * process. More complex UI may need to be bound separately.
+ */
+function initSettingsValidators() {
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
     Array.from(sEls).map((v, index, arr) => {
         const vFn = ConfigManager['validate' + v.getAttribute('cValue')]
-        if(typeof vFn === 'function'){
-            if(v.tagName === 'INPUT'){
-                if(v.type === 'number' || v.type === 'text'){
+        if (typeof vFn === 'function') {
+            if (v.tagName === 'INPUT') {
+                if (v.type === 'number' || v.type === 'text') {
                     v.addEventListener('keyup', (e) => {
                         const v = e.target
-                        if(!vFn(v.value)){
+                        if (!vFn(v.value)) {
                             settingsState.invalid.add(v.id)
                             v.setAttribute('error', '')
                             settingsSaveDisabled(true)
                         } else {
-                            if(v.hasAttribute('error')){
+                            if (v.hasAttribute('error')) {
                                 v.removeAttribute('error')
                                 settingsState.invalid.delete(v.id)
-                                if(settingsState.invalid.size === 0){
+                                if (settingsState.invalid.size === 0) {
                                     settingsSaveDisabled(false)
                                 }
                             }
@@ -122,35 +122,35 @@ function initSettingsValidators(){
 /**
  * Load configuration values onto the UI. This is an automated process.
  */
-function initSettingsValues(){
+function initSettingsValues() {
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
     Array.from(sEls).map((v, index, arr) => {
         const cVal = v.getAttribute('cValue')
         const gFn = ConfigManager['get' + cVal]
-        if(typeof gFn === 'function'){
-            if(v.tagName === 'INPUT'){
-                if(v.type === 'number' || v.type === 'text'){
+        if (typeof gFn === 'function') {
+            if (v.tagName === 'INPUT') {
+                if (v.type === 'number' || v.type === 'text') {
                     // Special Conditions
-                    if(cVal === 'JavaExecutable'){
+                    if (cVal === 'JavaExecutable') {
                         populateJavaExecDetails(v.value)
                         v.value = gFn()
-                    } else if (cVal === 'DataDirectory'){
+                    } else if (cVal === 'DataDirectory') {
                         v.value = gFn()
-                    } else if(cVal === 'JVMOptions'){
+                    } else if (cVal === 'JVMOptions') {
                         v.value = gFn().join(' ')
                     } else {
                         v.value = gFn()
                     }
-                } else if(v.type === 'checkbox'){
+                } else if (v.type === 'checkbox') {
                     v.checked = gFn()
                 }
-            } else if(v.tagName === 'DIV'){
-                if(v.classList.contains('rangeSlider')){
+            } else if (v.tagName === 'DIV') {
+                if (v.classList.contains('rangeSlider')) {
                     // Special Conditions
-                    if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
+                    if (cVal === 'MinRAM' || cVal === 'MaxRAM') {
                         let val = gFn()
-                        if(val.endsWith('M')){
-                            val = Number(val.substring(0, val.length-1))/1000
+                        if (val.endsWith('M')) {
+                            val = Number(val.substring(0, val.length - 1)) / 1000
                         } else {
                             val = Number.parseFloat(val)
                         }
@@ -169,34 +169,34 @@ function initSettingsValues(){
 /**
  * Save the settings values.
  */
-function saveSettingsValues(){
+function saveSettingsValues() {
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
     Array.from(sEls).map((v, index, arr) => {
         const cVal = v.getAttribute('cValue')
         const sFn = ConfigManager['set' + cVal]
-        if(typeof sFn === 'function'){
-            if(v.tagName === 'INPUT'){
-                if(v.type === 'number' || v.type === 'text'){
+        if (typeof sFn === 'function') {
+            if (v.tagName === 'INPUT') {
+                if (v.type === 'number' || v.type === 'text') {
                     // Special Conditions
-                    if(cVal === 'JVMOptions'){
+                    if (cVal === 'JVMOptions') {
                         sFn(v.value.split(' '))
                     } else {
                         sFn(v.value)
                     }
-                } else if(v.type === 'checkbox'){
+                } else if (v.type === 'checkbox') {
                     sFn(v.checked)
-                    // Special Conditions
-                    if(cVal === 'AllowPrerelease'){
+                        // Special Conditions
+                    if (cVal === 'AllowPrerelease') {
                         changeAllowPrerelease(v.checked)
                     }
                 }
-            } else if(v.tagName === 'DIV'){
-                if(v.classList.contains('rangeSlider')){
+            } else if (v.tagName === 'DIV') {
+                if (v.classList.contains('rangeSlider')) {
                     // Special Conditions
-                    if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
+                    if (cVal === 'MinRAM' || cVal === 'MaxRAM') {
                         let val = Number(v.getAttribute('value'))
-                        if(val%1 > 0){
-                            val = val*1000 + 'M'
+                        if (val % 1 > 0) {
+                            val = val * 1000 + 'M'
                         } else {
                             val = val + 'G'
                         }
@@ -219,8 +219,8 @@ let selectedSettingsTab = 'settingsTabAccount'
  * 
  * @param {UIEvent} e The scroll event.
  */
-function settingsTabScrollListener(e){
-    if(e.target.scrollTop > Number.parseFloat(getComputedStyle(e.target.firstElementChild).marginTop)){
+function settingsTabScrollListener(e) {
+    if (e.target.scrollTop > Number.parseFloat(getComputedStyle(e.target.firstElementChild).marginTop)) {
         document.getElementById('settingsContainer').setAttribute('scrolled', '')
     } else {
         document.getElementById('settingsContainer').removeAttribute('scrolled')
@@ -230,9 +230,9 @@ function settingsTabScrollListener(e){
 /**
  * Bind functionality for the settings navigation items.
  */
-function setupSettingsTabs(){
+function setupSettingsTabs() {
     Array.from(document.getElementsByClassName('settingsNavItem')).map((val) => {
-        if(val.hasAttribute('rSc')){
+        if (val.hasAttribute('rSc')) {
             val.onclick = () => {
                 settingsNavItemListener(val)
             }
@@ -247,13 +247,13 @@ function setupSettingsTabs(){
  * @param {Element} ele The nav item which has been clicked.
  * @param {boolean} fade Optional. True to fade transition.
  */
-function settingsNavItemListener(ele, fade = true){
-    if(ele.hasAttribute('selected')){
+function settingsNavItemListener(ele, fade = true) {
+    if (ele.hasAttribute('selected')) {
         return
     }
     const navItems = document.getElementsByClassName('settingsNavItem')
-    for(let i=0; i<navItems.length; i++){
-        if(navItems[i].hasAttribute('selected')){
+    for (let i = 0; i < navItems.length; i++) {
+        if (navItems[i].hasAttribute('selected')) {
             navItems[i].removeAttribute('selected')
         }
     }
@@ -264,7 +264,7 @@ function settingsNavItemListener(ele, fade = true){
     document.getElementById(prevTab).onscroll = null
     document.getElementById(selectedSettingsTab).onscroll = settingsTabScrollListener
 
-    if(fade){
+    if (fade) {
         $(`#${prevTab}`).fadeOut(250, () => {
             $(`#${selectedSettingsTab}`).fadeIn({
                 duration: 250,
@@ -296,7 +296,7 @@ const settingsNavDone = document.getElementById('settingsNavDone')
  * 
  * @param {boolean} v True to disable, false to enable.
  */
-function settingsSaveDisabled(v){
+function settingsSaveDisabled(v) {
     settingsNavDone.disabled = v
 }
 
@@ -327,15 +327,15 @@ document.getElementById('settingsAddAccount').onclick = (e) => {
  * Bind functionality for the account selection buttons. If another account
  * is selected, the UI of the previously selected account will be updated.
  */
-function bindAuthAccountSelect(){
+function bindAuthAccountSelect() {
     Array.from(document.getElementsByClassName('settingsAuthAccountSelect')).map((val) => {
         val.onclick = (e) => {
-            if(val.hasAttribute('selected')){
+            if (val.hasAttribute('selected')) {
                 return
             }
             const selectBtns = document.getElementsByClassName('settingsAuthAccountSelect')
-            for(let i=0; i<selectBtns.length; i++){
-                if(selectBtns[i].hasAttribute('selected')){
+            for (let i = 0; i < selectBtns.length; i++) {
+                if (selectBtns[i].hasAttribute('selected')) {
                     selectBtns[i].removeAttribute('selected')
                     selectBtns[i].innerHTML = 'Select Account'
                 }
@@ -352,17 +352,17 @@ function bindAuthAccountSelect(){
  * the selected account, another account will be selected and the UI will
  * be updated accordingly.
  */
-function bindAuthAccountLogOut(){
+function bindAuthAccountLogOut() {
     Array.from(document.getElementsByClassName('settingsAuthAccountLogOut')).map((val) => {
         val.onclick = (e) => {
             let isLastAccount = false
-            if(Object.keys(ConfigManager.getAuthAccounts()).length === 1){
+            if (Object.keys(ConfigManager.getAuthAccounts()).length === 1) {
                 isLastAccount = true
                 setOverlayContent(
-                    'Warning<br>This is Your Last Account',
-                    'In order to use the launcher you must be logged into at least one account. You will need to login again after.<br><br>Are you sure you want to log out?',
-                    'I\'m Sure',
-                    'Cancel'
+                    'Attention <br> Ceci est votre dernier compte',
+                    'Pour utiliser le lanceur, vous devez être connecté à au moins un compte. Vous devrez vous reconnecter après. <br> <br> Voulez-vous vraiment vous déconnecter?',
+                    'Je suis sûr',
+                    'Annuler'
                 )
                 setOverlayHandler(() => {
                     processLogOut(val, isLastAccount)
@@ -376,7 +376,7 @@ function bindAuthAccountLogOut(){
             } else {
                 processLogOut(val, isLastAccount)
             }
-            
+
         }
     })
 }
@@ -387,12 +387,12 @@ function bindAuthAccountLogOut(){
  * @param {Element} val The log out button element.
  * @param {boolean} isLastAccount If this logout is on the last added account.
  */
-function processLogOut(val, isLastAccount){
+function processLogOut(val, isLastAccount) {
     const parent = val.closest('.settingsAuthAccount')
     const uuid = parent.getAttribute('uuid')
     const prevSelAcc = ConfigManager.getSelectedAccount()
     AuthManager.removeAccount(uuid).then(() => {
-        if(!isLastAccount && uuid === prevSelAcc.uuid){
+        if (!isLastAccount && uuid === prevSelAcc.uuid) {
             const selAcc = ConfigManager.getSelectedAccount()
             refreshAuthAccountSelected(selAcc.uuid)
             updateSelectedAccount(selAcc)
@@ -410,14 +410,14 @@ function processLogOut(val, isLastAccount){
  * 
  * @param {string} uuid The UUID of the new selected account.
  */
-function refreshAuthAccountSelected(uuid){
+function refreshAuthAccountSelected(uuid) {
     Array.from(document.getElementsByClassName('settingsAuthAccount')).map((val) => {
         const selBtn = val.getElementsByClassName('settingsAuthAccountSelect')[0]
-        if(uuid === val.getAttribute('uuid')){
+        if (uuid === val.getAttribute('uuid')) {
             selBtn.setAttribute('selected', '')
             selBtn.innerHTML = 'Selected Account &#10004;'
         } else {
-            if(selBtn.hasAttribute('selected')){
+            if (selBtn.hasAttribute('selected')) {
                 selBtn.removeAttribute('selected')
             }
             selBtn.innerHTML = 'Select Account'
@@ -430,10 +430,10 @@ const settingsCurrentAccounts = document.getElementById('settingsCurrentAccounts
 /**
  * Add auth account elements for each one stored in the authentication database.
  */
-function populateAuthAccounts(){
+function populateAuthAccounts() {
     const authAccounts = ConfigManager.getAuthAccounts()
     const authKeys = Object.keys(authAccounts)
-    if(authKeys.length === 0){
+    if (authKeys.length === 0) {
         return
     }
     const selectedUUID = ConfigManager.getSelectedAccount().uuid
@@ -484,15 +484,15 @@ function prepareAccountsTab() {
  */
 
 /**
-  * Disable decimals, negative signs, and scientific notation.
-  */
+ * Disable decimals, negative signs, and scientific notation.
+ */
 document.getElementById('settingsGameWidth').addEventListener('keydown', (e) => {
-    if(/^[-.eE]$/.test(e.key)){
+    if (/^[-.eE]$/.test(e.key)) {
         e.preventDefault()
     }
 })
 document.getElementById('settingsGameHeight').addEventListener('keydown', (e) => {
-    if(/^[-.eE]$/.test(e.key)){
+    if (/^[-.eE]$/.test(e.key)) {
         e.preventDefault()
     }
 })
@@ -506,7 +506,7 @@ const settingsModsContainer = document.getElementById('settingsModsContainer')
 /**
  * Resolve and update the mods on the UI.
  */
-function resolveModsForUI(){
+function resolveModsForUI() {
     const serv = ConfigManager.getSelectedServer()
 
     const distro = DistroManager.getDistribution()
@@ -525,16 +525,16 @@ function resolveModsForUI(){
  * @param {boolean} submodules Whether or not we are parsing submodules.
  * @param {Object} servConf The server configuration object for this module level.
  */
-function parseModulesForUI(mdls, submodules, servConf){
+function parseModulesForUI(mdls, submodules, servConf) {
 
     let reqMods = ''
     let optMods = ''
 
-    for(const mdl of mdls){
+    for (const mdl of mdls) {
 
-        if(mdl.getType() === DistroManager.Types.ForgeMod || mdl.getType() === DistroManager.Types.LiteMod || mdl.getType() === DistroManager.Types.LiteLoader){
+        if (mdl.getType() === DistroManager.Types.ForgeMod || mdl.getType() === DistroManager.Types.LiteMod || mdl.getType() === DistroManager.Types.LiteLoader) {
 
-            if(mdl.getRequired().isRequired()){
+            if (mdl.getRequired().isRequired()) {
 
                 reqMods += `<div id="${mdl.getVersionlessID()}" class="settingsBaseMod settings${submodules ? 'Sub' : ''}Mod" enabled>
                     <div class="settingsModContent">
