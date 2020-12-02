@@ -85,7 +85,7 @@ function setLaunchEnabled(val) {
 
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', function(e) {
-    loggerLanding.log('Launching game..')
+    loggerLanding.log('Lancement du jeu..')
     const mcVersion = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
     const jExe = ConfigManager.getJavaExecutable()
     if (jExe == null) {
@@ -98,7 +98,7 @@ document.getElementById('launch_button').addEventListener('click', function(e) {
 
         const jg = new JavaGuard(mcVersion)
         jg._validateJavaBinary(jExe).then((v) => {
-            loggerLanding.log('Java version meta', v)
+            loggerLanding.log('Version de la donnée de meta de Java', v)
             if (v.valid) {
                 dlAsync()
             } else {
@@ -124,7 +124,7 @@ document.getElementById('avatarOverlay').onclick = (e) => {
 
 // Bind selected account
 function updateSelectedAccount(authUser) {
-    let username = 'No Account Selected'
+    let username = 'Aucun compte selectionné'
     if (authUser != null) {
         if (authUser.displayName != null) {
             username = authUser.displayName
@@ -144,7 +144,7 @@ function updateSelectedServer(serv) {
     }
     ConfigManager.setSelectedServer(serv != null ? serv.getID() : null)
     ConfigManager.save()
-    server_selection_button.innerHTML = '\u2022 ' + (serv != null ? serv.getName() : 'No Server Selected')
+    server_selection_button.innerHTML = '\u2022 ' + (serv != null ? serv.getName() : 'Aucun serveur selecionné')
     if (getCurrentView() === VIEWS.settings) {
         animateModsTabRefresh()
     }
@@ -159,7 +159,7 @@ server_selection_button.onclick = (e) => {
 
 // Update Mojang Status Color
 const refreshMojangStatuses = async function() {
-    loggerLanding.log('Refreshing Mojang Statuses..')
+    loggerLanding.log('Rafraichissement des status de Mojang..')
 
     let status = 'grey'
     let tooltipEssentialHTML = ''
@@ -212,7 +212,7 @@ const refreshMojangStatuses = async function() {
         }
 
     } catch (err) {
-        loggerLanding.warn('Unable to refresh Mojang service status.')
+        loggerLanding.warn('Impossible d\'actualiser l\'état du service Mojang. ')
         loggerLanding.debug(err)
     }
 
@@ -222,7 +222,7 @@ const refreshMojangStatuses = async function() {
 }
 
 const refreshServerStatus = async function(fade = false) {
-    loggerLanding.log('Refreshing Server Status')
+    loggerLanding.log('Actualisation de l\'état du serveur')
     const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
 
     let pLabel = 'SERVER'
@@ -237,7 +237,7 @@ const refreshServerStatus = async function(fade = false) {
         }
 
     } catch (err) {
-        loggerLanding.warn('Unable to refresh server status, assuming offline.')
+        loggerLanding.warn('Impossible d\'actualiser l\'état du serveur, en supposant qu\'il est hors ligne.')
         loggerLanding.debug(err)
     }
     if (fade) {
@@ -270,7 +270,7 @@ function showLaunchFailure(title, desc) {
     setOverlayContent(
         title,
         desc,
-        'Okay'
+        'Ok'
     )
     setOverlayHandler(null)
     toggleOverlay(true)
@@ -470,7 +470,7 @@ function asyncSystemScan(mcVersion, launchAfter = true) {
     })
 
     // Begin system Java scan.
-    setLaunchDetails('Checking system info..')
+    setLaunchDetails('Vérification des informations système..')
     sysAEx.send({ task: 'execute', function: 'validateJava', argsArr: [ConfigManager.getDataDirectory()] })
 
 }
@@ -650,8 +650,8 @@ function dlAsync(login = true) {
             if (m.result.forgeData == null || m.result.versionData == null) {
                 loggerLaunchSuite.error('Error during validation:', m.result)
 
-                loggerLaunchSuite.error('Error during launch', m.result.error)
-                showLaunchFailure('Error During Launch', 'Please check the console (CTRL + Shift + i) for more details.')
+                loggerLaunchSuite.error('Erreur lors du lancement', m.result.error)
+                showLaunchFailure('Erreur lors du lancement', 'Veuillez vérifier la console (CTRL + Shift + i) pour plus de détails.')
 
                 allGood = false
             }
@@ -661,17 +661,17 @@ function dlAsync(login = true) {
 
             if (login && allGood) {
                 const authUser = ConfigManager.getSelectedAccount()
-                loggerLaunchSuite.log(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
+                loggerLaunchSuite.log(`Envoi du compte sélectionné (${authUser.displayName}) à ProcessBuilder.`)
                 let pb = new ProcessBuilder(serv, versionData, forgeData, authUser, remote.app.getVersion())
-                setLaunchDetails('Launching game..')
+                setLaunchDetails('Lancement du jeu..')
 
                 // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
-                const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
+                const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} rejoint le jeu`)
 
                 const onLoadComplete = () => {
                     toggleLaunchArea(false)
                     if (hasRPC) {
-                        DiscordWrapper.updateDetails('Loading game..')
+                        DiscordWrapper.updateDetails('Jeu en cours de chargement..')
                     }
                     proc.stdout.on('data', gameStateChange)
                     proc.stdout.removeListener('data', tempListener)
@@ -879,7 +879,7 @@ let newsLoadingListener = null
  */
 function setNewsLoading(val) {
     if (val) {
-        const nLStr = 'Checking for News'
+        const nLStr = 'Vérification des actualités'
         let dotStr = '..'
         nELoadSpan.innerHTML = nLStr + dotStr
         newsLoadingListener = setInterval(() => {
