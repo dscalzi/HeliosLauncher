@@ -460,7 +460,7 @@ function populateAuthAccounts() {
                 <div class="settingsAuthAccountActions">
                     <button class="settingsAuthAccountSelect" ${selectedUUID === acc.uuid ? 'selected>Selected Account &#10004;' : '>Select Account'}</button>
                     <div class="settingsAuthAccountWrapper">
-                        <button class="settingsAuthAccountLogOut">Log Out</button>
+                        <button class="settingsAuthAccountLogOut">Se déconnecter</button>
                     </div>
                 </div>
             </div>
@@ -694,9 +694,9 @@ function bindDropinModsRemoveButton(){
                 document.getElementById(fullName).remove()
             } else {
                 setOverlayContent(
-                    `Failed to Delete<br>Drop-in Mod ${fullName}`,
-                    'Make sure the file is not in use and try again.',
-                    'Okay'
+                    `Échec de la suppression<br>Drop-in Mod ${fullName}`,
+                    'Assurez-vous que le fichier n\'est pas utilisé et réessayez.',
+                    'Ok'
                 )
                 setOverlayHandler(null)
                 toggleOverlay(true)
@@ -749,9 +749,9 @@ function saveDropinModConfiguration(){
                 DropinModUtil.toggleDropinMod(CACHE_SETTINGS_MODS_DIR, dropin.fullName, dropinUIEnabled).catch(err => {
                     if(!isOverlayVisible()){
                         setOverlayContent(
-                            'Failed to Toggle<br>One or More Drop-in Mods',
+                            'Echec lors de l\'activation<br>De un ou plusieurs Drop-in Mods',
                             err.message,
-                            'Okay'
+                            'Ok'
                         )
                         setOverlayHandler(null)
                         toggleOverlay(true)
@@ -1146,7 +1146,7 @@ function populateJavaExecDetails(execPath){
                 settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major}.${v.version.minor}.${v.version.revision} (x${v.arch})${vendor}`
             }
         } else {
-            settingsJavaExecDetails.innerHTML = 'Invalid Selection'
+            settingsJavaExecDetails.innerHTML = 'Selection Invalide'
         }
     })
 }
@@ -1240,7 +1240,7 @@ function populateReleaseNotes(){
         },
         timeout: 2500
     }).catch(err => {
-        settingsAboutChangelogText.innerHTML = 'Failed to load release notes.'
+        settingsAboutChangelogText.innerHTML = 'Échec du chargement des notes de publication.'
     })
 }
 
