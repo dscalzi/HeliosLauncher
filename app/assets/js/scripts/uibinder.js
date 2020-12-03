@@ -95,7 +95,7 @@ function showMainUI(data) {
                 $('#loadingContainer').fadeOut(500, () => {
                     $('#loadSpinnerImage').removeClass('rotating')
                 })
-            }, 250)
+            }, 300)
 
         }, 750)
         // Disable tabbing to the news container.

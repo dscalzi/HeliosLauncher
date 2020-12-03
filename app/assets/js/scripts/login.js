@@ -165,65 +165,45 @@ function formDisabled(v) {
 function resolveError(err) {
     // Mojang Response => err.cause | err.error | err.errorMessage
     // Node error => err.code | err.message
+
     if (err.cause != null && err.cause === 'UserMigratedException') {
         return {
-            title: Lang.queryJS('login.error.userMigrated.title'),
-            desc: Lang.queryJS('login.error.userMigrated.desc')
+            title: "Échec d'authentification ! 😭",
+            desc: "Vous avez tenté de vous connecter avec un compte migré. <br><br>Essayez à nouveau en utilisant l'adresse e-mail du compte."
         }
     } else {
         if (err.error != null) {
             if (err.error === 'ForbiddenOperationException') {
                 if (err.errorMessage != null) {
-                    if (err.errorMessage === 'invalidCredentials') {
+                    if (err.errorMessage === 'Invalid credentials. Invalid username or password.') {
                         return {
-                            title: Lang.queryJS('login.error.invalidCredentials.title'),
-                            desc: Lang.queryJS('login.error.invalidCredentials.desc')
+                            title: "Échec d'authentification ! 😭",
+                            desc: "L'adresse e-mail ou le mot de passe que vous avez entré est incorrect. <br><br>Veuillez réessayer."
                         }
-                    } else if (err.errorMessage === 'invalidCredentials') {
+                    } else if (err.errorMessage === 'Invalid credentials.') {
                         return {
-                            title: Lang.queryJS('login.error.rateLimit.title'),
-                            desc: Lang.queryJS('login.error.rateLimit.desc')
+                            title: "Trop de tentative de connexion ! 🤔",
+                            desc: "Il y a eu trop de tentatives de connexion avec ce compte récemment. <br><br>Veuillez réessayer plus tard."
                         }
                     }
                 }
             }
         } else {
-            // Request errors (from Node).
             if (err.code != null) {
                 if (err.code === 'ENOENT') {
                     // No Internet.
                     return {
-                        title: Lang.queryJS('login.error.noInternet.title'),
-                        desc: Lang.queryJS('login.error.noInternet.desc')
+                        title: "Pas de connexion Internet ! 😮",
+                        desc: "Vous devez être connecté à Internet pour pouvoir vous connecter. <br>Veuillez vous connecter et réessayer."
                     }
                 } else if (err.code === 'ENOTFOUND') {
                     // Could not reach server.
                     return {
-                        title: Lang.queryJS('login.error.authDown.title'),
-                        desc: Lang.queryJS('login.error.authDown.desc')
+                        title: "Serveur d'authentification non disponible ! 😱",
+                        desc: "Le serveur d'authentification de Mojang est actuellement hors ligne ou inaccessible. <br>S'il vous plaît attendez un peu et essayez à nouveau. <br><br>Vous pouvez vérifier l’état du serveur sur <a href=\"https://help.mojang.com/\">Mojang's help portal</a>."
                     }
                 }
             }
-        }
-    }
-    if (err.message != null) {
-        if (err.message === 'NotPaidAccount') {
-            return {
-                title: Lang.queryJS('login.error.notPaid.title'),
-                desc: Lang.queryJS('login.error.notPaid.desc')
-            }
-        } else {
-            // Unknown error with request.
-            return {
-                title: Lang.queryJS('login.error.unknown.title'),
-                desc: err.message
-            }
-        }
-    } else {
-        // Unknown Mojang error.
-        return {
-            title: err.error,
-            desc: err.errorMessage
         }
     }
 }
