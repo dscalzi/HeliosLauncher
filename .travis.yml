@@ -43,3 +43,29 @@ before_cache:
 branches:
   except:
     - "/^v\\d+\\.\\d+\\.\\d+$/"
+
+before_deploy:
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+  - if ! [[ $TRAVIS_TAG ]]; then
+  -   git config --local user.name "TheFlash787"
+  -   git config --local user.email "sonically@hotmail.co.uk"
+  -   git tag $TRAVIS_TAG
+  - fi
+
+deploy:
+  provider: releases
+  # ⋮
+  edge: true
+  api_key: $GH_TOKEN
+  file:
+    - dist/SkyGames-setup-2.3.1-hotfix.2.exe
+    - dist/SkyGames-setup-2.3.1-hotfix.2.AppImage
+    - dist/SkyGames-setup-2.3.1-hotfix.2.dmg
+    - dist/SkyGames-setup-2.3.1-hotfix.2.exe.blockmap
+    - dist/latest-mac.yml
+    - dist/latest-linux.yml
+    - dist/latest.yml
+  draft: true
+  overwrite: false
+  on:
+    tags: true
