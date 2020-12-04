@@ -19,7 +19,8 @@
         "dist:win": "npm run dist -- WINDOWS",
         "dist:mac": "npm run dist -- MAC",
         "dist:linux": "npm run dist -- LINUX",
-        "lint": "eslint --config .eslintrc.json ."
+        "lint": "eslint --config .eslintrc.json .",
+        "publish": "build --mac --win -p always"
     },
     "engines": {
         "node": "12.x.x"
