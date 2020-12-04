@@ -708,7 +708,7 @@ function dlAsync(login = true) {
                     data = data.trim()
                     if (data.indexOf('Impossible de trouver ou de charger la classe principale net.minecraft.launchwrapper.Launch') > -1) {
                         loggerLaunchSuite.error('Le lancement du jeu a échoué, LaunchWrapper n\'a pas été téléchargé correctement.')
-                        showLaunchFailure('Erreur lors du lancement »,« Le fichier principal, LaunchWrapper, n\'a pas pu être téléchargé correctement.En conséquence, le jeu ne peut pas se lancer. < br > < br > Pour résoudre ce problème, désactivez temporairement votre logiciel antivirus et relancez le jeu. < br > < br > Si vous avez le temps, s\'il vous plaît < a href = "https://github.com/dscalzi/HeliosLauncher/issues" > soumettre un problème < /a> et indiquez-nous quel logiciel antivirus vous utilisez. Nous allons les contacter et essayer de redresser la situation.')
+                        showLaunchFailure('Erreur lors du lancement »,« Le fichier principal, LaunchWrapper, n\'a pas pu être téléchargé correctement.En conséquence, le jeu ne peut pas se lancer. < br > < br > Pour résoudre ce problème, désactivez temporairement votre logiciel antivirus et relancez le jeu. < br > < br > Si vous avez le temps, s\'il vous plaît < a href = "https://github.com/FullGreenDev/SkyGamesLauncher/issues" > soumettre un problème < /a> et indiquez-nous quel logiciel antivirus vous utilisez. Nous allons les contacter et essayer de redresser la situation.')
                     }
                 }
 

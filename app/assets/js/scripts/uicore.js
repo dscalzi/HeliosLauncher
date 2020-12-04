@@ -48,7 +48,7 @@ if (!isDev) {
                 loggerAutoUpdaterSuccess.log('Nouvelle mise à jour disponible', info.version)
 
                 if (process.platform === 'darwin') {
-                    info.darwindownload = `https://github.com/dscalzi/HeliosLauncher/releases/download/v${info.version}/helioslauncher-setup-${info.version}.dmg`
+                    info.darwindownload = `https://github.com/FullGreenDev/SkyGamesLauncher/releases/download/${info.version}/SkyGames.Launcher-setup-${info.version}.dmg`
                     showUpdateUI(info)
                 }
 
