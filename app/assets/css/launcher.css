@@ -4593,5 +4593,5 @@ input:checked+.toggleSwitchSlider:before {
 /* Class which is applied when the spinner image is spinning. */
 
 .rotating {
-    animation: rotating 10s linear infinite;
+    animation: rotating 5s linear infinite;
 }

@@ -204,13 +204,13 @@
                             </svg>
                         </div>
                         <input class="settingsFileSelVal" id="settingsJavaExecVal" type="text" value="null" cValue="JavaExecutable" disabled>
-                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="false">Choose File</button>
+                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="false">Choisir le fichier</button>
                     </div>
                 </div>
                 <div class="settingsFileSelDesc">L'exécutable Java est validé avant le lancement du jeu. <strong>Nécessite Java 8 x64.</strong><br>Le chemin doit se terminer par <strong>bin<%= process.platform === 'win32' ? '\\javaw.exe' : '/java' %></strong>.</div>
             </div>
             <div id="settingsJVMOptsContainer">
-                <div id="settingsJVMOptsTitle">Additional JVM Options</div>
+                <div id="settingsJVMOptsTitle">Options JVM supplémentaires</div>
                 <div id="settingsJVMOptsContent">
                     <div class="settingsFileSelIcon">
                         <svg class="settingsFileSelSVG" x="0px" y="0px" viewBox="0 0 305.001 305.001">
@@ -228,7 +228,7 @@
                     </div>
                     <input id="settingsJVMOptsVal" cValue="JVMOptions" type="text">
                 </div>
-                <div id="settingsJVMOptsDesc">Options to be provided to the JVM at runtime. <em>-Xms</em> and <em>-Xmx</em> should not be included.<br><a href="https://docs.oracle.com/javase/8/docs/technotes/tools/<%= process.platform === 'win32' ? 'windows' : 'unix' %>/java.html">Available Options for Java 8</a>.</div>
+                <div id="settingsJVMOptsDesc">Options à fournir à la JVM lors de l'exécution. <em>-Xms</em> Et <em>-Xmx</em> ne doit pas être inclus.<br><a href="https://docs.oracle.com/javase/8/docs/technotes/tools/<%= process.platform === 'win32' ? 'windows' : 'unix' %>/java.html">Options disponibles pour Java 8</a>.</div>
             </div>
         </div>
         <div id="settingsTabLauncher" class="settingsTab" style="display: none;">

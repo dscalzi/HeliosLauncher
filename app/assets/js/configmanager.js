@@ -50,13 +50,12 @@ exports.getAbsoluteMinRAM = function() {
 
 exports.getAbsoluteMaxRAM = function() {
     const mem = os.totalmem()
-    const gT16 = mem - 16000000000
-    return Math.floor((mem - 1000000000 - (gT16 > 0 ? (Number.parseInt(gT16 / 8) + 16000000000 / 4) : mem / 4)) / 1000000000)
+    return Math.floor((mem / 1000000000))
 }
 
 function resolveMaxRAM() {
     const mem = os.totalmem()
-    return mem >= 8000000000 ? '4G' : (mem >= 6000000000 ? '3G' : '2G')
+    return mem >= 16000000000 ? '8G' : (mem >= 8000000000 ? '6G' : (mem >= 6000000000 ? '4G' : '2G'))
 }
 
 function resolveMinRAM() {
@@ -76,10 +75,27 @@ const DEFAULT_CONFIG = {
             maxRAM: resolveMaxRAM(), // Dynamic
             executable: null,
             jvmOptions: [
+                '-d64',
+                '-XX:+AggressiveOpts',
+                '-XX:ParallelGCThreads=3',
                 '-XX:+UseConcMarkSweepGC',
                 '-XX:+CMSIncrementalMode',
                 '-XX:-UseAdaptiveSizePolicy',
-                '-Xmn128M'
+                '-Xmn128M',
+                '-XX:+UnlockExperimentalVMOptions',
+                '-XX:+UseParNewGC',
+                '-XX:+ExplicitGCInvokesConcurrent',
+                '-XX:MaxGCPauseMillis=10',
+                '-XX:GCPauseIntervalMillis=50',
+                '-XX:+UseFastAccessorMethods',
+                '-XX:+OptimizeStringConcat',
+                '-XX:NewSize=128m',
+                '-XX:+UseAdaptiveGCBoundary',
+                '-XX:NewRatio=3',
+                '-Dfml.readTimeout=180',
+                '-Dfml.loginTimeout=180',
+                '-Dfml.ignoreInvalidMinecraftCertificates=true',
+                '-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump'
             ],
         },
         game: {
@@ -87,11 +103,14 @@ const DEFAULT_CONFIG = {
             resHeight: 720,
             fullscreen: false,
             autoConnect: true,
-            launchDetached: true
+            launchDetached: true,
+            consoleOnLaunch: false
         },
         launcher: {
             allowPrerelease: false,
-            dataDirectory: dataPath
+            discordIntegration: true,
+            dataDirectory: dataPath,
+            serverCodes: []
         }
     },
     newsCache: {
@@ -100,6 +119,7 @@ const DEFAULT_CONFIG = {
         dismissed: false
     },
     clientToken: null,
+    distributionVersion: null,
     selectedServer: null, // Resolved
     selectedAccount: null,
     authenticationDatabase: {},

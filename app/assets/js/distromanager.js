@@ -537,7 +537,7 @@ exports.pullRemote = function(){
         return exports.pullLocal()
     }
     return new Promise((resolve, reject) => {
-        const distroURL = 'http://mc.skygames.fr/7AZi725mvlcY9V3Q/launcher/distribution.json'
+        const distroURL = 'http://mc.skygames.fr/7AZi725mvlcY9V3Q/launcher/deploy/distribution.json'
         //const distroURL = 'https://gist.githubusercontent.com/dscalzi/53b1ba7a11d26a5c353f9d5ae484b71b/raw/'
         const opts = {
             url: distroURL,

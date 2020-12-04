@@ -21,7 +21,7 @@ process.traceDeprecation = true
 // Disable eval function.
 // eslint-disable-next-line
 window.eval = global.eval = function() {
-    throw new Error('Sorry, this app does not support window.eval().')
+    throw new Error('Désolé, cette application ne prend pas en charge window.eval ().')
 }
 
 // Display warning when devtools window is opened.
@@ -64,8 +64,8 @@ if (!isDev) {
                 showUpdateUI(info)
                 break
             case 'update-not-available':
-                loggerAutoUpdater.log('No new update found.')
-                settingsUpdateButtonStatus('Check for Updates')
+                loggerAutoUpdater.log('Aucune nouvelle mise à jour trouvée.')
+                settingsUpdateButtonStatus('Vérifier les mises à jour')
                 break
             case 'ready':
                 updateCheckListener = setInterval(() => {
@@ -108,19 +108,19 @@ function showUpdateUI(info) {
     //TODO Make this message a bit more informative `${info.version}`
     document.getElementById('image_seal_container').setAttribute('update', true)
     document.getElementById('image_seal_container').onclick = () => {
-        /*setOverlayContent('Update Available', 'A new update for the launcher is available. Would you like to install now?', 'Install', 'Later')
+        setOverlayContent('Mise à jour disponible', 'Une nouvelle mise à jour pour le lanceur est disponible. Souhaitez-vous installer maintenant?', 'Installer', 'Plus tard')
         setOverlayHandler(() => {
-            if(!isDev){
+            if (!isDev) {
                 ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
             } else {
-                console.error('Cannot install updates in development environment.')
+                console.error('Impossible d\'installer les mises à jour dans l\'environnement de développement.')
                 toggleOverlay(false)
             }
         })
         setDismissHandler(() => {
             toggleOverlay(false)
         })
-        toggleOverlay(true, true)*/
+        toggleOverlay(true, true)
         switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
             settingsNavItemListener(document.getElementById('settingsNavUpdate'), false)
         })
