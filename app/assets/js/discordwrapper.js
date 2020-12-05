@@ -11,7 +11,7 @@ exports.initRPC = function(genSettings, servSettings, initialDetails = 'ロー�
 
     activity = {
         details: initialDetails,
-        state: 'Modパック: ' + servSettings.shortId,
+        state: '▶' + servSettings.shortId,
         largeImageKey: servSettings.largeImageKey,
         largeImageText: servSettings.largeImageText,
         smallImageKey: genSettings.smallImageKey,
