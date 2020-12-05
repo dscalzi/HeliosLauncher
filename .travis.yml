@@ -36,7 +36,6 @@ script:
     else
       npm run cidarwin
     fi
-
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
 
@@ -56,12 +55,12 @@ deploy:
   provider: releases
   # ⋮
   edge: true
-  api_key: dff580cc24a8c8b54241ec6b8ba846abefd8cf2b
+  api_key: $GH_TOKEN
   file:
-    - dist/SkyGames-setup-2.3.1-hotfix.2.exe
-    - dist/SkyGames-setup-2.3.1-hotfix.2.AppImage
-    - dist/SkyGames-setup-2.3.1-hotfix.2.dmg
-    - dist/SkyGames-setup-2.3.1-hotfix.2.exe.blockmap
+    - dist/SkyGames-setup-1.0.1-hotfix.2.exe
+    - dist/SkyGames-setup-1.0.1-hotfix.2.AppImage
+    - dist/SkyGames-setup-1.0.1-hotfix.2.dmg
+    - dist/SkyGames-setup-1.0.1-hotfix.2.exe.blockmap
     - dist/latest-mac.yml
     - dist/latest-linux.yml
     - dist/latest.yml
@@ -69,3 +68,5 @@ deploy:
   overwrite: false
   on:
     tags: true
+
+    
