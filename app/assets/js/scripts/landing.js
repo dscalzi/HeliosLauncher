@@ -1177,13 +1177,35 @@ notion.contentWindow.addEventListener('DOMContentLoaded', event => {
 
         style.innerHTML += '.notion-topbar { display: none !important; }'
         style.innerHTML += '.notion-page-content { align-items: start !important; padding-left: 0 !important; padding-right: 0 !important; padding-bottom: 0 !important; }'
-        style.innerHTML += '.notion-scroller > :not(.notion-page-content) { display: none !important; }'
+        style.innerHTML += '.notion-frame > .notion-scroller > :not(.notion-page-content) { display: none !important; }'
         style.innerHTML += '.notion-scroller > div > div { padding-left: 0 !important; padding-right: 0 !important; }'
         style.innerHTML += '.notion-cursor-listener { background: transparent !important; }'
         style.innerHTML += '.notion-frame { background: transparent !important; }'
+        style.innerHTML += '.notion-collection_view-block > div { background: transparent !important; }'
+        style.innerHTML += '.notion-collection_view-block { overflow-x: hidden !important; }'
+        style.innerHTML += '.notion-collection_view-block > .notion-scroller { overflow: hidden !important; }'
         style.innerHTML += 'body { background: transparent !important; }'
 
         // Add the <style> element to the page
         notionDoc.head.appendChild(style)
+    }
+
+    function closest(elem, selector) {
+        do {
+            if(elem.matches && elem.matches(selector))
+                return elem
+            elem = elem.parentNode
+        } while(elem)
+    }
+
+    {
+        notionDoc.addEventListener('click', e => {
+            const a = closest(e.target, 'a')
+            if (a) {
+                e.preventDefault()
+                e.stopImmediatePropagation()
+                open(a.href)
+            }
+        }, true)
     }
 })

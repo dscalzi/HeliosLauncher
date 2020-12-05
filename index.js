@@ -1,5 +1,5 @@
 // Requirements
-const { app, BrowserWindow, ipcMain, Menu } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
 const autoUpdater                   = require('electron-updater').autoUpdater
 const ejse                          = require('ejs-electron')
 const fs                            = require('fs')
@@ -147,6 +147,16 @@ function createWindow() {
             c({cancel: false, responseHeaders: d.responseHeaders});
         }
     )
+
+    // Open web browser on new window
+    const handleRedirect = async (e, url) => {
+        if(url !== win.webContents.getURL()) {
+            e.preventDefault()
+            await shell.openExternal(url)
+        }
+    }
+    win.webContents.on('will-navigate', handleRedirect)
+    win.webContents.on('new-window', handleRedirect)
 }
 
 function createMenu() {
