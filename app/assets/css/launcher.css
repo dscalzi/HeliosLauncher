@@ -2321,7 +2321,7 @@ input:checked + .toggleSwitchSlider:before {
     position: relative;
     z-index: 500;
     transition: top 2s ease;
-    top: 10px;
+    top: 23px;
 }
 #landingContainer > #lower > #right {
     position: relative;
@@ -2913,8 +2913,8 @@ input:checked + .toggleSwitchSlider:before {
 .settingsTooltip {
     visibility: hidden;
     opacity: 0;
-    width: 75px;
-    height: 20px;
+    min-width: 75px;
+    min-height: 20px;
     background-color: rgba(0, 0, 0, 0.75);
     text-align: center;
     border-radius: 4px;
@@ -3130,37 +3130,38 @@ input:checked + .toggleSwitchSlider:before {
 * * */
 
 /* Button which opens the news view. */
-#newsButton {
+.newsButton {
     background: none;
     border: none;
     cursor: pointer;
     outline: none;
+    text-decoration:none;
 }
-#newsButton:hover #newsButtonText,
-#newsButton:focus #newsButtonText {
+.newsButton:hover .newsButtonText,
+.newsButton:focus .newsButtonText {
     text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
 }
-#newsButton:active {
+.newsButton:active {
     color: #c7c7c7;
     text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
 }
 
-#newsButton:hover #newsButtonSVG,
-#newsButton:focus #newsButtonSVG {
+.newsButton:hover .newsButtonSVG,
+.newsButton:focus .newsButtonSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
 }
-#newsButton:active #newsButtonSVG .arrowLine {
+.newsButton:active .newsButtonSVG .arrowLine {
     stroke: #c7c7c7;
 }
-#newsButton:active #newsButtonSVG {
+.newsButton:active .newsButtonSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
-#newsButton:disabled #newsButtonSVG .arrowLine {
+.newsButton:disabled .newsButtonSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
 }
 
 /* Icon which indicates there is new news. */
-#newsButtonAlert {
+.newsButtonAlert {
     width: 5px;
     height: 5px;
     position: absolute;
@@ -3171,14 +3172,14 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* Arrow image which floats above the news button. */
-#newsButtonSVG {
+.newsButtonSVG {
     height: 11px;
     margin-left: -2px;
     transition: 0.25s ease;
 }
 
 /* Span which contains the news button text. */
-#newsButtonText {
+.newsButtonText {
     color: white;
     font-weight: 900;
     letter-spacing: 2px;

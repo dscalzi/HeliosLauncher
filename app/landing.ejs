@@ -49,15 +49,28 @@
                     </div>
                     <div class="mediaDivider"></div>
                     <div id="externalMedia">
-                        <div class="mediaContainer">
-                            <a href="https://www.kunmc.net/" class="mediaURL" id="linkURL">
-                                <svg id="linkSVG" class="mediaSVG" viewBox="35.34 34.3575 70.68 68.71500">
-                                    <g>
-                                        <path d="M75.37,65.51a3.85,3.85,0,0,0-1.73.42,8.22,8.22,0,0,1,.94,3.76A8.36,8.36,0,0,1,66.23,78H46.37a8.35,8.35,0,1,1,0-16.7h9.18a21.51,21.51,0,0,1,6.65-8.72H46.37a17.07,17.07,0,1,0,0,34.15H66.23A17,17,0,0,0,82.77,65.51Z"/>
-                                        <path d="M66,73.88a3.85,3.85,0,0,0,1.73-.42,8.22,8.22,0,0,1-.94-3.76,8.36,8.36,0,0,1,8.35-8.35H95A8.35,8.35,0,1,1,95,78H85.8a21.51,21.51,0,0,1-6.65,8.72H95a17.07,17.07,0,0,0,0-34.15H75.13A17,17,0,0,0,58.59,73.88Z"/>
-                                    </g>
-                                </svg>
-                            </a>
+                        <div class="mediaContainer settingsMediaContainer">
+                            <button class="mediaButton">
+                                <a href="https://www.kunmc.net/">
+                                    <svg id="linkSVG" class="mediaSVG" viewBox="35.34 34.3575 70.68 68.71500">
+                                        <g>
+                                            <path d="M75.37,65.51a3.85,3.85,0,0,0-1.73.42,8.22,8.22,0,0,1,.94,3.76A8.36,8.36,0,0,1,66.23,78H46.37a8.35,8.35,0,1,1,0-16.7h9.18a21.51,21.51,0,0,1,6.65-8.72H46.37a17.07,17.07,0,1,0,0,34.15H66.23A17,17,0,0,0,82.77,65.51Z"/>
+                                            <path d="M66,73.88a3.85,3.85,0,0,0,1.73-.42,8.22,8.22,0,0,1-.94-3.76,8.36,8.36,0,0,1,8.35-8.35H95A8.35,8.35,0,1,1,95,78H85.8a21.51,21.51,0,0,1-6.65,8.72H95a17.07,17.07,0,0,0,0-34.15H75.13A17,17,0,0,0,58.59,73.88Z"/>
+                                        </g>
+                                    </svg>
+                                </a>
+                                <div class="settingsTooltip">KUN開発<br>チーム</div>
+                            </button>
+                        </div>
+                        <div class="mediaContainer settingsMediaContainer">
+                            <button class="mediaButton">
+                                <a href="https://www.notion.so/teamkun/6c1c4e39240b445a9e7d7907035df9b9">
+                                    <svg id="linkSVG" class="mediaSVG" width="100%" height="100%" viewBox="0 0 64 64" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                                        <path d="M32,0.999C49.11,0.999 63.001,14.89 63.001,32C63.001,49.11 49.11,63.001 32,63.001C14.89,63.001 0.999,49.11 0.999,32C0.999,14.89 14.89,0.999 32,0.999ZM31.406,45.927C32.63,45.927 33.72,46.377 34.675,47.278C35.647,48.196 36.134,49.331 36.134,50.682C36.134,51.474 35.944,52.222 35.566,52.924C34.648,54.599 33.243,55.437 31.352,55.437C30.217,55.437 29.208,55.068 28.326,54.329C27.191,53.375 26.624,52.15 26.624,50.655C26.624,49.088 27.263,47.827 28.542,46.873C29.388,46.242 30.343,45.927 31.406,45.927ZM34.188,38.579L34.188,38.903C34.188,40.704 33.261,41.604 31.406,41.604C29.569,41.604 28.65,40.533 28.65,38.389C28.65,34.967 29.46,32.005 31.081,29.501C31.64,28.654 32.513,27.574 33.702,26.259C35.863,23.882 36.944,21.666 36.944,19.613C36.944,18.478 36.674,17.497 36.134,16.668C35.197,15.209 33.711,14.48 31.676,14.48C30.163,14.48 28.911,14.948 27.921,15.885C27.308,16.461 26.669,17.362 26.002,18.586C25.426,19.595 24.588,20.099 23.49,20.099C22.733,20.099 22.04,19.829 21.41,19.289C20.815,18.784 20.518,18.118 20.518,17.29C20.518,15.813 21.247,14.246 22.706,12.589C25.084,9.905 28.137,8.563 31.865,8.563C34.783,8.563 37.313,9.392 39.457,11.049C42.14,13.102 43.482,15.921 43.482,19.505C43.482,21.756 42.753,23.918 41.294,25.989C40.483,27.124 39.348,28.384 37.89,29.771C35.422,32.095 34.188,35.03 34.188,38.579Z"/>
+                                    </svg>
+                                </a>
+                                <div class="settingsTooltip">使い方は<br>こちら！</div>
+                            </button>
                         </div>
 <!--
                         <div class="mediaContainer">
@@ -148,17 +161,22 @@
         <div id="center">
             <div class="bot_wrapper">
                 <div id="content">
-                    <button id="newsButton" style="display: none;">
+                    <button id="newsButton" class="newsButton" style="display: none;">
                         <!--<img src="assets/images/icons/arrow.svg" id="newsButtonSVG"/>-->
-                        <div id="newsButtonAlert" style="display: none;"></div>
-                        <svg id="newsButtonSVG" viewBox="0 0 24.87 13.97">
+                        <div id="newsButtonAlert" class="newsButtonAlert"></div>
+                        <svg class="newsButtonSVG" viewBox="0 0 24.87 13.97">
                             <defs>
                                 <style>.arrowLine{fill:none;stroke:#FFF;stroke-width:2px;}</style>
                             </defs>
                             <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"/>
                         </svg>
-                        &#10;<span id="newsButtonText">NEWS</span>
+                        &#10;<span class="newsButtonText">NEWS</span>
                     </button>
+<!--
+                    <a href="https://www.notion.so/teamkun/6c1c4e39240b445a9e7d7907035df9b9" class="newsButton">
+                        <span class="newsButtonText">&gt;使い方&lt;</span>
+                    </a>
+-->
                 </div>
             </div>
         </div>
