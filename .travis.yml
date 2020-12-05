@@ -46,8 +46,8 @@ branches:
 before_deploy:
   - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
   - if ! [[ $TRAVIS_TAG ]]; then
-  -   git config --local user.name "TheFlash787"
-  -   git config --local user.email "sonically@hotmail.co.uk"
+  -   git config --local user.name "FullGreenDev"
+  -   git config --local user.email "fullgreen.sky66@gmail.com"
   -   git tag $TRAVIS_TAG
   - fi
 
