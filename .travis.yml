@@ -64,7 +64,7 @@ deploy:
     - dist/latest-mac.yml
     - dist/latest-linux.yml
     - dist/latest.yml
-  draft: true
+  draft: false
   overwrite: false
   on:
     tags: true
