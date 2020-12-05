@@ -3,10 +3,6 @@
 
 <h1 align="center">SkyGames Launcher</h1>
 
-
-
-#### Need Help? [Check the wiki.][wiki]
-
 #### Like the project? Leave a ⭐ star on the repository!
 
 ## Downloads
