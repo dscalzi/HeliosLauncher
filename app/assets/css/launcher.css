@@ -113,6 +113,12 @@ body, button {
     font-family: 'Avenir Medium';
     letter-spacing: 0.5px;
 }
+#frameTitleVersion {
+    font-size: 10px;
+    font-family: 'Avenir Medium';
+    letter-spacing: 0.5px;
+    opacity: 0.5;
+}
 
 /* Windows frame button dock. */
 #frameButtonDockWin {

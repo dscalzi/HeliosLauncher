@@ -113,6 +113,7 @@ function createWindow() {
     })
 
     ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))
+    ejse.data('appver', app.getVersion())
 
     win.loadURL(url.format({
         pathname: path.join(__dirname, 'app', 'app.ejs'),
