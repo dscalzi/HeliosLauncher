@@ -6,10 +6,17 @@ const logger = require('./loggerutil')('%c[ConfigManager]', 'color: #a02d2a; fon
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME)
 // TODO change
-const dataPath = path.join(sysRoot, '.helioslauncher')
+console.log(sysRoot)
+const dataPath = path.join(sysRoot, 'AndrLauncher')
+
 
 // Forked processes do not have access to electron, so we have this workaround.
 const launcherDir = process.env.CONFIG_DIRECT_PATH || require('electron').remote.app.getPath('userData')
+
+exports.getLauncherData = function(){
+
+    return launcherDir
+}
 
 /**
  * Retrieve the absolute path of the launcher directory.
@@ -27,6 +34,7 @@ exports.getLauncherDirectory = function(){
  * @returns {string} The absolute path of the launcher's data directory.
  */
 exports.getDataDirectory = function(def = false){
+    
     return !def ? config.settings.launcher.dataDirectory : DEFAULT_CONFIG.settings.launcher.dataDirectory
 }
 
@@ -76,15 +84,12 @@ const DEFAULT_CONFIG = {
             maxRAM: resolveMaxRAM(), // Dynamic
             executable: null,
             jvmOptions: [
-                '-XX:+UseConcMarkSweepGC',
-                '-XX:+CMSIncrementalMode',
-                '-XX:-UseAdaptiveSizePolicy',
-                '-Xmn128M'
+                '',
             ],
         },
         game: {
-            resWidth: 1280,
-            resHeight: 720,
+            resWidth: 856,
+            resHeight: 482,
             fullscreen: false,
             autoConnect: true,
             launchDetached: true
@@ -296,7 +301,6 @@ exports.getSelectedServer = function(def = false){
 exports.setSelectedServer = function(serverID){
     config.selectedServer = serverID
 }
-
 /**
  * Get an array of each account currently authenticated by the launcher.
  * 
@@ -361,20 +365,9 @@ exports.addAuthAccount = function(uuid, accessToken, username, displayName){
  * @returns {boolean} True if the account was removed, false if it never existed.
  */
 exports.removeAuthAccount = function(uuid){
-    if(config.authenticationDatabase[uuid] != null){
-        delete config.authenticationDatabase[uuid]
-        if(config.selectedAccount === uuid){
-            const keys = Object.keys(config.authenticationDatabase)
-            if(keys.length > 0){
-                config.selectedAccount = keys[0]
-            } else {
-                config.selectedAccount = null
-                config.clientToken = null
-            }
-        }
-        return true
-    }
-    return false
+    config.authenticationDatabase = {}
+    config.selectedAccount = null
+    config.clientToken = null
 }
 
 /**
@@ -686,3 +679,4 @@ exports.getAllowPrerelease = function(def = false){
 exports.setAllowPrerelease = function(allowPrerelease){
     config.settings.launcher.allowPrerelease = allowPrerelease
 }
+

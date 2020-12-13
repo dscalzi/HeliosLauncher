@@ -29,9 +29,20 @@
  ******************************************************************************/
 
 /* Reset body, html, and div presets. */
+
 body, html, div {
     margin: 0px;
     padding: 0px;
+}
+
+img {
+    
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-drag: none; 
 }
 
 /* Reset p presets. */
@@ -63,7 +74,7 @@ body, button {
     z-index: 100;
     display: flex;
     flex-direction: column;
-    transition: background-color 1s ease;
+    transition: background-color 2s ease;
     /*background-color: rgba(0, 0, 0, 0.5);*/
     -webkit-user-select: none;
 }
@@ -74,6 +85,8 @@ body, button {
     width: 100%;
     -webkit-app-region: no-drag;
 }
+
+
 
 /* Flexbox to wrap the main frame content. */
 #frameMain {
@@ -106,12 +119,23 @@ body, button {
 
 /* Frame logo (windows only). */
 #frameTitleDock {
-    padding: 0px 10px;
+    padding: 2px 0px 0px 10px;
 }
 #frameTitleText {
     font-size: 14px;
     font-family: 'Avenir Medium';
     letter-spacing: 0.5px;
+}
+#frameSeninAnan {
+    z-index: 90;
+    background-color: rgb(36, 10, 73);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);
+    height: 100%;
+    width: 135px;
+    -webkit-app-region: no-drag;
 }
 
 /* Windows frame button dock. */
@@ -346,12 +370,14 @@ body, button {
 #welcomeButton:hover #welcomeSVG,
 #welcomeButton:focus #welcomeSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0px 2px #fff);
 }
 #welcomeButton:active #welcomeSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #welcomeButton:active #welcomeSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 #welcomeButton:disabled #welcomeSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -412,6 +438,7 @@ body, button {
 #loginCancelButton:focus #loginCancelIcon {
     box-shadow: 0px 0px 20px white;
 }
+progress::-webkit-progress-value { background: aqua; }
 #loginCancelButton:active #loginCancelIcon,
 #loginCancelButton:active #loginCancelText {
     text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
@@ -648,12 +675,14 @@ body, button {
 #loginButton:hover #loginSVG,
 #loginButton:focus #loginSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0px 2px #fff);
 }
 #loginButton:active #loginSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #loginButton:active #loginSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 #loginButton:disabled #loginSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -2273,18 +2302,18 @@ input:checked + .toggleSwitchSlider:before {
 }
 #landingContainer > #upper > #left {
     display: inline-flex;
-    width: 15%;
+    width: 11%;
     height: 100%;
     justify-content: flex-end;
 }
 #landingContainer > #upper > #content {
     display: inline-flex;
-    width: 70%;
+    width: 77%;
     height: 100%;
 }
 #landingContainer > #upper > #right {
     display: inline-flex;
-    width: 15%;
+    width: 12%;
     height: 100%;
 }
 
@@ -2292,7 +2321,6 @@ input:checked + .toggleSwitchSlider:before {
 #landingContainer > #lower {
     height: 23%;
     display: flex;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
 }
 #landingContainer > #lower > #left {
     position: relative;
@@ -2305,10 +2333,10 @@ input:checked + .toggleSwitchSlider:before {
 }
 #landingContainer > #lower > #left #content {
     position: relative;
-    top: 25px;
+    top: 70px;
     display: inline-flex;
     line-height: 24px;
-    left: 50px;
+    left: 10px;
 }
 #landingContainer > #lower > #center {
     position: relative;
@@ -2323,14 +2351,14 @@ input:checked + .toggleSwitchSlider:before {
     position: relative;
     z-index: 500;
     transition: top 2s ease;
-    top: 10px;
+    top: 55px;
 }
 #landingContainer > #lower > #right {
     position: relative;
     transition: top 2s ease;
     top: 0px;
     height: 100%;
-    width: 33%;
+    width: 40%;
     display: inline-flex;
 }
 
@@ -2341,10 +2369,14 @@ input:checked + .toggleSwitchSlider:before {
  ******************************************************************************/
 
 /* Main container. */
+#foo {
+    transition: top 2s ease;
+}
 #newsContainer {
+    bottom: -100%;
+    opacity: 0;
     position: absolute;
-    top: 100%;
-    height: 100%;
+    height: calc(100% - 22px);
     width: 100%;
     transition: top 2s ease;
     display: flex;
@@ -2586,6 +2618,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsNavigateRight:hover #newsNavigationRightSVG,
 #newsNavigateRight:focus #newsNavigationRightSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0px 2px #fff);
 }
 #newsNavigateLeft:active #newsNavigationLeftSVG .arrowLine,
 #newsNavigateRight:active #newsNavigationRightSVG .arrowLine {
@@ -2594,6 +2627,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsNavigateLeft:active #newsNavigationLeftSVG,
 #newsNavigateRight:active #newsNavigationRightSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 #newsNavigateLeft:disabled #newsNavigationLeftSVG .arrowLine,
 #newsNavigateRight:disabled #newsNavigationRightSVG .arrowLine {
@@ -2665,20 +2699,19 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Logo image. */
 #image_seal {
-    height: 70px;
+    height: 110px;
     width: auto;
     position: relative;
-    border: 2px solid white;
-    box-sizing: border-box;
-    border-radius: 50%;
+    border-radius: 10%;
 }
 
 /* Logo container styles. */
 #image_seal_container {
     position: relative;
-    height: 70px;
-    width: 70px;
-    border-radius: 50%;
+    flex-direction: left;
+    height: 10px;
+    width: 100px;
+    border-radius: 1%;
     margin-top: 50px;
 }
 
@@ -2693,7 +2726,7 @@ input:checked + .toggleSwitchSlider:before {
     content: '';
     height: 100%;
     width: 100%;
-    top: 0%;
+    top: 100%;
     left: 0%;
     border-radius: 50%;
     box-shadow: 0 0 15px #43c628;
@@ -2762,11 +2795,11 @@ input:checked + .toggleSwitchSlider:before {
 /*  Wrapper container for top, right content. */
 #rightContainer {
     display: flex;
-    flex-direction: column;
+    flex-direction: right;
     position: relative;
-    top: 50px;
-    align-items: flex-start;
-    height: calc(100% - 50px);
+    top: 62px;
+    align-items: right;
+    height: 50px;
 }
 
 /* Right hand user content container. */
@@ -2784,8 +2817,8 @@ input:checked + .toggleSwitchSlider:before {
     border: 2px solid #cad7e1;
     box-sizing: border-box;
     background: rgba(1, 2, 1, 0.5);
-    height: 70px;
-    width: 70px;
+    height: 75px;
+    width: 75px;
     box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
     overflow: hidden;
     position: relative;
@@ -2820,35 +2853,64 @@ input:checked + .toggleSwitchSlider:before {
 #avatarOverlay:active {
     background-color: rgba(0, 0, 0, 0.45);
 }
+#signout {
+    background: none;
+    border: none;
+    outline: none !important;
+    cursor: pointer;
+    padding: 0px;
+    color: #a91919;
+    font-size: 8px;
+    min-width: 25px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-shadow: none;
+    position: absolute;
+    left: 95px;
+    top: 30px;
+    text-align: left;
+    -webkit-user-select: initial;
+    -webkit-transition: 0.2s ease;
+    transition: 0.2s ease;
+}
+#signout:hover{
+    text-shadow: 0px 0px 5px rgba(255, 0, 0, 0.433);
+}
+
+#signout:active {
+    text-shadow: 0px 0px 5px #f00;
+}
 
 /* User profile name text. */
 #user_text {
-    font-size: 12px;
+    font-size: 18px;
     min-width: 135px;
     font-weight: 900;
     letter-spacing: 1px;
-    text-shadow: 0px 0px 20px black;
+    text-shadow: 0px 0px 5px #ffffff99;
     position: absolute;
-    right: 95px;
-    text-align: right;
+    left: 95px;
+    text-align: left;
     -webkit-user-select: initial;
+    top: 8px;
 }
 
 /* Social media icon content container. */
+
 #mediaContent {
+    left: calc(100% - 70px);
     position: relative;
     display: flex;
-    flex-direction: column;
-    margin-top: 25px;
+    flex-direction: row-reverse;
+    margin-top: 50px;
     height: calc(100% - 95px);
     width: 70px;
-    align-items: center;
 }
 
 /* Social Media Icon division containers. */
 #internalMedia, #externalMedia {
     display: flex;
-    flex-direction: column;
+    flex-direction: row-reverse;
 }
 
 /* Container object which wraps an icon to ensure fluid transitions. */
@@ -3002,8 +3064,8 @@ input:checked + .toggleSwitchSlider:before {
     height: 25px;
     width: 2px;
     background: rgba(107, 105, 105, 0.7);
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 30px;
+    margin-right: 30px;
 }
 
 /* * *
@@ -3150,13 +3212,15 @@ input:checked + .toggleSwitchSlider:before {
 
 #newsButton:hover #newsButtonSVG,
 #newsButton:focus #newsButtonSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    -webkit-filter: drop-shadow(0px 0px 5px #fff);
+    filter: drop-shadow(0px 0px 5px #fff);
 }
 #newsButton:active #newsButtonSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #newsButton:active #newsButtonSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    -webkit-filter: drop-shadow(0px 0px 5px #c7c7c7);
+    filter: drop-shadow(0px 0px 5px #c7c7c7);
 }
 #newsButton:disabled #newsButtonSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -3177,6 +3241,8 @@ input:checked + .toggleSwitchSlider:before {
 #newsButtonSVG {
     height: 11px;
     margin-left: -2px;
+    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
     transition: 0.25s ease;
 }
 
@@ -3198,10 +3264,14 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Main launch content container. */
 #landingContainer > #lower > #right #launch_content {
-    position: relative;
-    top: 25px;
+    position: absolute;
+    top: 0px;
+    width: 210px;
     display: inline-flex;
+    left:20px;
 }
+/* Svg Oyna */
+
 
 /* The launch button. */
 #launch_button {
@@ -3211,19 +3281,41 @@ input:checked + .toggleSwitchSlider:before {
     font-weight: 900;
     letter-spacing: 2px;
     text-shadow: 0px 0px 0px #bebcbb;
-    font-size: 20px;
+    font-size: 72px;
     padding: 0px;
     transition: 0.25s ease;
     outline: none;
 }
+
+#svgPlay {
+    left: calc(100% + 10px);
+    top: 10px;
+    background-image: url("data:image/svg+xml, %3Csvg version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 512 512' fill='cyan' width='24' height='24' xml:space='preserve'%3E%3Cpath d='M256,0C114.617,0,0,114.615,0,256s114.617,256,256,256s256-114.615,256-256S397.383,0,256,0z M344.48,269.57l-128,80 c-2.59,1.617-5.535,2.43-8.48,2.43c-2.668,0-5.34-0.664-7.758-2.008C195.156,347.172,192,341.82,192,336V176 c0-5.82,3.156-11.172,8.242-13.992c5.086-2.836,11.305-2.664,16.238,0.422l128,80c4.676,2.93,7.52,8.055,7.52,13.57 S349.156,266.641,344.48,269.57z'/%3E%3C/svg%3E%0A");
+    display: inline-block;
+    width: 72px;
+    height: 72px;
+    background-size: cover;
+    transition: 0.25s ease;
+    position: absolute;
+  }
+  #launch_content:hover #svgPlay,
+  #launch_content:focus #svgPlay {
+    background-image: url("data:image/svg+xml, %3Csvg version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 512 512' fill='orange' width='24' height='24' xml:space='preserve'%3E%3Cpath d='M256,0C114.617,0,0,114.615,0,256s114.617,256,256,256s256-114.615,256-256S397.383,0,256,0z M344.48,269.57l-128,80 c-2.59,1.617-5.535,2.43-8.48,2.43c-2.668,0-5.34-0.664-7.758-2.008C195.156,347.172,192,341.82,192,336V176 c0-5.82,3.156-11.172,8.242-13.992c5.086-2.836,11.305-2.664,16.238,0.422l128,80c4.676,2.93,7.52,8.055,7.52,13.57 S349.156,266.641,344.48,269.57z'/%3E%3C/svg%3E%0A");
+    width: 73px;
+    height: 73px;
+}
+
 #launch_button:hover,
 #launch_button:focus {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
+    font-size: 73px;
 }
 #launch_button:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
 }
+#launch_button:active {
+    transform: rotate(180deg) 0.2s ease;
+}
+
 #launch_button:disabled {
     color: #c7c7c7;
     cursor: default;
@@ -3232,8 +3324,10 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Launch details main container, hidden until launch processing begins. */
 #launch_details {
-    position: relative;
+    position: absolute;
     top: 25px;
+    right: calc(100% - 261px);
+    width: 0px;
     display: none;
 }
  
@@ -3247,57 +3341,17 @@ input:checked + .toggleSwitchSlider:before {
     font-weight: 900;
     letter-spacing: 1px;
     text-shadow: 0px 0px 0px #bebcbb;
-    font-size: 20px;
-    min-width: 53.21px;
-    max-width: 53.21px;
+    font-size: 35px;
+    /*min-width: 53.21px;
+    max-width: 53.21px;*/
     text-align: right;
 }
 
 /* Right side of launch details container, displays progress bar and details. */
 #launch_details_right {
-    display: flex;
+    display: grid;
     flex-direction: column;
-    justify-content: center;
-}
-
-/* Button which opens the server selection view. */
-#server_selection_button {
-    background: none;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    line-height: 24px;
-    padding: 0px;
-    transition: 0.25s ease;
-}
-#server_selection_button:hover,
-#server_selection_button:focus {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff, 0px 0px 20px #fff;
-}
-#server_selection_button:active {
-    color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
-}
-
-/* Progress bar styles. */
-#launch_progress[value] {
-    height: 3px;
-    width: 265px;
-    -webkit-appearance: none;
-}
-#launch_progress[value]::-webkit-progress-bar {
-    background-color: transparent;
-}
-#launch_progress[value]::-webkit-progress-value {
-    background-color: #fff;
-}
-
-/* Span which displays information about the status of the launch process. */
-#launch_details_text {
-    font-size: 11px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+    justify-content: revert;
 }
 
 /*******************************************************************************
@@ -3314,12 +3368,12 @@ input:checked + .toggleSwitchSlider:before {
 #overlayContainer {
     position: absolute;
     z-index: 500;
-    top: 22px;
+    top: 0px;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100% - 22px);
+    height: 100%;
     background: rgba(0, 0, 0, 0.50);
 }
 
@@ -3739,39 +3793,73 @@ input:checked + .toggleSwitchSlider:before {
     justify-content: center;
 }
 
-/* Spinner container. */
-#loadSpinnerContainer {
+/* Loading Animation */
+
+#loader {
+    display: block;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    left: 50%;
+    top: 50%;
+    width: 100px;
+    height: 100px;
+    margin: -75px 0 0 -75px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #ddd;
+    -webkit-filter: drop-shadow(0px 0px 2px #aaa);
+    filter: drop-shadow(0px 0px 2px #aaa);
+    -webkit-animation: spin 1.5s linear infinite;
+    animation: spin 1.5s linear infinite;
 }
-
-/* Stationary image for the spinner. */
-#loadCenterImage {
+#loader:before {
+    content: "";
     position: absolute;
-    width: 277px;
-    height: auto;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #ddd;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
 }
 
-/* Rotating image for the spinner. */
-#loadSpinnerImage {
-    width: 280px;
-    height: auto;
-    z-index: 400;
+#loader:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #ddd;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
 }
 
-/* Rotating animation for the spinner. */
-@keyframes rotating {
-    from {
+@-webkit-keyframes spin {
+    0%   {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
         transform: rotate(0deg);
     }
-    to {
+    100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
         transform: rotate(360deg);
     }
 }
-
-/* Class which is applied when the spinner image is spinning. */
-.rotating {
-    animation: rotating 10s linear infinite;
+@keyframes spin {
+    0%   {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }

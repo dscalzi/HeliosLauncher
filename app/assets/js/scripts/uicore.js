@@ -9,11 +9,47 @@ const $                                      = require('jquery')
 const {ipcRenderer, remote, shell, webFrame} = require('electron')
 const isDev                                  = require('./assets/js/isdev')
 const LoggerUtil                             = require('./assets/js/loggerutil')
-
+const ConfigManagerV2                        = require('./assets/js/configmanager')
 const loggerUICore             = LoggerUtil('%c[UICore]', 'color: #000668; font-weight: bold')
 const loggerAutoUpdater        = LoggerUtil('%c[AutoUpdater]', 'color: #000668; font-weight: bold')
 const loggerAutoUpdaterSuccess = LoggerUtil('%c[AutoUpdater]', 'color: #209b07; font-weight: bold')
+let builder=0
 
+function a(){
+    // Eeeğm öle işte
+    
+    document.title = ConfigManagerV2.getLD().Launcher.Name
+    let fTT=document.querySelector("#frameTitleText")
+    let sASB=document.querySelector("#settingsAboutSourceButton")
+    let sAT=document.querySelector("#settingsAboutTitle")
+    let lDT=document.querySelector(".loginDisclaimerText")
+    let nB=document.querySelector("#newsButton")
+    let foo=document.querySelector("#baby-foo")
+    let framebar=document.querySelector("#frameBar")
+    let frameSA=document.querySelector("#frameSeninAnan")
+    if(fTT) {fTT.innerHTML = ConfigManagerV2.getLD().Launcher.Name;builder++}
+    if(sASB) {sASB.href = ConfigManagerV2.getLD().Launcher.FileUrl;builder++}
+    if(sAT) {sAT.innerHTML = ConfigManagerV2.getLD().Launcher.Name;builder++}
+    if(lDT) {lDT.innerHTML = `${ConfigManagerV2.getLD().Launcher.Name} ile Mojang arasına bir iş birliği bulunmamaktadır`;builder++}
+    if(foo) {foo.outerHTML = `<webview id="foo" src="${ConfigManagerV2.getLD().WebAddress}" style="width:100%; height:100%" autosize="on" minwidth="576" minheight="432" allowtransparency></webview>`;builder++}
+    if(framebar) {framebar.style.backgroundColor = `rgba(${ConfigManagerV2.getLD().others.frameBarC.join(",")})`;builder++}
+    if(nB) {
+        if(ConfigManagerV2.getLD().WebAddress){
+            nB.style.opacity = 1
+            builder++
+        }else{
+            nB.style.top = "-100%";builder++
+        }
+    }
+    if(frameSA){
+        if(ConfigManagerV2.getLD().others.LNameBg) {
+            frameSA.style.opacity=1
+        };builder++
+    }
+    console.log(builder)
+    if(!(builder>=10)) setTimeout(a, 15)
+}
+a()
 // Log deprecation and process warnings.
 process.traceProcessWarnings = true
 process.traceDeprecation = true
@@ -41,22 +77,22 @@ if(!isDev){
     ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
         switch(arg){
             case 'checking-for-update':
-                loggerAutoUpdater.log('Checking for update..')
-                settingsUpdateButtonStatus('Checking for Updates..', true)
+                loggerAutoUpdater.log('Güncelleme aranıyor..')
+                settingsUpdateButtonStatus('Güncelleme aranıyor..', true)
                 break
             case 'update-available':
-                loggerAutoUpdaterSuccess.log('New update available', info.version)
+                loggerAutoUpdaterSuccess.log('Yeni güncelleme mevcut', info.version)
                 
                 if(process.platform === 'darwin'){
-                    info.darwindownload = `https://github.com/dscalzi/HeliosLauncher/releases/download/v${info.version}/helioslauncher-setup-${info.version}.dmg`
+                    info.darwindownload = `https://github.com/dscalzi/PixargonLauncher/releases/download/v${info.version}/pixargonlauncher-setup-${info.version}.dmg`
                     showUpdateUI(info)
                 }
                 
                 populateSettingsUpdateInformation(info)
                 break
             case 'update-downloaded':
-                loggerAutoUpdaterSuccess.log('Update ' + info.version + ' ready to be installed.')
-                settingsUpdateButtonStatus('Install Now', false, () => {
+                loggerAutoUpdaterSuccess.log('Güncelleme ' + info.version + ' indirmeye hazır.')
+                settingsUpdateButtonStatus('Şimdi indir', false, () => {
                     if(!isDev){
                         ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
                     }
@@ -64,8 +100,8 @@ if(!isDev){
                 showUpdateUI(info)
                 break
             case 'update-not-available':
-                loggerAutoUpdater.log('No new update found.')
-                settingsUpdateButtonStatus('Check for Updates')
+                loggerAutoUpdater.log('Yeni güncelleme bulunamadı.')
+                settingsUpdateButtonStatus('Güncellemeleri kontrol et')
                 break
             case 'ready':
                 updateCheckListener = setInterval(() => {
@@ -76,17 +112,17 @@ if(!isDev){
             case 'realerror':
                 if(info != null && info.code != null){
                     if(info.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
-                        loggerAutoUpdater.log('No suitable releases found.')
+                        loggerAutoUpdater.log('Uygun sürüm bulunamadı.')
                     } else if(info.code === 'ERR_XML_MISSED_ELEMENT'){
-                        loggerAutoUpdater.log('No releases found.')
+                        loggerAutoUpdater.log('Sürüm bulunamadı.')
                     } else {
-                        loggerAutoUpdater.error('Error during update check..', info)
-                        loggerAutoUpdater.debug('Error Code:', info.code)
+                        loggerAutoUpdater.error('Güncelleme kontrolünde hata..', info)
+                        loggerAutoUpdater.debug('Hata kodu:', info.code)
                     }
                 }
                 break
             default:
-                loggerAutoUpdater.log('Unknown argument', arg)
+                loggerAutoUpdater.log('Bilinmeyen konu', arg)
                 break
         }
     })
@@ -134,7 +170,7 @@ $(function(){
 
 document.addEventListener('readystatechange', function () {
     if (document.readyState === 'interactive'){
-        loggerUICore.log('UICore Initializing..')
+        loggerUICore.log('UICore Başlatılıyor..')
 
         // Bind close button.
         Array.from(document.getElementsByClassName('fCb')).map((val) => {
@@ -175,18 +211,6 @@ document.addEventListener('readystatechange', function () {
 
     } else if(document.readyState === 'complete'){
 
-        //266.01
-        //170.8
-        //53.21
-        // Bind progress bar length to length of bot wrapper
-        //const targetWidth = document.getElementById("launch_content").getBoundingClientRect().width
-        //const targetWidth2 = document.getElementById("server_selection").getBoundingClientRect().width
-        //const targetWidth3 = document.getElementById("launch_button").getBoundingClientRect().width
-
-        document.getElementById('launch_details').style.maxWidth = 266.01
-        document.getElementById('launch_progress').style.width = 170.8
-        document.getElementById('launch_details_right').style.maxWidth = 170.8
-        document.getElementById('launch_progress_label').style.width = 53.21
         
     }
 
@@ -205,9 +229,11 @@ $(document).on('click', 'a[href^="http"]', function(event) {
  * This will crash the program if you are using multiple
  * DevTools, for example the chrome debugger in VS Code. 
  */
+
 document.addEventListener('keydown', function (e) {
-    if((e.key === 'I' || e.key === 'i') && e.ctrlKey && e.shiftKey){
-        let window = remote.getCurrentWindow()
-        window.toggleDevTools()
-    }
+        if((isDev) && (e.key === 'I' || e.key === 'i') && e.ctrlKey && e.shiftKey){
+            let window = remote.getCurrentWindow()
+            window.toggleDevTools()
+        }
 })
+

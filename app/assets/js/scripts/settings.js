@@ -3,7 +3,6 @@ const os     = require('os')
 const semver = require('semver')
 
 const { JavaGuard } = require('./assets/js/assetguard')
-const DropinModUtil  = require('./assets/js/dropinmodutil')
 
 const settingsState = {
     invalid: new Set()
@@ -147,8 +146,9 @@ function initSettingsValues(){
             } else if(v.tagName === 'DIV'){
                 if(v.classList.contains('rangeSlider')){
                     // Special Conditions
-                    if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
+                    if(cVal === 'MaxRAM'){
                         let val = gFn()
+                        console.log(cVal,v,val)
                         if(val.endsWith('M')){
                             val = Number(val.substring(0, val.length-1))/1000
                         } else {
@@ -156,7 +156,10 @@ function initSettingsValues(){
                         }
 
                         v.setAttribute('value', val)
-                    } else {
+                    } else if(cVal === 'MinRAM'){
+                        v.setAttribute('value', 0.1)
+                    }else {
+                        console.log(cVal,v)
                         v.setAttribute('value', Number.parseFloat(gFn()))
                     }
                 }
@@ -193,6 +196,7 @@ function saveSettingsValues(){
             } else if(v.tagName === 'DIV'){
                 if(v.classList.contains('rangeSlider')){
                     // Special Conditions
+                    
                     if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
                         let val = Number(v.getAttribute('value'))
                         if(val%1 > 0){
@@ -211,7 +215,7 @@ function saveSettingsValues(){
     })
 }
 
-let selectedSettingsTab = 'settingsTabAccount'
+let selectedSettingsTab = 'settingsTabMinecraft'
 
 /**
  * Modify the settings container UI when the scroll threshold reaches
@@ -303,181 +307,13 @@ function settingsSaveDisabled(v){
 /* Closes the settings view and saves all data. */
 settingsNavDone.onclick = () => {
     saveSettingsValues()
-    saveModConfiguration()
     ConfigManager.save()
-    saveDropinModConfiguration()
-    saveShaderpackSettings()
+    document.querySelector("#frameBar").style.backgroundColor = `rgba(${ConfigManagerV2.getLD().others.frameBarC.join(",")}`
     switchView(getCurrentView(), VIEWS.landing)
 }
 
-/**
- * Account Management Tab
- */
 
-// Bind the add account button.
-document.getElementById('settingsAddAccount').onclick = (e) => {
-    switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
-        loginViewOnCancel = VIEWS.settings
-        loginViewOnSuccess = VIEWS.settings
-        loginCancelEnabled(true)
-    })
-}
 
-/**
- * Bind functionality for the account selection buttons. If another account
- * is selected, the UI of the previously selected account will be updated.
- */
-function bindAuthAccountSelect(){
-    Array.from(document.getElementsByClassName('settingsAuthAccountSelect')).map((val) => {
-        val.onclick = (e) => {
-            if(val.hasAttribute('selected')){
-                return
-            }
-            const selectBtns = document.getElementsByClassName('settingsAuthAccountSelect')
-            for(let i=0; i<selectBtns.length; i++){
-                if(selectBtns[i].hasAttribute('selected')){
-                    selectBtns[i].removeAttribute('selected')
-                    selectBtns[i].innerHTML = 'Select Account'
-                }
-            }
-            val.setAttribute('selected', '')
-            val.innerHTML = 'Selected Account &#10004;'
-            setSelectedAccount(val.closest('.settingsAuthAccount').getAttribute('uuid'))
-        }
-    })
-}
-
-/**
- * Bind functionality for the log out button. If the logged out account was
- * the selected account, another account will be selected and the UI will
- * be updated accordingly.
- */
-function bindAuthAccountLogOut(){
-    Array.from(document.getElementsByClassName('settingsAuthAccountLogOut')).map((val) => {
-        val.onclick = (e) => {
-            let isLastAccount = false
-            if(Object.keys(ConfigManager.getAuthAccounts()).length === 1){
-                isLastAccount = true
-                setOverlayContent(
-                    'Warning<br>This is Your Last Account',
-                    'In order to use the launcher you must be logged into at least one account. You will need to login again after.<br><br>Are you sure you want to log out?',
-                    'I\'m Sure',
-                    'Cancel'
-                )
-                setOverlayHandler(() => {
-                    processLogOut(val, isLastAccount)
-                    toggleOverlay(false)
-                    switchView(getCurrentView(), VIEWS.login)
-                })
-                setDismissHandler(() => {
-                    toggleOverlay(false)
-                })
-                toggleOverlay(true, true)
-            } else {
-                processLogOut(val, isLastAccount)
-            }
-            
-        }
-    })
-}
-
-/**
- * Process a log out.
- * 
- * @param {Element} val The log out button element.
- * @param {boolean} isLastAccount If this logout is on the last added account.
- */
-function processLogOut(val, isLastAccount){
-    const parent = val.closest('.settingsAuthAccount')
-    const uuid = parent.getAttribute('uuid')
-    const prevSelAcc = ConfigManager.getSelectedAccount()
-    AuthManager.removeAccount(uuid).then(() => {
-        if(!isLastAccount && uuid === prevSelAcc.uuid){
-            const selAcc = ConfigManager.getSelectedAccount()
-            refreshAuthAccountSelected(selAcc.uuid)
-            updateSelectedAccount(selAcc)
-            validateSelectedAccount()
-        }
-    })
-    $(parent).fadeOut(250, () => {
-        parent.remove()
-    })
-}
-
-/**
- * Refreshes the status of the selected account on the auth account
- * elements.
- * 
- * @param {string} uuid The UUID of the new selected account.
- */
-function refreshAuthAccountSelected(uuid){
-    Array.from(document.getElementsByClassName('settingsAuthAccount')).map((val) => {
-        const selBtn = val.getElementsByClassName('settingsAuthAccountSelect')[0]
-        if(uuid === val.getAttribute('uuid')){
-            selBtn.setAttribute('selected', '')
-            selBtn.innerHTML = 'Selected Account &#10004;'
-        } else {
-            if(selBtn.hasAttribute('selected')){
-                selBtn.removeAttribute('selected')
-            }
-            selBtn.innerHTML = 'Select Account'
-        }
-    })
-}
-
-const settingsCurrentAccounts = document.getElementById('settingsCurrentAccounts')
-
-/**
- * Add auth account elements for each one stored in the authentication database.
- */
-function populateAuthAccounts(){
-    const authAccounts = ConfigManager.getAuthAccounts()
-    const authKeys = Object.keys(authAccounts)
-    if(authKeys.length === 0){
-        return
-    }
-    const selectedUUID = ConfigManager.getSelectedAccount().uuid
-
-    let authAccountStr = ''
-
-    authKeys.map((val) => {
-        const acc = authAccounts[val]
-        authAccountStr += `<div class="settingsAuthAccount" uuid="${acc.uuid}">
-            <div class="settingsAuthAccountLeft">
-                <img class="settingsAuthAccountImage" alt="${acc.displayName}" src="https://crafatar.com/renders/body/${acc.uuid}?scale=3&default=MHF_Steve&overlay">
-            </div>
-            <div class="settingsAuthAccountRight">
-                <div class="settingsAuthAccountDetails">
-                    <div class="settingsAuthAccountDetailPane">
-                        <div class="settingsAuthAccountDetailTitle">Username</div>
-                        <div class="settingsAuthAccountDetailValue">${acc.displayName}</div>
-                    </div>
-                    <div class="settingsAuthAccountDetailPane">
-                        <div class="settingsAuthAccountDetailTitle">UUID</div>
-                        <div class="settingsAuthAccountDetailValue">${acc.uuid}</div>
-                    </div>
-                </div>
-                <div class="settingsAuthAccountActions">
-                    <button class="settingsAuthAccountSelect" ${selectedUUID === acc.uuid ? 'selected>Selected Account &#10004;' : '>Select Account'}</button>
-                    <div class="settingsAuthAccountWrapper">
-                        <button class="settingsAuthAccountLogOut">Log Out</button>
-                    </div>
-                </div>
-            </div>
-        </div>`
-    })
-
-    settingsCurrentAccounts.innerHTML = authAccountStr
-}
-
-/**
- * Prepare the accounts tab for display.
- */
-function prepareAccountsTab() {
-    populateAuthAccounts()
-    bindAuthAccountSelect()
-    bindAuthAccountLogOut()
-}
 
 /**
  * Minecraft Tab
@@ -497,440 +333,6 @@ document.getElementById('settingsGameHeight').addEventListener('keydown', (e) =>
     }
 })
 
-/**
- * Mods Tab
- */
-
-const settingsModsContainer = document.getElementById('settingsModsContainer')
-
-/**
- * Resolve and update the mods on the UI.
- */
-function resolveModsForUI(){
-    const serv = ConfigManager.getSelectedServer()
-
-    const distro = DistroManager.getDistribution()
-    const servConf = ConfigManager.getModConfiguration(serv)
-
-    const modStr = parseModulesForUI(distro.getServer(serv).getModules(), false, servConf.mods)
-
-    document.getElementById('settingsReqModsContent').innerHTML = modStr.reqMods
-    document.getElementById('settingsOptModsContent').innerHTML = modStr.optMods
-}
-
-/**
- * Recursively build the mod UI elements.
- * 
- * @param {Object[]} mdls An array of modules to parse.
- * @param {boolean} submodules Whether or not we are parsing submodules.
- * @param {Object} servConf The server configuration object for this module level.
- */
-function parseModulesForUI(mdls, submodules, servConf){
-
-    let reqMods = ''
-    let optMods = ''
-
-    for(const mdl of mdls){
-
-        if(mdl.getType() === DistroManager.Types.ForgeMod || mdl.getType() === DistroManager.Types.LiteMod || mdl.getType() === DistroManager.Types.LiteLoader){
-
-            if(mdl.getRequired().isRequired()){
-
-                reqMods += `<div id="${mdl.getVersionlessID()}" class="settingsBaseMod settings${submodules ? 'Sub' : ''}Mod" enabled>
-                    <div class="settingsModContent">
-                        <div class="settingsModMainWrapper">
-                            <div class="settingsModStatus"></div>
-                            <div class="settingsModDetails">
-                                <span class="settingsModName">${mdl.getName()}</span>
-                                <span class="settingsModVersion">v${mdl.getVersion()}</span>
-                            </div>
-                        </div>
-                        <label class="toggleSwitch" reqmod>
-                            <input type="checkbox" checked>
-                            <span class="toggleSwitchSlider"></span>
-                        </label>
-                    </div>
-                    ${mdl.hasSubModules() ? `<div class="settingsSubModContainer">
-                        ${Object.values(parseModulesForUI(mdl.getSubModules(), true, servConf[mdl.getVersionlessID()])).join('')}
-                    </div>` : ''}
-                </div>`
-
-            } else {
-
-                const conf = servConf[mdl.getVersionlessID()]
-                const val = typeof conf === 'object' ? conf.value : conf
-
-                optMods += `<div id="${mdl.getVersionlessID()}" class="settingsBaseMod settings${submodules ? 'Sub' : ''}Mod" ${val ? 'enabled' : ''}>
-                    <div class="settingsModContent">
-                        <div class="settingsModMainWrapper">
-                            <div class="settingsModStatus"></div>
-                            <div class="settingsModDetails">
-                                <span class="settingsModName">${mdl.getName()}</span>
-                                <span class="settingsModVersion">v${mdl.getVersion()}</span>
-                            </div>
-                        </div>
-                        <label class="toggleSwitch">
-                            <input type="checkbox" formod="${mdl.getVersionlessID()}" ${val ? 'checked' : ''}>
-                            <span class="toggleSwitchSlider"></span>
-                        </label>
-                    </div>
-                    ${mdl.hasSubModules() ? `<div class="settingsSubModContainer">
-                        ${Object.values(parseModulesForUI(mdl.getSubModules(), true, conf.mods)).join('')}
-                    </div>` : ''}
-                </div>`
-
-            }
-        }
-    }
-
-    return {
-        reqMods,
-        optMods
-    }
-
-}
-
-/**
- * Bind functionality to mod config toggle switches. Switching the value
- * will also switch the status color on the left of the mod UI.
- */
-function bindModsToggleSwitch(){
-    const sEls = settingsModsContainer.querySelectorAll('[formod]')
-    Array.from(sEls).map((v, index, arr) => {
-        v.onchange = () => {
-            if(v.checked) {
-                document.getElementById(v.getAttribute('formod')).setAttribute('enabled', '')
-            } else {
-                document.getElementById(v.getAttribute('formod')).removeAttribute('enabled')
-            }
-        }
-    })
-}
-
-
-/**
- * Save the mod configuration based on the UI values.
- */
-function saveModConfiguration(){
-    const serv = ConfigManager.getSelectedServer()
-    const modConf = ConfigManager.getModConfiguration(serv)
-    modConf.mods = _saveModConfiguration(modConf.mods)
-    ConfigManager.setModConfiguration(serv, modConf)
-}
-
-/**
- * Recursively save mod config with submods.
- * 
- * @param {Object} modConf Mod config object to save.
- */
-function _saveModConfiguration(modConf){
-    for(let m of Object.entries(modConf)){
-        const tSwitch = settingsModsContainer.querySelectorAll(`[formod='${m[0]}']`)
-        if(!tSwitch[0].hasAttribute('dropin')){
-            if(typeof m[1] === 'boolean'){
-                modConf[m[0]] = tSwitch[0].checked
-            } else {
-                if(m[1] != null){
-                    if(tSwitch.length > 0){
-                        modConf[m[0]].value = tSwitch[0].checked
-                    }
-                    modConf[m[0]].mods = _saveModConfiguration(modConf[m[0]].mods)
-                }
-            }
-        }
-    }
-    return modConf
-}
-
-// Drop-in mod elements.
-
-let CACHE_SETTINGS_MODS_DIR
-let CACHE_DROPIN_MODS
-
-/**
- * Resolve any located drop-in mods for this server and
- * populate the results onto the UI.
- */
-function resolveDropinModsForUI(){
-    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
-    CACHE_SETTINGS_MODS_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.getID(), 'mods')
-    CACHE_DROPIN_MODS = DropinModUtil.scanForDropinMods(CACHE_SETTINGS_MODS_DIR, serv.getMinecraftVersion())
-
-    let dropinMods = ''
-
-    for(dropin of CACHE_DROPIN_MODS){
-        dropinMods += `<div id="${dropin.fullName}" class="settingsBaseMod settingsDropinMod" ${!dropin.disabled ? 'enabled' : ''}>
-                    <div class="settingsModContent">
-                        <div class="settingsModMainWrapper">
-                            <div class="settingsModStatus"></div>
-                            <div class="settingsModDetails">
-                                <span class="settingsModName">${dropin.name}</span>
-                                <div class="settingsDropinRemoveWrapper">
-                                    <button class="settingsDropinRemoveButton" remmod="${dropin.fullName}">Remove</button>
-                                </div>
-                            </div>
-                        </div>
-                        <label class="toggleSwitch">
-                            <input type="checkbox" formod="${dropin.fullName}" dropin ${!dropin.disabled ? 'checked' : ''}>
-                            <span class="toggleSwitchSlider"></span>
-                        </label>
-                    </div>
-                </div>`
-    }
-
-    document.getElementById('settingsDropinModsContent').innerHTML = dropinMods
-}
-
-/**
- * Bind the remove button for each loaded drop-in mod.
- */
-function bindDropinModsRemoveButton(){
-    const sEls = settingsModsContainer.querySelectorAll('[remmod]')
-    Array.from(sEls).map((v, index, arr) => {
-        v.onclick = () => {
-            const fullName = v.getAttribute('remmod')
-            const res = DropinModUtil.deleteDropinMod(CACHE_SETTINGS_MODS_DIR, fullName)
-            if(res){
-                document.getElementById(fullName).remove()
-            } else {
-                setOverlayContent(
-                    `Failed to Delete<br>Drop-in Mod ${fullName}`,
-                    'Make sure the file is not in use and try again.',
-                    'Okay'
-                )
-                setOverlayHandler(null)
-                toggleOverlay(true)
-            }
-        }
-    })
-}
-
-/**
- * Bind functionality to the file system button for the selected
- * server configuration.
- */
-function bindDropinModFileSystemButton(){
-    const fsBtn = document.getElementById('settingsDropinFileSystemButton')
-    fsBtn.onclick = () => {
-        DropinModUtil.validateDir(CACHE_SETTINGS_MODS_DIR)
-        shell.openPath(CACHE_SETTINGS_MODS_DIR)
-    }
-    fsBtn.ondragenter = e => {
-        e.dataTransfer.dropEffect = 'move'
-        fsBtn.setAttribute('drag', '')
-        e.preventDefault()
-    }
-    fsBtn.ondragover = e => {
-        e.preventDefault()
-    }
-    fsBtn.ondragleave = e => {
-        fsBtn.removeAttribute('drag')
-    }
-
-    fsBtn.ondrop = e => {
-        fsBtn.removeAttribute('drag')
-        e.preventDefault()
-
-        DropinModUtil.addDropinMods(e.dataTransfer.files, CACHE_SETTINGS_MODS_DIR)
-        reloadDropinMods()
-    }
-}
-
-/**
- * Save drop-in mod states. Enabling and disabling is just a matter
- * of adding/removing the .disabled extension.
- */
-function saveDropinModConfiguration(){
-    for(dropin of CACHE_DROPIN_MODS){
-        const dropinUI = document.getElementById(dropin.fullName)
-        if(dropinUI != null){
-            const dropinUIEnabled = dropinUI.hasAttribute('enabled')
-            if(DropinModUtil.isDropinModEnabled(dropin.fullName) != dropinUIEnabled){
-                DropinModUtil.toggleDropinMod(CACHE_SETTINGS_MODS_DIR, dropin.fullName, dropinUIEnabled).catch(err => {
-                    if(!isOverlayVisible()){
-                        setOverlayContent(
-                            'Failed to Toggle<br>One or More Drop-in Mods',
-                            err.message,
-                            'Okay'
-                        )
-                        setOverlayHandler(null)
-                        toggleOverlay(true)
-                    }
-                })
-            }
-        }
-    }
-}
-
-// Refresh the drop-in mods when F5 is pressed.
-// Only active on the mods tab.
-document.addEventListener('keydown', (e) => {
-    if(getCurrentView() === VIEWS.settings && selectedSettingsTab === 'settingsTabMods'){
-        if(e.key === 'F5'){
-            reloadDropinMods()
-            saveShaderpackSettings()
-            resolveShaderpacksForUI()
-        }
-    }
-})
-
-function reloadDropinMods(){
-    resolveDropinModsForUI()
-    bindDropinModsRemoveButton()
-    bindDropinModFileSystemButton()
-    bindModsToggleSwitch()
-}
-
-// Shaderpack
-
-let CACHE_SETTINGS_INSTANCE_DIR
-let CACHE_SHADERPACKS
-let CACHE_SELECTED_SHADERPACK
-
-/**
- * Load shaderpack information.
- */
-function resolveShaderpacksForUI(){
-    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
-    CACHE_SETTINGS_INSTANCE_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.getID())
-    CACHE_SHADERPACKS = DropinModUtil.scanForShaderpacks(CACHE_SETTINGS_INSTANCE_DIR)
-    CACHE_SELECTED_SHADERPACK = DropinModUtil.getEnabledShaderpack(CACHE_SETTINGS_INSTANCE_DIR)
-
-    setShadersOptions(CACHE_SHADERPACKS, CACHE_SELECTED_SHADERPACK)
-}
-
-function setShadersOptions(arr, selected){
-    const cont = document.getElementById('settingsShadersOptions')
-    cont.innerHTML = ''
-    for(let opt of arr) {
-        const d = document.createElement('DIV')
-        d.innerHTML = opt.name
-        d.setAttribute('value', opt.fullName)
-        if(opt.fullName === selected) {
-            d.setAttribute('selected', '')
-            document.getElementById('settingsShadersSelected').innerHTML = opt.name
-        }
-        d.addEventListener('click', function(e) {
-            this.parentNode.previousElementSibling.innerHTML = this.innerHTML
-            for(let sib of this.parentNode.children){
-                sib.removeAttribute('selected')
-            }
-            this.setAttribute('selected', '')
-            closeSettingsSelect()
-        })
-        cont.appendChild(d)
-    }
-}
-
-function saveShaderpackSettings(){
-    let sel = 'OFF'
-    for(let opt of document.getElementById('settingsShadersOptions').childNodes){
-        if(opt.hasAttribute('selected')){
-            sel = opt.getAttribute('value')
-        }
-    }
-    DropinModUtil.setEnabledShaderpack(CACHE_SETTINGS_INSTANCE_DIR, sel)
-}
-
-function bindShaderpackButton() {
-    const spBtn = document.getElementById('settingsShaderpackButton')
-    spBtn.onclick = () => {
-        const p = path.join(CACHE_SETTINGS_INSTANCE_DIR, 'shaderpacks')
-        DropinModUtil.validateDir(p)
-        shell.openPath(p)
-    }
-    spBtn.ondragenter = e => {
-        e.dataTransfer.dropEffect = 'move'
-        spBtn.setAttribute('drag', '')
-        e.preventDefault()
-    }
-    spBtn.ondragover = e => {
-        e.preventDefault()
-    }
-    spBtn.ondragleave = e => {
-        spBtn.removeAttribute('drag')
-    }
-
-    spBtn.ondrop = e => {
-        spBtn.removeAttribute('drag')
-        e.preventDefault()
-
-        DropinModUtil.addShaderpacks(e.dataTransfer.files, CACHE_SETTINGS_INSTANCE_DIR)
-        saveShaderpackSettings()
-        resolveShaderpacksForUI()
-    }
-}
-
-// Server status bar functions.
-
-/**
- * Load the currently selected server information onto the mods tab.
- */
-function loadSelectedServerOnModsTab(){
-    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
-
-    document.getElementById('settingsSelServContent').innerHTML = `
-        <img class="serverListingImg" src="${serv.getIcon()}"/>
-        <div class="serverListingDetails">
-            <span class="serverListingName">${serv.getName()}</span>
-            <span class="serverListingDescription">${serv.getDescription()}</span>
-            <div class="serverListingInfo">
-                <div class="serverListingVersion">${serv.getMinecraftVersion()}</div>
-                <div class="serverListingRevision">${serv.getVersion()}</div>
-                ${serv.isMainServer() ? `<div class="serverListingStarWrapper">
-                    <svg id="Layer_1" viewBox="0 0 107.45 104.74" width="20px" height="20px">
-                        <defs>
-                            <style>.cls-1{fill:#fff;}.cls-2{fill:none;stroke:#fff;stroke-miterlimit:10;}</style>
-                        </defs>
-                        <path class="cls-1" d="M100.93,65.54C89,62,68.18,55.65,63.54,52.13c2.7-5.23,18.8-19.2,28-27.55C81.36,31.74,63.74,43.87,58.09,45.3c-2.41-5.37-3.61-26.52-4.37-39-.77,12.46-2,33.64-4.36,39-5.7-1.46-23.3-13.57-33.49-20.72,9.26,8.37,25.39,22.36,28,27.55C39.21,55.68,18.47,62,6.52,65.55c12.32-2,33.63-6.06,39.34-4.9-.16,5.87-8.41,26.16-13.11,37.69,6.1-10.89,16.52-30.16,21-33.9,4.5,3.79,14.93,23.09,21,34C70,86.84,61.73,66.48,61.59,60.65,67.36,59.49,88.64,63.52,100.93,65.54Z"/>
-                        <circle class="cls-2" cx="53.73" cy="53.9" r="38"/>
-                    </svg>
-                    <span class="serverListingStarTooltip">Main Server</span>
-                </div>` : ''}
-            </div>
-        </div>
-    `
-}
-
-// Bind functionality to the server switch button.
-document.getElementById('settingsSwitchServerButton').addEventListener('click', (e) => {
-    e.target.blur()
-    toggleServerSelection(true)
-})
-
-/**
- * Save mod configuration for the current selected server.
- */
-function saveAllModConfigurations(){
-    saveModConfiguration()
-    ConfigManager.save()
-    saveDropinModConfiguration()
-}
-
-/**
- * Function to refresh the mods tab whenever the selected
- * server is changed.
- */
-function animateModsTabRefresh(){
-    $('#settingsTabMods').fadeOut(500, () => {
-        prepareModsTab()
-        $('#settingsTabMods').fadeIn(500)
-    })
-}
-
-/**
- * Prepare the Mods tab for display.
- */
-function prepareModsTab(first){
-    resolveModsForUI()
-    resolveDropinModsForUI()
-    resolveShaderpacksForUI()
-    bindDropinModsRemoveButton()
-    bindDropinModFileSystemButton()
-    bindShaderpackButton()
-    bindModsToggleSwitch()
-    loadSelectedServerOnModsTab()
-}
 
 /**
  * Java Tab
@@ -951,9 +353,9 @@ const SETTINGS_MIN_MEMORY = ConfigManager.getAbsoluteMinRAM()
 
 // Set the max and min values for the ranged sliders.
 settingsMaxRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY)
-settingsMaxRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY)
+settingsMaxRAMRange.setAttribute('min', "0.1")
 settingsMinRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY)
-settingsMinRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY )
+settingsMinRAMRange.setAttribute('min', "0.1")
 
 // Bind on change event for min memory container.
 settingsMinRAMRange.onchange = (e) => {
@@ -1141,12 +543,12 @@ function populateJavaExecDetails(execPath){
         if(v.valid){
             const vendor = v.vendor != null ? ` (${v.vendor})` : ''
             if(v.version.major < 9) {
-                settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major} Update ${v.version.update} (x${v.arch})${vendor}`
+                settingsJavaExecDetails.innerHTML = `Seçildi: Java ${v.version.major} Update ${v.version.update} (${(process.arch=="x64" ? "x64" : "x32")})${vendor}`
             } else {
-                settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major}.${v.version.minor}.${v.version.revision} (x${v.arch})${vendor}`
+                settingsJavaExecDetails.innerHTML = `Seçildi: Java ${v.version.major}.${v.version.minor}.${v.version.revision} (${(process.arch=="x64" ? "x64" : "x32")})${vendor}`
             }
         } else {
-            settingsJavaExecDetails.innerHTML = 'Invalid Selection'
+            settingsJavaExecDetails.innerHTML = 'Geçersiz Seçim'
         }
     })
 }
@@ -1220,7 +622,7 @@ function populateAboutVersionInformation(){
  */
 function populateReleaseNotes(){
     $.ajax({
-        url: 'https://github.com/dscalzi/HeliosLauncher/releases.atom',
+        url: 'https://github.com/dscalzi/PixargonLauncher/releases.atom',
         success: (data) => {
             const version = 'v' + remote.app.getVersion()
             const entries = $(data).find('entry')
@@ -1240,7 +642,7 @@ function populateReleaseNotes(){
         },
         timeout: 2500
     }).catch(err => {
-        settingsAboutChangelogText.innerHTML = 'Failed to load release notes.'
+        settingsAboutChangelogText.innerHTML = 'Sürüm notları yüklenemedi.'
     })
 }
 
@@ -1252,80 +654,8 @@ function prepareAboutTab(){
     populateReleaseNotes()
 }
 
-/**
- * Update Tab
- */
 
-const settingsTabUpdate            = document.getElementById('settingsTabUpdate')
-const settingsUpdateTitle          = document.getElementById('settingsUpdateTitle')
-const settingsUpdateVersionCheck   = document.getElementById('settingsUpdateVersionCheck')
-const settingsUpdateVersionTitle   = document.getElementById('settingsUpdateVersionTitle')
-const settingsUpdateVersionValue   = document.getElementById('settingsUpdateVersionValue')
-const settingsUpdateChangelogTitle = settingsTabUpdate.getElementsByClassName('settingsChangelogTitle')[0]
-const settingsUpdateChangelogText  = settingsTabUpdate.getElementsByClassName('settingsChangelogText')[0]
-const settingsUpdateChangelogCont  = settingsTabUpdate.getElementsByClassName('settingsChangelogContainer')[0]
-const settingsUpdateActionButton   = document.getElementById('settingsUpdateActionButton')
 
-/**
- * Update the properties of the update action button.
- * 
- * @param {string} text The new button text.
- * @param {boolean} disabled Optional. Disable or enable the button
- * @param {function} handler Optional. New button event handler.
- */
-function settingsUpdateButtonStatus(text, disabled = false, handler = null){
-    settingsUpdateActionButton.innerHTML = text
-    settingsUpdateActionButton.disabled = disabled
-    if(handler != null){
-        settingsUpdateActionButton.onclick = handler
-    }
-}
-
-/**
- * Populate the update tab with relevant information.
- * 
- * @param {Object} data The update data.
- */
-function populateSettingsUpdateInformation(data){
-    if(data != null){
-        settingsUpdateTitle.innerHTML = `New ${isPrerelease(data.version) ? 'Pre-release' : 'Release'} Available`
-        settingsUpdateChangelogCont.style.display = null
-        settingsUpdateChangelogTitle.innerHTML = data.releaseName
-        settingsUpdateChangelogText.innerHTML = data.releaseNotes
-        populateVersionInformation(data.version, settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
-        
-        if(process.platform === 'darwin'){
-            settingsUpdateButtonStatus('Download from GitHub<span style="font-size: 10px;color: gray;text-shadow: none !important;">Close the launcher and run the dmg to update.</span>', false, () => {
-                shell.openExternal(data.darwindownload)
-            })
-        } else {
-            settingsUpdateButtonStatus('Downloading..', true)
-        }
-    } else {
-        settingsUpdateTitle.innerHTML = 'You Are Running the Latest Version'
-        settingsUpdateChangelogCont.style.display = 'none'
-        populateVersionInformation(remote.app.getVersion(), settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
-        settingsUpdateButtonStatus('Check for Updates', false, () => {
-            if(!isDev){
-                ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
-                settingsUpdateButtonStatus('Checking for Updates..', true)
-            }
-        })
-    }
-}
-
-/**
- * Prepare update tab for display.
- * 
- * @param {Object} data The update data.
- */
-function prepareUpdateTab(data = null){
-    populateSettingsUpdateInformation(data)
-}
-
-/**
- * Settings preparation functions.
- */
 
 /**
   * Prepare the entire settings UI.
@@ -1335,16 +665,13 @@ function prepareUpdateTab(data = null){
 function prepareSettings(first = false) {
     if(first){
         setupSettingsTabs()
+
         initSettingsValidators()
-        prepareUpdateTab()
-    } else {
-        prepareModsTab()
     }
     initSettingsValues()
-    prepareAccountsTab()
     prepareJavaTab()
     prepareAboutTab()
 }
 
 // Prepare the settings UI on startup.
-//prepareSettings(true)
+prepareSettings(true)

@@ -526,9 +526,8 @@ let DEV_MODE = false
 
 const DISTRO_PATH = path.join(ConfigManager.getLauncherDirectory(), 'distribution.json')
 const DEV_PATH = path.join(ConfigManager.getLauncherDirectory(), 'dev_distribution.json')
-
+console.log("configmanager ld: ",ConfigManager.getLD())
 let data = null
-
 /**
  * @returns {Promise.<DistroIndex>}
  */
@@ -537,34 +536,40 @@ exports.pullRemote = function(){
         return exports.pullLocal()
     }
     return new Promise((resolve, reject) => {
-        const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/distribution.json'
-        //const distroURL = 'https://gist.githubusercontent.com/dscalzi/53b1ba7a11d26a5c353f9d5ae484b71b/raw/'
-        const opts = {
-            url: distroURL,
-            timeout: 2500
-        }
         const distroDest = path.join(ConfigManager.getLauncherDirectory(), 'distribution.json')
-        request(opts, (error, resp, body) => {
-            if(!error){
-                
-                try {
-                    data = DistroIndex.fromJSON(JSON.parse(body))
-                } catch (e) {
-                    reject(e)
-                    return
-                }
+        
+        const body = `{
+            "version": "1.0.0",
+            "servers": [
+              {
+                "id": "server",
+                "name": "${ConfigManager.getLD().Server.Name}",
+                "description": "${ConfigManager.getLD().Server.Name} sunucusuna katılın ve doyasıya eğlenin!",
+                "icon": "${ConfigManager.getLD().Server.Icon}",
+                "version": "1.0.0",
+                "address": "${ConfigManager.getLD().Server.Ip}",
+                "minecraftVersion": "1.8.9",
+                "mainServer": true,
+                "autoconnect": true,
+                "modules": []
+              }
+            ]
+          }
+        `
+        console.log(body)
+        try {
+            data = DistroIndex.fromJSON(JSON.parse(body))
+        } catch (e) {
+            reject(e)
+            return
+        }
 
-                fs.writeFile(distroDest, body, 'utf-8', (err) => {
-                    if(!err){
-                        resolve(data)
-                        return
-                    } else {
-                        reject(err)
-                        return
-                    }
-                })
+        fs.writeFile(distroDest, body, 'utf-8', (err) => {
+            if(!err){
+                resolve(data)
+                return
             } else {
-                reject(error)
+                reject(err)
                 return
             }
         })
@@ -591,10 +596,10 @@ exports.pullLocal = function(){
 
 exports.setDevMode = function(value){
     if(value){
-        logger.log('Developer mode enabled.')
-        logger.log('If you don\'t know what that means, revert immediately.')
+        logger.log('Geliştirici modu açık.')
+        logger.log('Eğer ne oluğunu bilmiyorsan hemen eski haline geri dödür.')
     } else {
-        logger.log('Developer mode disabled.')
+        logger.log('Geliştirici modu kapalı.')
     }
     DEV_MODE = value
 }

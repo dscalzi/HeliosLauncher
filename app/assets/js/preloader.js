@@ -8,7 +8,7 @@ const DistroManager = require('./distromanager')
 const LangLoader    = require('./langloader')
 const logger        = require('./loggerutil')('%c[Preloader]', 'color: #a02d2a; font-weight: bold')
 
-logger.log('Loading..')
+logger.log('Yükleniyor..')
 
 // Load ConfigManager
 ConfigManager.load()
@@ -21,7 +21,7 @@ function onDistroLoad(data){
         
         // Resolve the selected server if its value has yet to be set.
         if(ConfigManager.getSelectedServer() == null || data.getServer(ConfigManager.getSelectedServer()) == null){
-            logger.log('Determining default selected server..')
+            logger.log('Varsayılan sunucuyu belirle..')
             ConfigManager.setSelectedServer(data.getMainServer().getID())
             ConfigManager.save()
         }
@@ -31,26 +31,26 @@ function onDistroLoad(data){
 
 // Ensure Distribution is downloaded and cached.
 DistroManager.pullRemote().then((data) => {
-    logger.log('Loaded distribution index.')
+    logger.log('Dağıtım verisi yüklendi.')
 
     onDistroLoad(data)
 
 }).catch((err) => {
-    logger.log('Failed to load distribution index.')
+    logger.log('Dağıtım verisi yüklenemedi.')
     logger.error(err)
 
-    logger.log('Attempting to load an older version of the distribution index.')
+    logger.log('Dağtım verisinin daha eski versiyonu indirilmeye çalışılıyor.')
     // Try getting a local copy, better than nothing.
     DistroManager.pullLocal().then((data) => {
-        logger.log('Successfully loaded an older version of the distribution index.')
+        logger.log('Dağıtım verisinin eski versiyonu başarıyla indirildi')
 
         onDistroLoad(data)
 
 
     }).catch((err) => {
 
-        logger.log('Failed to load an older version of the distribution index.')
-        logger.log('Application cannot run.')
+        logger.log('Dağıtım verisinin eski versiyonu indirlemedi.')
+        logger.log('Uygulama çalışamaz durumda.')
         logger.error(err)
 
         onDistroLoad(null)
@@ -62,8 +62,8 @@ DistroManager.pullRemote().then((data) => {
 // Clean up temp dir incase previous launches ended unexpectedly. 
 fs.remove(path.join(os.tmpdir(), ConfigManager.getTempNativeFolder()), (err) => {
     if(err){
-        logger.warn('Error while cleaning natives directory', err)
+        logger.warn('Ana klasör temizlerken bir hata oldu', err)
     } else {
-        logger.log('Cleaned natives directory.')
+        logger.log('Ana klasör temizlendi.')
     }
 })

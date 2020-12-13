@@ -66,6 +66,6 @@ process.on('message', (msg) => {
 })
 
 process.on('disconnect', () => {
-    console.log('AssetExec Disconnected')
+    console.log('AssetExec Bağlantısı Kesildi')
     process.exit(0)
 })

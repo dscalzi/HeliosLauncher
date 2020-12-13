@@ -1,95 +1,11 @@
 // Requirements
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
-const autoUpdater                   = require('electron-updater').autoUpdater
 const ejse                          = require('ejs-electron')
 const fs                            = require('fs')
-const isDev                         = require('./app/assets/js/isdev')
 const path                          = require('path')
-const semver                        = require('semver')
 const url                           = require('url')
 
-// Setup auto updater.
-function initAutoUpdater(event, data) {
 
-    if(data){
-        autoUpdater.allowPrerelease = true
-    } else {
-        // Defaults to true if application version contains prerelease components (e.g. 0.12.1-alpha.1)
-        // autoUpdater.allowPrerelease = true
-    }
-    
-    if(isDev){
-        autoUpdater.autoInstallOnAppQuit = false
-        autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml')
-    }
-    if(process.platform === 'darwin'){
-        autoUpdater.autoDownload = false
-    }
-    autoUpdater.on('update-available', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-available', info)
-    })
-    autoUpdater.on('update-downloaded', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-downloaded', info)
-    })
-    autoUpdater.on('update-not-available', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-not-available', info)
-    })
-    autoUpdater.on('checking-for-update', () => {
-        event.sender.send('autoUpdateNotification', 'checking-for-update')
-    })
-    autoUpdater.on('error', (err) => {
-        event.sender.send('autoUpdateNotification', 'realerror', err)
-    }) 
-}
-
-// Open channel to listen for update actions.
-ipcMain.on('autoUpdateAction', (event, arg, data) => {
-    switch(arg){
-        case 'initAutoUpdater':
-            console.log('Initializing auto updater.')
-            initAutoUpdater(event, data)
-            event.sender.send('autoUpdateNotification', 'ready')
-            break
-        case 'checkForUpdate':
-            autoUpdater.checkForUpdates()
-                .catch(err => {
-                    event.sender.send('autoUpdateNotification', 'realerror', err)
-                })
-            break
-        case 'allowPrereleaseChange':
-            if(!data){
-                const preRelComp = semver.prerelease(app.getVersion())
-                if(preRelComp != null && preRelComp.length > 0){
-                    autoUpdater.allowPrerelease = true
-                } else {
-                    autoUpdater.allowPrerelease = data
-                }
-            } else {
-                autoUpdater.allowPrerelease = data
-            }
-            break
-        case 'installUpdateNow':
-            autoUpdater.quitAndInstall()
-            break
-        default:
-            console.log('Unknown argument', arg)
-            break
-    }
-})
-// Redirect distribution index event from preloader to renderer.
-ipcMain.on('distributionIndexDone', (event, res) => {
-    event.sender.send('distributionIndexDone', res)
-})
-
-// Disable hardware acceleration.
-// https://electronjs.org/docs/tutorial/offscreen-rendering
-app.disableHardwareAcceleration()
-
-// https://github.com/electron/electron/issues/18397
-app.allowRendererProcessReuse = true
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 let win
 
 function createWindow() {
@@ -104,7 +20,9 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false,
             enableRemoteModule: true,
-            worldSafeExecuteJavaScript: true
+            worldSafeExecuteJavaScript: true,
+            webviewTag: true, // Security warning since Electron 10
+            zoomFactor: 1.0,
         },
         backgroundColor: '#171614'
     })
@@ -116,14 +34,14 @@ function createWindow() {
         protocol: 'file:',
         slashes: true
     }))
-
+    
     /*win.once('ready-to-show', () => {
         win.show()
     })*/
 
     win.removeMenu()
 
-    win.resizable = true
+    win.resizable = false
 
     win.on('closed', () => {
         win = null

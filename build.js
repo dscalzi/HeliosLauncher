@@ -18,10 +18,10 @@ function getCurrentPlatform(){
 builder.build({
     targets: (process.argv[2] != null && Platform[process.argv[2]] != null ? Platform[process.argv[2]] : getCurrentPlatform()).createTarget(),
     config: {
-        appId: 'helioslauncher',
-        productName: 'Helios Launcher',
-        artifactName: '${productName}-setup-${version}.${ext}',
-        copyright: 'Copyright © 2018-2020 Daniel Scalzi',
+        appId: 'andrlauncher',
+        productName: 'AndrLauncher',
+        artifactName: '${productName}-setup-${version}-${arch}.${ext}',
+        copyright: 'Copyright © 2020-2020 Herom123',
         directories: {
             buildResources: 'build',
             output: 'dist'
@@ -38,7 +38,7 @@ builder.build({
             oneClick: false,
             perMachine: false,
             allowElevation: true,
-            allowToChangeInstallationDirectory: true
+            allowToChangeInstallationDirectory: false
         },
         mac: {
             target: 'dmg',
@@ -46,10 +46,10 @@ builder.build({
         },
         linux: {
             target: 'AppImage',
-            maintainer: 'Daniel Scalzi',
-            vendor: 'Daniel Scalzi',
-            synopsis: 'Modded Minecraft Launcher',
-            description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.',
+            maintainer: 'Herom123',
+            vendor: 'Herom123',
+            synopsis: 'Client Launcher',
+            description: 'Otamik olarak sunucuya client ile bağlayan başlatma uygulaması.',
             category: 'Game'
         },
         compression: 'maximum',
@@ -57,7 +57,8 @@ builder.build({
             '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.travis.yml,.nvmrc,.eslintrc.json,build.js}'
         ],
         extraResources: [
-            'libraries'
+            'libraries',
+            'instance'
         ],
         asar: true
     }

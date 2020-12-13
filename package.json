@@ -1,52 +1,36 @@
 {
-  "name": "helioslauncher",
-  "version": "1.8.0",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
-  "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
-  "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
-  },
-  "private": true,
+  "name": "andrlauncher",
+  "version": "1.0.0",
+  "productName": "AndrLauncher",
+  "description": "https://github.com/dscalzi/HeliosLauncher",
+  "author": "Daniel Scalzi",
+  "license": "No",
   "main": "index.js",
-  "scripts": {
-    "start": "electron .",
-    "cilinux": "node build.js WINDOWS && node build.js LINUX",
-    "cidarwin": "node build.js MAC",
-    "dist": "cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true node build.js",
-    "dist:win": "npm run dist -- WINDOWS",
-    "dist:mac": "npm run dist -- MAC",
-    "dist:linux": "npm run dist -- LINUX",
-    "lint": "eslint --config .eslintrc.json ."
-  },
-  "engines": {
-    "node": "12.x.x"
-  },
   "dependencies": {
-    "adm-zip": "^0.5.1",
+    "adm-zip": "^0.4.16",
     "async": "^3.2.0",
-    "discord-rpc": "^3.1.4",
+    "checksum": "^0.1.1",
     "ejs": "^3.1.5",
     "ejs-electron": "^2.1.1",
-    "electron-updater": "^4.3.5",
+    "electron-root-path": "^1.0.16",
     "fs-extra": "^9.0.1",
     "github-syntax-dark": "^0.5.0",
     "jquery": "^3.5.1",
+    "node-machine-id": "^1.1.12",
     "request": "^2.88.2",
-    "semver": "^7.3.4",
-    "tar-fs": "^2.1.1",
+    "semver": "^7.3.2",
+    "tar-fs": "^2.1.0",
+    "uuid": "^8.3.2",
     "winreg": "^1.2.4"
   },
-  "devDependencies": {
-    "cross-env": "^7.0.3",
-    "electron": "^11.0.5",
-    "electron-builder": "^22.9.1",
-    "eslint": "^7.15.0"
+  "scripts": {
+    "start": "electron .",
+    "dist": "cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true node build.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "electron": "^10.1.1",
+    "electron-builder": "^22.8.0",
+    "eslint": "^7.9.0"
   }
 }

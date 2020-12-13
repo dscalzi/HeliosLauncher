@@ -44,6 +44,7 @@ function switchView(current, next, currentFadeTime = 500, nextFadeTime = 500, on
             onNextFade()
         })
     })
+    
 }
 
 /**
@@ -55,18 +56,16 @@ function getCurrentView(){
     return currentView
 }
 
-function showMainUI(data){
-
+function showMainUI(){
+    
     if(!isDev){
         loggerAutoUpdater.log('Initializing..')
         ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
     }
-
+    
     prepareSettings(true)
-    updateSelectedServer(data.getServer(ConfigManager.getSelectedServer()))
-    refreshServerStatus()
+    
     setTimeout(() => {
-        document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
         document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
         $('#main').show()
 
@@ -74,21 +73,18 @@ function showMainUI(data){
 
         // If this is enabled in a development environment we'll get ratelimited.
         // The relaunch frequency is usually far too high.
-        if(!isDev && isLoggedIn){
-            validateSelectedAccount()
-        }
 
-        if(ConfigManager.isFirstLaunch()){
-            currentView = VIEWS.welcome
-            $(VIEWS.welcome).fadeIn(1000)
-        } else {
+        //if(ConfigManager.isFirstLaunch()){
+        //    currentView = VIEWS.welcome
+        //    $(VIEWS.welcome).fadeIn(1000)
+        //} else {
             if(isLoggedIn){
                 currentView = VIEWS.landing
                 $(VIEWS.landing).fadeIn(1000)
             } else {
                 currentView = VIEWS.login
                 $(VIEWS.login).fadeIn(1000)
-            }
+        //    }
         }
 
         setTimeout(() => {
@@ -98,10 +94,6 @@ function showMainUI(data){
         }, 250)
         
     }, 750)
-    // Disable tabbing to the news container.
-    initNews().then(() => {
-        $('#newsContainer *').attr('tabindex', '-1')
-    })
 }
 
 function showFatalStartupError(){
@@ -127,12 +119,6 @@ function showFatalStartupError(){
  * 
  * @param {Object} data The distro index object.
  */
-function onDistroRefresh(data){
-    updateSelectedServer(data.getServer(ConfigManager.getSelectedServer()))
-    refreshServerStatus()
-    initNews()
-    syncModConfigurations(data)
-}
 
 /**
  * Sync the mod configurations with the distro index.
@@ -378,24 +364,11 @@ function setSelectedAccount(uuid){
     const authAcc = ConfigManager.setSelectedAccount(uuid)
     ConfigManager.save()
     updateSelectedAccount(authAcc)
-    validateSelectedAccount()
 }
 
 // Synchronous Listener
 document.addEventListener('readystatechange', function(){
-
-    if (document.readyState === 'interactive' || document.readyState === 'complete'){
-        if(rscShouldLoad){
-            rscShouldLoad = false
-            if(!fatalStartupError){
-                const data = DistroManager.getDistribution()
-                showMainUI(data)
-            } else {
-                showFatalStartupError()
-            }
-        } 
-    }
-
+    showMainUI()
 }, false)
 
 // Actions that must be performed after the distribution index is downloaded.

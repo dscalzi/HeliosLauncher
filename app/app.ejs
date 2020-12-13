@@ -1,7 +1,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-In6B8teKZQll5heMl9bS7CESTbGvuAt3VVV86BUQBDk='"/>
-    <title>Helios Launcher</title>
+    <title>Launcher</title>
     <script src="./assets/js/scripts/uicore.js"></script>
     <script src="./assets/js/scripts/uibinder.js"></script>
     <link type="text/css" rel="stylesheet" href="./assets/css/launcher.css">
@@ -14,15 +14,11 @@
             -webkit-user-select: none;
         }
         #main {
-            display: none;
-            height: calc(100% - 22px);
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
+            top:0px;
+            height: 100%;
             width: 100%;
             position: absolute;
             z-index: 10;
-        }
-        #main[overlay] {
-            filter: blur(3px) contrast(0.9) brightness(1.0);
         }
     </style>
 </head>
@@ -37,17 +33,10 @@
     <%- include('overlay') %>
     <div id="loadingContainer">
         <div id="loadingContent">
-            <div id="loadSpinnerContainer">
-                <img id="loadCenterImage" src="assets/images/LoadingSeal.png">
-                <img id="loadSpinnerImage" class="rotating" src="assets/images/LoadingText.png">
+            <div id="loader"></div>
             </div>
         </div>
     </div>
-    <script>
-        // Load language
-        for(let key of Object.keys(Lang.query('html'))){
-            document.getElementById(key).innerHTML = Lang.query(`html.${key}`)
-        }
-    </script>
+    
 </body>
 </html>
