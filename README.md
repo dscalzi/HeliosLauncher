@@ -102,6 +102,11 @@ If you want to export the console output, simply right click anywhere on the con
 
 ---
 
+**Adding your own servers**
+If you want to use this for your own server, you need to use [Nebula](https://github.com/dscalzi/nebula).
+
+---
+
 **Build Installers**
 
 To build for your current platform.
