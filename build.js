@@ -42,7 +42,8 @@ builder.build({
         },
         mac: {
             target: 'dmg',
-            category: 'public.app-category.games'
+            category: 'public.app-category.games',
+            artifactName: '${productName}-${version}.${ext}'
         },
         linux: {
             target: 'AppImage',
@@ -50,7 +51,8 @@ builder.build({
             vendor: 'Daniel Scalzi',
             synopsis: 'Modded Minecraft Launcher',
             description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.',
-            category: 'Game'
+            category: 'Game',
+            artifactName: '${productName}-${version}-x86_x64.${ext}'
         },
         compression: 'maximum',
         files: [
