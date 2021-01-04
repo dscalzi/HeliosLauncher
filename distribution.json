@@ -15787,127 +15787,6 @@
           }
         },
         {
-          "id": "CarpentersBlocks.cfg",
-          "name": "CarpentersBlocks.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 3660,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/CarpentersBlocks.cfg",
-            "MD5": "d241770c535e782309620a63a95e4bb3",
-            "path": "CarpentersBlocks.cfg"
-          }
-        },
-        {
-          "id": "CodeChickenCore.cfg",
-          "name": "CodeChickenCore.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 831,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/CodeChickenCore.cfg",
-            "MD5": "ee11a8fc6fc8a04bac09db816fa76289",
-            "path": "CodeChickenCore.cfg"
-          }
-        },
-        {
-          "id": "ColoredFlame.cfg",
-          "name": "ColoredFlame.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 123,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/ColoredFlame.cfg",
-            "MD5": "b08ca41b806af72cbf09404e0e2b29e7",
-            "path": "ColoredFlame.cfg"
-          }
-        },
-        {
-          "id": "mainmenu.json",
-          "name": "mainmenu.json",
-          "type": "File",
-          "artifact": {
-            "size": 5394,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/CustomMainMenu/mainmenu.json",
-            "MD5": "ba845a8d1431d35c1f7da70fa6eb11b6",
-            "path": "CustomMainMenu/mainmenu.json"
-          }
-        },
-        {
-          "id": "CustomNpcs.cfg",
-          "name": "CustomNpcs.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 1551,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/CustomNpcs.cfg",
-            "MD5": "701be8e8a918ec1bcd81906e4d539939",
-            "path": "CustomNpcs.cfg"
-          }
-        },
-        {
-          "id": "DIAdvancedCompatibility.cfg",
-          "name": "DIAdvancedCompatibility.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 72306,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/DIAdvancedCompatibility.cfg",
-            "MD5": "3aa1ff1c9f40f9304f4708543a9b9383",
-            "path": "DIAdvancedCompatibility.cfg"
-          }
-        },
-        {
-          "id": "DamageIndicatorsMod.cfg",
-          "name": "DamageIndicatorsMod.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 4109,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/DamageIndicatorsMod.cfg",
-            "MD5": "3e0f54506b2111d9022f0a8fc90d8354",
-            "path": "DamageIndicatorsMod.cfg"
-          }
-        },
-        {
-          "id": "IronChest.cfg",
-          "name": "IronChest.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 250,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/IronChest.cfg",
-            "MD5": "4571328452be0af6fa04c06d12b8e3c5",
-            "path": "IronChest.cfg"
-          }
-        },
-        {
-          "id": "LunatriusCore.cfg",
-          "name": "LunatriusCore.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 496,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/LunatriusCore.cfg",
-            "MD5": "79208c26df3aafbf4c241cd12c61948e",
-            "path": "LunatriusCore.cfg"
-          }
-        },
-        {
-          "id": "client.cfg",
-          "name": "client.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 1438,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/NEI/client.cfg",
-            "MD5": "1324240e58ff5ceb7c83b18e6a3637f1",
-            "path": "NEI/client.cfg"
-          }
-        },
-        {
-          "id": "Mantle.cfg",
-          "name": "Mantle.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 354,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/SlimeKnights/Mantle.cfg",
-            "MD5": "dbae58c5ad24d3f30ff5b78cee37e90c",
-            "path": "SlimeKnights/Mantle.cfg"
-          }
-        },
-        {
           "id": "centrifuge_extractor.json",
           "name": "centrifuge_extractor.json",
           "type": "File",
@@ -66970,14 +66849,135 @@
           }
         },
         {
+          "id": "CarpentersBlocks.cfg",
+          "name": "CarpentersBlocks.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 3660,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/CarpentersBlocks.cfg",
+            "MD5": "d241770c535e782309620a63a95e4bb3",
+            "path": "config/CarpentersBlocks.cfg"
+          }
+        },
+        {
+          "id": "CodeChickenCore.cfg",
+          "name": "CodeChickenCore.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 831,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/CodeChickenCore.cfg",
+            "MD5": "ee11a8fc6fc8a04bac09db816fa76289",
+            "path": "config/CodeChickenCore.cfg"
+          }
+        },
+        {
+          "id": "ColoredFlame.cfg",
+          "name": "ColoredFlame.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 123,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/ColoredFlame.cfg",
+            "MD5": "b08ca41b806af72cbf09404e0e2b29e7",
+            "path": "config/ColoredFlame.cfg"
+          }
+        },
+        {
+          "id": "mainmenu.json",
+          "name": "mainmenu.json",
+          "type": "File",
+          "artifact": {
+            "size": 5394,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/CustomMainMenu/mainmenu.json",
+            "MD5": "ba845a8d1431d35c1f7da70fa6eb11b6",
+            "path": "config/CustomMainMenu/mainmenu.json"
+          }
+        },
+        {
+          "id": "CustomNpcs.cfg",
+          "name": "CustomNpcs.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 1551,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/CustomNpcs.cfg",
+            "MD5": "701be8e8a918ec1bcd81906e4d539939",
+            "path": "config/CustomNpcs.cfg"
+          }
+        },
+        {
+          "id": "DIAdvancedCompatibility.cfg",
+          "name": "DIAdvancedCompatibility.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 72306,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/DIAdvancedCompatibility.cfg",
+            "MD5": "3aa1ff1c9f40f9304f4708543a9b9383",
+            "path": "config/DIAdvancedCompatibility.cfg"
+          }
+        },
+        {
+          "id": "DamageIndicatorsMod.cfg",
+          "name": "DamageIndicatorsMod.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 4109,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/DamageIndicatorsMod.cfg",
+            "MD5": "3e0f54506b2111d9022f0a8fc90d8354",
+            "path": "config/DamageIndicatorsMod.cfg"
+          }
+        },
+        {
+          "id": "IronChest.cfg",
+          "name": "IronChest.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 250,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/IronChest.cfg",
+            "MD5": "4571328452be0af6fa04c06d12b8e3c5",
+            "path": "config/IronChest.cfg"
+          }
+        },
+        {
+          "id": "LunatriusCore.cfg",
+          "name": "LunatriusCore.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 496,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/LunatriusCore.cfg",
+            "MD5": "79208c26df3aafbf4c241cd12c61948e",
+            "path": "config/LunatriusCore.cfg"
+          }
+        },
+        {
+          "id": "client.cfg",
+          "name": "client.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 1438,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/NEI/client.cfg",
+            "MD5": "1324240e58ff5ceb7c83b18e6a3637f1",
+            "path": "config/NEI/client.cfg"
+          }
+        },
+        {
+          "id": "Mantle.cfg",
+          "name": "Mantle.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 354,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/SlimeKnights/Mantle.cfg",
+            "MD5": "dbae58c5ad24d3f30ff5b78cee37e90c",
+            "path": "config/SlimeKnights/Mantle.cfg"
+          }
+        },
+        {
           "id": "client.cfg",
           "name": "client.cfg",
           "type": "File",
           "artifact": {
             "size": 6590,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/armourers_workshop/client.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/armourers_workshop/client.cfg",
             "MD5": "9f6cfb049ae426141789b869810e5e50",
-            "path": "armourers_workshop/client.cfg"
+            "path": "config/armourers_workshop/client.cfg"
           }
         },
         {
@@ -66986,9 +66986,9 @@
           "type": "File",
           "artifact": {
             "size": 8946,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/armourers_workshop/common.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/armourers_workshop/common.cfg",
             "MD5": "d1b0986c2a8b3702284fbda37df39458",
-            "path": "armourers_workshop/common.cfg"
+            "path": "config/armourers_workshop/common.cfg"
           }
         },
         {
@@ -66997,9 +66997,9 @@
           "type": "File",
           "artifact": {
             "size": 1181,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/armourers_workshop/overrides.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/armourers_workshop/overrides.cfg",
             "MD5": "848fb95ca22c35348200e45375d2c05c",
-            "path": "armourers_workshop/overrides.cfg"
+            "path": "config/armourers_workshop/overrides.cfg"
           }
         },
         {
@@ -67008,9 +67008,9 @@
           "type": "File",
           "artifact": {
             "size": 1657,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/betterbuilderswands.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/betterbuilderswands.cfg",
             "MD5": "f152f23713122d7b490b310e0c8633bd",
-            "path": "betterbuilderswands.cfg"
+            "path": "config/betterbuilderswands.cfg"
           }
         },
         {
@@ -67019,9 +67019,9 @@
           "type": "File",
           "artifact": {
             "size": 4835,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/chisel.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/chisel.cfg",
             "MD5": "07a1da072e347ccc6c60439199c6e0a8",
-            "path": "chisel.cfg"
+            "path": "config/chisel.cfg"
           }
         },
         {
@@ -67030,9 +67030,9 @@
           "type": "File",
           "artifact": {
             "size": 728,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/codechicken/supporters.json",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/codechicken/supporters.json",
             "MD5": "0f202f6cb1ddb4877fc17f0f446e9d77",
-            "path": "codechicken/supporters.json"
+            "path": "config/codechicken/supporters.json"
           }
         },
         {
@@ -67041,9 +67041,9 @@
           "type": "File",
           "artifact": {
             "size": 13,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/codechicken/supporters.marker",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/codechicken/supporters.marker",
             "MD5": "20c59d31ab129d165720694f1df759d3",
-            "path": "codechicken/supporters.marker"
+            "path": "config/codechicken/supporters.marker"
           }
         },
         {
@@ -67052,9 +67052,9 @@
           "type": "File",
           "artifact": {
             "size": 2941,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/cofh/core/client.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/cofh/core/client.cfg",
             "MD5": "0c77b010b0d39d9fc74c8ed893480e87",
-            "path": "cofh/core/client.cfg"
+            "path": "config/cofh/core/client.cfg"
           }
         },
         {
@@ -67063,9 +67063,9 @@
           "type": "File",
           "artifact": {
             "size": 1913,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/cofh/core/common.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/cofh/core/common.cfg",
             "MD5": "ee5b5e29d255ee4b8ea4f0abb50507f9",
-            "path": "cofh/core/common.cfg"
+            "path": "config/cofh/core/common.cfg"
           }
         },
         {
@@ -67074,9 +67074,9 @@
           "type": "File",
           "artifact": {
             "size": 0,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/cofh/core/friends.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/cofh/core/friends.cfg",
             "MD5": "d41d8cd98f00b204e9800998ecf8427e",
-            "path": "cofh/core/friends.cfg"
+            "path": "config/cofh/core/friends.cfg"
           }
         },
         {
@@ -67085,9 +67085,9 @@
           "type": "File",
           "artifact": {
             "size": 690,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/cofh/core/loot.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/cofh/core/loot.cfg",
             "MD5": "d4e9ce2bf85f79ea54f848f7d2ed9751",
-            "path": "cofh/core/loot.cfg"
+            "path": "config/cofh/core/loot.cfg"
           }
         },
         {
@@ -67096,9 +67096,9 @@
           "type": "File",
           "artifact": {
             "size": 3790,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/cofh/world/Vanilla.json",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/cofh/world/Vanilla.json",
             "MD5": "0599e13750e05ca052f9ddaff9284579",
-            "path": "cofh/world/Vanilla.json"
+            "path": "config/cofh/world/Vanilla.json"
           }
         },
         {
@@ -67107,9 +67107,9 @@
           "type": "File",
           "artifact": {
             "size": 240,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/ctm.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/ctm.cfg",
             "MD5": "ca9092804c3d5576e34098746b2843ff",
-            "path": "ctm.cfg"
+            "path": "config/ctm.cfg"
           }
         },
         {
@@ -67118,9 +67118,9 @@
           "type": "File",
           "artifact": {
             "size": 260,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/custombackgrounds.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/custombackgrounds.cfg",
             "MD5": "b6fdf742c8fb98239888495b50ed9bfb",
-            "path": "custombackgrounds.cfg"
+            "path": "config/custombackgrounds.cfg"
           }
         },
         {
@@ -67129,9 +67129,9 @@
           "type": "File",
           "artifact": {
             "size": 549,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/customloadingscreen.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/customloadingscreen.cfg",
             "MD5": "9c09a26ae68c788cea123aaca775cd05",
-            "path": "customloadingscreen.cfg"
+            "path": "config/customloadingscreen.cfg"
           }
         },
         {
@@ -67140,9 +67140,9 @@
           "type": "File",
           "artifact": {
             "size": 5336,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/customloadingscreen.cfg_20200719_173523.errored",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/customloadingscreen.cfg_20200719_173523.errored",
             "MD5": "6585fc4b137a056623091ca53f577328",
-            "path": "customloadingscreen.cfg_20200719_173523.errored"
+            "path": "config/customloadingscreen.cfg_20200719_173523.errored"
           }
         },
         {
@@ -67151,9 +67151,9 @@
           "type": "File",
           "artifact": {
             "size": 544,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/customloadingscreen_timings.nbt",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/customloadingscreen_timings.nbt",
             "MD5": "e308a17ee8aa0a8cdad6110d25a2f71d",
-            "path": "customloadingscreen_timings.nbt"
+            "path": "config/customloadingscreen_timings.nbt"
           }
         },
         {
@@ -67162,9 +67162,9 @@
           "type": "File",
           "artifact": {
             "size": 214,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/decocraft.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/decocraft.cfg",
             "MD5": "420b780ccc54113f59d16f998bf1daec",
-            "path": "decocraft.cfg"
+            "path": "config/decocraft.cfg"
           }
         },
         {
@@ -67173,9 +67173,9 @@
           "type": "File",
           "artifact": {
             "size": 975,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/discordrp.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/discordrp.cfg",
             "MD5": "b2aa104b6b959a4711b53fbff4de4fe2",
-            "path": "discordrp.cfg"
+            "path": "config/discordrp.cfg"
           }
         },
         {
@@ -67184,9 +67184,9 @@
           "type": "File",
           "artifact": {
             "size": 3955,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/forge.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/forge.cfg",
             "MD5": "bee77d51b82699b95bf5c02788f654fb",
-            "path": "forge.cfg"
+            "path": "config/forge.cfg"
           }
         },
         {
@@ -67195,9 +67195,9 @@
           "type": "File",
           "artifact": {
             "size": 2285,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/forgeChunkLoading.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/forgeChunkLoading.cfg",
             "MD5": "6e00d5d246211b61587b3ee60bdde03a",
-            "path": "forgeChunkLoading.cfg"
+            "path": "config/forgeChunkLoading.cfg"
           }
         },
         {
@@ -67206,9 +67206,9 @@
           "type": "File",
           "artifact": {
             "size": 679,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/jei/itemBlacklist.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/jei/itemBlacklist.cfg",
             "MD5": "d1aa29b95c320167bb4a663534b04114",
-            "path": "jei/itemBlacklist.cfg"
+            "path": "config/jei/itemBlacklist.cfg"
           }
         },
         {
@@ -67217,9 +67217,9 @@
           "type": "File",
           "artifact": {
             "size": 3028,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/jei/jei.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/jei/jei.cfg",
             "MD5": "c5ae6d93c28ed43266a5ea28cb4e51a3",
-            "path": "jei/jei.cfg"
+            "path": "config/jei/jei.cfg"
           }
         },
         {
@@ -67228,9 +67228,9 @@
           "type": "File",
           "artifact": {
             "size": 1994,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/jei/searchColors.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/jei/searchColors.cfg",
             "MD5": "585c420ac4e5433c27837a588927a0c0",
-            "path": "jei/searchColors.cfg"
+            "path": "config/jei/searchColors.cfg"
           }
         },
         {
@@ -67239,9 +67239,9 @@
           "type": "File",
           "artifact": {
             "size": 934,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/jei/worldSettings.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/jei/worldSettings.cfg",
             "MD5": "383f89d1cdffedc7832105a1f8c05009",
-            "path": "jei/worldSettings.cfg"
+            "path": "config/jei/worldSettings.cfg"
           }
         },
         {
@@ -67250,9 +67250,9 @@
           "type": "File",
           "artifact": {
             "size": 373,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/journeymap_ModInfo.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/journeymap_ModInfo.cfg",
             "MD5": "4d3060346680fe6de1e730c010935cea",
-            "path": "journeymap_ModInfo.cfg"
+            "path": "config/journeymap_ModInfo.cfg"
           }
         },
         {
@@ -67261,9 +67261,9 @@
           "type": "File",
           "artifact": {
             "size": 633,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/journeymap_server.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/journeymap_server.cfg",
             "MD5": "ec1f450ddbf068d578328b97f5e50d1b",
-            "path": "journeymap_server.cfg"
+            "path": "config/journeymap_server.cfg"
           }
         },
         {
@@ -67272,9 +67272,9 @@
           "type": "File",
           "artifact": {
             "size": 89,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/malisiscore.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/malisiscore.cfg",
             "MD5": "95033c96d58a32db8f3149d06d8a4c71",
-            "path": "malisiscore.cfg"
+            "path": "config/malisiscore.cfg"
           }
         },
         {
@@ -67283,9 +67283,53 @@
           "type": "File",
           "artifact": {
             "size": 281,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/malisisdoors.cfg",
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/malisisdoors.cfg",
             "MD5": "3b496edc645d3655f6c0a763e8a9ee12",
-            "path": "malisisdoors.cfg"
+            "path": "config/malisisdoors.cfg"
+          }
+        },
+        {
+          "id": "ptrmodellib.cfg",
+          "name": "ptrmodellib.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 170,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/ptrmodellib.cfg",
+            "MD5": "2eb45bb2aa31cce033460493924bf579",
+            "path": "config/ptrmodellib.cfg"
+          }
+        },
+        {
+          "id": "rustic.cfg",
+          "name": "rustic.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 8462,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/rustic.cfg",
+            "MD5": "5422340ee63823c220113cb25f604b9e",
+            "path": "config/rustic.cfg"
+          }
+        },
+        {
+          "id": "tips.cfg",
+          "name": "tips.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 1764,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/tips.cfg",
+            "MD5": "11ff12d7117b5aa490db2652f53d1294",
+            "path": "config/tips.cfg"
+          }
+        },
+        {
+          "id": "toolbelt.cfg",
+          "name": "toolbelt.cfg",
+          "type": "File",
+          "artifact": {
+            "size": 2602,
+            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/config/toolbelt.cfg",
+            "MD5": "e38cfed9d60c8a556ba10351c92d676f",
+            "path": "config/toolbelt.cfg"
           }
         },
         {
@@ -67297,17 +67341,6 @@
             "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/options.txt",
             "MD5": "fe0ce414619f55b23c76d60985a3a3bf",
             "path": "options.txt"
-          }
-        },
-        {
-          "id": "ptrmodellib.cfg",
-          "name": "ptrmodellib.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 170,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/ptrmodellib.cfg",
-            "MD5": "2eb45bb2aa31cce033460493924bf579",
-            "path": "ptrmodellib.cfg"
           }
         },
         {
@@ -67366,17 +67399,6 @@
           }
         },
         {
-          "id": "rustic.cfg",
-          "name": "rustic.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 8462,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/rustic.cfg",
-            "MD5": "5422340ee63823c220113cb25f604b9e",
-            "path": "rustic.cfg"
-          }
-        },
-        {
           "id": "splash.properties",
           "name": "splash.properties",
           "type": "File",
@@ -67385,28 +67407,6 @@
             "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/splash.properties",
             "MD5": "e7cfaf7152d2ddf581fefa19f8cc896f",
             "path": "splash.properties"
-          }
-        },
-        {
-          "id": "tips.cfg",
-          "name": "tips.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 1764,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/tips.cfg",
-            "MD5": "11ff12d7117b5aa490db2652f53d1294",
-            "path": "tips.cfg"
-          }
-        },
-        {
-          "id": "toolbelt.cfg",
-          "name": "toolbelt.cfg",
-          "type": "File",
-          "artifact": {
-            "size": 2602,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/files/toolbelt.cfg",
-            "MD5": "e38cfed9d60c8a556ba10351c92d676f",
-            "path": "toolbelt.cfg"
           }
         }
       ]
