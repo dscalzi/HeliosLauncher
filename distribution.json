@@ -30,7 +30,7 @@
           "artifact": {
             "size": 4464068,
             "MD5": "ff6f0650ff84d4c8e03da9a4f536d9e1",
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/net/minecraftforge/forge/1.12.2-14.23.5.2854/forge-1.12.2-14.23.5.2854-universal.jar"
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/net/minecraftforge/forge/1.12.2-14.23.5.2854/forge-1.12.2-14.23.5.2854-universal.jar"
           },
           "subModules": [
             {
@@ -40,7 +40,7 @@
               "artifact": {
                 "size": 10873,
                 "MD5": "814f52398b6ebf70d22571307d2298eb",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/versions/1.12.2-forge-14.23.5.2854/1.12.2-forge-14.23.5.2854.json"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/versions/1.12.2-forge-14.23.5.2854/1.12.2-forge-14.23.5.2854.json"
               }
             },
             {
@@ -50,7 +50,7 @@
               "artifact": {
                 "size": 387903,
                 "MD5": "fe5f20404ccdee9769ef05dc4b47ba98",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar"
               }
             },
             {
@@ -60,7 +60,7 @@
               "artifact": {
                 "size": 32999,
                 "MD5": "934b2d91c7c5be4a49577c9e6b40e8da",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar"
               }
             },
             {
@@ -70,7 +70,7 @@
               "artifact": {
                 "size": 614590,
                 "MD5": "4c20d2879ed2bd75a0771ce29e89f6b0",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/jline/jline/3.5.1/jline-3.5.1.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/jline/jline/3.5.1/jline-3.5.1.jar"
               }
             },
             {
@@ -80,7 +80,7 @@
               "artifact": {
                 "size": 2514991,
                 "MD5": "541440ca0819ebada47d6d1a8b3ee9e1",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/com/typesafe/akka/akka-actor_2.11/2.3.3/akka-actor_2.11-2.3.3.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/com/typesafe/akka/akka-actor_2.11/2.3.3/akka-actor_2.11-2.3.3.jar"
               }
             },
             {
@@ -90,7 +90,7 @@
               "artifact": {
                 "size": 219554,
                 "MD5": "3aaf3c6e76a68e732c17d4a7e9877d81",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/com/typesafe/config/1.2.1/config-1.2.1.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/com/typesafe/config/1.2.1/config-1.2.1.jar"
               }
             },
             {
@@ -100,7 +100,7 @@
               "artifact": {
                 "size": 58018,
                 "MD5": "f5e79398daa1806f8b17311a3c782723",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/scala-lang/scala-actors-migration_2.11/1.1.0/scala-actors-migration_2.11-1.1.0.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/scala-lang/scala-actors-migration_2.11/1.1.0/scala-actors-migration_2.11-1.1.0.jar"
               }
             },
             {
@@ -110,7 +110,7 @@
               "artifact": {
                 "size": 13449765,
                 "MD5": "06030143bf86ca896fb6ccfd679b5760",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/scala-lang/scala-compiler/2.11.1/scala-compiler-2.11.1.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/scala-lang/scala-compiler/2.11.1/scala-compiler-2.11.1.jar"
               }
             },
             {
@@ -120,7 +120,7 @@
               "artifact": {
                 "size": 25365,
                 "MD5": "004d7007abbcee858d3ca2c3ccbcbaab",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/scala-lang/plugins/scala-continuations-library_2.11/1.0.2_mc/scala-continuations-library_2.11-1.0.2_mc.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/scala-lang/plugins/scala-continuations-library_2.11/1.0.2_mc/scala-continuations-library_2.11-1.0.2_mc.jar"
               }
             },
             {
@@ -130,7 +130,7 @@
               "artifact": {
                 "size": 206575,
                 "MD5": "359c4a6743a082c689039482eed78670",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/scala-lang/plugins/scala-continuations-plugin_2.11.1/1.0.2_mc/scala-continuations-plugin_2.11.1-1.0.2_mc.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/scala-lang/plugins/scala-continuations-plugin_2.11.1/1.0.2_mc/scala-continuations-plugin_2.11.1-1.0.2_mc.jar"
               }
             },
             {
@@ -140,7 +140,7 @@
               "artifact": {
                 "size": 5538130,
                 "MD5": "1d88f665219e6006c5dd82d71c525c0f",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/scala-lang/scala-library/2.11.1/scala-library-2.11.1.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/scala-lang/scala-library/2.11.1/scala-library-2.11.1.jar"
               }
             },
             {
@@ -150,7 +150,7 @@
               "artifact": {
                 "size": 419701,
                 "MD5": "4e694499c965af4a02599c99d4f0b196",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/scala-lang/scala-parser-combinators_2.11/1.0.1/scala-parser-combinators_2.11-1.0.1.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/scala-lang/scala-parser-combinators_2.11/1.0.1/scala-parser-combinators_2.11-1.0.1.jar"
               }
             },
             {
@@ -160,7 +160,7 @@
               "artifact": {
                 "size": 4372892,
                 "MD5": "7878fac044e4e4b576bb35a77ccc34fc",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/scala-lang/scala-reflect/2.11.1/scala-reflect-2.11.1.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/scala-lang/scala-reflect/2.11.1/scala-reflect-2.11.1.jar"
               }
             },
             {
@@ -170,7 +170,7 @@
               "artifact": {
                 "size": 726500,
                 "MD5": "1009d69e4948045383f2a7a334348af5",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/scala-lang/scala-swing_2.11/1.0.1/scala-swing_2.11-1.0.1.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/scala-lang/scala-swing_2.11/1.0.1/scala-swing_2.11-1.0.1.jar"
               }
             },
             {
@@ -180,7 +180,7 @@
               "artifact": {
                 "size": 648679,
                 "MD5": "c2d7e66495afe14545c31b21e99879ef",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/scala-lang/scala-xml_2.11/1.0.2/scala-xml_2.11-1.0.2.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/scala-lang/scala-xml_2.11/1.0.2/scala-xml_2.11-1.0.2.jar"
               }
             },
             {
@@ -190,7 +190,7 @@
               "artifact": {
                 "size": 5762,
                 "MD5": "a3e3c3186e41c4a1a3027ba2bb23cdc6",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/lzma/lzma/0.0.1/lzma-0.0.1.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/lzma/lzma/0.0.1/lzma-0.0.1.jar"
               }
             },
             {
@@ -200,7 +200,7 @@
               "artifact": {
                 "size": 318956,
                 "MD5": "e5d2b7f46c4800a32f62ce75676a5710",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/java3d/vecmath/1.5.2/vecmath-1.5.2.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/java3d/vecmath/1.5.2/vecmath-1.5.2.jar"
               }
             },
             {
@@ -210,7 +210,7 @@
               "artifact": {
                 "size": 2523218,
                 "MD5": "8fc4d4e0129244f9fd39650c5f30feb2",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/net/sf/trove4j/trove4j/3.0.3/trove4j-3.0.3.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/net/sf/trove4j/trove4j/3.0.3/trove4j-3.0.3.jar"
               }
             },
             {
@@ -220,7 +220,7 @@
               "artifact": {
                 "size": 54961,
                 "MD5": "7741ebf29690ee7d9dde9cf4376347fc",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/org/apache/maven/maven-artifact/3.5.3/maven-artifact-3.5.3.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/org/apache/maven/maven-artifact/3.5.3/maven-artifact-3.5.3.jar"
               }
             },
             {
@@ -230,7 +230,7 @@
               "artifact": {
                 "size": 78175,
                 "MD5": "0a5ec84e23df9d7cfb4063bc55f2744c",
-                "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/repo/lib/net/sf/jopt-simple/jopt-simple/5.0.3/jopt-simple-5.0.3.jar"
+                "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/repo/lib/net/sf/jopt-simple/jopt-simple/5.0.3/jopt-simple-5.0.3.jar"
               }
             }
           ]
@@ -241,7 +241,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 2371775,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/Armourers-Workshop-1.12.2-0.49.1.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/Armourers-Workshop-1.12.2-0.49.1.jar",
             "MD5": "f9ae7b411caaec416dda0a696c8ba7b7"
           }
         },
@@ -251,7 +251,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 598724,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/BlackCloverItems-1.0.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/BlackCloverItems-1.0.jar",
             "MD5": "46c34c48df9f644b2d4d5ce9d9b618fe"
           }
         },
@@ -261,7 +261,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 75709,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/BuilderWands.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/BuilderWands.jar",
             "MD5": "64763e14d31cdc21cedd4c4e85fbec73"
           }
         },
@@ -271,7 +271,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 312457,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/Carpenter.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/Carpenter.jar",
             "MD5": "e3c9920922ac3261adb7d239ae236a88"
           }
         },
@@ -281,7 +281,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 4755282,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/Chisel.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/Chisel.jar",
             "MD5": "54afc298f94e708f0e1cdf399200b2cb"
           }
         },
@@ -291,7 +291,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 105689,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/CodeChickenCore.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/CodeChickenCore.jar",
             "MD5": "1b694610f79739a3dfe5028b37df72f1"
           }
         },
@@ -301,7 +301,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 645099,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/CodeChickenLib.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/CodeChickenLib.jar",
             "MD5": "62d258d0398caf18ed089af3b26337cb"
           }
         },
@@ -311,7 +311,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 199045,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/CTM-MC1.12.2-1.0.2.31.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/CTM-MC1.12.2-1.0.2.31.jar",
             "MD5": "77a8bb5486c97e3eaa6f45e5bd768864"
           }
         },
@@ -321,7 +321,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 4140,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/CustomBackgrounds.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/CustomBackgrounds.jar",
             "MD5": "b0f20b60bba201bbcf63a6d18cd191db"
           }
         },
@@ -331,7 +331,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 521135,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/CustomLoadingScreen.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/CustomLoadingScreen.jar",
             "MD5": "e79a12518adfc989431413a20ddf3059"
           }
         },
@@ -341,7 +341,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 91121,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/CustomMainMenu.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/CustomMainMenu.jar",
             "MD5": "c12200ad89f9399d5bdcbe9da7900bb9"
           }
         },
@@ -351,7 +351,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 9911871,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/CustomNPCs.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/CustomNPCs.jar",
             "MD5": "3ab1a5c4b069d574631da5bc1880ebf7"
           }
         },
@@ -361,7 +361,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 285416,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/DamageIndicators.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/DamageIndicators.jar",
             "MD5": "09dd0cd435c1185b796b3557cbce6cdc"
           }
         },
@@ -371,7 +371,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 16747522,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/DecoCraft.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/DecoCraft.jar",
             "MD5": "f9a8eb5ac8e45f1438ef937dc48b882b"
           }
         },
@@ -381,7 +381,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 956692,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/ironchest.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/ironchest.jar",
             "MD5": "743179bc3a8f50751efbb019acc759a9"
           }
         },
@@ -391,7 +391,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 653115,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/jei.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/jei.jar",
             "MD5": "07fd20e0d7197fa48202d2d5b8d34e34"
           }
         },
@@ -401,7 +401,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 1939783,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/malisiscore-1.12.2-6.5.1.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/malisiscore-1.12.2-6.5.1.jar",
             "MD5": "ccc183a97d7b9688a49bf29b61343f49"
           }
         },
@@ -411,7 +411,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 1741669,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/MalisisDoors.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/MalisisDoors.jar",
             "MD5": "6d0f129ff9a05f84add5b2209a6d0284"
           }
         },
@@ -421,7 +421,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 843486,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/Mantle.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/Mantle.jar",
             "MD5": "1026f5f8d3c4997831decd9023ca65a6"
           }
         },
@@ -431,7 +431,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 7722,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/Moreblocks.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/Moreblocks.jar",
             "MD5": "2f144ef98aec54c0407067c051e2bd2e"
           }
         },
@@ -441,7 +441,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 169483,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/PTRLib-1.0.4.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/PTRLib-1.0.4.jar",
             "MD5": "7cdde85216395abe430a7ff185650370"
           }
         },
@@ -451,7 +451,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 16612,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/ResourceLoader.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/ResourceLoader.jar",
             "MD5": "51141e882f96ce756b9b3d25f2acdf57"
           }
         },
@@ -461,7 +461,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 1361675,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/Rustic.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/Rustic.jar",
             "MD5": "87d1ffd01b81fee5e13f56b7b78cda64"
           }
         },
@@ -471,7 +471,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 851877,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/StellarFire.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/StellarFire.jar",
             "MD5": "13c1fb0bbd50eb4c01d4725962741802"
           }
         },
@@ -481,7 +481,7 @@
           "type": "ForgeMod",
           "artifact": {
             "size": 152506,
-            "url": "https://raw.githubusercontent.com/DevLarge/StellarNetworkLauncherUtil/master/servers/BlackClover-1.12.2/forgemods/required/ToolBelt.jar",
+            "url": "https://raw.githubusercontent.com/DevLarge/HeliosLauncher/master/servers/BlackClover-1.12.2/forgemods/required/ToolBelt.jar",
             "MD5": "f0e4d51512287ab3f5495669351c7ff2"
           }
         }
