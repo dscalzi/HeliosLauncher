@@ -1,0 +1,18 @@
+{
+    "variants": {
+        "normal": [
+            { "model": "sand", "weight": 10 },
+            { "model": "sand", "weight": 8, "y": 180 },
+            { "model": "unity:sand_light", "weight": 4 },
+            { "model": "unity:sand_light", "weight": 3, "y": 180 },
+            { "model": "unity:sand_dark", "weight": 1 },
+            { "model": "unity:sand_dark", "weight": 2, "y": 90 },
+            { "model": "unity:sand_dark", "weight": 1, "y": 180 },
+            { "model": "unity:sand_dark", "weight": 1, "y": 270 },
+			{ "model": "unity:sand_rocks", "weight": 1 },
+            { "model": "unity:sand_rocks", "weight": 1, "y": 90 },
+            { "model": "unity:sand_rocks", "weight": 1, "y": 180 },
+            { "model": "unity:sand_rocks", "weight": 1, "y": 270 }
+        ]
+    }
+}

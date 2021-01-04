@@ -1,0 +1,10 @@
+{
+  "parent": "sample/block_4_wide",
+  "texture": {
+    "width": "4 * percentage"
+  },
+  "position": {
+    "x": "percentage * 128 - 128",
+    "width": "256 * percentage"
+  }
+}

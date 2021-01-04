@@ -1,0 +1,17 @@
+{
+  "parent": "builtin/image",
+  "position_type": "CENTER",
+  "offset_pos": "CENTER",
+  "texture": {
+    "x": "0",
+    "y": "0",
+    "width": "4",
+    "height": "1"
+  },
+  "position": {
+    "x": "0",
+    "y": "-16",
+    "width": "256",
+    "height": "64"
+  }
+}

@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "unity:blocks/end_stone_alt"
+    }
+}

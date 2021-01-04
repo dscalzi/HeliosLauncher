@@ -1,0 +1,18 @@
+{
+    "variants": {
+        "age=0": [
+            { "model": "carrots_stage0", "weight": 20 }
+        ],
+        "age=1": { "model": "carrots_stage0" },
+        "age=2": { "model": "carrots_stage1" },
+        "age=3": { "model": "carrots_stage1" },
+        "age=4": { "model": "carrots_stage2" },
+        "age=5": { "model": "carrots_stage2" },
+        "age=6": { "model": "carrots_stage2" },
+        "age=7": [
+            { "model": "carrots_stage3", "weight": 5 },
+            { "model": "unity:carrots_stage3_alt", "weight": 5 },
+            { "model": "unity:carrots_stage3_alt2", "weight": 5 }
+        ]
+    }
+}

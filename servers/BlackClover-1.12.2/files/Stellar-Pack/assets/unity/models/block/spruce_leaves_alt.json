@@ -1,0 +1,6 @@
+{
+    "parent": "block/leaves",
+    "textures": {
+        "all": "unity:blocks/spruce_leaves_alt"
+    }
+}

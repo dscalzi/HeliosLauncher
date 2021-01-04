@@ -1,0 +1,27 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"transform": "forge:default-block"
+	},
+	"variants": {
+		"type": {
+			"basalt": { "model": "ic2:resource/basalt" },
+			"copper_ore": { "model": "ic2:resource/copper_ore" },
+			"lead_ore": { "model": "ic2:resource/lead_ore" },
+			"tin_ore": { "model": "ic2:resource/tin_ore" },
+			"uranium_ore": { "model": "ic2:resource/uranium_ore" },
+			"bronze_block": { "model": "ic2:resource/bronze_block" },
+			"copper_block": { "model": "ic2:resource/copper_block" },
+			"lead_block": { "model": "ic2:resource/lead_block" },
+			"steel_block": { "model": "ic2:resource/steel_block" },
+			"tin_block": { "model": "ic2:resource/tin_block" },
+			"uranium_block": { "model": "ic2:resource/uranium_block" },
+			"reinforced_stone": { "model": "ic2:resource/reinforced_stone" },
+			"machine": { "model": "ic2:resource/machine" },
+			"advanced_machine": { "model": "ic2:resource/advanced_machine" },
+			"reactor_vessel": { "model": "ic2:generator/reactor/reactor_vessel" }
+		},
+		"inventory": [{}]
+	}
+}
+

@@ -1,0 +1,52 @@
+[
+	{
+		"mod" : "EnderStorage",
+		"supporters": [
+			"Blkdragon112",
+			"Pyrodogg"
+		]
+	},
+	{
+		"mod" : "ChickenChunks",
+		"supporters": [
+		]
+	},
+	{
+		"mod" : "NotEnoughItems",
+		"supporters": [
+			"EmuCraft Team",
+			"Victor Zimmer",
+			"lexi85",
+			"Ace_Trainer_Tullius",
+			"Bacon_Donut",
+			"Sleement",
+			"Ninja 5tyl3",
+			"Disalot",
+			"Gamer2313",
+			"Majorangejuice",
+			"Kadah",
+			"adeilt",
+			"Terkanil",
+			"Pandemonia",
+		]
+	},
+	{
+		"mod" : "WR-CBE",
+		"supporters" : [
+			"Vizerei"
+		]
+	},
+	{
+		"mod" : "Translocators",
+		"supporters": [
+			"Boyd Stephen Smith Jr."
+		]
+	}, 
+	{
+		"mod" : "ProjectRed",
+		"supporters" : [
+			"Jacob M",
+			"Darker Light"
+		]
+	}
+]

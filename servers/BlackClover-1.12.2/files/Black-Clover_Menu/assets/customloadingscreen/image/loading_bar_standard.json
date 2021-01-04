@@ -1,0 +1,18 @@
+{
+  "parent": "builtin/image",
+  "image": "customloadingscreen:textures/progress_bars.png",
+  "position_type": "CENTER",
+  "offset_pos": "CENTER",
+  "position": {
+    "x": "0",
+    "y": "50",
+    "width": "182",
+    "height": "5"
+  },
+  "texture": {
+    "x": "0",
+    "y": "0",
+    "width": "182 / 256.0",
+    "height": "5 / 256.0"
+  }
+}

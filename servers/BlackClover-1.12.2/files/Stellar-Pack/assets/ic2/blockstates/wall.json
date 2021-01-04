@@ -1,0 +1,27 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"transform": "forge:default-block"
+	},
+	"variants": {
+		"type": {
+			"black": { "model": "ic2:cf/wall_black" },
+			"blue": { "model": "ic2:cf/wall_blue" },
+			"brown": { "model": "ic2:cf/wall_brown" },
+			"cyan": { "model": "ic2:cf/wall_cyan" },
+			"gray": { "model": "ic2:cf/wall_gray" },
+			"green": { "model": "ic2:cf/wall_green" },
+			"light_blue": { "model": "ic2:cf/wall_light_blue" },
+			"light_gray": { "model": "ic2:cf/wall_light_gray" },
+			"lime": { "model": "ic2:cf/wall_lime" },
+			"magenta": { "model": "ic2:cf/wall_magenta" },
+			"orange": { "model": "ic2:cf/wall_orange" },
+			"pink": { "model": "ic2:cf/wall_pink" },
+			"purple": { "model": "ic2:cf/wall_purple" },
+			"red": { "model": "ic2:cf/wall_red" },
+			"white": { "model": "ic2:cf/wall_white" },
+			"yellow": { "model": "ic2:cf/wall_yellow" }
+		},
+		"inventory": [{}]
+	}
+}

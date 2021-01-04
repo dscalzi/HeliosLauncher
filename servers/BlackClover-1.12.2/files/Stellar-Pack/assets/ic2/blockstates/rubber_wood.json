@@ -1,0 +1,23 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"transform": "forge:default-block"
+	},
+	"variants": {
+		"state": {
+			"plain_y": { "model": "ic2:resource/rubber_wood" },
+			"plain_x": { "model": "ic2:resource/rubber_wood", "x": 90, "y": 90 },
+			"plain_z": { "model": "ic2:resource/rubber_wood", "x": 90 },
+			"dry_north": { "model": "ic2:resource/rubber_wood_dry" },
+			"dry_south": { "model": "ic2:resource/rubber_wood_dry", "y": 180 },
+			"dry_west": { "model": "ic2:resource/rubber_wood_dry", "y": 270 },
+			"dry_east": { "model": "ic2:resource/rubber_wood_dry", "y": 90 },
+			"wet_north": { "model": "ic2:resource/rubber_wood_wet" },
+			"wet_south": { "model": "ic2:resource/rubber_wood_wet", "y": 180 },
+			"wet_west": { "model": "ic2:resource/rubber_wood_wet", "y": 270 },
+			"wet_east": { "model": "ic2:resource/rubber_wood_wet", "y": 90 }
+		},
+		"inventory": [{}]
+	}
+}
+

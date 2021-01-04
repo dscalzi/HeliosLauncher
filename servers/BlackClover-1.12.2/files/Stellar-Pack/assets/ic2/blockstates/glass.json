@@ -1,0 +1,13 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"transform": "forge:default-block"
+	},
+	"variants": {
+		"type": {
+			"reinforced": { "model": "ic2:reinforced_glass" }
+		},
+		"inventory": [{}]
+	}
+}
+

@@ -1,0 +1,9 @@
+{
+    "variants": {
+        "normal": [
+            { "model": "spruce_leaves", "weight": 15 },
+            { "model": "unity:spruce_leaves_alt", "weight": 5 },
+            { "model": "unity:spruce_leaves_alt2", "weight": 5 }
+        ]
+    }
+}

@@ -1,0 +1,13 @@
+{
+	"parent":"sample/loading_bar_standard",
+	"position":{
+		"y":"20",
+		"height":"20",
+		"width":"super * 2"
+	},
+	"texture":{
+		"x": "0",
+		"y": "70 / 256.0",
+		"height": "10 / 256.0"
+	}
+}

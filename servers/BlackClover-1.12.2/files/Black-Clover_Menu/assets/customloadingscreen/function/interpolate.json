@@ -1,0 +1,14 @@
+{
+	"name":"interpolate",
+	"function":"",
+	"arguments":[
+		"min",
+		"max",
+		"time",
+		"",
+		"smoothen_start",
+		"smoothen_end"
+	]	
+}
+// Usage: interpolate(0,15,10,1)
+// Would interpolate between 0 and 15 over 10 seconds, from time, using smoothen as the power for each end

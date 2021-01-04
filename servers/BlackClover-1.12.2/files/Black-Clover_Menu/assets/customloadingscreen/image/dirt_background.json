@@ -1,0 +1,19 @@
+{
+  "parent": "builtin/image",
+  "image": "textures/textures/concrete_white.png",
+  "position_type": "CENTER",
+  "offset_pos": "CENTER",
+  "colour": "0x00_00_00_00",
+  "position": {
+    "x": "0",
+    "y": "0",
+    "width": "64 * 16",
+    "height": "64 * 16"
+  },
+  "texture": {
+    "x": "0",
+    "y": "0",
+    "width": "64",
+    "height": "64"
+  }
+}

@@ -1,0 +1,7 @@
+{
+	"parent": "advanced_machines:block/singularity_compressor",
+	"textures": {
+		"north": "advanced_machines:blocks/compressor_front_active",
+		"up": "advanced_machines:blocks/compressor_top_active"
+	}
+}

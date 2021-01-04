@@ -1,0 +1,10 @@
+{
+  "parent": "sample/item",
+  "image": "textures/items/cake.png",
+  "position": {
+    "x": "-32",
+    "y": "-32",
+    "width": "64",
+    "height": "64"
+  }
+}

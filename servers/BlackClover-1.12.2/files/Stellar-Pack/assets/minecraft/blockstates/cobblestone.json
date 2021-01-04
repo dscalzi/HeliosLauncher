@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "normal": [
+            { "model": "cobblestone", "weight": 15 },
+            { "model": "unity:cobblestone_alt", "weight": 5 },
+            { "model": "unity:cobblestone_alt2", "weight": 5 },
+            { "model": "unity:cobblestone_alt3", "weight": 8 }
+        ]
+    }
+}

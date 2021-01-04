@@ -1,0 +1,14 @@
+{
+	"parent":"sample/loading_bar_standard_percentage",
+	"position":{
+		"x":"super * 2",
+		"y":"20",
+		"height":"20",
+		"width":"super * 2"
+	},
+	"texture":{
+		"x":"0",
+		"y":"80 / 256.0",
+		"height":"10 / 256.0"
+	}
+}

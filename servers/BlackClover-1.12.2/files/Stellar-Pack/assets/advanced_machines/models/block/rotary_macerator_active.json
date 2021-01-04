@@ -1,0 +1,7 @@
+{
+	"parent": "advanced_machines:block/rotary_macerator",
+	"textures": {
+		"north": "advanced_machines:blocks/macerator_front_active",
+		"up": "advanced_machines:blocks/macerator_top_active"
+	}
+}

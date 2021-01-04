@@ -1,0 +1,18 @@
+{
+	"parent": "builtin/image",
+	"image":"textures/gui/title/mojang.png",
+	"position_type":"CENTER",
+	"offset_pos":"CENTER",
+	"texture":{
+		"x":"0",
+		"y":"0",
+		"width":"1",
+		"height":"1"
+	},
+	"position":{
+		"x":"0",
+		"y":"0",
+		"width":"256",
+		"height":"256"
+	}
+}

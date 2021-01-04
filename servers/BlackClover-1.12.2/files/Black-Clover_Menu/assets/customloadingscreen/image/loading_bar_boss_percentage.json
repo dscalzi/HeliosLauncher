@@ -1,0 +1,6 @@
+{
+  "parent":"sample/loading_bar_standard_percentage",
+  "texture": {
+    "y": "15 / 256.0"
+  }
+}
