@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
+  "name": "stellarnetworklauncher",
   "version": "1.8.0",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "productName": "Stellar Network Launcher",
+  "description": "Modded Minecraft Launcher for Stellar Network",
+  "author": "Stellar Network (https://github.com/DevLarge/)",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/DevLarge/HeliosLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/DevLarge/HeliosLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -47,6 +47,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/DevLarge/HeliosLauncher.git"
   }
 }
