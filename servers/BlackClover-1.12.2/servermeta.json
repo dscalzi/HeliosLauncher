@@ -1,0 +1,20 @@
+{
+  "$schema": "file:///D:/A%20OSCAR/Coding/Java/StellarNetworkLauncher/schemas/ServerMetaSchema.schema.json",
+  "meta": {
+    "version": "1.0.0",
+    "name": "BlackClover (1.12.2)",
+    "description": "Stellar Network's Black Clover server!",
+    "address": "167.114.35.8",
+    "discord": {
+      "shortId": "<FILL IN OR REMOVE DISCORD OBJECT>",
+      "largeImageText": "<FILL IN OR REMOVE DISCORD OBJECT>",
+      "largeImageKey": "<FILL IN OR REMOVE DISCORD OBJECT>"
+    },
+    "mainServer": true,
+    "autoconnect": false
+  },
+  "forge": {
+    "version": "14.23.5.2854"
+  },
+  "untrackedFiles": []
+}
