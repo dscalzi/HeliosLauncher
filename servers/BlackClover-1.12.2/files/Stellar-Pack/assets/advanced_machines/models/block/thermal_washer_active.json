@@ -1,9 +1,0 @@
-{
-	"parent": "advanced_machines:block/thermal_washer",
-	"textures": {
-		"north": "advanced_machines:blocks/washer_front_active",
-		"east": "advanced_machines:blocks/washer_side_active",
-		"south": "advanced_machines:blocks/washer_side_active",
-		"west": "advanced_machines:blocks/washer_side_active"
-	}
-}

@@ -1,7 +1,0 @@
-{
-	"parent": "advanced_machines:block/impellerized_roller",
-	"textures": {
-		"up": "advanced_machines:blocks/former_top_active",
-		"north": "advanced_machines:blocks/former_front_active"
-	}
-}

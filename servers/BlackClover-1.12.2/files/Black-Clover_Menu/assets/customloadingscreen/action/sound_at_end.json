@@ -1,9 +1,0 @@
-{
-  "parent":"builtin/sound",
-  "conditionStart":"false",
-  "conditionEnd":"true",
-  "arguments":[
-    "'random.levelup'",
-    "false"
-  ]
-}

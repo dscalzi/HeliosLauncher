@@ -1,6 +1,0 @@
-{
-	"parent": "advanced_machines:block/compacting_recycler",
-	"textures": {
-		"north": "advanced_machines:blocks/recycler_front_active"
-	}
-}

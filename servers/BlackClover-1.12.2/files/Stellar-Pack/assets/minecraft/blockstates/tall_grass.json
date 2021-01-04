@@ -1,9 +1,0 @@
-{
-    "variants": {
-        "normal": [
-            { "model": "tall_grass", "weight": 5 },
-            { "model": "unity:tall_grass_alt", "weight": 7 },
-            { "model": "unity:tall_grass_alt2", "weight": 5 }
-        ]
-    }
-}
