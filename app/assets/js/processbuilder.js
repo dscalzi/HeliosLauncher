@@ -483,7 +483,7 @@ class ProcessBuilder {
                             val = args[i].replace(argDiscovery, tempNativePath)
                             break
                         case 'launcher_name':
-                            val = args[i].replace(argDiscovery, 'Stellar-Network-Launcher')
+                            val = args[i].replace(argDiscovery, 'StellarNetworkLauncher')
                             break
                         case 'launcher_version':
                             val = args[i].replace(argDiscovery, this.launcherVersion)
