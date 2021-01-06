@@ -11,7 +11,7 @@ const logger  = require('./loggerutil')('%c[Mojang]', 'color: #a02d2a; font-weig
 
 // Constants
 const minecraftAgent = {
-    name: 'Minecraft',
+    name: 'Stellar',
     version: 1
 }
 const authpath = 'https://authserver.mojang.com'
