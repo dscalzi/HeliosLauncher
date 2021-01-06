@@ -23,8 +23,15 @@ exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting 
     client.on('ready', () => {
         logger.log('Discord RPC Connected')
         client.setActivity(activity)
-        logger.log('Large comment: Discord connected with ' + servSettings.shortId)
+        logger.log('Large comment: ' + servSettings.shortId)
+        logger.log('Large comment: ' + servSettings.largeImageKey)
+        logger.log('Large comment: ' + servSettings.largeImageText)
+        logger.log('Large comment: ' + servSettings.smallImageKey)
+        logger.log('Large comment: ' + servSettings.smallImageText)
+        logger.log('Large comment: ' + servSettings.instance)
     })
+
+    
     
     client.login({clientId: genSettings.clientId}).catch(error => {
         if(error.message.includes('ENOENT')) {
@@ -38,6 +45,10 @@ exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting 
 exports.updateDetails = function(details){
     activity.details = details
     client.setActivity(activity)
+}
+
+exports.login = function() {
+    logger.debug("LOGIN FUNC")
 }
 
 exports.shutdownRPC = function(){
