@@ -81,6 +81,12 @@ function setDownloadPercentage(value, max, percent = ((value/max)*100)){
  */
 function setLaunchEnabled(val){
     document.getElementById('launch_button').disabled = !val
+    if (clientInformation.shutdownRPC) {
+        loggerLanding.log('Large comment: ShutdownRPC')
+    }
+    if (clientInformation.onGameClose == true) {
+        loggerLanding.log('Large comment: Game Closed')
+    }
 }
 
 // Bind launch button

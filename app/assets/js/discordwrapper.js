@@ -23,6 +23,7 @@ exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting 
     client.on('ready', () => {
         logger.log('Discord RPC Connected')
         client.setActivity(activity)
+        logger.log('Large comment: Discord connected with ' + servSettings.shortId)
     })
     
     client.login({clientId: genSettings.clientId}).catch(error => {
