@@ -81,10 +81,7 @@ function setDownloadPercentage(value, max, percent = ((value/max)*100)){
  */
 function setLaunchEnabled(val){
     document.getElementById('launch_button').disabled = !val
-    if (clientInformation.shutdownRPC) {
-        loggerLanding.log('Large comment: ShutdownRPC')
-    }
-    if (clientInformation.onGameClose == true) {
+    if (clientInformation.onGameClose) {
         loggerLanding.log('Large comment: Game Closed')
     }
 }
@@ -694,7 +691,7 @@ function dlAsync(login = true){
                     if(SERVER_JOINED_REGEX.test(data)){
                         DiscordWrapper.updateDetails('Exploring the Realm!')
                     } else if(GAME_JOINED_REGEX.test(data)){
-                        DiscordWrapper.updateDetails('Sailing to Westeros!')
+                        DiscordWrapper.updateDetails('Exploring Stellar!')
                     }
                 }
 
