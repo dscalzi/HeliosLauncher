@@ -20,7 +20,8 @@ builder.build({
     config: {
         appId: 'stellarnetworklauncher',
         productName: 'Stellar Network Launcher',
-        artifactName: '${productName}-setup-1.0.0.1.${ext}',
+        // artifactName: '${productName}-setup-${version}.${ext}',
+        artifactName: '${productName}-setup-${version}.${ext}',
         copyright: 'Copyright © 2018-2021 Stellar Network',
         directories: {
             buildResources: 'build',
