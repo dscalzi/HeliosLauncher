@@ -103,7 +103,8 @@ const DEFAULT_CONFIG = {
     selectedServer: null, // Resolved
     selectedAccount: null,
     authenticationDatabase: {},
-    modConfigurations: []
+    modConfigurations: [],
+    testDistro: false
 }
 
 let config = null
@@ -158,6 +159,14 @@ exports.load = function(){
     logger.log('Successfully Loaded')
 }
 
+exports.setTesting = function(v){
+    config.testDistro = v ? true: false
+    exports.save()
+}
+
+exports.isTesting = function(){
+    return config.testDistro
+}
 /**
  * @returns {boolean} Whether or not the manager has been loaded.
  */
