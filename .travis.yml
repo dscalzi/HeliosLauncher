@@ -1,3 +1,11 @@
-install:
-  - bundle install --path vendor/bundle
-  - npm install
+{
+  "language": "ruby",
+  "os": [
+    "linux"
+  ],
+  "dist": "xenial",
+  "install": [
+    "bundle install --path vendor/bundle",
+    "npm install"
+  ]
+}
