@@ -43,13 +43,16 @@ if(!isDev){
             case 'checking-for-update':
                 loggerAutoUpdater.log('Checking for update..')
                 settingsUpdateButtonStatus('Checking for Updates..', true)
+                console.debug('UiCore: checking-for-update')
                 break
             case 'update-available':
                 loggerAutoUpdaterSuccess.log('New update available', info.version)
-                
+                console.debug('Update available')
+
                 if(process.platform === 'darwin'){
                     info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar.Network.Launcher-setup-${info.version}.exe`
                     showUpdateUI(info)
+                    console.debug('UICORE found info with version ' + info.version)
                 }
                 
                 populateSettingsUpdateInformation(info)
@@ -66,12 +69,14 @@ if(!isDev){
             case 'update-not-available':
                 loggerAutoUpdater.log('No new update found.')
                 settingsUpdateButtonStatus('Check for Updates')
+                console.debug('No new update found')
                 break
             case 'ready':
                 updateCheckListener = setInterval(() => {
                     ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                 }, 1800000)
                 ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
+                console.debug('ready')
                 break
             case 'realerror':
                 if(info != null && info.code != null){
@@ -83,6 +88,7 @@ if(!isDev){
                         loggerAutoUpdater.error('Error during update check..', info)
                         loggerAutoUpdater.debug('Error Code:', info.code)
                     }
+                    console.debug('REALERROR')
                 }
                 break
             default:

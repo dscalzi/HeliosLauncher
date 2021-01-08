@@ -1224,7 +1224,7 @@ function populateReleaseNotes(){
         success: (data) => {
             const version = 'v' + remote.app.getVersion()
             const entries = $(data).find('entry')
-            console.log('Found release notes ' + version)
+            console.debug('Found release notes ' + version)
             
             for(let i=0; i<entries.length; i++){
                 const entry = $(entries[i])
@@ -1235,7 +1235,7 @@ function populateReleaseNotes(){
                     settingsAboutChangelogTitle.innerHTML = entry.find('title').text()
                     settingsAboutChangelogText.innerHTML = entry.find('content').text()
                     settingsAboutChangelogButton.href = entry.find('link').attr('href')
-                    console.log('Runs')
+                    console.debug('Runs')
                 }
             }
 
