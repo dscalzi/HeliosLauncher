@@ -1235,6 +1235,7 @@ function populateReleaseNotes(){
                     settingsAboutChangelogTitle.innerHTML = entry.find('title').text()
                     settingsAboutChangelogText.innerHTML = entry.find('content').text()
                     settingsAboutChangelogButton.href = entry.find('link').attr('href')
+                    console.log('Runs')
                 }
             }
 
