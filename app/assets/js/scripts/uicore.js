@@ -50,7 +50,8 @@ if(!isDev){
                 console.log('Update available')
 
                 if(process.platform === 'darwin'){
-                    info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar.Network.Launcher-setup-${info.version}.exe.blockmap`
+                    info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar.Network.Launcher-setup-1.0.2.exe.blockmap`
+                    // https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v1.0.2/Stellar.Network.Launcher-setup-1.0.2.exe.blockmap
                     showUpdateUI(info)
                     console.log('LARGE: UICORE found info with version ' + info.version)
                 }
