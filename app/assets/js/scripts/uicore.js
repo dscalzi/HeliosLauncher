@@ -44,6 +44,7 @@ if(!isDev){
                 loggerAutoUpdater.log('Checking for update..')
                 settingsUpdateButtonStatus('Checking for Updates..', true)
                 console.log('LARGE: UiCore: checking-for-update')
+                console.log(clientInformation.appVersion)
                 break
             case 'update-available':
                 loggerAutoUpdaterSuccess.log('New update available', info.version)
