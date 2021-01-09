@@ -54,7 +54,7 @@ if(!isDev){
 
 
 
-                    info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar.Network.Launcher-setup-1.0.3.exe.blockmap`
+                    info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar.Network.Launcher-setup-1.0.4.exe.blockmap`
 
 
 
