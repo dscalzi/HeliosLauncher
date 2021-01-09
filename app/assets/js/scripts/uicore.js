@@ -77,7 +77,7 @@ if(!isDev){
                 })
                 showUpdateUI(info)
 
-                console.log('LARGE: Update download')
+                console.log('LARGE: Update downloaded')
                 break
             case 'update-not-available':
                 loggerAutoUpdater.log('No new update found.')
