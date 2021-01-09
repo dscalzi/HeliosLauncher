@@ -1296,16 +1296,20 @@ function populateSettingsUpdateInformation(data){
         settingsUpdateChangelogTitle.innerHTML = data.releaseName
         settingsUpdateChangelogText.innerHTML = data.releaseNotes
         populateVersionInformation(data.version, settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
+        console.log('LARGE: Data != null')
         
         if(process.platform === 'darwin'){
+            console.log('LARGE: Darwin platform')
             settingsUpdateButtonStatus('Download from GitHub<span style="font-size: 10px;color: gray;text-shadow: none !important;">Close the launcher and run the dmg to update.</span>', false, () => {
                 shell.openExternal(data.darwindownload)
             })
         } else {
             settingsUpdateButtonStatus('Downloading..', true)
+            console.log('LARGE: ELSE')
         }
     } else {
         settingsUpdateTitle.innerHTML = 'You Are Running the Latest Version'
+        console.log('LARGE: Latest version')
         settingsUpdateChangelogCont.style.display = 'none'
         populateVersionInformation(remote.app.getVersion(), settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
         settingsUpdateButtonStatus('Check for Updates', false, () => {

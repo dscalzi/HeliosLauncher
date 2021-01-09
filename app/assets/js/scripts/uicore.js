@@ -59,7 +59,7 @@ if(!isDev){
 
 
 
-                    info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v1.0.2/Stellar-Network-Launcher-setup-1.0.2.exe.blockmap`
+                    info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar-Network-Launcher-setup-${info.version}.exe.blockmap`
                     // Prøv fra version 1.0.0
                     // v${info.version}
                     // https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v1.0.1/Stellar.Network.Launcher-setup-1.0.1.blockmap
