@@ -6,7 +6,7 @@
  */
 // Requirements
 const $                                      = require('jquery')
-const {ipcRenderer, remote, shell, webFrame} = require('electron')
+const {ipcRenderer, remote, shell, webFrame, DownloadItem} = require('electron')
 const isDev                                  = require('./assets/js/isdev')
 const LoggerUtil                             = require('./assets/js/loggerutil')
 
@@ -49,12 +49,16 @@ if(!isDev){
                 loggerAutoUpdaterSuccess.log('New update available', info.version)
                 console.log('Update available')
 
+                if (process.platform === "win32") {
+                    console.log('LARGE: Platform win32')
+                }
+
                 if(process.platform === 'darwin'){
 
 
 
 
-                    info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v1.0.1/Stellar.Network.Launcher-setup-1.0.1.exe.blockmap`
+                    info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v1.0.2/Stellar-Network-Launcher-setup-1.0.2.exe.blockmap`
                     // Prøv fra version 1.0.0
                     // v${info.version}
                     // https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v1.0.1/Stellar.Network.Launcher-setup-1.0.1.blockmap

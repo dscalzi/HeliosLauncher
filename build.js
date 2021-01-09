@@ -19,7 +19,7 @@ builder.build({
     targets: (process.argv[2] != null && Platform[process.argv[2]] != null ? Platform[process.argv[2]] : getCurrentPlatform()).createTarget(),
     config: {
         appId: 'stellarnetworklauncher',
-        productName: 'Stellar Network Launcher',
+        productName: 'Stellar-Network-Launcher',
         artifactName: '${productName}-setup-${version}.${ext}',
         copyright: 'Copyright © 2018-2021 Stellar Network',
         directories: {
