@@ -26,9 +26,6 @@ window.eval = global.eval = function () {
 
 // Display warning when devtools window is opened.
 remote.getCurrentWebContents().on('devtools-opened', () => {
-    console.log('%cThe console is dark and full of terrors.', 'color: white; -webkit-text-stroke: 4px #a02d2a; font-size: 60px; font-weight: bold')
-    console.log('%cIf you\'ve been told to paste something here, you\'re being scammed.', 'font-size: 16px')
-    console.log('%cUnless you know exactly what you\'re doing, close this window.', 'font-size: 16px')
 })
 
 // Disable zoom, needed for darwin.
@@ -59,10 +56,9 @@ if(!isDev){
 
 
 
-                    info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar-Network-Launcher-setup-${info.version}.exe.blockmap`
+                    info.darwindownload = `https://github.com/DevLarge/HeliosLauncher/releases/download/v${info.version}/Stellar-Network-Launcher-setup-${info.version}.exe.blockmap`
                     // Prøv fra version 1.0.0
                     // v${info.version}
-                    // https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v1.0.1/Stellar.Network.Launcher-setup-1.0.1.blockmap
                     // https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar.Network.Launcher-setup-${info.version}.blockmap
                     // Som test flytt JEI fra required => optinionalOn
 
