@@ -55,7 +55,6 @@ if(!isDev){
 
 
                     info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar.Network.Launcher-setup-1.0.3.exe.blockmap`
-                    // HEY TYPICAL: Edit the current version number ( Stellar.Network.Launcher-setup-<version_number>.exe.blockmap, with the new version!!!)
 
 
 
