@@ -1299,13 +1299,12 @@ function populateSettingsUpdateInformation(data){
         console.log('LARGE: Data != null')
         
         if(process.platform === 'darwin'){
-            console.log('LARGE: Darwin platform')
             settingsUpdateButtonStatus('Download from GitHub<span style="font-size: 10px;color: gray;text-shadow: none !important;">Close the launcher and run the dmg to update.</span>', false, () => {
                 shell.openExternal(data.darwindownload)
             })
         } else {
             settingsUpdateButtonStatus('Downloading..', true)
-            console.log('LARGE: ELSE')
+            console.log('LARGE: DOWNLOADING')
         }
     } else {
         settingsUpdateTitle.innerHTML = 'You Are Running the Latest Version'

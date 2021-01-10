@@ -44,11 +44,11 @@ if(!isDev){
                 break
             case 'update-available':
                 loggerAutoUpdaterSuccess.log('New update available', info.version)
-                console.log('Update available')
 
                 if (process.platform === 'win32') {
                     console.log('LARGE: Platform win32')
                     // Continue with HEliosLauncher as dir
+                    // TRY DOWNLOAD HERE
                 }
 
                 if(process.platform === 'darwin'){
