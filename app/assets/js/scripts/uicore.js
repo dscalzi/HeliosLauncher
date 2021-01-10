@@ -41,7 +41,6 @@ if(!isDev){
                 loggerAutoUpdater.log('Checking for update..')
                 settingsUpdateButtonStatus('Checking for Updates..', true)
                 console.log('LARGE: UiCore: checking-for-update')
-                console.log(clientInformation.appVersion)
                 break
             case 'update-available':
                 loggerAutoUpdaterSuccess.log('New update available', info.version)
@@ -56,7 +55,7 @@ if(!isDev){
 
 
 
-                    info.darwindownload = `https://github.com/DevLarge/HeliosLauncher/releases/download/v${info.version}/Stellar-Network-Launcher-setup-${info.version}.exe.blockmap`
+                    info.darwindownload = `https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar-Network-Launcher-setup-${info.version}.exe.blockmap`
                     // Prøv fra version 1.0.0
                     // v${info.version}
                     // https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar.Network.Launcher-setup-${info.version}.blockmap
