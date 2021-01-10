@@ -57,8 +57,8 @@ if(!isDev){
 
 
                     info.darwindownload = `https://github.com/DevLarge/HeliosLauncher/releases/download/v${info.version}/Stellar-Network-Launcher-setup-${info.version}.exe.blockmap`
-                    // Prøv fra version 1.0.0
                     // v${info.version}
+                    // BARE .exe ???
                     // https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar.Network.Launcher-setup-${info.version}.blockmap
                     // Som test flytt JEI fra required => optinionalOn
 
