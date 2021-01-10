@@ -1302,6 +1302,11 @@ function populateSettingsUpdateInformation(data){
             settingsUpdateButtonStatus('Download from GitHub<span style="font-size: 10px;color: gray;text-shadow: none !important;">Close the launcher and run the dmg to update.</span>', false, () => {
                 shell.openExternal(data.darwindownload)
             })
+        } 
+        else if (process.platform === 'win32'){
+            settingsUpdateButtonStatus('Downloading version now...', true, () => {
+                console.openExternal(data.darwindownload)
+            })
         } else {
             settingsUpdateButtonStatus('Downloading..', true)
             console.log('LARGE: DOWNLOADING')

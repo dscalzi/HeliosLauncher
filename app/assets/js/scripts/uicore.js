@@ -49,6 +49,7 @@ if(!isDev){
                     console.log('LARGE: Platform win32')
                     // Continue with HEliosLauncher as dir
                     // TRY DOWNLOAD HERE
+                    info.darwindownload = `https://github.com/DevLarge/HeliosLauncher/releases/download/v${info.version}/Stellar-Network-Launcher-setup-${info.version}.exe`
                 }
 
                 if(process.platform === 'darwin'){
@@ -78,6 +79,7 @@ if(!isDev){
                 settingsUpdateButtonStatus('Install Now', false, () => {
                     if(!isDev){
                         ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
+                        console.log('LARGE: !isDev')
                     }
                 })
                 showUpdateUI(info)
