@@ -1296,7 +1296,6 @@ function populateSettingsUpdateInformation(data){
         settingsUpdateChangelogTitle.innerHTML = data.releaseName
         settingsUpdateChangelogText.innerHTML = data.releaseNotes
         populateVersionInformation(data.version, settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
-        console.log('LARGE: Data != null')
         
         if(process.platform === 'darwin'){
             settingsUpdateButtonStatus('Download from GitHub<span style="font-size: 10px;color: gray;text-shadow: none !important;">Close the launcher and run the dmg to update.</span>', false, () => {
@@ -1304,12 +1303,12 @@ function populateSettingsUpdateInformation(data){
             })
         } 
         else if (process.platform === 'win32'){
-            settingsUpdateButtonStatus('Downloading version now...', true, () => {
+            settingsUpdateButtonStatus('Finding version now...', true, () => {
                 console.openExternal(data.darwindownload)
             })
         } else {
             settingsUpdateButtonStatus('Downloading..', true)
-            console.log('LARGE: DOWNLOADING')
+            console.log('LARGE: Not win32 or darwin -> Linux?')
         }
     } else {
         settingsUpdateTitle.innerHTML = 'You Are Running the Latest Version'

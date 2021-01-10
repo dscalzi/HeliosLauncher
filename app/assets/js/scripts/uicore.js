@@ -47,29 +47,13 @@ if(!isDev){
 
                 if (process.platform === 'win32') {
                     console.log('LARGE: Platform win32')
-                    // Continue with HEliosLauncher as dir
-                    // TRY DOWNLOAD HERE
                     info.darwindownload = `https://github.com/DevLarge/HeliosLauncher/releases/download/v${info.version}/Stellar-Network-Launcher-setup-${info.version}.exe`
                 }
 
                 if(process.platform === 'darwin'){
-
-
-
-
+                    console.log('LARGE: Platform darwin')
                     info.darwindownload = `https://github.com/DevLarge/HeliosLauncher/releases/download/v${info.version}/Stellar-Network-Launcher-setup-${info.version}.exe.blockmap`
-                    // v${info.version}
-                    // BARE .exe ???
-                    // https://github.com/DevLarge/StellarNetworkLauncherUtil/releases/download/v${info.version}/Stellar.Network.Launcher-setup-${info.version}.blockmap
-                    // Som test flytt JEI fra required => optinionalOn
-
-
-
-
-
-
                     showUpdateUI(info)
-                    console.log('LARGE: UICORE found info with version ' + info.version)
                 }
                 
                 populateSettingsUpdateInformation(info)
