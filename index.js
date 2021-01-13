@@ -8,6 +8,8 @@ const path                          = require('path')
 const semver                        = require('semver')
 const url                           = require('url')
 
+const redirectUriPrefix = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
+
 // Setup auto updater.
 function initAutoUpdater(event, data) {
 
@@ -85,6 +87,49 @@ ipcMain.on('distributionIndexDone', (event, res) => {
 // https://electronjs.org/docs/tutorial/offscreen-rendering
 app.disableHardwareAcceleration()
 
+let MSALoginWindow = null
+
+// Open the Microsoft Account Login window
+ipcMain.on('openMSALoginWindow', (ipcEvent, args) => {
+    if(MSALoginWindow != null){ 
+        ipcEvent.sender.send('MSALoginWindowNotification', 'error', 'AlreadyOpenException')
+        return
+    }
+    MSALoginWindow = new BrowserWindow({
+        minWidth: 600,
+        minHeight: 400,
+        width: 600,
+        height: 400,
+        contextIsolation: false
+    })
+
+    MSALoginWindow.on('closed', () => {
+        MSALoginWindow = null
+    })
+
+    MSALoginWindow.webContents.on('did-navigate', (event, uri, responseCode, statusText) => {
+        if(uri.startsWith(redirectUriPrefix)) {
+            let querys = uri.substring(redirectUriPrefix.length).split('#', 1).toString().split('&')
+            let queryMap = new Map()
+
+            querys.forEach(query => {
+                let arr = query.split('=')
+                queryMap.set(arr[0], decodeURI(arr[1]))
+            })
+
+            ipcEvent.reply('MSALoginWindowReply', queryMap)
+
+            MSALoginWindow.close()
+            MSALoginWindow = null
+        }
+    })
+
+    MSALoginWindow.removeMenu()
+    MSALoginWindow.loadURL('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id=a621aefe-b326-4c67-8688-34746ccd9bd2&response_type=code&scope=XboxLive.signin%20offline_access&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient')
+})
+
+
+
 // https://github.com/electron/electron/issues/18397
 app.allowRendererProcessReuse = true
 
@@ -147,6 +192,8 @@ function createMenu() {
                 accelerator: 'Command+Q',
                 click: () => {
                     app.quit()
+                    if(MSALoginWindow !== null) MSALoginWindow.close()
+                    MSALoginWindow = null
                 }
             }]
         }

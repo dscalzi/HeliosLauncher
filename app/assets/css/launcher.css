@@ -858,6 +858,16 @@ body, button {
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
+#loginMSButton {
+    border-color: transparent;
+    background-color: transparent;
+    cursor: pointer;
+    font-family: 'NanumGothicBold';
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 3px;
+    color: rgba(255, 255, 255, 0.75);
+}
 
 /*
 #login_filter {
