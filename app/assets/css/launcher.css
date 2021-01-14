@@ -30,14 +30,14 @@
 
 /* Reset body, html, and div presets. */
 body, html, div {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 /* Reset p presets. */
 p {
-    -webkit-margin-before: 0em;
-    -webkit-margin-after: 0em;
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
 }
 
 /* Set default font and color. */
@@ -106,7 +106,7 @@ body, button {
 
 /* Frame logo (windows only). */
 #frameTitleDock {
-    padding: 0px 10px;
+    padding: 0 10px;
 }
 #frameTitleText {
     font-size: 14px;
@@ -150,7 +150,7 @@ body, button {
     background: rgba(156, 156, 156, 0.43);
 }
 .frameButton:focus {
-    outline: 0px;
+    outline: 0;
 }
 
 /* Close button is red. */
@@ -167,13 +167,13 @@ body, button {
     height: 12px;
     width: 12px;
     border-radius: 50%;
-    border: 0px;
+    border: 0;
     margin-left: 5px;
     -webkit-app-region: no-drag !important;
     cursor: pointer;
 }
 .frameButtonDarwin:focus {
-    outline: 0px;
+    outline: 0;
 }
 
 #frameButtonDarwin_close {
@@ -277,7 +277,7 @@ body, button {
     background: rgba(1, 2, 1, 0.5);
     height: 125px;
     width: 125px;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    box-shadow: 0 0 10px 0 rgb(0, 0, 0);
     margin-bottom: 5%;
     margin-top: 10%;
 }
@@ -289,21 +289,21 @@ body, button {
     margin-bottom: 25px;
     letter-spacing: 1px;
     font-size: 20px;
-    text-shadow: white 0px 0px 0px;
+    text-shadow: white 0 0 0;
 }
 
 #welcomeDescription {
     text-align: justify;
     font-size: 13px;
     font-weight: 100;
-    text-shadow: rgba(255, 255, 255, 0.75) 0px 0px 20px
+    text-shadow: rgba(255, 255, 255, 0.75) 0 0 20px
 }
 
 #welcomeDescCTA {
     text-align: center;
     font-size: 14px;
     font-weight: 100;
-    text-shadow: rgba(255, 255, 255, 0.75) 0px 0px 20px
+    text-shadow: rgba(255, 255, 255, 0.75) 0 0 20px
 }
 
 /* Login button styles. */
@@ -313,7 +313,7 @@ body, button {
     letter-spacing: 2px;
     border: none;
     padding: 15px 5px;
-    margin: 10px 0px;
+    margin: 10px 0;
     cursor: pointer;
     position: relative;
     right: -20px;
@@ -327,7 +327,7 @@ body, button {
 }
 #welcomeButton:hover,
 #welcomeButton:focus {
-    text-shadow: 0px 0px 20px #fff;
+    text-shadow: 0 0 20px #fff;
     outline: none;
 }
 #welcomeButton:active {
@@ -345,13 +345,13 @@ body, button {
 }
 #welcomeButton:hover #welcomeSVG,
 #welcomeButton:focus #welcomeSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    -webkit-filter: drop-shadow(0 0 2px #fff);
 }
 #welcomeButton:active #welcomeSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #welcomeButton:active #welcomeSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    -webkit-filter: drop-shadow(0 0 2px #c7c7c7);
 }
 #welcomeButton:disabled #welcomeSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -406,20 +406,20 @@ body, button {
 #loginCancelButton:hover #loginCancelText,
 #loginCancelButton:focus #loginCancelIcon,
 #loginCancelButton:focus #loginCancelText {
-    text-shadow: 0px 0px 20px white;
+    text-shadow: 0 0 20px white;
 }
 #loginCancelButton:hover #loginCancelIcon,
 #loginCancelButton:focus #loginCancelIcon {
-    box-shadow: 0px 0px 20px white;
+    box-shadow: 0 0 20px white;
 }
 #loginCancelButton:active #loginCancelIcon,
 #loginCancelButton:active #loginCancelText {
-    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.75);
     color: rgba(255, 255, 255, 0.75);
     border-color: rgba(255, 255, 255, 0.75);
 }
 #loginCancelButton:active #loginCancelIcon {
-    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.75);
 }
 #loginCancelButton:disabled {
     pointer-events: none;
@@ -455,7 +455,7 @@ body, button {
     justify-content: center;
     align-items: center;
     height: 100%;
-    padding: 0px 25px;
+    padding: 0 25px;
 }
 
 /* Login form. */
@@ -490,7 +490,7 @@ body, button {
     background: rgba(1, 2, 1, 0.5);
     height: 125px;
     width: 125px;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    box-shadow: 0 0 10px 0 rgb(0, 0, 0);
     margin-bottom: 20px;
 }
 
@@ -559,7 +559,7 @@ body, button {
 .loginField {
     font-family: 'Avenir Book';
     background: none;
-    border-width: 1.5px 0px 0px 0px;
+    border-width: 1.5px 0 0 0;
     border-style: solid;
     width: 250px;
     margin-bottom: 20px;
@@ -614,7 +614,7 @@ body, button {
     letter-spacing: 2px;
     border: none;
     padding: 15px 5px;
-    margin: 10px 0px;
+    margin: 10px 0;
     cursor: pointer;
     position: relative;
     right: -20px;
@@ -629,12 +629,12 @@ body, button {
 }
 #loginButton:hover,
 #loginButton:focus {
-    text-shadow: 0px 0px 20px #fff;
+    text-shadow: 0 0 20px #fff;
     outline: none;
 }
 #loginButton:active {
     color: #c7c7c7;
-    text-shadow:  0px 0px 20px #c7c7c7;
+    text-shadow:  0 0 20px #c7c7c7;
 }
 #loginSVG {
     -webkit-transform: translate3d(0, 0, 0);
@@ -647,13 +647,13 @@ body, button {
 }
 #loginButton:hover #loginSVG,
 #loginButton:focus #loginSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    -webkit-filter: drop-shadow(0 0 2px #fff);
 }
 #loginButton:active #loginSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #loginButton:active #loginSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    -webkit-filter: drop-shadow(0 0 2px #c7c7c7);
 }
 #loginButton:disabled #loginSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -947,8 +947,8 @@ body, button {
     background: none;
     border: none;
     text-align: left;
-    margin: 5px 0px;
-    padding: 0px 20px;
+    margin: 5px 0;
+    padding: 0 20px;
     color: grey;
     cursor: pointer;
     outline: none;
@@ -957,7 +957,7 @@ body, button {
 .settingsNavItem:hover,
 .settingsNavItem:focus {
     color: #c1c1c1;
-    text-shadow: 0px 0px 20px #c1c1c1;
+    text-shadow: 0 0 20px #c1c1c1;
 }
 .settingsNavItem[selected] {
     cursor: default;
@@ -990,8 +990,8 @@ body, button {
     background: none;
     border: none;
     text-align: left;
-    margin: 5px 0px;
-    padding: 0px 20px;
+    margin: 5px 0;
+    padding: 0 20px;
     color: white;
     cursor: pointer;
     outline: none;
@@ -999,10 +999,10 @@ body, button {
 }
 #settingsNavDone:hover,
 #settingsNavDone:focus {
-    text-shadow: 0px 0px 20px white, 0px 0px 20px white, 0px 0px 20px white;
+    text-shadow: 0 0 20px white, 0 0 20px white, 0 0 20px white;
 }
 #settingsNavDone:active {
-    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75), 0px 0px 20px rgba(255, 255, 255, 0.75), 0px 0px 20px rgba(255, 255, 255, 0.75);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.75), 0 0 20px rgba(255, 255, 255, 0.75), 0 0 20px rgba(255, 255, 255, 0.75);
     color: rgba(255, 255, 255, 0.75);
 }
 #settingsNavDone:disabled {
@@ -1089,7 +1089,7 @@ body, button {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 0px;
+    padding: 20px 0;
     width: 75%;
     border-bottom: 1px solid rgba(255, 255, 255, 0.50);
 }
@@ -1145,7 +1145,7 @@ body, button {
     left: 3px;
     bottom: 3px;
     background-color: white;
-    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.75);
     border-radius: 50px;
     transition: .4s;
 }
@@ -1162,7 +1162,7 @@ input:checked + .toggleSwitchSlider:before {
 .rangeSlider {
     width: 35%;
     height: 5px;
-    margin: 15px 0px;
+    margin: 15px 0;
     background: grey;
     border-radius: 3px;
     position: relative;
@@ -1172,7 +1172,7 @@ input:checked + .toggleSwitchSlider:before {
     background: #8be88b;
     width: 50%;
     height: 5px;
-    border-radius: 3px 0px 0px 3px;
+    border-radius: 3px 0 0 3px;
     transition: background 0.25s ease;
 }
 .rangeSliderTrack {
@@ -1214,7 +1214,7 @@ input:checked + .toggleSwitchSlider:before {
     display: flex;
     align-items: center;
     background: rgba(126, 126, 126, 0.57);
-    border-radius: 3px 0px 0px 3px;
+    border-radius: 3px 0 0 3px;
     padding: 5px;
     transition: 0.25s ease;
 }
@@ -1226,7 +1226,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Disabled text field which stores the selected file path. */
 .settingsFileSelVal {
-    border-radius: 0px !important;
+    border-radius: 0 !important;
     width: 100%;
     padding: 5px 10px;
     font-size: 12px;
@@ -1235,10 +1235,10 @@ input:checked + .toggleSwitchSlider:before {
 
 /* File selection button. */
 .settingsFileSelButton {
-    border: 0px;
-    border-radius: 0px 3px 3px 0px;
+    border: 0;
+    border-radius: 0 3px 3px 0;
     font-size: 12px;
-    padding: 0px 5px;
+    padding: 0 5px;
     cursor: pointer;
     background: rgba(126, 126, 126, 0.57);
     transition: 0.25s ease;
@@ -1247,10 +1247,10 @@ input:checked + .toggleSwitchSlider:before {
 }
 .settingsFileSelButton:hover,
 .settingsFileSelButton:focus {
-    text-shadow: 0px 0px 20px white;
+    text-shadow: 0 0 20px white;
 }
 .settingsFileSelButton:active {
-    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.75);
     color: rgba(255, 255, 255, 0.75);
 }
 
@@ -1277,7 +1277,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 50px;
     width: 75%;
     text-align: left;
-    padding: 0px 50px;
+    padding: 0 50px;
     cursor: pointer;
     outline: none;
     transition: 0.25s ease;
@@ -1285,12 +1285,12 @@ input:checked + .toggleSwitchSlider:before {
 #settingsAddAccount:hover,
 #settingsAddAccount:focus {
     background: rgba(54, 54, 54, 0.25);
-    text-shadow: 0px 0px 20px white;
+    text-shadow: 0 0 20px white;
 }
 
 /* Settings auth accounts header. */
 #settingsCurrentAccountsHeader {
-    margin: 20px 0px;
+    margin: 20px 0;
 }
 
 /* Auth account list container styles. */
@@ -1378,7 +1378,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 .settingsAuthAccountSelect:hover:not([selected]),
 .settingsAuthAccountSelect:focus:not([selected]) {
-    text-shadow: 0px 0px 20px white, 0px 0px 20px white;
+    text-shadow: 0 0 20px white, 0 0 20px white;
     cursor: pointer;
 }
 .settingsAuthAccount:hover .settingsAuthAccountSelect:not([selected]),
@@ -1404,11 +1404,11 @@ input:checked + .toggleSwitchSlider:before {
 }
 .settingsAuthAccountLogOut:hover,
 .settingsAuthAccountLogOut:focus {
-    box-shadow: 0px 0px 20px rgb(241, 55, 55);
+    box-shadow: 0 0 20px rgb(241, 55, 55);
     background: rgba(241, 55, 55, 0.25);
 }
 .settingsAuthAccountLogOut:active {
-    box-shadow: 0px 0px 20px rgb(185, 47, 47);
+    box-shadow: 0 0 20px rgb(185, 47, 47);
     background: rgba(185, 47, 47, 0.25);
     border: 1px solid rgb(185, 47, 47);
     color: rgb(185, 47, 47);
@@ -1436,7 +1436,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 #settingsGameResolutionCross {
     color: grey;
-    padding: 0px 15px;
+    padding: 0 15px;
 }
 #settingsGameWidth,
 #settingsGameHeight {
@@ -1455,7 +1455,7 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 3px;
     display: flex;
     justify-content: space-between;
-    margin: 15px 0px;
+    margin: 15px 0;
 }
 
 /* Div which will be populated with the selected server's information. */
@@ -1463,7 +1463,7 @@ input:checked + .toggleSwitchSlider:before {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding: 5px 0px;
+    padding: 5px 0;
 }
 
 /* Wrapper container for the switch server button. */
@@ -1488,11 +1488,11 @@ input:checked + .toggleSwitchSlider:before {
 }
 #settingsSwitchServerButton:hover,
 #settingsSwitchServerButton:focus {
-    box-shadow: 0px 0px 20px rgb(255, 255, 255);
+    box-shadow: 0 0 20px rgb(255, 255, 255);
     background: rgba(255, 255, 255, 0.25);
 }
 #settingsSwitchServerButton:active {
-    box-shadow: 0px 0px 20px rgb(187, 187, 187);
+    box-shadow: 0 0 20px rgb(187, 187, 187);
     background: rgba(187, 187, 187, 0.25);
     border: 1px solid rgb(187, 187, 187);
     color: rgb(187, 187, 187);
@@ -1536,7 +1536,7 @@ input:checked + .toggleSwitchSlider:before {
     padding: 10px;
 }
 .settingsSubMod {
-    padding: 10px 0px 10px 15px;
+    padding: 10px 0 10px 15px;
     margin-left: 20px;
     border-left: 1px solid rgba(255, 255, 255, 0.5);
 }
@@ -1618,7 +1618,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 50px;
     width: 100%;
     text-align: left;
-    padding: 0px 50px;
+    padding: 0 50px;
     cursor: pointer;
     outline: none;
     transition: 0.25s ease;
@@ -1628,7 +1628,7 @@ input:checked + .toggleSwitchSlider:before {
 #settingsDropinFileSystemButton:focus,
 #settingsDropinFileSystemButton[drag] {
     background: rgba(54, 54, 54, 0.25);
-    text-shadow: 0px 0px 20px white;
+    text-shadow: 0 0 20px white;
 }
 /* Refresh instructions on the file system button. */
 #settingsDropinRefreshNote {
@@ -1642,7 +1642,7 @@ input:checked + .toggleSwitchSlider:before {
     border: none;
     font-size: 10px;
     text-align: left;
-    padding: 0px;
+    padding: 0;
     color: #c32625;
     font-weight: bold;
     cursor: pointer;
@@ -1651,11 +1651,11 @@ input:checked + .toggleSwitchSlider:before {
 }
 .settingsDropinRemoveButton:hover,
 .settingsDropinRemoveButton:focus {
-    text-shadow: 0px 0px 20px #c32625, 0px 0px 20px #c32625, 0px 0px 20px #c32625;
+    text-shadow: 0 0 20px #c32625, 0 0 20px #c32625, 0 0 20px #c32625;
 }
 .settingsDropinRemoveButton:active {
     color: #9b1f1f;
-    text-shadow: 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f;
+    text-shadow: 0 0 20px #9b1f1f, 0 0 20px #9b1f1f, 0 0 20px #9b1f1f;
 }
 
 /* Shaderpack settings description. */
@@ -1688,7 +1688,7 @@ input:checked + .toggleSwitchSlider:before {
 #settingsShaderpackButton:focus,
 #settingsShaderpackButton[drag] {
     background: rgba(54, 54, 54, 0.25);
-    text-shadow: 0px 0px 20px white;
+    text-shadow: 0 0 0 white;
 }
 
 /* Main select container. */
@@ -1723,7 +1723,7 @@ input:checked + .toggleSwitchSlider:before {
     top: 7px;
 }
 .settingsSelectSelected.select-arrow-active {
-    border-radius: 3px 3px 0px 0px;
+    border-radius: 3px 3px 0 0;
 }
 
 /* Options content container. */
@@ -1737,7 +1737,7 @@ input:checked + .toggleSwitchSlider:before {
     overflow-y: scroll;
     border: 1px solid rgba(126, 126, 126, 0.57);
     border-top: none;
-    border-radius: 0px 0px 3px 3px;
+    border-radius: 0 0 3px 3px;
 }
 /* Hide the items when the select box is closed. */
 .settingsSelectOptions[hidden] {
@@ -1764,7 +1764,7 @@ input:checked + .toggleSwitchSlider:before {
     cursor: pointer;
 }
 .settingsSelectOptions div {
-    border-width: 0px 0px 1px 0px;
+    border-width: 0 0 1px 0;
     font-size: 12px;
     padding: 4px 16px;
 }
@@ -1880,7 +1880,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Description for memory management. */
 #settingsMemoryDesc {
     font-size: 10px;
-    margin: 20px 0px;
+    margin: 20px 0;
     color: lightgrey;
     font-weight: bold;
 }
@@ -1910,7 +1910,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Text field to input the JVM options. */
 #settingsJVMOptsVal {
-    border-radius: 0px 3px 3px 0px !important;
+    border-radius: 0 3px 3px 0 !important;
     width: 100%;
     padding: 5px 10px;
     font-size: 12px;
@@ -2020,7 +2020,7 @@ input:checked + .toggleSwitchSlider:before {
 /* About information links. */
 #settingsAboutButtons {
     display: flex;
-    padding: 0px 15px;
+    padding: 0 15px;
     margin-bottom: 5px;
 }
 .settingsAboutButton {
@@ -2028,7 +2028,7 @@ input:checked + .toggleSwitchSlider:before {
     border: none;
     font-size: 10px;
     color: grey;
-    padding: 0px 5px;
+    padding: 0 5px;
     transition: 0.25s ease;
     outline: none;
     text-decoration: none;
@@ -2084,7 +2084,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 .settingsChangelogText blockquote {
     border-left: 0.25em solid rgba(126, 126, 126, 0.95);
-    margin: 0px;
+    margin: 0;
     padding: 0 0 0 1em;
     color: rgba(255, 255, 255, 0.85);
 }
@@ -2126,17 +2126,17 @@ input:checked + .toggleSwitchSlider:before {
     padding: 5px 10px;
 }
 .settingsChangelogText .highlight pre {
-    margin: 0px;
+    margin: 0;
 }
 
 /* Container for the changelog button. */
 .settingsChangelogActions {
-    padding: 0px 15px 5px 15px;
+    padding: 0 15px 5px 15px;
 }
 
 /* Open changelog on GitHub. */
 .settingsChangelogButton {
-    padding: 0px;
+    padding: 0;
 }
 
 /* * *
@@ -2239,10 +2239,10 @@ input:checked + .toggleSwitchSlider:before {
 }
 #settingsUpdateActionButton:hover,
 #settingsUpdateActionButton:focus {
-    text-shadow: 0px 0px 20px white, 0px 0px 20px white, 0px 0px 20px white;
+    text-shadow: 0 0 20px white, 0 0 20px white, 0 0 20px white;
 }
 #settingsUpdateActionButton:active {
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7, 0 0 20px #c7c7c7, 0 0 20px #c7c7c7;
     color: #c7c7c7;
 }
 #settingsUpdateActionButton:disabled {
@@ -2267,7 +2267,7 @@ input:checked + .toggleSwitchSlider:before {
 #landingContainer > #upper {
     position: relative;
     transition: top 2s ease;
-    top: 0px;
+    top: 0;
     height: 77%;
     display: flex;
 }
@@ -2297,7 +2297,7 @@ input:checked + .toggleSwitchSlider:before {
 #landingContainer > #lower > #left {
     position: relative;
     transition: top 2s ease;
-    top: 0px;
+    top: 0;
     height: 100%;
     width: 33%;
     display: inline-flex;
@@ -2313,7 +2313,7 @@ input:checked + .toggleSwitchSlider:before {
 #landingContainer > #lower > #center {
     position: relative;
     transition: top 2s ease;
-    top: 0px;
+    top: 0;
     height: 100%;
     width: 34%;
     display: inline-flex;
@@ -2328,7 +2328,7 @@ input:checked + .toggleSwitchSlider:before {
 #landingContainer > #lower > #right {
     position: relative;
     transition: top 2s ease;
-    top: 0px;
+    top: 0;
     height: 100%;
     width: 33%;
     display: inline-flex;
@@ -2412,11 +2412,11 @@ input:checked + .toggleSwitchSlider:before {
 }
 #newsArticleTitle:hover,
 #newsArticleTitle:focus {
-    text-shadow: 0px 0px 20px white;
+    text-shadow: 0 0 20px white;
 }
 #newsArticleTitle:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7;
 }
 
 /* News meta container. */
@@ -2437,7 +2437,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsArticleAuthor {
     display: inline-block;
     font-size: 10px;
-    padding: 0px 5px;
+    padding: 0 5px;
     font-weight: bold;
     border-radius: 2px;
 }
@@ -2477,7 +2477,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsArticleContainer {
     width: calc(100% - 25px);
     height: 100%;
-    margin: 0px 0px 0px 25px;
+    margin: 0 0 0 25px;
 }
 
 /* Article content styles. */
@@ -2485,7 +2485,7 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 12px;
     overflow-y: scroll;
     height: 100%;
-    padding: 0px 15px 0px 15px;
+    padding: 0 15px 0 15px;
 }
 #newsArticleContentScrollable img,
 #newsArticleContentScrollable iframe {
@@ -2528,15 +2528,15 @@ input:checked + .toggleSwitchSlider:before {
 }
 .bbCodeSpoilerButton:hover,
 .bbCodeSpoilerButton:focus {
-    text-shadow: 0px 0px 20px #ffffff, 0px 0px 20px #ffffff, 0px 0px 20px #ffffff;
+    text-shadow: 0 0 20px #ffffff, 0 0 20px #ffffff, 0 0 20px #ffffff;
 }
 .bbCodeSpoilerButton:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7, 0 0 20px #c7c7c7, 0 0 20px #c7c7c7;
 }
 .bbCodeSpoilerText {
     display: none;
-    padding: 15px 0px;
+    padding: 15px 0;
     border-bottom: 1px solid white;
 }
 
@@ -2563,13 +2563,13 @@ input:checked + .toggleSwitchSlider:before {
     -webkit-user-select: none;
     position: absolute;
     bottom: 15px;
-    right: 0px;
+    right: 0;
 }
 
 /* Navigation status span. */
 #newsNavigationStatus {
     font-size: 12px;
-    margin: 0px 15px;
+    margin: 0 15px;
 }
 
 /* Left and right navigation button styles. */
@@ -2585,7 +2585,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsNavigateLeft:focus #newsNavigationLeftSVG,
 #newsNavigateRight:hover #newsNavigationRightSVG,
 #newsNavigateRight:focus #newsNavigationRightSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    -webkit-filter: drop-shadow(0 0 2px #fff);
 }
 #newsNavigateLeft:active #newsNavigationLeftSVG .arrowLine,
 #newsNavigateRight:active #newsNavigationRightSVG .arrowLine {
@@ -2593,7 +2593,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 #newsNavigateLeft:active #newsNavigationLeftSVG,
 #newsNavigateRight:active #newsNavigationRightSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    -webkit-filter: drop-shadow(0 0 2px #c7c7c7);
 }
 #newsNavigateLeft:disabled #newsNavigationLeftSVG .arrowLine,
 #newsNavigateRight:disabled #newsNavigationRightSVG .arrowLine {
@@ -2646,11 +2646,11 @@ input:checked + .toggleSwitchSlider:before {
 }
 #newsErrorRetry:focus,
 #newsErrorRetry:hover {
-    text-shadow: 0px 0px 20px white;
+    text-shadow: 0 0 20px white;
 }
 #newsErrorRetry:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7;
 }
 
 /*******************************************************************************
@@ -2786,7 +2786,7 @@ input:checked + .toggleSwitchSlider:before {
     background: rgba(1, 2, 1, 0.5);
     height: 70px;
     width: 70px;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    box-shadow: 0 0 10px 0px rgb(0, 0, 0);
     overflow: hidden;
     position: relative;
     background-position: center;
@@ -2827,7 +2827,7 @@ input:checked + .toggleSwitchSlider:before {
     min-width: 135px;
     font-weight: 900;
     letter-spacing: 1px;
-    text-shadow: 0px 0px 20px black;
+    text-shadow: 0 0 20px black;
     position: absolute;
     right: 95px;
     text-align: right;
@@ -2864,7 +2864,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 1px;
     width: 14px;
     background: rgb(255, 255, 255);
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 
 /* Social media icon shared styles. */
@@ -2891,7 +2891,7 @@ input:checked + .toggleSwitchSlider:before {
 .mediaButton {
     background: none;
     border: none;
-    padding: 0px;
+    padding: 0;
     display: flex;
     align-items: center;
     outline: none;
@@ -2994,7 +2994,7 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 9px;
     letter-spacing: 1px;
     font-weight: bold;
-    text-shadow: 0px 0px 0px #bebcbb;
+    text-shadow: 0 0 0 #bebcbb;
 }
 
 /* Divider used on the bottom of the landing view. */
@@ -3021,7 +3021,7 @@ input:checked + .toggleSwitchSlider:before {
     color: #949494;
     font-size: 8px;
     font-weight: 900;
-    text-shadow: 0px 0px 20px #949494;
+    text-shadow: 0 0 20px #949494;
     margin-left: 10px;
 }
 
@@ -3089,7 +3089,7 @@ input:checked + .toggleSwitchSlider:before {
 #mojangStatusNEContainer {
     display: flex;
     align-items: center;
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 
 /* White bar which surrounds the non essential service title. */
@@ -3102,7 +3102,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Non essential service title text. */
 #mojangStatusNETitle {
     font-size: 10px;
-    padding: 0px 3px;
+    padding: 0 3px;
     text-align: center;
     letter-spacing: 1px;
 }
@@ -3118,7 +3118,7 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 10px;
     letter-spacing: 1px;
     line-height: 12px;
-    padding: 6px 0px;
+    padding: 6px 0;
 }
 
 /* Displays the status of the mojang service. */
@@ -3141,22 +3141,22 @@ input:checked + .toggleSwitchSlider:before {
 }
 #newsButton:hover #newsButtonText,
 #newsButton:focus #newsButtonText {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
+    text-shadow: 0 0 20px #fff, 0 0 20px #fff;
 }
 #newsButton:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7, 0 0 20px #c7c7c7;
 }
 
 #newsButton:hover #newsButtonSVG,
 #newsButton:focus #newsButtonSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    -webkit-filter: drop-shadow(0 0 2px #fff);
 }
 #newsButton:active #newsButtonSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #newsButton:active #newsButtonSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    -webkit-filter: drop-shadow(0 0 2px #c7c7c7);
 }
 #newsButton:disabled #newsButtonSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -3185,7 +3185,7 @@ input:checked + .toggleSwitchSlider:before {
     color: white;
     font-weight: 900;
     letter-spacing: 2px;
-    text-shadow: 0px 0px 0px #bebcbb;
+    text-shadow: 0 0 0 #bebcbb;
     font-size: 11px;
     line-height: 30px;
     display: flex;
@@ -3210,19 +3210,19 @@ input:checked + .toggleSwitchSlider:before {
     cursor: pointer;
     font-weight: 900;
     letter-spacing: 2px;
-    text-shadow: 0px 0px 0px #bebcbb;
+    text-shadow: 0 0 0 #bebcbb;
     font-size: 20px;
-    padding: 0px;
+    padding: 0;
     transition: 0.25s ease;
     outline: none;
 }
 #launch_button:hover,
 #launch_button:focus {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
+    text-shadow: 0 0 20px #fff, 0 0 20px #fff;
 }
 #launch_button:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7, 0 0 20px #c7c7c7;
 }
 #launch_button:disabled {
     color: #c7c7c7;
@@ -3246,7 +3246,7 @@ input:checked + .toggleSwitchSlider:before {
 #launch_progress_label {
     font-weight: 900;
     letter-spacing: 1px;
-    text-shadow: 0px 0px 0px #bebcbb;
+    text-shadow: 0 0 0 #bebcbb;
     font-size: 20px;
     min-width: 53.21px;
     max-width: 53.21px;
@@ -3267,16 +3267,16 @@ input:checked + .toggleSwitchSlider:before {
     outline: none;
     cursor: pointer;
     line-height: 24px;
-    padding: 0px;
+    padding: 0;
     transition: 0.25s ease;
 }
 #server_selection_button:hover,
 #server_selection_button:focus {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff, 0px 0px 20px #fff;
+    text-shadow: 0 0 20px #fff, 0 0 20px #fff, 0 0 20px #fff;
 }
 #server_selection_button:active {
     color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    text-shadow: 0 0 20px #c7c7c7, 0 0 20px #c7c7c7, 0 0 20px #c7c7c7;
 }
 
 /* Progress bar styles. */
@@ -3333,7 +3333,7 @@ input:checked + .toggleSwitchSlider:before {
     width: 300px;
     /*height: 35%;*/
     box-sizing: border-box;
-    padding: 15px 0px;
+    padding: 15px 0;
     /* background-color: #424242; */
     text-align: center;
 }
@@ -3356,13 +3356,13 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Add spacing between overlay content elements. */
 #overlayContent > *:first-child {
-    margin-top: 0px !important;
+    margin-top: 0 !important;
 }
 #overlayContent > *:last-child {
-    margin-bottom: 0px !important;
+    margin-bottom: 0 !important;
 }
 #overlayContent > * {
-    margin: 8px 0px;
+    margin: 8px 0;
 }
 
 /* Overlay title styles. */
@@ -3396,13 +3396,13 @@ input:checked + .toggleSwitchSlider:before {
     font-family: 'Avenir Medium';
     font-weight: bold;
     border-radius: 2px;
-    padding: 0px 8.1px;
+    padding: 0 8.1px;
     cursor: pointer;
     transition: 0.25s ease;
 }
 #overlayAcknowledge:hover,
 #overlayAcknowledge:focus {
-    box-shadow: 0px 0px 10px 0px #fff;
+    box-shadow: 0 0 10px 0 #fff;
     outline: none;
 }
 #overlayAcknowledge:active {
@@ -3466,7 +3466,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Scrollable div which lists the available servers. */
 #serverSelectListScrollable,
 #accountSelectListScrollable {
-    padding: 0px 5px;
+    padding: 0 5px;
     overflow-y: scroll;
 }
 #serverSelectListScrollable::-webkit-scrollbar,
@@ -3486,7 +3486,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Content container for a server listing. */
 .serverListing {
     border: none;
-    padding: 0px;
+    padding: 0;
     width: 375px;
     min-height: 60px;
     display: flex;
@@ -3543,7 +3543,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Add spacing between server listings. */
 #serverSelectListScrollable > .serverListing:not(:first-child):not(:last-child),
 #accountSelectListScrollable > .accountListing:not(:first-child):not(:last-child) {
-    margin: 5px 0px;
+    margin: 5px 0;
 }
 #serverSelectListScrollable > .serverListing:first-child,
 #accountSelectListScrollable > .accountListing:first-child {
@@ -3556,7 +3556,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Server listing image. */
 .serverListingImg {
-    margin: 0px 10px 0px 5px;
+    margin: 0 10px 0 5px;
     border: 1px solid #fff;
     height: 50px;
     width: 50px;
@@ -3602,7 +3602,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 12px;
     border-radius: 2px;
     background: rgba(31, 140, 11, 0.8);
-    padding: 0px 2px;
+    padding: 0 2px;
 }
 
 /* The revision version of the server's manifest. */
@@ -3610,7 +3610,7 @@ input:checked + .toggleSwitchSlider:before {
     color: #969696;
     font-size: 10px;
     line-height: 12px;
-    padding: 0px 5px;
+    padding: 0 5px;
 }
 
 /* Star which indicates the default (main) server. */
@@ -3670,7 +3670,7 @@ input:checked + .toggleSwitchSlider:before {
     font-family: 'Avenir Medium';
     font-weight: bold;
     border-radius: 2px;
-    padding: 0px 8.1px;
+    padding: 0 8.1px;
     cursor: pointer;
     transition: 0.25s ease;
     min-height: 20.67px;
@@ -3679,7 +3679,7 @@ input:checked + .toggleSwitchSlider:before {
 #serverSelectConfirm:focus,
 #accountSelectConfirm:hover,
 #accountSelectConfirm:focus {
-    box-shadow: 0px 0px 10px 0px #fff;
+    box-shadow: 0 0 10px 0 #fff;
     outline: none;
 }
 #serverSelectConfirm:active,
