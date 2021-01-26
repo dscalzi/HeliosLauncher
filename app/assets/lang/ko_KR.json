@@ -1,0 +1,49 @@
+{
+    "html": {
+        "avatarOverlay": "편집"
+    },
+    "js": {
+        "login": {
+            "error": {
+                "invalidValue": "* 잘못된 값",
+                "requiredValue": "* 필요함",
+                "userMigrated": {
+                    "title": "로그인 중 오류:<br>잘못된 자격증명",
+                    "desc": "마이그레이션(이전)된 계정으로 로그인하려고 하였습니다. 계정 이메일을 사용자 이름으로 사용하여 다시 로그인해보십시오."
+                },
+                "invalidCredentials": {
+                    "title": "로그인 중 오류:<br>잘못된 자격증명",
+                    "desc": "입력한 이메일 또는 암호가 올바르지 않습니다. 다시 시도해주세요."
+                },
+                "rateLimit": {
+                    "title": "로그인 중 오류:<br>너무 많은 로그인 시도",
+                    "desc": "최근 이 계정으로 너무 많은 로그인 시도가 있었습니다. 나중에 다시 시도해주세요."
+                },
+                "noInternet": {
+                    "title": "로그인 중 오류:<br>인터넷 연결 없음",
+                    "desc": "로그인하려면 인터넷에 연결되어야 합니다. 연결된 후 다시 시도해주세요."
+                },
+                "authDown": {
+                    "title": "로그인 중 오류:<br>인증 서버 오프라인",
+                    "desc": "모장의 계정 인증 서버가 현재 오프라인 상태이거나 연결할 수 없습니다. 잠시 기다린 후 다시 시도해주세요. 서버 상태는 <a href=\"https://help.mojang.com/\">모장의 도움말 포털</a>에서 확인하실 수 있습니다."
+                },
+                "notPaid": {
+                    "title": "로그인 중 오류:<br>구매하지 않은 계정",
+                    "desc": "로그인 하려는 계정이 마인크래프트를 구매하지 않았습니다. <a href=\"https://minecraft.net/\">Minecraft.net</a>에서 마인크래프트를 구매할 수 있습니다."
+                },
+                "unknown": {
+                    "title": "로그인 중 오류:<br>알 수 없는 오류"
+                }
+            },
+            "login": "로그인",
+            "loggingIn": "로그인 중",
+            "success": "성공",
+            "tryAgain": "다시 시도하기"
+        },
+        "landing": {
+            "launch": {
+                "pleaseWait": "조금만 기다려주세요..."
+            }
+        }
+    }
+}
