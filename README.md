@@ -55,7 +55,7 @@ If you download from the [Releases](https://github.com/ArdaCraft/ArdaCraftLaunch
 | -------- | ---- |
 | Windows x64 | `ardacraftlauncher-setup-VERSION.exe` |
 | macOS | `ardacraftlauncher-VERSION.dmg` |
-| Linux x64 | `ardacraftlauncher-VERSION-x86_64.AppImage` |
+| Linux x64 | `ardacraftlauncher-setup-VERSION.AppImage` |
 
 ## Console
 
@@ -137,13 +137,9 @@ Paste the following into `.vscode/launch.json`
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
-      "windows": {
-        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
-      },
-      "args": ["."],
-      "console": "integratedTerminal",
-      "protocol": "inspector"
+      "program": "${workspaceFolder}/node_modules/electron/cli.js",
+      "args" : ["."],
+      "outputCapture": "std"
     },
     {
       "name": "Debug Renderer Process",
