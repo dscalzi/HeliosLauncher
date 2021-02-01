@@ -76,6 +76,8 @@ If you want to export the console output, simply right click anywhere on the con
 
 ## Development
 
+This section details the setup of a basic developmentment environment.
+
 ### Getting Started
 
 **System Requirements**
