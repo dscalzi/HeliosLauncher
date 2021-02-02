@@ -301,17 +301,23 @@ loginButton.addEventListener('click', () => {
 })
 
 loginMSButton.addEventListener('click', (event) => {
+    // Show loading stuff.
+    toggleOverlay(true, false, 'msOverlay')
     loginMSButton.disabled = true
     ipcRenderer.send('openMSALoginWindow', 'open')
 })
 
 ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
     if (args[0] === 'error') {
+        
+        loginMSButton.disabled = false
+        loginLoading(false)
         switch (args[1]){
             case 'AlreadyOpenException': {
                 setOverlayContent('ERROR', 'There is already a login window open!', 'OK')
                 setOverlayHandler(() => {
                     toggleOverlay(false)
+                    toggleOverlay(false, false, 'msOverlay')
                 })
                 toggleOverlay(true)
                 return
@@ -320,6 +326,7 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
                 setOverlayContent('ERROR', 'You have to finish the login process to use Helios Launcher. The window will close by itself when you have successfully logged in.', 'OK')
                 setOverlayHandler(() => {
                     toggleOverlay(false)
+                    toggleOverlay(false, false, 'msOverlay')
                 })
                 toggleOverlay(true)
                 return
@@ -327,7 +334,7 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
         }
         
     }
-
+    toggleOverlay(false, false, 'msOverlay')
     const queryMap = args[0]
     if (queryMap.has('error')) {
         let error = queryMap.get('error')
@@ -347,9 +354,6 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
 
     // Disable form.
     formDisabled(true)
-
-    // Show loading stuff.
-    loginLoading(true)
 
     const authCode = queryMap.get('code')
     AuthManager.addMSAccount(authCode).then(account => {

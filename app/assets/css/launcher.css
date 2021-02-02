@@ -688,6 +688,21 @@ body, button {
     width: 16px;
     height: 16px;
 }
+.circle-loader-big {
+    margin:auto;
+    border: 5px solid rgba(255, 255, 255, 0.5);
+    border-left-color: #ffffff;
+    animation-name: loader-spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    position: relative;
+    display: block;
+    align-self: center;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+}
 .load-complete {
     animation: none;
     border-color: #ffffff;
