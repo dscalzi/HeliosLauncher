@@ -78,7 +78,7 @@ function getXSTSToken(XBLToken) {
         
                     case 2148916238: 
                         reject({
-                            message: 'Since you are not yet 18 years old, an adult must add you to a family in order for you to use NexusLauncher!'
+                            message: 'Since you are not yet 18 years old, an adult must add you to a family in order for you to use Helios Launcher!'
                         })
                         return
                 
