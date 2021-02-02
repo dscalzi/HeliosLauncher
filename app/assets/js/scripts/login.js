@@ -307,12 +307,25 @@ loginMSButton.addEventListener('click', (event) => {
 
 ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
     if (args[0] === 'error') {
-        setOverlayContent('ERROR', 'There is already a login window open!', 'OK')
-        setOverlayHandler(() => {
-            toggleOverlay(false)
-        })
-        toggleOverlay(true)
-        return
+        switch (args[1]){
+            case 'AlreadyOpenException': {
+                setOverlayContent('ERROR', 'There is already a login window open!', 'OK')
+                setOverlayHandler(() => {
+                    toggleOverlay(false)
+                })
+                toggleOverlay(true)
+                return
+            }
+            case 'AuthNotFinished': {
+                setOverlayContent('ERROR', 'You have to finish the login process to use Helios Launcher. The window will close by itself when you have successfully logged in.', 'OK')
+                setOverlayHandler(() => {
+                    toggleOverlay(false)
+                })
+                toggleOverlay(true)
+                return
+            }
+        }
+        
     }
 
     const queryMap = args[0]
