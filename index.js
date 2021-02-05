@@ -89,17 +89,15 @@ ipcMain.on('distributionIndexDone', (event, res) => {
 app.disableHardwareAcceleration()
 
 let MSALoginWindow = null
-let login = false
 
 // Open the Microsoft Account Login window
 ipcMain.on('openMSALoginWindow', (ipcEvent, args) => {
-    login = false
     if (MSALoginWindow != null) {
         ipcEvent.reply('MSALoginWindowReply', 'error', 'AlreadyOpenException')
         return
     }
     MSALoginWindow = new BrowserWindow({
-        title: 'Microsoft-Login',
+        title: 'Microsoft Login',
         backgroundColor: '#222222',
         width: 520,
         height: 600,
@@ -118,7 +116,6 @@ ipcMain.on('openMSALoginWindow', (ipcEvent, args) => {
     })
 
     MSALoginWindow.webContents.on('did-navigate', (event, uri, responseCode, statusText) => {
-        login = true
         if (uri.startsWith(redirectUriPrefix)) {
             let querys = uri.substring(redirectUriPrefix.length).split('#', 1).toString().split('&')
             let queryMap = new Map()
@@ -139,6 +136,27 @@ ipcMain.on('openMSALoginWindow', (ipcEvent, args) => {
     MSALoginWindow.loadURL('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?prompt=consent&client_id=' + clientID + '&response_type=code&scope=XboxLive.signin%20offline_access&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient')
 })
 
+let MSALogoutWindow = null
+
+ipcMain.on('openMSALogoutWindow', (ipcEvent, args) => {
+    if (MSALogoutWindow == null) {
+        MSALogoutWindow = new BrowserWindow({
+            title: 'Microsoft Logout',
+            backgroundColor: '#222222',
+            width: 520,
+            height: 600,
+            frame: true,
+            icon: getPlatformIcon('SealCircle')
+        })
+        MSALogoutWindow.loadURL('https://login.microsoftonline.com/common/oauth2/v2.0/logout')
+        MSALogoutWindow.webContents.on('did-navigate', (e) => {
+            setTimeout(() => {
+                ipcEvent.reply('MSALogoutWindowReply')
+            }, 5000)
+
+        })
+    }
+})
 
 // https://github.com/electron/electron/issues/18397
 app.allowRendererProcessReuse = true
