@@ -301,27 +301,47 @@ loginButton.addEventListener('click', () => {
 })
 
 loginMSButton.addEventListener('click', (event) => {
+    // Show loading stuff.
+    toggleOverlay(true, false, 'msOverlay')
     loginMSButton.disabled = true
     ipcRenderer.send('openMSALoginWindow', 'open')
 })
 
 ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
     if (args[0] === 'error') {
-        setOverlayContent('ERROR', 'There is already a login window open!', 'OK')
-        setOverlayHandler(() => {
-            toggleOverlay(false)
-        })
-        toggleOverlay(true)
-        return
-    }
 
+        loginMSButton.disabled = false
+        loginLoading(false)
+        switch (args[1]){
+            case 'AlreadyOpenException': {
+                setOverlayContent('ERROR', 'There is already a login window open!', 'OK')
+                setOverlayHandler(() => {
+                    toggleOverlay(false)
+                    toggleOverlay(false, false, 'msOverlay')
+                })
+                toggleOverlay(true)
+                return
+            }
+            case 'AuthNotFinished': {
+                setOverlayContent('ERROR', 'You have to finish the login process to use the ArdaCraft Launcher. The window will close by itself when you have successfully logged in.', 'OK')
+                setOverlayHandler(() => {
+                    toggleOverlay(false)
+                    toggleOverlay(false, false, 'msOverlay')
+                })
+                toggleOverlay(true)
+                return
+            }
+        }
+
+    }
+    toggleOverlay(false, false, 'msOverlay')
     const queryMap = args[0]
     if (queryMap.has('error')) {
         let error = queryMap.get('error')
         let errorDesc = queryMap.get('error_description')
         if(error === 'access_denied'){
-            error = 'ERROR'
-            errorDesc = 'To use the ArdaCraftLauncher, you must agree to the required permissions! Otherwise you can\'t use this launcher with Microsoft accounts.<br><br>Despite agreeing to the permissions you don\'t give us the permission to use your account as all information is sent to Microsoft.'
+            error = 'ERRPR'
+            errorDesc = 'To use the ArdaCraft Launcher, you must agree to the required permissions! Otherwise you can\'t use this launcher with Microsoft accounts.<br><br>Despite agreeing to the permissions you don\'t give us the possibility to do anything with your account, as all information is sent to Microsoft.'
         }        
         setOverlayContent(error, errorDesc, 'OK')
         setOverlayHandler(() => {
@@ -334,9 +354,6 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
 
     // Disable form.
     formDisabled(true)
-
-    // Show loading stuff.
-    loginLoading(true)
 
     const authCode = queryMap.get('code')
     AuthManager.addMSAccount(authCode).then(account => {

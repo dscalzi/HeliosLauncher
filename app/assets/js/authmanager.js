@@ -48,16 +48,18 @@ async function validateSelectedMicrosoft() {
         const MCExpired = now > MCExpiresAt
 
         if(MCExpired) {
-            const MSExpiresAt = Date.parse(ConfigManager.getMicrosoftAuth().expires_at)
+            const MSExpiresAt = Date.parse(current.microsoft.expires_at)
             const MSExpired = now > MSExpiresAt
 
             if (MSExpired) {
-                const newAccessToken = await Microsoft.refreshAccessToken(ConfigManager.getMicrosoftAuth)
-                ConfigManager.updateMicrosoftAuth(newAccessToken.access_token, newAccessToken.expires_at)
+                const newAccessToken = await Microsoft.refreshAccessToken(current.microsoft.refresh_token)
+                const newMCAccessToken = await Microsoft.authMinecraft(newAccessToken.access_token)
+                ConfigManager.updateAuthAccount(current.uuid, newMCAccessToken.access_token, newAccessToken.expires_at)
                 ConfigManager.save()
+                return true
             }
-            const newMCAccessToken = await Microsoft.authMinecraft(ConfigManager.getMicrosoftAuth().access_token)
-            ConfigManager.updateAuthAccount(current.uuid, newMCAccessToken.access_token, newMCAccessToken.expires_at)
+            const newMCAccessToken = await Microsoft.authMinecraft(current.microsoft.access_token)
+            ConfigManager.updateAuthAccount(current.uuid, newMCAccessToken.access_token, current.microsoft.access_token, current.microsoft.expires_at, newMCAccessToken.expires_at)
             ConfigManager.save()
 
             return true
@@ -110,6 +112,11 @@ exports.addAccount = async function(username, password){
 exports.removeAccount = async function(uuid){
     try {
         const authAcc = ConfigManager.getAuthAccount(uuid)
+        if(authAcc.type === 'microsoft'){
+            ConfigManager.removeAuthAccount(uuid)
+            ConfigManager.save()
+            return Promise.resolve()
+        }
         await Mojang.invalidate(authAcc.accessToken, ConfigManager.getClientToken())
         ConfigManager.removeAuthAccount(uuid)
         ConfigManager.save()
@@ -150,7 +157,6 @@ exports.validateSelected = async function(){
 exports.addMSAccount = async authCode => {
     try {
         const accessToken = await Microsoft.getAccessToken(authCode)
-        ConfigManager.setMicrosoftAuth(accessToken)
         const MCAccessToken = await Microsoft.authMinecraft(accessToken.access_token)
         const minecraftBuyed = await Microsoft.checkMCStore(MCAccessToken.access_token)
         if(!minecraftBuyed)
@@ -158,7 +164,7 @@ exports.addMSAccount = async authCode => {
                 message: 'You didn\'t buy Minecraft! Please use another Microsoft account or buy Minecraft.'
             })
         const MCProfile = await Microsoft.getMCProfile(MCAccessToken.access_token)
-        const ret = ConfigManager.addAuthAccount(MCProfile.id, MCAccessToken.access_token, MCProfile.name, MCProfile.name, MCAccessToken.expires_at, 'microsoft')
+        const ret = ConfigManager.addMsAuthAccount(MCProfile.id, MCAccessToken.access_token, MCProfile.name, MCAccessToken.expires_at, accessToken.access_token, accessToken.refresh_token)
         ConfigManager.save()
 
         return ret
