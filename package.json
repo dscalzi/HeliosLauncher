@@ -25,7 +25,7 @@
     "node": "12.x.x"
   },
   "dependencies": {
-    "adm-zip": "^0.4.16",
+    "adm-zip": "^0.5.1",
     "async": "^3.2.0",
     "discord-rpc": "^3.1.4",
     "ejs": "^3.1.5",
@@ -35,15 +35,15 @@
     "github-syntax-dark": "^0.5.0",
     "jquery": "^3.5.1",
     "request": "^2.88.2",
-    "semver": "^7.3.2",
+    "semver": "^7.3.4",
     "tar-fs": "^2.1.1",
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2",
-    "electron": "^11.0.0",
+    "cross-env": "^7.0.3",
+    "electron": "^11.0.5",
     "electron-builder": "^22.9.1",
-    "eslint": "^7.13.0"
+    "eslint": "^7.15.0"
   },
   "repository": {
     "type": "git",
