@@ -323,7 +323,7 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
                 return
             }
             case 'AuthNotFinished': {
-                setOverlayContent('ERROR', 'You have to finish the login process to use Helios Launcher. The window will close by itself when you have successfully logged in.', 'OK')
+                setOverlayContent('ERROR', 'You have to finish the login process to use NumaLauncher. The window will close by itself when you have successfully logged in.', 'OK')
                 setOverlayHandler(() => {
                     toggleOverlay(false)
                     toggleOverlay(false, false, 'msOverlay')

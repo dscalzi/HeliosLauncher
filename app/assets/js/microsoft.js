@@ -1,8 +1,10 @@
+require('dotenv').config()
+
 // Requirements
 const request = require('request')
 
 // Constants
-const clientId = 'client id here'
+const clientId = process.env.AZURE_CLIENT_ID
 
 const tokenUri = 'https://login.microsoftonline.com/consumers/oauth2/v2.0/token'
 const authXBLUri = 'https://user.auth.xboxlive.com/user/authenticate'
@@ -78,7 +80,7 @@ function getXSTSToken(XBLToken) {
         
                     case 2148916238: 
                         reject({
-                            message: 'Since you are not yet 18 years old, an adult must add you to a family in order for you to use Helios Launcher!'
+                            message: 'Since you are not yet 18 years old, an adult must add you to a family in order for you to use NumaLauncher!'
                         })
                         return
                 

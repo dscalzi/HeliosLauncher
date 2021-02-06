@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 // Requirements
 const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
 const autoUpdater = require('electron-updater').autoUpdater
@@ -9,7 +11,7 @@ const semver = require('semver')
 const url = require('url')
 
 const redirectUriPrefix = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
-const clientID = 'client id here'
+const clientID = process.env.AZURE_CLIENT_ID
 
 // Setup auto updater.
 function initAutoUpdater(event, data) {
@@ -133,6 +135,7 @@ ipcMain.on('openMSALoginWindow', (ipcEvent, args) => {
     })
 
     MSALoginWindow.removeMenu()
+    console.log(clientID)
     MSALoginWindow.loadURL('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?prompt=consent&client_id=' + clientID + '&response_type=code&scope=XboxLive.signin%20offline_access&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient')
 })
 
