@@ -314,7 +314,7 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
         loginLoading(false)
         switch (args[1]){
             case 'AlreadyOpenException': {
-                setOverlayContent('ERROR', 'There is already a login window open!', 'OK')
+                setOverlayContent('ERROR', 'すでにログインウィンドウが開いています！', 'OK')
                 setOverlayHandler(() => {
                     toggleOverlay(false)
                     toggleOverlay(false, false, 'msOverlay')
@@ -323,7 +323,7 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
                 return
             }
             case 'AuthNotFinished': {
-                setOverlayContent('ERROR', 'You have to finish the login process to use NumaLauncher. The window will close by itself when you have successfully logged in.', 'OK')
+                setOverlayContent('ERROR', 'NumaLauncherを使用するには、ログインが必要です。ログインに成功すると、ウィンドウは自動的に閉じます。', 'OK')
                 setOverlayHandler(() => {
                     toggleOverlay(false)
                     toggleOverlay(false, false, 'msOverlay')
@@ -382,7 +382,7 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
     }).catch(error => {
         loginMSButton.disabled = false
         loginLoading(false)
-        setOverlayContent('ERROR', error.message ? error.message : 'An error occurred while logging in with Microsoft! For more detailed information please check the log. You can open it with CTRL + SHIFT + I.', Lang.queryJS('login.tryAgain'))
+        setOverlayContent('ERROR', error.message ? error.message : 'Microsoftでのログイン中にエラーが発生しました！詳細については、ログを確認してください。 CTRL + SHIFT + Iで開くことができます。', Lang.queryJS('login.tryAgain'))
         setOverlayHandler(() => {
             formDisabled(false)
             toggleOverlay(false)
