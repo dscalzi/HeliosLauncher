@@ -11,7 +11,7 @@ const semver = require('semver')
 const url = require('url')
 
 const redirectUriPrefix = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
-const clientID = process.env.AZURE_CLIENT_ID
+const clientID = 'ce9c7ade-7cee-4c4c-83bc-0c0edafdcaea'
 
 // Setup auto updater.
 function initAutoUpdater(event, data) {
