@@ -11,7 +11,7 @@ exports.initRPC = function(genSettings, servSettings, initialDetails = 'En atten
 
     activity = {
         details: initialDetails,
-        state: 'Server: ' + servSettings.shortId,
+        state: 'Serveur: ' + servSettings.shortId,
         largeImageKey: servSettings.largeImageKey,
         largeImageText: servSettings.largeImageText,
         smallImageKey: genSettings.smallImageKey,

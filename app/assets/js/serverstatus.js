@@ -4,16 +4,16 @@ const net = require('net')
  * Retrieves the status of a minecraft server.
  * 
  * @param {string} address The server address.
- * @param {number} port Optional. The port of the server. Defaults to 25565.
+ * @param {number} port Port par defaut SkyGames.
  * @returns {Promise.<Object>} A promise which resolves to an object containing
  * status information.
  */
-exports.getStatus = function(address, port = 25565){
+exports.getStatus = function(address, port = 25001) {
 
-    if(port == null || port == ''){
-        port = 25565
+    if (port == null || port == '') {
+        port = 25001
     }
-    if(typeof port === 'string'){
+    if (typeof port === 'string') {
         port = parseInt(port)
     }
 
@@ -34,16 +34,16 @@ exports.getStatus = function(address, port = 25565){
         })
 
         socket.on('data', (data) => {
-            if(data != null && data != ''){
+            if (data != null && data != '') {
                 let server_info = data.toString().split('\x00\x00\x00')
                 const NUM_FIELDS = 6
-                if(server_info != null && server_info.length >= NUM_FIELDS){
+                if (server_info != null && server_info.length >= NUM_FIELDS) {
                     resolve({
                         online: true,
                         version: server_info[2].replace(/\u0000/g, ''),
                         motd: server_info[3].replace(/\u0000/g, ''),
                         onlinePlayers: server_info[4].replace(/\u0000/g, ''),
-                        maxPlayers: server_info[5].replace(/\u0000/g,'')
+                        maxPlayers: server_info[5].replace(/\u0000/g, '')
                     })
                 } else {
                     resolve({
@@ -57,8 +57,8 @@ exports.getStatus = function(address, port = 25565){
         socket.on('error', (err) => {
             socket.destroy()
             reject(err)
-            // ENOTFOUND = Unable to resolve.
-            // ECONNREFUSED = Unable to connect to port.
+                // ENOTFOUND = Unable to resolve.
+                // ECONNREFUSED = Unable to connect to port.
         })
     })
 
