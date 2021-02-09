@@ -618,8 +618,7 @@ body, button {
     font-weight: bold;
     letter-spacing: 2px;
     border: none;
-    padding: 15px 5px;
-    margin: 10px 0px;
+    margin: 15px 0px;
     cursor: pointer;
     position: relative;
     right: -20px;
@@ -693,6 +692,21 @@ body, button {
     border-radius: 50%;
     width: 16px;
     height: 16px;
+}
+.circle-loader-big {
+    margin:auto;
+    border: 5px solid rgba(255, 255, 255, 0.5);
+    border-left-color: #ffffff;
+    animation-name: loader-spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    position: relative;
+    display: block;
+    align-self: center;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
 }
 .load-complete {
     animation: none;
@@ -863,6 +877,28 @@ body, button {
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
+
+#loginMSButton {
+    background: none;
+    border: none;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+#loginMSButton:disabled {
+    color: rgba(255, 255, 255, 0.75);
+    pointer-events: none;
+}
+
+#loginMSButton:hover,
+#loginMSButton:focus {
+    text-shadow: 0px 0px 20px #fff;
+    outline: none;
+}
+#loginMSButton:active {
+    color: #c7c7c7;
+    text-shadow:  0px 0px 20px #c7c7c7;
+} 
 
 /*
 #login_filter {

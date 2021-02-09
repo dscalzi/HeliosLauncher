@@ -175,8 +175,8 @@ const refreshMojangStatuses = async function(){
         for(let i=0; i<statuses.length; i++){
             const service = statuses[i]
 
-            // Mojang API is broken for these two. https://bugs.mojang.com/browse/WEB-2303
-            if(service.service === 'sessionserver.mojang.com' || service.service === 'minecraft.net') {
+            // Mojang API is broken for sessionserver. https://bugs.mojang.com/browse/WEB-2303
+            if(service.service === 'sessionserver.mojang.com') {
                 service.status = 'green'
             }
 
@@ -1185,6 +1185,8 @@ notion.contentWindow.addEventListener('DOMContentLoaded', event => {
         style.innerHTML += '.notion-collection_view-block { overflow-x: hidden !important; }'
         style.innerHTML += '.notion-collection_view-block > .notion-scroller { overflow: hidden !important; }'
         style.innerHTML += 'body { background: transparent !important; }'
+        style.innerHTML += '.notion-page-content { color: #ffffff !important; }'
+        style.innerHTML += '.notion-selectable { color: #ffffff !important; }'
 
         // Add the <style> element to the page
         notionDoc.head.appendChild(style)
