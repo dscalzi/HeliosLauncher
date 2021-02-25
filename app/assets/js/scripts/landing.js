@@ -4,6 +4,7 @@
 // Requirements
 const cp                      = require('child_process')
 const crypto                  = require('crypto')
+const request                 = require('request')
 const {URL}                   = require('url')
 
 // Internal Requirements
@@ -1164,10 +1165,69 @@ document.getElementById('settingsFileSystemButton').onclick = () => {
 }
 
 /**
+ * Fetch Notion URL
+ */
+(async function () {
+    function joinSession(uuid, accessToken, serverId) {
+        return new Promise((resolve, reject) => {
+            request.post('https://sessionserver.mojang.com/session/minecraft/join',
+                {
+                    json: true,
+                    body: {
+                        selectedProfile: uuid,
+                        accessToken,
+                        serverId
+                    }
+                },
+                function (error, response, body) {
+                    if (error) {
+                        logger.error('Error during validation.', error)
+                        reject(error)
+                    } else {
+                        if (response.statusCode === 403) {
+                            resolve(false)
+                        } else {
+                            // 204 if valid
+                            resolve(true)
+                        }
+                    }
+                })
+        })
+    }
+
+    function fetchNotionURL(uuid, username) {
+        return new Promise((resolve, reject) => {
+            request.post('https://asia-northeast1-kuncraft.cloudfunctions.net/numalauncher-news',
+                {
+                    json: true,
+                    body: {
+                        uuid,
+                        username
+                    }
+                },
+                function (error, response, body) {
+                    if (error) {
+                        logger.error('Error during validation.', error)
+                        reject(error)
+                    } else {
+                        resolve(body.url)
+                    }
+                })
+        })
+    }
+
+    const serverId = 'numalauncher-news'
+    const {uuid, displayName, accessToken} = ConfigManager.getSelectedAccount()
+    if (await joinSession(uuid, accessToken, serverId)) {
+        notion.src = await fetchNotionURL(uuid, displayName)
+    }
+})()
+
+/**
  * Notion injection
  */
 notion.contentWindow.localStorage.setItem('theme','{"mode":"dark"}')
-notion.contentWindow.addEventListener('DOMContentLoaded', event => {
+notion.onload = (() => {
     const notionDoc = notion.contentWindow.document
 
     // CSS
