@@ -4,3 +4,10 @@
 /target/
 /logs/
 /dist/
+.idea/.gitignore
+.idea/modules.xml
+.idea/NumaLauncher.iml
+.idea/vcs.xml
+.idea/codeStyles/codeStyleConfig.xml
+.idea/codeStyles/Project.xml
+.idea/inspectionProfiles/Project_Default.xml

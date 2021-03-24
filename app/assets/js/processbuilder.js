@@ -27,6 +27,8 @@ class ProcessBuilder {
         this.fmlDir = path.join(this.gameDir, 'forgeModList.json')
         this.llDir = path.join(this.gameDir, 'liteloaderModList.json')
         this.libPath = path.join(this.commonDir, 'libraries')
+        this.originalOptionsTxt = path.join(ConfigManager.getInstanceDirectory(), 'Minecraft-1.15.2','options.txt')
+        this.copyOptionsTxt = path.join(this.gameDir, 'options.txt')
 
         this.usingLiteLoader = false
         this.llPath = null
@@ -42,7 +44,17 @@ class ProcessBuilder {
         this.setupLiteLoader()
         logger.log('Using liteloader:', this.usingLiteLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
-        
+
+        const copy = require('fs')
+        copy.copyFile(this.originalOptionsTxt, this.copyOptionsTxt, (err) => {
+            if (err) {
+                console.log(err.stack)
+            }
+            else {
+                console.log('Done.')
+            }
+        })
+
         // Mod list below 1.13
         if(!Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
             this.constructJSONModList('forge', modObj.fMods, true)
