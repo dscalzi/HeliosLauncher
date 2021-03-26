@@ -962,6 +962,7 @@ const settingsMinRAMLabel = document.getElementById('settingsMinRAMLabel')
 const settingsMemoryTotal = document.getElementById('settingsMemoryTotal')
 const settingsMemoryAvail = document.getElementById('settingsMemoryAvail')
 const settingsJavaExecDetails = document.getElementById('settingsJavaExecDetails')
+const settingsOptionStandardize = document.getElementById('settingsOptionStandardize')
 
 // Store maximum memory values.
 const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM()
@@ -972,6 +973,7 @@ settingsMaxRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY)
 settingsMaxRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY)
 settingsMinRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY)
 settingsMinRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY)
+settingsOptionStandardize.checked = ConfigManager.getoptionStandardize()
 
 // Bind on change event for min memory container.
 settingsMinRAMRange.onchange = (e) => {
@@ -1034,6 +1036,10 @@ settingsMaxRAMRange.onchange = (e) => {
         settingsMinRAMLabel.innerHTML = sMaxV.toFixed(1) + 'G'
     }
     settingsMaxRAMLabel.innerHTML = sMaxV.toFixed(1) + 'G'
+}
+
+settingsOptionStandardize.onchange = (e) =>{
+    ConfigManager.setoptionStandardize(settingsOptionStandardize.checked)
 }
 
 /**

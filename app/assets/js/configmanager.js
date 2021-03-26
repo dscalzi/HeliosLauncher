@@ -89,6 +89,7 @@ const DEFAULT_CONFIG = {
         },
         launcher: {
             allowPrerelease: false,
+            optionStandardize: true,
             dataDirectory: dataPath
         }
     },
@@ -737,4 +738,12 @@ exports.getAllowPrerelease = function(def = false){
  */
 exports.setAllowPrerelease = function(allowPrerelease){
     config.settings.launcher.allowPrerelease = allowPrerelease
+}
+
+exports.getoptionStandardize = function(def = false){
+    return !def ? config.settings.launcher.optionStandardize : DEFAULT_CONFIG.settings.launcher.optionStandardize
+}
+
+exports.setoptionStandardize = function(optionStandardize){
+    config.settings.launcher.optionStandardize = optionStandardize
 }
