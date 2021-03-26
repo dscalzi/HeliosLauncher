@@ -45,16 +45,6 @@ class ProcessBuilder {
         logger.log('Using liteloader:', this.usingLiteLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
 
-        const copy = require('fs')
-        copy.copyFile(this.originalOptionsTxt, this.copyOptionsTxt, (err) => {
-            if (err) {
-                console.log(err.stack)
-            }
-            else {
-                console.log('Done.')
-            }
-        })
-
         // Mod list below 1.13
         if(!Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
             this.constructJSONModList('forge', modObj.fMods, true)
