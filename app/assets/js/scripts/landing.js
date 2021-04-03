@@ -707,18 +707,40 @@ function dlAsync(login = true){
                     // Build Minecraft process.
                     proc = pb.build()
 
+
+
                     //options.txtを共通化する
-                    const copy = require('fs')
-                    if (!copy.existsSync(pb.copyOptionsTxt) && ConfigManager.getoptionStandardize() && copy.existsSync(pb.originalOptionsTxt)){
-                        copy.copyFile(pb.originalOptionsTxt, pb.copyOptionsTxt, (err) => {
-                            if (err) {
-                                console.log(err.stack)
+                    const fs = require('fs')
+                    const filenames = fs.readdirSync(ConfigManager.getInstanceDirectory())
+                    const path = require('path')
+                    //共通化のオプションがオンの時かつコピー先オプションファイルが存在しないときコピーを実行する
+                    if (ConfigManager.getoptionStandardize() && !fs.existsSync(path.join(pb.gameDir,'options.txt'))){
+                        //最新のoptions.txtを取得する
+                        let maxMtime = null
+                        let optionfilepath = ''
+                        filenames.forEach((filename) => {
+
+                            const optionPath = path.join(ConfigManager.getInstanceDirectory(),filename,'options.txt')
+
+                            if(fs.existsSync(optionPath) ){
+                                const stats = fs.statSync(optionPath)
+                                if(maxMtime == null || stats.mtime >maxMtime){
+                                    maxMtime = stats.mtime
+                                    optionfilepath = optionPath
+                                }
                             }
-                            else {
-                                console.log('Done.')
-                            }
+
                         })
+
+                        //コピー元ファイルが存在するときコピーを実行する
+                        if (maxMtime != null){
+                            console.log('options.txtコピー実行 コピー元:'+optionfilepath)
+                            fs.copyFile(optionfilepath,path.join(pb.gameDir,'options.txt'),(err)=>{if(err){console.log(err.stack)}})
+                        }
                     }
+
+
+
 
                     // Bind listeners to stdout.
                     proc.stdout.on('data', tempListener)
