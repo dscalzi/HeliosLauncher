@@ -47,7 +47,8 @@ builder.build({
                     arch: ['x64', 'arm64']
                 }
             ],
-            category: 'public.app-category.games'
+            category: 'public.app-category.games',
+            artifactName: '${productName}-${version}-${arch}.${ext}'
         },
         linux: {
             target: 'AppImage',
