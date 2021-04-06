@@ -1,8 +1,8 @@
 const builder = require('electron-builder')
 const Platform = builder.Platform
 
-function getCurrentPlatform(){
-    switch(process.platform){
+function getCurrentPlatform() {
+    switch (process.platform) {
         case 'win32':
             return Platform.WINDOWS
         case 'darwin':
@@ -41,7 +41,12 @@ builder.build({
             allowToChangeInstallationDirectory: true
         },
         mac: {
-            target: 'dmg',
+            target: [
+                {
+                    target: 'dmg',
+                    arch: ['x64', 'arm64']
+                }
+            ],
             category: 'public.app-category.games'
         },
         linux: {
