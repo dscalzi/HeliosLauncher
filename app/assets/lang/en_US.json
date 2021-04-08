@@ -5,44 +5,44 @@
     "js": {
         "login": {
             "error": {
-                "invalidValue": "* Invalid Value",
-                "requiredValue": "* Required",
+                "invalidValue": "* Valor no válido",
+                "requiredValue": "* Requerido",
                 "userMigrated": {
-                    "title": "Error During Login:<br>Invalid Credentials",
-                    "desc": "You've attempted to login with a migrated account. Try again using the account email as the username."
+                    "title": "Error durante el inicio de sesión: Credenciales no válidas",
+                    "desc": "Intentó iniciar sesión con una cuenta migrada. Vuelve a intentarlo usando el correo electrónico de la cuenta como nombre de usuario."
                 },
                 "invalidCredentials": {
-                    "title": "Error During Login:<br>Invalid Credentials",
-                    "desc": "The email or password you've entered is incorrect. Please try again."
+                    "title": "Error durante el inicio de sesión: Credenciales no válidas",
+                    "desc": "El correo electrónico o la contraseña que ingresaste son incorrectos. Inténtalo de nuevo."
                 },
                 "rateLimit": {
-                    "title": "Error During Login:<br>Too Many Attempts",
-                    "desc": "There have been too many login attempts with this account recently. Please try again later."
+                    "title": "Error durante el inicio de sesión: <br> demasiados intentos",
+                    "desc": "Ha habido demasiados intentos de inicio de sesión con esta cuenta recientemente. Por favor, inténtelo de nuevo más tarde."
                 },
                 "noInternet": {
-                    "title": "Error During Login:<br>No Internet Connection",
-                    "desc": "You must be connected to the internet in order to login. Please connect and try again."
+                    "title": "Error durante el inicio de sesión: <br> No hay conexión a Internet",
+                    "desc": "Debe estar conectado a Internet para iniciar sesión. Conéctese y vuelva a intentarlo."
                 },
                 "authDown": {
                     "title": "Error During Login:<br>Authentication Server Offline",
-                    "desc": "Mojang's authentication server is currently offline or unreachable. Please wait a bit and try again. You can check the status of the server on <a href=\"https://help.mojang.com/\">Mojang's help portal</a>."
+                    "desc": "El servidor de autenticación de Mojang está actualmente fuera de línea o inaccesible. Espere un poco y vuelva a intentarlo. Puede comprobar el estado del servidor en <a href=\"https://help.mojang.com/\">Mojang's help portal</a>."
                 },
                 "notPaid": {
-                    "title": "Error During Login:<br>Game Not Purchased",
-                    "desc": "The account you are trying to login with has not purchased a copy of Minecraft.<br>You may purchase a copy on <a href=\"https://minecraft.net/\">Minecraft.net</a>"
+                    "title": "Error durante el inicio de sesión: juego no comprado",
+                    "desc": "La cuenta con la que estás intentando iniciar sesión no ha comprado una copia de Minecraft. <br> Puedes comprar una copia en <a href=\"https://minecraft.net/\">Minecraft.net</a>"
                 },
                 "unknown": {
-                    "title": "Error During Login:<br>Unknown Error"
+                    "title": "Error durante el inicio de sesión: <br> Error desconocido"
                 }
             },
-            "login": "LOGIN",
-            "loggingIn": "LOGGING IN",
-            "success": "SUCCESS",
-            "tryAgain": "Try Again"
+            "login": "ACCESO",
+            "loggingIn": "INICIANDO SESIÓN",
+            "success": "ÉXITO",
+            "tryAgain": "Intentar otra vez"
         },
         "landing": {
             "launch": {
-                "pleaseWait": "Please wait.."
+                "pleaseWait": "Espere por favor.."
             }
         }
     }
