@@ -9,7 +9,7 @@ The distribution index is written in JSON. The general format of the index is as
     "version": "1.0.0",
     "discord": {
         "clientId": "12334567890123456789",
-        "smallImageText": "WesterosCraft",
+        "smallImageText": "Idocraft",
         "smallImageKey": "seal-circle"
     },
     "rss": "https://westeroscraft.com/articles/index.rss",
@@ -20,8 +20,8 @@ The distribution index is written in JSON. The general format of the index is as
             "description": "Example WesterosCraft server. Connect for fun!",
             "icon": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/example_icon.png",
             "version": "0.0.1",
-            "address": "mc.westeroscraft.com:1337",
-            "minecraftVersion": "1.11.2",
+            "address": "Idocraft.holy.gg",
+            "minecraftVersion": "1.12.2",
             "discord": {
                 "shortId": "Example",
                 "largeImageText": "WesterosCraft Example Server",
@@ -84,8 +84,8 @@ A URL to a RSS feed. Used for loading news.
     "description": "Example WesterosCraft server. Connect for fun!",
     "icon": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/example_icon.png",
     "version": "0.0.1",
-    "address": "mc.westeroscraft.com:1337",
-    "minecraftVersion": "1.11.2",
+    "address": "Idocraft.holy.gg",
+    "minecraftVersion": "1.12.2",
     "discord": {
         "shortId": "Example",
         "largeImageText": "WesterosCraft Example Server",
