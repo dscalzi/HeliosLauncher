@@ -735,7 +735,8 @@ function dlAsync(login = true){
                         //コピー元ファイルが存在するときコピーを実行する
                         if (maxMtime != null){
                             console.log('options.txtコピー実行 コピー元:'+optionfilepath)
-                            fs.copyFile(optionfilepath,path.join(pb.gameDir,'options.txt'),(err)=>{if(err){console.log(err.stack)}})
+                            const copy = require('./assets/js/optionscopy')
+                            copy.copy(optionfilepath,path.join(pb.gameDir,'options.txt'))
                         }
                     }
 
