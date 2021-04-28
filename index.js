@@ -1,3 +1,5 @@
+require('@electron/remote/main').initialize()
+
 // Requirements
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 const autoUpdater                   = require('electron-updater').autoUpdater
