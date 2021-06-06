@@ -55,6 +55,7 @@ If you download from the [Releases](https://github.com/ArdaCraft/ArdaCraftLaunch
 | -------- | ---- |
 | Windows x64 | `ardacraftlauncher-setup-VERSION.exe` |
 | macOS | `ardacraftlauncher-VERSION.dmg` |
+| macOS arm64 | `ardacraftlauncher-setup-VERSION-arm64.dmg` |
 | Linux x64 | `ardacraftlauncher-setup-VERSION.AppImage` |
 
 ## Console
