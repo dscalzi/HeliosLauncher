@@ -1,0 +1,30 @@
+{
+    "version": "bêta",
+    "discord": {
+        "clientId": "755077436303081563",
+        "smallImageText": "aromencia",
+        "smallImageKey": "seal-circle"
+    },
+    "rss": "http://aromencia.com/articles/index.rss",
+    "servers": [
+        {
+            "id": "aromencia-bêta",
+            "name": "Aromencia Bêta",
+            "description": "Une version bêta du meilleur serveur moddée.",
+            "icon": "https://cdn.discordapp.com/app-assets/828691118568636436/853716721503043585.png",
+            "version": "0.0.1",
+            "address": "play.aromencia.fr",
+            "minecraftVersion": "1.12.2",
+            "discord": {
+                "shortId": "828691118568636436",
+                "largeImageText": "Aromencia.fr",
+                "largeImageKey": "logo_julien_final_png"
+            },
+            "mainServer": true,
+            "autoconnect": true,
+            "modules": [
+                "Module Objects Here"
+            ]
+        }
+    ]
+}
