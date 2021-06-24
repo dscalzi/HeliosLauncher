@@ -26,7 +26,7 @@
     "@electron/remote": "^1.2.0",
     "adm-zip": "^0.5.5",
     "async": "^3.2.0",
-    "discord-rpc": "^4.0.1",
+    "discord-rpc": "^3.2.0",
     "ejs": "^3.1.6",
     "ejs-electron": "^2.1.1",
     "electron-updater": "^4.3.9",
