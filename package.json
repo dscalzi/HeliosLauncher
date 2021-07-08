@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "productName": "Vicarious Network Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "author": "Daniel Scalzi (https://github.com/VicaiousNetwork/)",
   "license": "UNLICENSED",
   "homepage": "https://github.com/VicariousNetwork/HeliosLauncher",
   "bugs": {
@@ -45,6 +45,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/VicariousNetwork/HeliosLauncher.git"
   }
 }
