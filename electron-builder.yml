@@ -39,8 +39,8 @@ mac:
 # Linux Configuration
 linux: 
   target: 'AppImage'
-  maintainer: 'Daniel Scalzi'
-  vendor: 'Daniel Scalzi'
+  maintainer: 'Vicarious Network'
+  vendor: 'Vicarious Network'
   synopsis: 'Modded Minecraft Launcher'
   description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically. Configured for Vicarious Network'
   category: 'Game'
