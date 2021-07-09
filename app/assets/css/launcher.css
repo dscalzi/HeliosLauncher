@@ -3439,7 +3439,7 @@ input:checked + .toggleSwitchSlider:before {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 75%;
+    height: 94%;
 }
 
 /* Server selection header. */
