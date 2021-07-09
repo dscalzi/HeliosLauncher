@@ -24,6 +24,7 @@
                 "largeImageKey": "server-prod"
             },
             "mainServer": true,
+            "serverCode": "",
             "autoconnect": true,
             "modules": [
                 {
@@ -438,6 +439,7 @@
                 "largeImageKey": "server-test"
             },
             "mainServer": false,
+            "serverCode": "",
             "autoconnect": true,
             "modules": [
                 {
@@ -852,6 +854,7 @@
                 "largeImageKey": "server-test"
             },
             "mainServer": false,
+            "serverCode": "",
             "autoconnect": true,
             "modules": [
                 {
@@ -1283,6 +1286,7 @@
                 "largeImageKey": "server-test"
             },
             "mainServer": false,
+            "serverCode": "",
             "autoconnect": false,
             "modules": [
                 {

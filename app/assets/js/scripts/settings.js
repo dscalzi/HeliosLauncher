@@ -5,6 +5,8 @@ const semver = require('semver')
 const { JavaGuard } = require('./assets/js/assetguard')
 const DropinModUtil  = require('./assets/js/dropinmodutil')
 
+const loggerSettings = LoggerUtil('%c[Settings]', 'color: #353232; font-weight: bold')
+
 const settingsState = {
     invalid: new Set()
 }
@@ -135,6 +137,8 @@ function initSettingsValues(){
                         populateJavaExecDetails(v.value)
                         v.value = gFn()
                     } else if (cVal === 'DataDirectory'){
+                        v.value = gFn()
+                    } else if (cVal === 'ServerCode'){
                         v.value = gFn()
                     } else if(cVal === 'JVMOptions'){
                         v.value = gFn().join(' ')
@@ -324,6 +328,44 @@ document.getElementById('settingsAddAccount').onclick = (e) => {
 }
 
 /**
+ * Binds the functionality within the server codes section of the launcher settings
+ */
+function bindServerCodeButtons(){
+    // Sets up the onclick listeners for the button to add codes
+    document.getElementById('settingsAddServerCode').onclick = () => {
+        for(let ele of document.getElementsByClassName('settingsInputServerCodeVal')){
+            const code = ele.value
+            ele.value = ''
+            if(!ConfigManager.getServerCodes().includes(code) && code){
+                ConfigManager.getServerCodes().push(code)
+                ConfigManager.save()
+                loggerSettings.log('Added server code to configuration and saved it')
+                prepareLauncherTab()
+            } else {
+                loggerSettings.log('Server code already exists or is empty, not adding.')
+            }
+        }
+    }
+
+    // Sets up the onclick listeners for each remove code buttons
+    const sEls = document.querySelectorAll('[remcode]')
+    Array.from(sEls).map((v, index, arr) => {
+        v.onclick = () => {
+            if(v.hasAttribute('remcode')){
+                const code = v.getAttribute('remcode')
+                if(ConfigManager.getServerCodes().includes(code)){
+                    ConfigManager.getServerCodes().splice(ConfigManager.getServerCodes().indexOf(code), 1)
+                    ConfigManager.save()
+                    loggerSettings.log('Added removed code from configuration and saved it')
+                    prepareLauncherTab()
+                }
+            }
+            loggerSettings.log('Server code doesnt exist!, not removing.')
+        }
+    })
+}
+
+/**
  * Bind functionality for the account selection buttons. If another account
  * is selected, the UI of the previously selected account will be updated.
  */
@@ -477,6 +519,14 @@ function prepareAccountsTab() {
     populateAuthAccounts()
     bindAuthAccountSelect()
     bindAuthAccountLogOut()
+}
+
+/**
+ * Prepare the accounts tab for display.
+ */
+function prepareLauncherTab() {
+    resolveServerCodesForUI()
+    bindServerCodeButtons()
 }
 
 /**
@@ -681,6 +731,59 @@ function resolveDropinModsForUI(){
     document.getElementById('settingsDropinModsContent').innerHTML = dropinMods
 }
 
+function resolveServerCodesForUI(){
+    /* Server Codes */
+    let servCodes = ''
+    for(let servCode of ConfigManager.getServerCodes()){
+        const servs = DistroManager.getDistribution().getServersFromCode(servCode)
+        const valid = servs && servs.length
+        servCodes +=
+            `
+                <div id="${servCode}" class="settingsServerCode" ${valid ? 'valid' : ''}>
+                    <div class="settingsServerCodeContent">
+                        <div class="settingsServerCodeMainWrapper">
+                            <div class="settingsServerCodeStatus"></div>
+                            <div class="settingsServerCodeDetails">
+                                <span class="settingsServerCodeName">${servCode}</span>
+                                <div class="settingsServerCodeServerNamesContent" code="${servCode}">                      
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settingsServerCodeRemoveWrapper">
+                            <button class="settingsServerCodeRemoveButton" id="settingsRemoveServerCode" remcode="${servCode}">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            `
+    }
+
+    document.getElementById('settingsServerCodesListContent').innerHTML = servCodes
+
+    /* Server Names List */
+    for(let ele of document.getElementsByClassName('settingsServerCodeServerNamesContent')){
+        servNames = ''
+        const code = ele.getAttribute('code')
+        const servs = DistroManager.getDistribution().getServersFromCode(code)
+        const valid = servs && servs.length
+        loggerSettings.log('valid: ' + valid)
+        if(valid){
+            for(let serv of servs){
+                loggerSettings.log('server: ' + serv.getName())
+                servNames +=
+                    `
+                    <span class="settingsServerCodeServerName">${serv.getName()}</span> 
+                    `
+            }
+        } else {
+            servNames =
+                `
+                    <span class="settingsServerCodeServerName">Invalid Code</span> 
+                `
+        }
+
+        ele.innerHTML = servNames
+    }
+}
 /**
  * Bind the remove button for each loaded drop-in mod.
  */
@@ -1343,6 +1446,7 @@ function prepareSettings(first = false) {
     initSettingsValues()
     prepareAccountsTab()
     prepareJavaTab()
+    prepareLauncherTab()
     prepareAboutTab()
 }
 
