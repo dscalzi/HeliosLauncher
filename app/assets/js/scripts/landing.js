@@ -778,8 +778,8 @@ function checkCurrentServer(errorOverlay = true){
                     if(errorOverlay){
                         setOverlayContent(
                             'Current Server Restricted!',
-                            'It seems that you no longer have the server code required to access this server! Please switch to a different server to play on.<br><br>If you feel this is an error, please contact the server administrator',
-                            'Switch Server'
+                            'It seems that you no longer have the Modpack code required to access this server! Please switch to a different server to play on.<br><br>If you feel this is an error, please contact the server administrator',
+                            'Switch Modpacks'
                         )
                         setOverlayHandler(() => {
                             toggleServerSelection(true)

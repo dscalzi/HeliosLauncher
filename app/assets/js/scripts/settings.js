@@ -339,10 +339,10 @@ function bindServerCodeButtons(){
             if(!ConfigManager.getServerCodes().includes(code) && code){
                 ConfigManager.getServerCodes().push(code)
                 ConfigManager.save()
-                loggerSettings.log('Added server code to configuration and saved it')
+                loggerSettings.log('Added modpack code to configuration and saved it')
                 prepareLauncherTab()
             } else {
-                loggerSettings.log('Server code already exists or is empty, not adding.')
+                loggerSettings.log('Modpack code already exists or is empty, not adding.')
             }
         }
     }
@@ -360,7 +360,7 @@ function bindServerCodeButtons(){
                     prepareLauncherTab()
                 }
             }
-            loggerSettings.log('Server code doesnt exist!, not removing.')
+            loggerSettings.log('Modpack code doesnt exist!, not removing.')
         }
     })
 }
