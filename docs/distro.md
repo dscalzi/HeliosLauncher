@@ -143,6 +143,10 @@ Only one server in the array should have the `mainServer` property enabled. This
 
 Whether or not the server can be autoconnected to. If false, the server will not be autoconnected to even when the user has the autoconnect setting enabled.
 
+### `Server.serverCode: string`
+
+A code that allows you to privately distribute certain servers on the launcher. Players will only be able to see the server in their launcher if they have specified the code in the settings. If left blank, all players can see the server.
+
 ### `Server.modules: Module[]`
 
 An array of module objects.

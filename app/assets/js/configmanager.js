@@ -23,7 +23,7 @@ exports.getLauncherDirectory = function(){
 /**
  * Get the launcher's data directory. This is where all files related
  * to game launch are installed (common, instances, java, etc).
- * 
+ *
  * @returns {string} The absolute path of the launcher's data directory.
  */
 exports.getDataDirectory = function(def = false){
@@ -32,11 +32,29 @@ exports.getDataDirectory = function(def = false){
 
 /**
  * Set the new data directory.
- * 
+ *
  * @param {string} dataDirectory The new data directory.
  */
 exports.setDataDirectory = function(dataDirectory){
     config.settings.launcher.dataDirectory = dataDirectory
+}
+
+/**
+ * Get the launcher's available server codes. This will be used to load hidden servers.
+ *
+ * @returns {string[]} The server codes list that has been put into the launcher's configuration
+ */
+exports.getServerCodes = function(){
+    return config.settings.launcher.serverCodes
+}
+
+/**
+ * Set the new server code
+ *
+ * @param {string[]} serverCodes The new server code list.
+ */
+exports.setServerCodes = function(serverCodes){
+    config.settings.launcher.serverCodes = serverCodes
 }
 
 const configPath = path.join(exports.getLauncherDirectory(), 'config.json')
@@ -91,7 +109,8 @@ const DEFAULT_CONFIG = {
         },
         launcher: {
             allowPrerelease: false,
-            dataDirectory: dataPath
+            dataDirectory: dataPath,
+            serverCodes: []
         }
     },
     newsCache: {
