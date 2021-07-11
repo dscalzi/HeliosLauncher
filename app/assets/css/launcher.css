@@ -3661,6 +3661,9 @@ input:checked + .toggleSwitchSlider:before {
 #accountSelectListScrollable {
     padding: 0px 5px;
     overflow-y: scroll;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 10px
 }
 #serverSelectListScrollable::-webkit-scrollbar,
 #accountSelectListScrollable::-webkit-scrollbar {
