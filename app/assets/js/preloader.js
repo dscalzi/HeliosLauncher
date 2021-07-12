@@ -29,6 +29,13 @@ function onDistroLoad(data){
     ipcRenderer.send('distributionIndexDone', data != null)
 }
 
+function sendLoadFromCacheNotification(data){
+    if(data != null){
+        ipcRenderer.send('cachedDistributionNotification', data != null)
+        logger.log('Sent a cached distribution notification alert')
+    }
+}
+
 // Ensure Distribution is downloaded and cached.
 DistroManager.pullRemote().then((data) => {
     logger.log('Loaded distribution index.')
@@ -45,6 +52,7 @@ DistroManager.pullRemote().then((data) => {
         logger.log('Successfully loaded an older version of the distribution index.')
 
         onDistroLoad(data)
+        sendLoadFromCacheNotification(data)
 
 
     }).catch((err) => {

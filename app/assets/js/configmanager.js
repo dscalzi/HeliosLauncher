@@ -21,6 +21,24 @@ exports.getLauncherDirectory = function(){
 }
 
 /**
+ * Retrieve the file hash for the current stored distribution file
+ *
+ * @returns {string} The absolute path of the launcher directory.
+ */
+ exports.getDistributionHash = function(){
+    return config.distributionHash
+}
+
+/**
+ * Stores the current distribution file hash into the configuration
+ *
+ * @returns {string} The absolute path of the launcher directory.
+ */
+exports.setDistributionHash = function(hash){
+    config.distributionHash = hash
+}
+
+/**
  * Get the launcher's data directory. This is where all files related
  * to game launch are installed (common, instances, java, etc).
  *
@@ -105,7 +123,8 @@ const DEFAULT_CONFIG = {
             resHeight: 480,
             fullscreen: false,
             autoConnect: true,
-            launchDetached: true
+            launchDetached: true,
+            consoleOnLaunch: false
         },
         launcher: {
             allowPrerelease: false,
@@ -119,6 +138,7 @@ const DEFAULT_CONFIG = {
         dismissed: false
     },
     clientToken: null,
+    distributionHash: null,
     selectedServer: null, // Resolved
     selectedAccount: null,
     authenticationDatabase: {},
@@ -737,6 +757,25 @@ exports.getLaunchDetached = function(def = false){
  */
 exports.setLaunchDetached = function(launchDetached){
     config.settings.game.launchDetached = launchDetached
+}
+
+/**
+ * Check if the game should open the devtools console on launch
+ *
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {boolean} Whether or not to open the devtools console on launch
+ */
+ exports.getConsoleOnLaunch = function(def = false){
+    return !def ? config.settings.game.consoleOnLaunch : DEFAULT_CONFIG.settings.game.consoleOnLaunch
+}
+
+/**
+ * Change the status of whether or not the devtools console should open on launch
+ *
+ * @param {boolean} consoleOnLaunch whether or not to open the devtools console on launch
+ */
+exports.setConsoleOnLaunch = function(consoleOnLaunch){
+    config.settings.game.consoleOnLaunch = consoleOnLaunch
 }
 
 // Launcher Settings

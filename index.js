@@ -86,6 +86,10 @@ ipcMain.on('distributionIndexDone', (event, res) => {
     event.sender.send('distributionIndexDone', res)
 })
 
+ipcMain.on('cachedDistributionNotification', (event, res) => {
+    event.sender.send('cachedDistributionNotification', res)
+})
+
 // Disable hardware acceleration.
 // https://electronjs.org/docs/tutorial/offscreen-rendering
 app.disableHardwareAcceleration()

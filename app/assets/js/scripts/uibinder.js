@@ -417,3 +417,24 @@ ipcRenderer.on('distributionIndexDone', (event, res) => {
         }
     }
 })
+
+
+ipcRenderer.on('cachedDistributionNotification', (event, res) => {
+    if(res) {
+        setTimeout(() => {
+            setOverlayContent(
+                'Warning: Cached Distribution Startup',
+                'We were unable to grab the latest server information from the internet upon startup, so we have used a previously stored version instead.<br><br>This is not recommended, and you should restart your client to fix this to avoid your modpack files being out of date. If you wish to continue using the launcher, you can try again at any time by pressing the refresh button on the landing screen.<br><br>If this continues to occur, and you are not too sure why, come and see us on Discord!',
+                'Understood',
+                'Join our Discord'
+            )
+            setOverlayHandler(() => {
+                toggleOverlay(false)
+            })
+            setDismissHandler(() => {
+                shell.openExternal('https://vcnet.work/discord')
+            })
+            toggleOverlay(true, true)
+        }, 2000)
+    }
+})
