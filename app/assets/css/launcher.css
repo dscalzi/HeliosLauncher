@@ -3661,6 +3661,9 @@ input:checked + .toggleSwitchSlider:before {
 #accountSelectListScrollable {
     padding: 0px 5px;
     overflow-y: scroll;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 10px
 }
 #serverSelectListScrollable::-webkit-scrollbar,
 #accountSelectListScrollable::-webkit-scrollbar {
@@ -3734,7 +3737,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* Add spacing between server listings. */
-#serverSelectListScrollable > .serverListing:not(:first-child):not(:last-child),
+#serverSelectListScrollable > .serverListing,
 #accountSelectListScrollable > .accountListing:not(:first-child):not(:last-child) {
     margin: 5px 0px;
 }
