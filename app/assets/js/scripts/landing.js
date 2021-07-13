@@ -72,6 +72,7 @@ function setLaunchPercentage(value, max, percent = ((value/max)*100)){
 function setDownloadPercentage(value, max, percent = ((value/max)*100)){
     remote.getCurrentWindow().setProgressBar(value/max)
     setLaunchPercentage(value, max, percent)
+    DiscordWrapper.updateDetails('Downloading... (' + percent + '%)')
 }
 
 /**
@@ -118,6 +119,10 @@ document.getElementById('launch_button').addEventListener('click', function(e){
 document.getElementById('settingsMediaButton').onclick = (e) => {
     prepareSettings()
     switchView(getCurrentView(), VIEWS.settings)
+    if(hasRPC){
+        DiscordWrapper.updateDetails('In the Settings...')
+        DiscordWrapper.clearState()
+    }
 }
 
 document.getElementById('openInstanceMediaButton').onclick = (e) => {
@@ -303,6 +308,17 @@ const refreshServerStatus = async function(fade = false){
     
 }
 
+function loadDiscord(){
+    if(!ConfigManager.getDiscordIntegration()) return
+    const distro = DistroManager.getDistribution()
+    if(!hasRPC){
+        if(distro.discord != null){
+            DiscordWrapper.initRPC(distro.discord, null, '...')
+            hasRPC = true
+        }
+    }
+}
+
 refreshMojangStatuses()
 // Server Status is refreshed in uibinder.js on distributionIndexDone.
 
@@ -378,7 +394,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 // Show this information to the user.
                 setOverlayContent(
                     'No Compatible<br>Java Installation Found',
-                    'In order to join WesterosCraft, you need a 64-bit installation of Java 8. Would you like us to install a copy? By installing, you accept <a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">Oracle\'s license agreement</a>.',
+                    'In order to join any Vicarious Network Modpack, you need a 64-bit installation of Java 8. Would you like us to install a copy? By installing, you accept <a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">Oracle\'s license agreement</a>.',
                     'Install Java',
                     'Install Manually'
                 )
@@ -709,7 +725,8 @@ function dlAsync(login = true){
                 const onLoadComplete = () => {
                     toggleLaunchArea(false)
                     if(hasRPC){
-                        DiscordWrapper.updateDetails('Loading game..')
+                        DiscordWrapper.updateDetails('Launching game...')
+                        DiscordWrapper.resetTime()
                     }
                     proc.stdout.on('data', gameStateChange)
                     proc.stdout.on('data', gameCrashReportListener)
@@ -784,6 +801,14 @@ function dlAsync(login = true){
                     proc.stderr.on('data', gameErrorListener)
 
                     setLaunchDetails('Done. Enjoy the modpack!')
+                    proc.on('close', (code, signal) => {
+                        if(hasRPC){
+                            const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                            DiscordWrapper.updateDetails('Ready to Play!')
+                            DiscordWrapper.updateState('Modpack: ' + serv.getName())
+                            DiscordWrapper.resetTime()
+                        }
+                    })
 
                     // Init Discord Hook
                     const distro = DistroManager.getDistribution()
@@ -822,6 +847,7 @@ function dlAsync(login = true){
 function validateServerInformation() {
 
     setLaunchDetails('Loading server information..')
+    DiscordWrapper.updateDetails('Loading server information...')
 
     DistroManager.pullRemoteIfOutdated().then(data => {
         onDistroRefresh(data)
@@ -947,6 +973,15 @@ document.getElementById('newsButton').onclick = () => {
     if(newsActive){
         $('#landingContainer *').removeAttr('tabindex')
         $('#newsContainer *').attr('tabindex', '-1')
+        if(hasRPC){
+            if(ConfigManager.getSelectedServer()){
+                const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                DiscordWrapper.updateDetails('Ready to Play!')
+                DiscordWrapper.updateState('Modpack: ' + serv.getName())
+            } else {
+                DiscordWrapper.updateDetails('Landing Screen...')
+            }
+        }
     } else {
         $('#landingContainer *').attr('tabindex', '-1')
         $('#newsContainer, #newsContainer *, #lower, #lower #center *').removeAttr('tabindex')
@@ -955,6 +990,10 @@ document.getElementById('newsButton').onclick = () => {
             newsAlertShown = false
             ConfigManager.setNewsCacheDismissed(true)
             ConfigManager.save()
+            if(hasRPC){
+                DiscordWrapper.updateDetails('Reading the News...')
+                DiscordWrapper.clearState()
+            }
         }
     }
     slide_(!newsActive)

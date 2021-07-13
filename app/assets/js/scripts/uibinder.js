@@ -65,6 +65,7 @@ function showMainUI(data){
     prepareSettings(true)
     updateSelectedServer(data.getServer(ConfigManager.getSelectedServer()))
     refreshServerStatus()
+    loadDiscord()
     setTimeout(() => {
         document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
         document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
@@ -81,13 +82,30 @@ function showMainUI(data){
         if(ConfigManager.isFirstLaunch()){
             currentView = VIEWS.welcome
             $(VIEWS.welcome).fadeIn(1000)
+            if(hasRPC){
+                DiscordWrapper.updateDetails('Welcome and continue.')
+                DiscordWrapper.updateState('Launcher Setup')
+            }
         } else {
             if(isLoggedIn){
                 currentView = VIEWS.landing
                 $(VIEWS.landing).fadeIn(1000)
+                if(hasRPC && !ConfigManager.isFirstLaunch()){
+                    if(ConfigManager.getSelectedServer()){
+                        const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                        DiscordWrapper.updateDetails('Ready to Play!')
+                        DiscordWrapper.updateState('Modpack: ' + serv.getName())
+                    } else {
+                        DiscordWrapper.updateDetails('Landing Screen...')
+                    }
+                }
             } else {
                 currentView = VIEWS.login
                 $(VIEWS.login).fadeIn(1000)
+                if(hasRPC){
+                    DiscordWrapper.updateDetails('Adding an Account...')
+                    DiscordWrapper.clearState()
+                }
             }
         }
 
@@ -346,6 +364,10 @@ async function validateSelectedAccount(){
                 }
                 toggleOverlay(false)
                 switchView(getCurrentView(), VIEWS.login)
+                if(hasRPC){
+                    DiscordWrapper.updateDetails('Adding an Account...')
+                    DiscordWrapper.clearState()
+                }
             })
             setDismissHandler(() => {
                 if(accLen > 1){
