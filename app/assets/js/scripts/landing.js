@@ -822,7 +822,6 @@ function dlAsync(login = true){
 function validateServerInformation() {
 
     setLaunchDetails('Loading server information..')
-    DiscordWrapper.updateDetails('Loading server information...')
 
     DistroManager.pullRemoteIfOutdated().then(data => {
         onDistroRefresh(data)
