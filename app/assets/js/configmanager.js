@@ -21,23 +21,22 @@ exports.getLauncherDirectory = function(){
 }
 
 /**
- * Retrieve the file hash for the current stored distribution file
+ * Retrieve the ETag version for the current stored distribution file
  *
  * @returns {string} The absolute path of the launcher directory.
  */
- exports.getDistributionHash = function(){
-    return config.distributionHash
+ exports.getDistributionVersion = function(){
+    return config.distributionVersion
 }
 
 /**
- * Stores the current distribution file hash into the configuration
+ * Stores the current distribution ETag version into the configuration
  *
  * @returns {string} The absolute path of the launcher directory.
  */
-exports.setDistributionHash = function(hash){
-    config.distributionHash = hash
+exports.setDistributionVersion = function(version){
+    config.distributionVersion = version
 }
-
 /**
  * Get the launcher's data directory. This is where all files related
  * to game launch are installed (common, instances, java, etc).
@@ -86,13 +85,12 @@ exports.getAbsoluteMinRAM = function(){
 
 exports.getAbsoluteMaxRAM = function(){
     const mem = os.totalmem()
-    const gT16 = mem-16000000000
-    return Math.floor((mem-1000000000-(gT16 > 0 ? (Number.parseInt(gT16/8) + 16000000000/4) : mem/4))/1000000000)
+    return Math.floor((mem/1000000000))
 }
 
 function resolveMaxRAM(){
     const mem = os.totalmem()
-    return mem >= 8000000000 ? '4G' : (mem >= 6000000000 ? '3G' : '2G')
+    return mem >= 16000000000 ? '8G' : (mem >= 8000000000 ? '6G' : (mem >= 6000000000 ? '4G' : '2G'))
 }
 
 function resolveMinRAM(){
@@ -138,7 +136,7 @@ const DEFAULT_CONFIG = {
         dismissed: false
     },
     clientToken: null,
-    distributionHash: null,
+    distributionVersion: null,
     selectedServer: null, // Resolved
     selectedAccount: null,
     authenticationDatabase: {},
