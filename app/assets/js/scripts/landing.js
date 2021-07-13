@@ -72,6 +72,7 @@ function setLaunchPercentage(value, max, percent = ((value/max)*100)){
 function setDownloadPercentage(value, max, percent = ((value/max)*100)){
     remote.getCurrentWindow().setProgressBar(value/max)
     setLaunchPercentage(value, max, percent)
+    DiscordWrapper.updateDetails('Downloading... (' + percent + '%)')
 }
 
 /**
@@ -799,6 +800,7 @@ function dlAsync(login = true){
 
     // Validate Forge files.
     setLaunchDetails('Loading server information..')
+    DiscordWrapper.updateDetails('Loading server information...')
 
     refreshDistributionIndex(true, (data) => {
         onDistroRefresh(data)
