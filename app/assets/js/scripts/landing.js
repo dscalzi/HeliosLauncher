@@ -72,7 +72,6 @@ function setLaunchPercentage(value, max, percent = ((value/max)*100)){
 function setDownloadPercentage(value, max, percent = ((value/max)*100)){
     remote.getCurrentWindow().setProgressBar(value/max)
     setLaunchPercentage(value, max, percent)
-    DiscordWrapper.updateDetails('Downloading... (' + percent + '%)')
 }
 
 /**
@@ -119,10 +118,6 @@ document.getElementById('launch_button').addEventListener('click', function(e){
 document.getElementById('settingsMediaButton').onclick = (e) => {
     prepareSettings()
     switchView(getCurrentView(), VIEWS.settings)
-    if(hasRPC){
-        DiscordWrapper.updateDetails('In the Settings...')
-        DiscordWrapper.clearState()
-    }
 }
 
 document.getElementById('openInstanceMediaButton').onclick = (e) => {
@@ -306,17 +301,6 @@ const refreshServerStatus = async function(fade = false){
         document.getElementById('player_count').innerHTML = pVal
     }
     
-}
-
-function loadDiscord(){
-    if(!ConfigManager.getDiscordIntegration()) return
-    const distro = DistroManager.getDistribution()
-    if(!hasRPC){
-        if(distro.discord != null){
-            DiscordWrapper.initRPC(distro.discord, null, '...')
-            hasRPC = true
-        }
-    }
 }
 
 refreshMojangStatuses()
@@ -724,10 +708,6 @@ function dlAsync(login = true){
 
                 const onLoadComplete = () => {
                     toggleLaunchArea(false)
-                    if(hasRPC){
-                        DiscordWrapper.updateDetails('Launching game...')
-                        DiscordWrapper.resetTime()
-                    }
                     proc.stdout.on('data', gameStateChange)
                     proc.stdout.on('data', gameCrashReportListener)
                     proc.stdout.removeListener('data', tempListener)
@@ -801,14 +781,6 @@ function dlAsync(login = true){
                     proc.stderr.on('data', gameErrorListener)
 
                     setLaunchDetails('Done. Enjoy the modpack!')
-                    proc.on('close', (code, signal) => {
-                        if(hasRPC){
-                            const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
-                            DiscordWrapper.updateDetails('Ready to Play!')
-                            DiscordWrapper.updateState('Modpack: ' + serv.getName())
-                            DiscordWrapper.resetTime()
-                        }
-                    })
 
                     // Init Discord Hook
                     const distro = DistroManager.getDistribution()
@@ -847,7 +819,6 @@ function dlAsync(login = true){
 function validateServerInformation() {
 
     setLaunchDetails('Loading server information..')
-    DiscordWrapper.updateDetails('Loading server information...')
 
     DistroManager.pullRemoteIfOutdated().then(data => {
         onDistroRefresh(data)
@@ -973,15 +944,6 @@ document.getElementById('newsButton').onclick = () => {
     if(newsActive){
         $('#landingContainer *').removeAttr('tabindex')
         $('#newsContainer *').attr('tabindex', '-1')
-        if(hasRPC){
-            if(ConfigManager.getSelectedServer()){
-                const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
-                DiscordWrapper.updateDetails('Ready to Play!')
-                DiscordWrapper.updateState('Modpack: ' + serv.getName())
-            } else {
-                DiscordWrapper.updateDetails('Landing Screen...')
-            }
-        }
     } else {
         $('#landingContainer *').attr('tabindex', '-1')
         $('#newsContainer, #newsContainer *, #lower, #lower #center *').removeAttr('tabindex')
@@ -990,10 +952,6 @@ document.getElementById('newsButton').onclick = () => {
             newsAlertShown = false
             ConfigManager.setNewsCacheDismissed(true)
             ConfigManager.save()
-            if(hasRPC){
-                DiscordWrapper.updateDetails('Reading the News...')
-                DiscordWrapper.clearState()
-            }
         }
     }
     slide_(!newsActive)

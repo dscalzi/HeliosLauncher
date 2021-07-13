@@ -249,22 +249,6 @@ loginCancelButton.onclick = (e) => {
             loginViewCancelHandler()
             loginViewCancelHandler = null
         }
-        if(loginViewOnSuccess === VIEWS.settings){
-            if(hasRPC){
-                DiscordWrapper.updateDetails('In the Settings...')
-                DiscordWrapper.clearState()
-            }
-        } else {
-            if(hasRPC){
-                if(ConfigManager.getSelectedServer()){
-                    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
-                    DiscordWrapper.updateDetails('Ready to Play!')
-                    DiscordWrapper.updateState('Server: ' + serv.getName())
-                } else {
-                    DiscordWrapper.updateDetails('Landing Screen...')
-                }
-            }
-        }
     })
 }
 
@@ -289,20 +273,6 @@ loginButton.addEventListener('click', () => {
                 // Temporary workaround
                 if(loginViewOnSuccess === VIEWS.settings){
                     prepareSettings()
-                    if(hasRPC){
-                        DiscordWrapper.updateDetails('In the Settings...')
-                        DiscordWrapper.clearState()
-                    }
-                } else {
-                    if(hasRPC){
-                        if(ConfigManager.getSelectedServer()){
-                            const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
-                            DiscordWrapper.updateDetails('Ready to Play!')
-                            DiscordWrapper.updateState('Modpack: ' + serv.getName())
-                        } else {
-                            DiscordWrapper.updateDetails('Landing Screen...')
-                        }
-                    }
                 }
                 loginViewOnSuccess = VIEWS.landing // Reset this for good measure.
                 loginCancelEnabled(false) // Reset this for good measure.
