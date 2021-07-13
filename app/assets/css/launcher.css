@@ -3105,19 +3105,6 @@ input:checked + .toggleSwitchSlider:before {
     height: 23px;
 }
 
-#refreshSVG {
-    fill: #ffffff;
-    height: 15px;
-}
-#refreshSVG:hover {
-    height: 25px;
-    fill: #ffffff;
-}
-
-#refreshMediaButton[inprogress] #refreshSVG {
-    animation: spin 0.8s infinite;
-}
-
 /* Settings tooltip styles. */
 #settingsTooltip {
     visibility: hidden;

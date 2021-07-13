@@ -65,7 +65,6 @@ function showMainUI(data){
     prepareSettings(true)
     updateSelectedServer(data.getServer(ConfigManager.getSelectedServer()))
     refreshServerStatus()
-    loadDiscord()
     setTimeout(() => {
         document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
         document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
@@ -82,30 +81,13 @@ function showMainUI(data){
         if(ConfigManager.isFirstLaunch()){
             currentView = VIEWS.welcome
             $(VIEWS.welcome).fadeIn(1000)
-            if(hasRPC){
-                DiscordWrapper.updateDetails('Welcome and continue.')
-                DiscordWrapper.updateState('Launcher Setup')
-            }
         } else {
             if(isLoggedIn){
                 currentView = VIEWS.landing
                 $(VIEWS.landing).fadeIn(1000)
-                if(hasRPC && !ConfigManager.isFirstLaunch()){
-                    if(ConfigManager.getSelectedServer()){
-                        const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
-                        DiscordWrapper.updateDetails('Ready to Play!')
-                        DiscordWrapper.updateState('Modpack: ' + serv.getName())
-                    } else {
-                        DiscordWrapper.updateDetails('Landing Screen...')
-                    }
-                }
             } else {
                 currentView = VIEWS.login
                 $(VIEWS.login).fadeIn(1000)
-                if(hasRPC){
-                    DiscordWrapper.updateDetails('Adding an Account...')
-                    DiscordWrapper.clearState()
-                }
             }
         }
 
@@ -128,17 +110,14 @@ function showFatalStartupError(){
             document.getElementById('overlayContainer').style.background = 'none'
             setOverlayContent(
                 'Fatal Error: Unable to Load Distribution Index',
-                'A connection could not be established to our servers to download the distribution index. No local copies were available to load. <br><br>The distribution index is an essential file which provides the latest server information. The launcher is unable to start without it. Ensure you are connected to the internet and relaunch the application. <br><br>It is very possible that the launcher has updated and changed the location for the distribution index file. We would recommend installing the latest version of the launcher from our releases page. <br><br>If you continue to have issues, please contact us on the Vicarious Network Discord server.',
-                'Download Latest Version',
-                'Join our Discord'
+                'A connection could not be established to our servers to download the distribution index. No local copies were available to load. <br><br>The distribution index is an essential file which provides the latest server information. The launcher is unable to start without it. Ensure you are connected to the internet and relaunch the application.',
+                'Close'
             )
             setOverlayHandler(() => {
-                shell.openExternal('https://github.com/VicariousNetwork/HeliosLauncher/releases/latest')
+                const window = remote.getCurrentWindow()
+                window.close()
             })
-            setDismissHandler(() => {
-                shell.openExternal('https://vcnet.work/discord')
-            })
-            toggleOverlay(true, true)
+            toggleOverlay(true)
         })
     }, 750)
 }
@@ -323,17 +302,17 @@ function mergeModConfiguration(o, n, nReq = false){
     return n
 }
 
-//function refreshDistributionIndex(remote, onSuccess, onError){
-//    if(remote){
-//        DistroManager.pullRemote()
-//            .then(onSuccess)
-//            .catch(onError)
-//    } else {
-//        DistroManager.pullLocal()
-//            .then(onSuccess)
-//            .catch(onError)
-//    }
-//}
+function refreshDistributionIndex(remote, onSuccess, onError){
+    if(remote){
+        DistroManager.pullRemote()
+            .then(onSuccess)
+            .catch(onError)
+    } else {
+        DistroManager.pullLocal()
+            .then(onSuccess)
+            .catch(onError)
+    }
+}
 
 async function validateSelectedAccount(){
     const selectedAcc = ConfigManager.getSelectedAccount()
@@ -364,10 +343,6 @@ async function validateSelectedAccount(){
                 }
                 toggleOverlay(false)
                 switchView(getCurrentView(), VIEWS.login)
-                if(hasRPC){
-                    DiscordWrapper.updateDetails('Adding an Account...')
-                    DiscordWrapper.clearState()
-                }
             })
             setDismissHandler(() => {
                 if(accLen > 1){

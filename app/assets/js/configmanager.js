@@ -21,22 +21,23 @@ exports.getLauncherDirectory = function(){
 }
 
 /**
- * Retrieve the ETag version for the current stored distribution file
+ * Retrieve the file hash for the current stored distribution file
  *
  * @returns {string} The absolute path of the launcher directory.
  */
- exports.getDistributionVersion = function(){
-    return config.distributionVersion
+ exports.getDistributionHash = function(){
+    return config.distributionHash
 }
 
 /**
- * Stores the current distribution ETag version into the configuration
+ * Stores the current distribution file hash into the configuration
  *
  * @returns {string} The absolute path of the launcher directory.
  */
-exports.setDistributionVersion = function(version){
-    config.distributionVersion = version
+exports.setDistributionHash = function(hash){
+    config.distributionHash = hash
 }
+
 /**
  * Get the launcher's data directory. This is where all files related
  * to game launch are installed (common, instances, java, etc).
@@ -85,12 +86,13 @@ exports.getAbsoluteMinRAM = function(){
 
 exports.getAbsoluteMaxRAM = function(){
     const mem = os.totalmem()
-    return Math.floor((mem/1000000000))
+    const gT16 = mem-16000000000
+    return Math.floor((mem-1000000000-(gT16 > 0 ? (Number.parseInt(gT16/8) + 16000000000/4) : mem/4))/1000000000)
 }
 
 function resolveMaxRAM(){
     const mem = os.totalmem()
-    return mem >= 16000000000 ? '8G' : (mem >= 8000000000 ? '6G' : (mem >= 6000000000 ? '4G' : '2G'))
+    return mem >= 8000000000 ? '4G' : (mem >= 6000000000 ? '3G' : '2G')
 }
 
 function resolveMinRAM(){
@@ -113,8 +115,7 @@ const DEFAULT_CONFIG = {
                 '-XX:+UseConcMarkSweepGC',
                 '-XX:+CMSIncrementalMode',
                 '-XX:-UseAdaptiveSizePolicy',
-                '-Xmn128M',
-                '-Dfml.loginTimeout=180'
+                '-Xmn128M'
             ],
         },
         game: {
@@ -127,7 +128,6 @@ const DEFAULT_CONFIG = {
         },
         launcher: {
             allowPrerelease: false,
-            discordIntegration: true,
             dataDirectory: dataPath,
             serverCodes: []
         }
@@ -138,7 +138,7 @@ const DEFAULT_CONFIG = {
         dismissed: false
     },
     clientToken: null,
-    distributionVersion: null,
+    distributionHash: null,
     selectedServer: null, // Resolved
     selectedAccount: null,
     authenticationDatabase: {},
@@ -797,23 +797,4 @@ exports.getAllowPrerelease = function(def = false){
  */
 exports.setAllowPrerelease = function(allowPrerelease){
     config.settings.launcher.allowPrerelease = allowPrerelease
-}
-
-/**
- * Check if the launcher should enable discord presence features
- *
- * @param {boolean} def Optional. If true, the default value will be returned.
- * @returns {boolean} Whether or not the launcher should enable discord presence features
- */
-exports.getDiscordIntegration = function(def = false){
-    return !def ? config.settings.launcher.discordIntegration : DEFAULT_CONFIG.settings.launcher.discordIntegration
-}
-
-/**
- * Change the status of whether or not the launcher should denable discord presence features
- *
- * @param {boolean} discordIntegration Whether or not the launcher should enable discord presence features
- */
-exports.setDiscordIntegration = function(discordIntegration){
-    config.settings.launcher.discordIntegration = discordIntegration
 }

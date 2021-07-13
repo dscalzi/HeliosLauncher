@@ -120,7 +120,6 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
 function toggleServerSelection(toggleState) {
     prepareServerSelectionList()
     toggleOverlay(toggleState, true, 'serverSelectContent')
-    DiscordWrapper.updateDetails('Selecting modpack...')
 }
 
 /**
@@ -180,8 +179,6 @@ document.getElementById('serverSelectConfirm').addEventListener('click', () => {
             updateSelectedServer(serv)
             refreshServerStatus(true)
             toggleOverlay(false)
-            DiscordWrapper.updateDetails('Ready to Play!')
-            DiscordWrapper.updateState('Modpack: ' + serv.getName())
             return
         }
     }

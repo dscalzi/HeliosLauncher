@@ -1,12 +1,10 @@
 const fs = require('fs')
 const path = require('path')
+const crypto = require('crypto')
 const request = require('request')
-const ConfigManager = require('./configmanager')
-const logger = require('./loggerutil')('%c[DistroManager]', 'color: #a02d2a; font-weight: bold')
-const constants = require('../../config/constants')
-const isDev = require('../../assets/js/isdev')
 
-const distributionURL = isDev ? constants.DEV_DISTRIBUTION_URL : constants.LIVE_DISTRIBUTION_URL
+const ConfigManager = require('./configmanager')
+const logger        = require('./loggerutil')('%c[DistroManager]', 'color: #a02d2a; font-weight: bold')
 
 /**
  * Represents the download information
@@ -565,10 +563,10 @@ exports.pullRemote = function(){
         return exports.pullLocal()
     }
     return new Promise((resolve, reject) => {
-        //const distroURL = 'http://launcher.vicariousnetwork.com/distribution.json'
+        const distroURL = 'http://launcher.vicariousnetwork.com/distribution.json'
         //const distroURL = 'https://gist.githubusercontent.com/dscalzi/53b1ba7a11d26a5c353f9d5ae484b71b/raw/'
         const opts = {
-            url: distributionURL,
+            url: distroURL,
             timeout: 2500
         }
         const distroDest = path.join(ConfigManager.getLauncherDirectory(), 'distribution.json')
@@ -584,7 +582,7 @@ exports.pullRemote = function(){
 
                 fs.writeFile(distroDest, body, 'utf-8', (err) => {
                     if(!err){
-                        ConfigManager.setDistributionVersion(String(resp.headers['etag']))
+                        ConfigManager.setDistributionHash(crypto.createHash('md5').update(body).digest('hex'))
                         ConfigManager.save()
                         resolve(data)
                         return
@@ -603,49 +601,17 @@ exports.pullRemote = function(){
 
 /**
  * @returns {Promise.<DistroIndex>}
- * Pulls the local version of the distribution file, does not require any downloading.
  */
- exports.pullLocal = function(){
-    logger.info('Now preparing to pull distribution from local.')
+exports.pullLocal = function(){
     return new Promise((resolve, reject) => {
         fs.readFile(DEV_MODE ? DEV_PATH : DISTRO_PATH, 'utf-8', (err, d) => {
             if(!err){
                 data = DistroIndex.fromJSON(JSON.parse(d))
                 resolve(data)
-                logger.info('Pulled distribution from local.')
                 return
             } else {
                 reject(err)
                 return
-            }
-        })
-    })
-}
-
-/**
- * @returns {Promise.<DistroIndex>}
- * Runs a remote ETag version check on the distribution file. If it matches the locally stored version, grab the local.
- */
- exports.pullRemoteIfOutdated = function(){
-    return new Promise((resolve, reject) => {
-        request.head(distributionURL, (err, resp) => {
-            if(!err && resp.statusCode === 200){
-                const tag = resp.headers['etag']
-                if(tag === ConfigManager.getDistributionVersion()){
-                    this.pullLocal().then(data => {
-                        resolve(data)
-                    }).catch(err => {
-                        resolve(err)
-                    })
-                } else {
-                    this.pullRemote().then(data => {
-                        resolve(data)
-                    }).catch(err => {
-                        resolve(err)
-                    })
-                }
-            } else {
-                reject(err)
             }
         })
     })

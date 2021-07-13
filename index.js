@@ -13,10 +13,6 @@ const { pathToFileURL }             = require('url')
 const redirectUriPrefix = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
 const clientID = '71a6e661-ee73-4166-a21a-26ce6e15b3de'
 
-if(isDev) {
-    console.log('Is in dev mode!')
-}
-
 // Setup auto updater.
 function initAutoUpdater(event, data) {
 

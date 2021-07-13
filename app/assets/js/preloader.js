@@ -37,7 +37,7 @@ function sendLoadFromCacheNotification(data){
 }
 
 // Ensure Distribution is downloaded and cached.
-DistroManager.pullRemoteIfOutdated().then((data) => {
+DistroManager.pullRemote().then((data) => {
     logger.log('Loaded distribution index.')
 
     onDistroLoad(data)
