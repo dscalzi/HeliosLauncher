@@ -113,8 +113,7 @@ const DEFAULT_CONFIG = {
                 '-XX:+UseConcMarkSweepGC',
                 '-XX:+CMSIncrementalMode',
                 '-XX:-UseAdaptiveSizePolicy',
-                '-Xmn128M',
-                '-Dfml.loginTimeout=180'
+                '-Xmn128M'
             ],
         },
         game: {
@@ -127,7 +126,6 @@ const DEFAULT_CONFIG = {
         },
         launcher: {
             allowPrerelease: false,
-            discordIntegration: true,
             dataDirectory: dataPath,
             serverCodes: []
         }
@@ -797,23 +795,4 @@ exports.getAllowPrerelease = function(def = false){
  */
 exports.setAllowPrerelease = function(allowPrerelease){
     config.settings.launcher.allowPrerelease = allowPrerelease
-}
-
-/**
- * Check if the launcher should enable discord presence features
- *
- * @param {boolean} def Optional. If true, the default value will be returned.
- * @returns {boolean} Whether or not the launcher should enable discord presence features
- */
-exports.getDiscordIntegration = function(def = false){
-    return !def ? config.settings.launcher.discordIntegration : DEFAULT_CONFIG.settings.launcher.discordIntegration
-}
-
-/**
- * Change the status of whether or not the launcher should denable discord presence features
- *
- * @param {boolean} discordIntegration Whether or not the launcher should enable discord presence features
- */
-exports.setDiscordIntegration = function(discordIntegration){
-    config.settings.launcher.discordIntegration = discordIntegration
 }
