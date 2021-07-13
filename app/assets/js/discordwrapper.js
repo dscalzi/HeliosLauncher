@@ -6,16 +6,14 @@ const {Client} = require('discord-rpc')
 let client
 let activity
 
-exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting for Client..'){
+exports.initRPC = function(genSettings, servSettings = null, initialDetails = 'Waiting for Client..'){
+    logger.log('Now Loading Discord RPC')
     client = new Client({ transport: 'ipc' })
 
     activity = {
         details: initialDetails,
-        state: 'Modpack: ' + servSettings.shortId,
-        largeImageKey: servSettings.largeImageKey,
-        largeImageText: servSettings.largeImageText,
-        smallImageKey: genSettings.smallImageKey,
-        smallImageText: genSettings.smallImageText,
+        largeImageKey: genSettings.smallImageKey,
+        largeImageText: genSettings.smallImageText,
         startTimestamp: new Date().getTime(),
         instance: false
     }
@@ -34,16 +32,46 @@ exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting 
     })
 }
 
-exports.updateDetails = function(details){
-    activity.details = details
-    client.setActivity(activity)
+exports.updateState = function(state){
+    if(client){
+        activity.state = state
+        client.setActivity(activity)
+        logger.log('Updated discord state to: ' + state)
+    }
 }
 
-exports.resetTime = function(){
+exports.clearState = function(){
     if(client){
-        activity.startTimestamp = new Date().getTime()
+        activity = {
+            details: activity.details,
+            largeImageKey: activity.largeImageKey,
+            largeImageText: activity.largeImageText,
+            startTimestamp: activity.startTimestamp,
+            instance: activity.instance
+        }
         client.setActivity(activity)
-        logger.log('Reset the activity time!')
+        logger.log('Cleared the activity state!')
+    }
+}
+
+exports.updateDetails = function(details){
+    if(client){
+        activity.details = details
+        client.setActivity(activity)
+        logger.log('Updated discord details to: ' + details)
+    }
+}
+
+exports.clearDetails = function(){
+    if(client){
+        activity = {
+            state: activity.state,
+            largeImageKey: activity.largeImageKey,
+            largeImageText: activity.largeImageText,
+            startTimestamp: activity.startTimestamp,
+            instance: activity.instance
+        }
+        logger.log('Cleared the activity details!')
     }
 }
 
@@ -53,4 +81,8 @@ exports.shutdownRPC = function(){
     client.destroy()
     client = null
     activity = null
+}
+
+exports.getClient = function(){
+    return client
 }

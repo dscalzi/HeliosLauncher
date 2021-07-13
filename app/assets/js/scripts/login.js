@@ -249,6 +249,22 @@ loginCancelButton.onclick = (e) => {
             loginViewCancelHandler()
             loginViewCancelHandler = null
         }
+        if(loginViewOnSuccess === VIEWS.settings){
+            if(hasRPC){
+                DiscordWrapper.updateDetails('In the Settings...')
+                DiscordWrapper.clearState()
+            }
+        } else {
+            if(hasRPC){
+                if(ConfigManager.getSelectedServer()){
+                    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                    DiscordWrapper.updateDetails('Ready to Play!')
+                    DiscordWrapper.updateState('Modpack: ' + serv.getName())
+                } else {
+                    DiscordWrapper.updateDetails('Landing Screen...')
+                }
+            }
+        }
     })
 }
 
@@ -273,6 +289,20 @@ loginButton.addEventListener('click', () => {
                 // Temporary workaround
                 if(loginViewOnSuccess === VIEWS.settings){
                     prepareSettings()
+                    if(hasRPC){
+                        DiscordWrapper.updateDetails('In the Settings...')
+                        DiscordWrapper.clearState()
+                    }
+                } else {
+                    if(hasRPC){
+                        if(ConfigManager.getSelectedServer()){
+                            const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                            DiscordWrapper.updateDetails('Ready to Play!')
+                            DiscordWrapper.updateState('Modpack: ' + serv.getName())
+                        } else {
+                            DiscordWrapper.updateDetails('Landing Screen...')
+                        }
+                    }
                 }
                 loginViewOnSuccess = VIEWS.landing // Reset this for good measure.
                 loginCancelEnabled(false) // Reset this for good measure.
@@ -341,7 +371,7 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
         let errorDesc = queryMap.get('error_description')
         if(error === 'access_denied'){
             error = 'ERRPR'
-            errorDesc = 'To use the Helios Launcher, you must agree to the required permissions! Otherwise you can\'t use this launcher with Microsoft accounts.<br><br>Despite agreeing to the permissions you don\'t give us the possibility to do anything with your account, because all data will always be sent back to you (the launcher) IMMEDIATELY and WITHOUT WAY.'
+            errorDesc = 'To use the Vicarious Network Launcher, you must agree to the required permissions! Otherwise you can\'t use this launcher with Microsoft accounts.<br><br>Despite agreeing to the permissions you don\'t give us the possibility to do anything with your account, because all data will always be sent back to you (the launcher) IMMEDIATELY and WITHOUT WAY.'
         }        
         setOverlayContent(error, errorDesc, 'OK')
         setOverlayHandler(() => {
@@ -366,6 +396,20 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
                 // Temporary workaround
                 if (loginViewOnSuccess === VIEWS.settings) {
                     prepareSettings()
+                    if(hasRPC){
+                        DiscordWrapper.updateDetails('In the Settings...')
+                        DiscordWrapper.clearState()
+                    }
+                } else {
+                    if(hasRPC){
+                        if(ConfigManager.getSelectedServer()){
+                            const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+                            DiscordWrapper.updateDetails('Ready to Play!')
+                            DiscordWrapper.updateState('Modpack: ' + serv.getName())
+                        } else {
+                            DiscordWrapper.updateDetails('Landing Screen...')
+                        }
+                    }
                 }
                 loginViewOnSuccess = VIEWS.landing // Reset this for good measure.
                 loginCancelEnabled(false) // Reset this for good measure.
