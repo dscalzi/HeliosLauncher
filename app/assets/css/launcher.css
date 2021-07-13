@@ -3095,7 +3095,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* Settings icon colors. */
-#settingsSVG {
+#settingsSVG #openInstanceSVG #settingsSVG{
     stroke: #ffffff;
     height: 15px;
 }
