@@ -75,6 +75,14 @@ exports.clearDetails = function(){
     }
 }
 
+exports.resetTime = function(){
+    if(client){
+        activity.startTimestamp = new Date().getTime()
+        client.setActivity(activity)
+        logger.log('Reset the activity time!')
+    }
+}
+
 exports.shutdownRPC = function(){
     if(!client) return
     client.clearActivity()
