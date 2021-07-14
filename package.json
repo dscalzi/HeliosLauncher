@@ -1,9 +1,9 @@
 {
   "name": "vicariousnetworklauncher",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "productName": "Vicarious Network Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/VicaiousNetwork/)",
+  "author": "SirOMGitsYOU / Peter (https://github.com/VicaiousNetwork/)",
   "license": "UNLICENSED",
   "homepage": "https://github.com/VicariousNetwork/HeliosLauncher",
   "bugs": {
