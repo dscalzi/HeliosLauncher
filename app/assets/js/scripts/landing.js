@@ -1262,7 +1262,8 @@ function loadNews(){
                     let regex = /src="(?!http:\/\/|https:\/\/)(.+?)"/g
                     let matches
                     while((matches = regex.exec(content))){
-                        content = content.replace(`"${matches[1]}"`, `"${newsHost + matches[1]}"`)
+                        // Fix //news issue - Probably only fixes this situation, if problem persists will make more robust.
+                        content = content.replace(`"${matches[1]}"`, `"https:${matches[1]}"`)
                     }
 
                     let link   = el.find('link').text()
