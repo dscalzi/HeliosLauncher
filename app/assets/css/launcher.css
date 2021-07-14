@@ -34,11 +34,6 @@ body, html, div {
     padding: 0px;
 }
 
-/* Reset p presets. */
-p {
-    -webkit-margin-before: 0em;
-    -webkit-margin-after: 0em;
-}
 
 /* Set default font and color. */
 body, button {
