@@ -3011,7 +3011,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* User profile name text. */
 #user_text {
-    font-size: 12px;
+    font-size: 18px;
     min-width: 135px;
     font-weight: 900;
     letter-spacing: 1px;
@@ -3061,7 +3061,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 12px;
     transition: 0.25s ease;
     cursor: pointer;
-    height: 12px;
+    height: 20px;
     width: 25px;
 }
 .mediaSVG:hover,
@@ -3083,6 +3083,7 @@ input:checked + .toggleSwitchSlider:before {
     display: flex;
     align-items: center;
     outline: none;
+    margin: 3px;
 }
 
 #settingsMediaContainer {
@@ -3094,10 +3095,15 @@ input:checked + .toggleSwitchSlider:before {
     stroke: #ffffff;
     height: 15px;
 }
+
+#openInstanceSVG:hover {
+    height: 30px;
+}
+
 .mediaButton:hover #settingsSVG,
 .mediaButton:focus #settingsSVG,
 .mediaButton:active #settingsSVG {
-    height: 23px;
+    height: 30px;
 }
 
 #refreshSVG:active {
@@ -3106,6 +3112,7 @@ input:checked + .toggleSwitchSlider:before {
 #refreshSVG:hover,
 #refreshSVG:focus {
     fill: #ffffff;
+    height: 30px;
 }
 #refreshSVG:active {
     fill: #ffffff;
@@ -3129,6 +3136,7 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 12px;
     line-height: 20px;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
+    margin-right: -18px;
 }
 #settingsTooltip::after {
     content: " ";
@@ -3193,7 +3201,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Style for a general label on the bottom of the landing view. */
 .bot_label {
-    font-size: 9px;
+    font-size: 15px;
     letter-spacing: 1px;
     font-weight: bold;
     text-shadow: 0px 0px 0px #bebcbb;
@@ -3204,8 +3212,8 @@ input:checked + .toggleSwitchSlider:before {
     height: 25px;
     width: 2px;
     background: rgba(107, 105, 105, 0.7);
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 50px;
+    margin-right: 11px;
 }
 
 /* * *
@@ -3221,7 +3229,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Span which displays the player count of the selected server. */
 #player_count {
     color: #949494;
-    font-size: 8px;
+    font-size: 15px;
     font-weight: 900;
     text-shadow: 0px 0px 20px #949494;
     margin-left: 10px;
@@ -3317,7 +3325,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Displays the name of the mojang service. */
 .mojangStatusName {
     width: 100%;
-    font-size: 10px;
+    font-size: 13px;
     letter-spacing: 1px;
     line-height: 12px;
     padding: 6px 0px;
@@ -3414,6 +3422,7 @@ input:checked + .toggleSwitchSlider:before {
     letter-spacing: 2px;
     text-shadow: 0px 0px 0px #bebcbb;
     font-size: 20px;
+    margin-right: -35px;
     padding: 0px;
     transition: 0.25s ease;
     outline: none;
