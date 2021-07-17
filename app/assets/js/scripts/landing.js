@@ -174,6 +174,34 @@ document.getElementById('refreshMediaButton').onclick = (e) => {
     })
 }
 
+// me trying to implemented bh button
+// i will figure this out later.
+
+document.getElementById('bhButton').onclick = (e) => {
+    let ele = document.getElementById('bhButton')
+    ele.setAttribute('inprogress', '')
+        if(hasRPC){
+            DiscordWrapper.updateDetails('Browsing BisectHosting')
+            DiscordWrapper.clearState()
+        }
+        setOverlayContent(
+            'BisectHosting!',
+            'Vicarious Network and all its subsequent modpacks are all sponsored and partnered by Bisect Hosting! <br><br>Please consider checking them out and using code <u><b><span style="color:03DDFF; text-decoration: underline; text-decoration-color:03DDFF;">VICARIOUSNETWORK</b></u></span> for 25% off at checkout! <br><br> All VicariousNetwork modpacks are available to one-click install through BisectHosting! <br><i>(We have opened a page for you to browse their servers & pricing)</i>',
+            'Great! Thank you.',
+            'Join our Discord',
+            )
+            shell.openExternal('https://vcnet.work/bh')
+            setOverlayHandler(() => {
+                toggleOverlay(false)
+            })
+            setDismissHandler(() => {
+                shell.openExternal('https://vcnet.work/discord')
+            })
+            toggleOverlay(true, true)
+}
+
+
+
 // Bind avatar overlay button.
 document.getElementById('avatarOverlay').onclick = (e) => {
     prepareSettings()

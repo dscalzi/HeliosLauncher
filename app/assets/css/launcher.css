@@ -3989,3 +3989,44 @@ input:checked + .toggleSwitchSlider:before {
 .rotating {
     animation: rotating 2s linear infinite;
 }
+
+
+
+/* BisectHosting Affiliate Stuff */
+
+#image_bh_container {
+    position: relative;
+    height: 70px;
+    width: 70px;
+    margin-top: 50px;
+
+}
+
+#image_bh {
+    height: 70px;
+    width: auto;
+    position: relative;
+    box-sizing: border-box;
+    margin-left: -45px;
+    cursor: pointer;
+}
+
+#bhTooltip {
+    cursor: pointer;
+    visibility: hidden;
+    opacity: 0;
+    width: 100px;
+    height: 15px;
+    background-color: rgb(0, 0, 0);
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 2px;
+    position: absolute;
+    z-index: 1;
+    top: 115%;
+    left: -60.5px;
+    font-family: 'Avenir Medium';
+    font-size: 12px;
+    transition: visibility 0s linear 0.25s, opacity 0.25s ease;
+}
