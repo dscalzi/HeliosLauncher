@@ -367,10 +367,10 @@ function bindServerCodeButtons(){
             if(!ConfigManager.getServerCodes().includes(code) && code){
                 ConfigManager.getServerCodes().push(code)
                 ConfigManager.save()
-                loggerSettings.log('Added server code to configuration and saved it')
+                loggerSettings.log('Added modpack code to configuration and saved it')
                 prepareLauncherTab()
             } else {
-                loggerSettings.log('Server code already exists or is empty, not adding.')
+                loggerSettings.log('Modpack code already exists or is empty, not adding.')
             }
         }
     }
@@ -388,7 +388,7 @@ function bindServerCodeButtons(){
                     prepareLauncherTab()
                 }
             }
-            loggerSettings.log('Server code doesnt exist!, not removing.')
+            loggerSettings.log('Modpack code doesnt exist!, not removing.')
         }
     })
 }
@@ -820,7 +820,7 @@ function resolveServerCodesForUI(){
         const valid = servs && servs.length
         if(valid){
             for(let serv of servs){
-                loggerSettings.log('server: ' + serv.getName())
+                loggerSettings.log('Modpack: ' + serv.getName())
                 servNames +=
                     `
                     <span class="settingsServerCodeServerName">${serv.getName()}</span> 
