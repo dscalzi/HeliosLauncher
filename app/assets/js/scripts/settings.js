@@ -1367,7 +1367,7 @@ function populateAboutVersionInformation() {
  */
 function populateReleaseNotes() {
     $.ajax({
-        url: 'https://github.com/ModRealms-Network/HeliosLauncher/releases.atom',
+        url: 'https://github.com/VicariousNetwork/VNLauncher/releases.atom',
         success: (data) => {
             const version = 'v' + remote.app.getVersion()
             const entries = $(data).find('entry')

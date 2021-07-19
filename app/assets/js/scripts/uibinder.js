@@ -133,7 +133,7 @@ function showFatalStartupError(){
                 'Join our Discord'
             )
             setOverlayHandler(() => {
-                shell.openExternal('https://github.com/VicariousNetwork/HeliosLauncher/releases/latest')
+                shell.openExternal('https://github.com/VicariousNetwork/VNLauncher/releases/latest')
             })
             setDismissHandler(() => {
                 shell.openExternal('https://vcnet.work/discord')

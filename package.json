@@ -4,10 +4,10 @@
   "productName": "Vicarious Network Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "SirOMGitsYOU / Peter (https://github.com/VicaiousNetwork/)",
-  "license": "UNLICENSED",
-  "homepage": "https://github.com/VicariousNetwork/HeliosLauncher",
+  "license": "MIT",
+  "homepage": "https://github.com/VicariousNetwork/VNLauncher",
   "bugs": {
-    "url": "https://github.com/VicariousNetwork/HeliosLauncher/issues"
+    "url": "https://github.com/VicariousNetwork/VNLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -45,6 +45,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VicariousNetwork/HeliosLauncher.git"
+    "url": "git+https://github.com/VicariousNetwork/VNLauncher.git"
   }
 }
