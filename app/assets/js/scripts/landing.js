@@ -5,6 +5,7 @@
 const cp                      = require('child_process')
 const crypto                  = require('crypto')
 const {URL}                   = require('url')
+const fs                      = require('fs-extra')
 
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
