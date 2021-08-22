@@ -10,6 +10,9 @@ const path                          = require('path')
 const semver                        = require('semver')
 const { pathToFileURL }             = require('url')
 
+const redirectUriPrefix = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
+const CLIENT_ID = '' // TODO: Add client ID (https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
+
 // Setup auto updater.
 function initAutoUpdater(event, data) {
 
@@ -86,6 +89,73 @@ ipcMain.on('distributionIndexDone', (event, res) => {
 // Disable hardware acceleration.
 // https://electronjs.org/docs/tutorial/offscreen-rendering
 app.disableHardwareAcceleration()
+
+let MSALoginWindow
+
+// Open the Microsoft Account Login window
+ipcMain.on('openMSALoginWindow', (ipcEvent) => {
+    if (MSALoginWindow) {
+        ipcEvent.reply('MSALoginWindowReply', 'error', 'AlreadyOpenException')
+        return
+    }
+    MSALoginWindow = new BrowserWindow({
+        title: 'Microsoft Login',
+        backgroundColor: '#222222',
+        width: 520,
+        height: 600,
+        frame: true,
+        icon: getPlatformIcon('SealCircle')
+    })
+
+    MSALoginWindow.on('closed', () => {
+        MSALoginWindow = undefined
+    })
+
+    MSALoginWindow.on('close', () => {
+        ipcEvent.reply('MSALoginWindowReply', 'error', 'AuthNotFinished')
+    })
+
+    MSALoginWindow.webContents.on('did-navigate', (_, uri) => {
+        if (uri.startsWith(redirectUriPrefix)) {
+            let queries = uri.substring(redirectUriPrefix.length).split('#', 1).toString().split('&')
+            let queryMap = new Map()
+
+            queries.forEach(query => {
+                const [name, value] = query.split('=')
+                queryMap.set(name, decodeURI(value))
+            })
+
+            ipcEvent.reply('MSALoginWindowReply', queryMap)
+
+            MSALoginWindow.close()
+            MSALoginWindow = null
+        }
+    })
+
+    MSALoginWindow.removeMenu()
+    MSALoginWindow.loadURL('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?prompt=select_account&client_id=' + CLIENT_ID + '&response_type=code&scope=XboxLive.signin%20offline_access&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient')
+})
+
+let MSALogoutWindow
+
+ipcMain.on('openMSALogoutWindow', (ipcEvent) => {
+    if (!MSALogoutWindow) {
+        MSALogoutWindow = new BrowserWindow({
+            title: 'Microsoft Logout',
+            backgroundColor: '#222222',
+            width: 520,
+            height: 600,
+            frame: true,
+            icon: getPlatformIcon('SealCircle')
+        })
+        MSALogoutWindow.loadURL('https://login.microsoftonline.com/common/oauth2/v2.0/logout')
+        MSALogoutWindow.webContents.on('did-navigate', () => {
+            setTimeout(() => {
+                ipcEvent.reply('MSALogoutWindowReply')
+            }, 5000)
+        })
+    }
+})
 
 // https://github.com/electron/electron/issues/18397
 app.allowRendererProcessReuse = true
