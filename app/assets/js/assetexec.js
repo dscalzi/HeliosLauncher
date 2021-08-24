@@ -6,8 +6,6 @@ if(target == null){
 }
 let tracker = new target(...(process.argv.splice(3)))
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
-
 //const tracker = new AssetGuard(process.argv[2], process.argv[3])
 console.log('AssetExec Started')
 

@@ -5,10 +5,11 @@
  * modules, excluding dependencies.
  */
 // Requirements
-const $                                      = require('jquery')
-const {ipcRenderer, remote, shell, webFrame} = require('electron')
-const isDev                                  = require('./assets/js/isdev')
-const LoggerUtil                             = require('./assets/js/loggerutil')
+const $                              = require('jquery')
+const {ipcRenderer, shell, webFrame} = require('electron')
+const remote                         = require('@electron/remote')
+const isDev                          = require('./assets/js/isdev')
+const LoggerUtil                     = require('./assets/js/loggerutil')
 
 const loggerUICore             = LoggerUtil('%c[UICore]', 'color: #000668; font-weight: bold')
 const loggerAutoUpdater        = LoggerUtil('%c[AutoUpdater]', 'color: #000668; font-weight: bold')
@@ -49,6 +50,7 @@ if(!isDev){
                 
                 if(process.platform === 'darwin'){
                     info.darwindownload = `https://github.com/ASCIIcat/AvalonConcordiaLauncher/releases/download/v${info.version}/avalonconcordialauncher-setup-${info.version}.dmg`
+
                     showUpdateUI(info)
                 }
                 

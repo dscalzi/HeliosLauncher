@@ -1,0 +1,51 @@
+appId: 'helioslauncher'
+productName: 'Helios Launcher'
+artifactName: '${productName}-setup-${version}.${ext}'
+
+copyright: 'Copyright © 2018-2021 Daniel Scalzi'
+
+asar: true
+compression: 'maximum'
+
+files:
+  - '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.travis.yml,.nvmrc,.eslintrc.json,build.js}'
+
+extraResources:
+  - 'libraries'
+
+# Windows Configuration
+win: 
+  target: 
+    - target: 'nsis'
+      arch: 'x64'
+
+# Windows Installer Configuration
+nsis:
+  oneClick: false
+  perMachine: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+
+# macOS Configuration
+mac:
+  target:
+    - target: 'dmg'
+      arch:
+        - 'x64'
+        - 'arm64'
+  artifactName: '${productName}-setup-${version}-${arch}.${ext}'
+  category: 'public.app-category.games'
+
+# Linux Configuration
+linux: 
+  target: 'AppImage'
+  maintainer: 'Daniel Scalzi'
+  vendor: 'Daniel Scalzi'
+  synopsis: 'Modded Minecraft Launcher'
+  description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.'
+  category: 'Game'
+
+
+directories:
+  buildResources: 'build'
+  output: 'dist'

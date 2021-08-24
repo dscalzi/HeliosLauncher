@@ -23,6 +23,7 @@ class ProcessBuilder {
         this.forgeData = forgeData
         this.authUser = authUser
         this.launcherVersion = launcherVersion
+        this.forgeModListFile = path.join(this.gameDir, 'forgeMods.list') // 1.13+
         this.fmlDir = path.join(this.gameDir, 'forgeModList.json')
         this.llDir = path.join(this.gameDir, 'liteloaderModList.json')
         this.libPath = path.join(this.commonDir, 'libraries')
@@ -44,9 +45,9 @@ class ProcessBuilder {
         
         // Mod list below 1.13
         if(!Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
-            this.constructModList('forge', modObj.fMods, true)
+            this.constructJSONModList('forge', modObj.fMods, true)
             if(this.usingLiteLoader){
-                this.constructModList('liteloader', modObj.lMods, true)
+                this.constructJSONModList('liteloader', modObj.lMods, true)
             }
         }
         
@@ -54,7 +55,8 @@ class ProcessBuilder {
         let args = this.constructJVMArguments(uberModArr, tempNativePath)
 
         if(Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
-            args = args.concat(this.constructModArguments(modObj.fMods))
+            //args = args.concat(this.constructModArguments(modObj.fMods))
+            args = args.concat(this.constructModList(modObj.fMods))
         }
 
         logger.log('Launch Arguments:', args)
@@ -224,7 +226,7 @@ class ProcessBuilder {
      * @param {Array.<Object>} mods An array of mods to add to the mod list.
      * @param {boolean} save Optional. Whether or not we should save the mod list file.
      */
-    constructModList(type, mods, save = false){
+    constructJSONModList(type, mods, save = false){
         const modList = {
             repositoryRoot: ((type === 'forge' && this._requiresAbsolute()) ? 'absolute:' : '') + path.join(this.commonDir, 'modstore')
         }
@@ -249,27 +251,51 @@ class ProcessBuilder {
         return modList
     }
 
+    // /**
+    //  * Construct the mod argument list for forge 1.13
+    //  * 
+    //  * @param {Array.<Object>} mods An array of mods to add to the mod list.
+    //  */
+    // constructModArguments(mods){
+    //     const argStr = mods.map(mod => {
+    //         return mod.getExtensionlessID()
+    //     }).join(',')
+
+    //     if(argStr){
+    //         return [
+    //             '--fml.mavenRoots',
+    //             path.join('..', '..', 'common', 'modstore'),
+    //             '--fml.mods',
+    //             argStr
+    //         ]
+    //     } else {
+    //         return []
+    //     }
+        
+    // }
+
     /**
      * Construct the mod argument list for forge 1.13
      * 
      * @param {Array.<Object>} mods An array of mods to add to the mod list.
      */
-    constructModArguments(mods){
-        const argStr = mods.map(mod => {
+    constructModList(mods) {
+        const writeBuffer = mods.map(mod => {
             return mod.getExtensionlessID()
-        }).join(',')
+        }).join('\n')
 
-        if(argStr){
+        if(writeBuffer) {
+            fs.writeFileSync(this.forgeModListFile, writeBuffer, 'UTF-8')
             return [
                 '--fml.mavenRoots',
                 path.join('..', '..', 'common', 'modstore'),
-                '--fml.mods',
-                argStr
+                '--fml.modLists',
+                this.forgeModListFile
             ]
         } else {
             return []
         }
-        
+
     }
 
     _processAutoConnectArg(args){

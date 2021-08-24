@@ -444,7 +444,7 @@ function populateAuthAccounts(){
         const acc = authAccounts[val]
         authAccountStr += `<div class="settingsAuthAccount" uuid="${acc.uuid}">
             <div class="settingsAuthAccountLeft">
-                <img class="settingsAuthAccountImage" alt="${acc.displayName}" src="https://crafatar.com/renders/body/${acc.uuid}?scale=3&default=MHF_Steve&overlay">
+                <img class="settingsAuthAccountImage" alt="${acc.displayName}" src="https://mc-heads.net/body/${acc.uuid}/60">
             </div>
             <div class="settingsAuthAccountRight">
                 <div class="settingsAuthAccountDetails">
@@ -687,9 +687,9 @@ function resolveDropinModsForUI(){
 function bindDropinModsRemoveButton(){
     const sEls = settingsModsContainer.querySelectorAll('[remmod]')
     Array.from(sEls).map((v, index, arr) => {
-        v.onclick = () => {
+        v.onclick = async () => {
             const fullName = v.getAttribute('remmod')
-            const res = DropinModUtil.deleteDropinMod(CACHE_SETTINGS_MODS_DIR, fullName)
+            const res = await DropinModUtil.deleteDropinMod(CACHE_SETTINGS_MODS_DIR, fullName)
             if(res){
                 document.getElementById(fullName).remove()
             } else {
@@ -1139,10 +1139,11 @@ function populateJavaExecDetails(execPath){
     const jg = new JavaGuard(DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion())
     jg._validateJavaBinary(execPath).then(v => {
         if(v.valid){
+            const vendor = v.vendor != null ? ` (${v.vendor})` : ''
             if(v.version.major < 9) {
-                settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major} Update ${v.version.update} (x${v.arch})`
+                settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major} Update ${v.version.update} (x${v.arch})${vendor}`
             } else {
-                settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major}.${v.version.minor}.${v.version.revision} (x${v.arch})`
+                settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major}.${v.version.minor}.${v.version.revision} (x${v.arch})${vendor}`
             }
         } else {
             settingsJavaExecDetails.innerHTML = 'Invalid Selection'
