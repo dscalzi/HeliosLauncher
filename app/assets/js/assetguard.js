@@ -468,15 +468,15 @@ class JavaGuard extends EventEmitter {
                             break
                         }
                     }
-                } else {
+                } else if(verOb.major >= 16) {
+                    // TODO Make this logic better. Make java 16 required.
                     // Java 9+
-                    if(Util.mcVersionAtLeast('1.13', this.mcVersion)){
-                        console.log('Java 9+ not yet tested.')
-                        /* meta.version = verOb
+                    if(Util.mcVersionAtLeast('1.17', this.mcVersion)){
+                        meta.version = verOb
                         ++checksum
                         if(checksum === goal){
                             break
-                        } */
+                        }
                     }
                 }
                 // Space included so we get only the vendor.
