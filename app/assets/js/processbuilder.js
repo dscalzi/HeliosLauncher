@@ -670,10 +670,13 @@ class ProcessBuilder {
     classpathArg(mods, tempNativePath){
         let cpArgs = []
 
-        // Add the version.jar to the classpath.
-        // TODO Needs to be removed for 1.17+, need to test earlier versions.
-        // const version = this.versionData.id
-        // cpArgs.push(path.join(this.commonDir, 'versions', version, version + '.jar'))
+        if(!Util.mcVersionAtLeast('1.17', this.server.getMinecraftVersion())) {
+            // Add the version.jar to the classpath.
+            // Must not be added to the classpath for Forge 1.17+.
+            const version = this.versionData.id
+            cpArgs.push(path.join(this.commonDir, 'versions', version, version + '.jar'))
+        }
+        
 
         if(this.usingLiteLoader){
             cpArgs.push(this.llPath)
