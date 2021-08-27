@@ -376,6 +376,8 @@ ipcRenderer.on('MSALoginWindowReply', (_, ...arguments_) => {
                 loginLoading(false)
                 loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.success'), Lang.queryJS('login.login'))
                 formDisabled(false)
+                toggleOverlay(false)
+                toggleOverlay(false, false, 'msOverlay')
             })
         }, 1000)
     }).catch(error => {
