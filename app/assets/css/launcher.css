@@ -874,11 +874,17 @@ body, button {
 }
 
 #loginMSButton {
-    background: none;
+    background-color: #006EFA;
     border: none;
     margin-top: 5px;
     margin-bottom: 10px;
     font-size: 20px;
+    display: flex;
+    padding: 16px;
+    gap: 15px;
+    font-weight: bold;
+    align-items: center;
+    cursor: pointer;
 }
 #loginMSButton:disabled {
     color: rgba(255, 255, 255, 0.75);
