@@ -394,16 +394,20 @@ function processLogOut(val, isLastAccount, skip = false) {
         val,
         isLastAccount
     }
+
+    const parent = val.closest('.settingsAuthAccount')
+    const uuid = parent.getAttribute('uuid')
+
     if (!skip) {
-        const parent = val.closest('.settingsAuthAccount')
-        const uuid = parent.getAttribute('uuid')
         const account = ConfigManager.getAuthAccount(uuid)
         if (account.type === 'microsoft') {
             toggleOverlay(true, false, 'msOverlay')
             ipcRenderer.send('openMSALogoutWindow', 'open')
         }
     }
+
     const prevSelAcc = ConfigManager.getSelectedAccount()
+
     AuthManager.removeAccount(uuid).then(() => {
         if(!isLastAccount && uuid === prevSelAcc.uuid){
             const selAcc = ConfigManager.getSelectedAccount()
@@ -412,6 +416,7 @@ function processLogOut(val, isLastAccount, skip = false) {
             validateSelectedAccount()
         }
     })
+
     $(parent).fadeOut(250, () => {
         parent.remove()
     })
