@@ -148,6 +148,7 @@ ipcMain.on('openMSALogoutWindow', (ipcEvent) => {
             frame: true,
             icon: getPlatformIcon('SealCircle')
         })
+        MSALogoutWindow.removeMenu()
         MSALogoutWindow.loadURL('https://login.microsoftonline.com/common/oauth2/v2.0/logout')
         MSALogoutWindow.webContents.on('did-navigate', () => {
             setTimeout(() => {
