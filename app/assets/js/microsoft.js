@@ -1,225 +1,162 @@
-// Requirements
-const request = require('request')
+const got = require('got').extend({
+    responseType: 'json',
+    resolveBodyOnly: true
+})
 
-// Constants
-const clientId = '71a6e661-ee73-4166-a21a-26ce6e15b3de'
+// TODO: Add client ID (https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
+const CLIENT_ID = '71a6e661-ee73-4166-a21a-26ce6e15b3de'
 
-const tokenUri = 'https://login.microsoftonline.com/consumers/oauth2/v2.0/token'
-const authXBLUri = 'https://user.auth.xboxlive.com/user/authenticate'
-const authXSTSUri = 'https://xsts.auth.xboxlive.com/xsts/authorize'
-const authMCUri = 'https://api.minecraftservices.com/authentication/login_with_xbox'
-const profileURI = 'https://api.minecraftservices.com/minecraft/profile'
+const TOKEN_URI = 'https://login.microsoftonline.com/consumers/oauth2/v2.0/token'
+const AUTH_XBL_URI = 'https://user.auth.xboxlive.com/user/authenticate'
+const AUTH_XSTS_URI = 'https://xsts.auth.xboxlive.com/xsts/authorize'
+const AUTH_MC_URI = 'https://api.minecraftservices.com/authentication/login_with_xbox'
+const PROFILE_URI = 'https://api.minecraftservices.com/minecraft/profile'
 
-// Functions
-function requestPromise(uri, options) {
-    return new Promise((resolve, reject) => {
-        request(uri, options, (error, response, body) => {
-            if (error) {
-                reject(error)
-            } else if (response.statusCode !== 200) {
-                reject([response.statusCode, response.statusMessage, response])
-            } else {
-                resolve(response)
-            }
-        })
-    })
-}
-
-function getXBLToken(accessToken) {
-    return new Promise((resolve, reject) => {
-        const data = new Object()
-
-        const options = {
-            method: 'post',
-            json: {
-                Properties: {
-                    AuthMethod: 'RPS',
-                    SiteName: 'user.auth.xboxlive.com',
-                    RpsTicket: `d=${accessToken}`
-                },
-                RelyingParty: 'http://auth.xboxlive.com',
-                TokenType: 'JWT'
-            }
+async function getXBLToken(accessToken) {
+    const {
+        Token: token,
+        DisplayClaims: displayClaims
+    } = await got.post(AUTH_XBL_URI, {
+        json: {
+            Properties: {
+                AuthMethod: 'RPS',
+                SiteName: 'user.auth.xboxlive.com',
+                RpsTicket: `d=${accessToken}`
+            },
+            RelyingParty: 'http://auth.xboxlive.com',
+            TokenType: 'JWT'
         }
-        requestPromise(authXBLUri, options).then(response => {
-            const body = response.body
-
-            data.token = body.Token
-            data.uhs = body.DisplayClaims.xui[0].uhs
-
-            resolve(data)
-        }).catch(error => {
-            reject(error)
-        })
     })
-}
 
-function getXSTSToken(XBLToken) {
-    return new Promise((resolve, reject) => {
-        const options = {
-            method: 'post',
-            json: {
-                Properties: {
-                    SandboxId: 'RETAIL',
-                    UserTokens: [XBLToken]
-                },
-                RelyingParty: 'rp://api.minecraftservices.com/',
-                TokenType: 'JWT'
-            }
-        }
-        requestPromise(authXSTSUri, options).then(response => {
-            if (response.body.XErr) {
-                switch (response.body.XErr) {
-                    case 2148916233:
-                        reject({
-                            message: 'Your Microsoft account is not connected to an Xbox account. Please create one.<br>'
-                        })
-                        return
-        
-                    case 2148916238: 
-                        reject({
-                            message: 'Since you are not yet 18 years old, an adult must add you to a family in order for you to use Helios Launcher!'
-                        })
-                        return
-                
-                }
-                reject(response.body)
-            }
-            resolve(response.body.Token)
-        }).catch(error => {
-            reject(error)
-        })
-    })
-}
-
-function getMCAccessToken(UHS, XSTSToken) {
-    return new Promise((resolve, reject) => {
-        const data = new Object()
-        const expiresAt = new Date()
-
-        const options = {
-            method: 'post',
-            json: {
-                identityToken: `XBL3.0 x=${UHS};${XSTSToken}`
-            }
-        }
-        requestPromise(authMCUri, options).then(response => {
-            const body = response.body
-
-            expiresAt.setSeconds(expiresAt.getSeconds() + body.expires_in)
-            data.access_token = body.access_token
-            data.expires_at = expiresAt
-
-            resolve(data)
-        }).catch(error => {
-            reject(error)
-        })
-    })
-}
-
-// Exports
-exports.getAccessToken = authCode => {
-    return new Promise((resolve, reject) => {
-        const expiresAt = new Date()
-        const data = new Object()
-
-        const options = {
-            method: 'post',
-            formData: {
-                client_id: clientId,
-                code: authCode,
-                scope: 'XboxLive.signin',
-                redirect_uri: 'https://login.microsoftonline.com/common/oauth2/nativeclient',
-                grant_type: 'authorization_code'
-            }
-        }
-        requestPromise(tokenUri, options).then(response => {
-            const body = JSON.parse(response.body)
-            expiresAt.setSeconds(expiresAt.getSeconds() + body.expires_in)
-            data.expires_at = expiresAt
-            data.access_token = body.access_token
-            data.refresh_token = body.refresh_token
-
-            resolve(data)
-        }).catch(error => {
-            reject(error)
-        })
-    })
-}
-
-exports.refreshAccessToken = refreshToken => {
-    return new Promise((resolve, reject) => {
-        const expiresAt = new Date()
-        const data = new Object()
-
-        const options = {
-            method: 'post',
-            formData: {
-                client_id: clientId,
-                refresh_token: refreshToken,
-                scope: 'XboxLive.signin',
-                redirect_uri: 'https://login.microsoftonline.com/common/oauth2/nativeclient',
-                grant_type: 'refresh_token'
-            }
-        }
-        requestPromise(tokenUri, options).then(response => {
-            const body = JSON.parse(response.body)
-            expiresAt.setSeconds(expiresAt.getSeconds() + body.expires_in)
-            data.expires_at = expiresAt
-            data.access_token = body.access_token
-
-            resolve(data)
-        }).catch(error => {
-            reject(error)
-        })
-    })
-}
-
-exports.authMinecraft = async accessToken => {
-    try {
-        const XBLToken = await getXBLToken(accessToken)
-        const XSTSToken = await getXSTSToken(XBLToken.token)
-        const MCToken = await getMCAccessToken(XBLToken.uhs, XSTSToken)
-
-        return MCToken
-    } catch (error) {
-        Promise.reject(error)
+    return {
+        token,
+        uhs: displayClaims.xui[0].uhs
     }
 }
 
-exports.checkMCStore = async function(access_token){
-    return new Promise((resolve, reject) => {
-        request.get({
-            url: 'https://api.minecraftservices.com/entitlements/mcstore',
-            json: true,
-            headers: {
-                Authorization: 'Bearer ' + access_token
-            }
-        }, (err, res, body) => {
-            if (err) {
-                resolve(false)
-                return
-            }
-            if(body.items && body.items.length > 0) resolve(true)
-            else resolve(false)
-        })
+async function getXSTSToken(XBLToken) {
+    const data = await got.post(AUTH_XSTS_URI, {
+        json: {
+            Properties: {
+                SandboxId: 'RETAIL',
+                UserTokens: [XBLToken]
+            },
+            RelyingParty: 'rp://api.minecraftservices.com/',
+            TokenType: 'JWT'
+        }
     })
+
+    if (data.XErr) {
+        switch (data.XErr) {
+            case 2148916233:
+                throw {
+                    message: 'Your Microsoft account is not connected to an Xbox account. Please create one.<br>'
+                }
+            case 2148916238:
+                throw {
+                    message: 'Since you are not yet 18 years old, an adult must add you to a family in order for you to use Helios Launcher!'
+                }
+        }
+        throw data
+    }
+
+    return data.Token
 }
 
-exports.getMCProfile = MCAccessToken => {
-    return new Promise((resolve, reject) => {
-        const options = {
-            method: 'get',
-            headers: {
-                Authorization: `Bearer ${MCAccessToken}`
-            }
+async function getMCAccessToken(UHS, XSTSToken) {
+    const data = await got.post(AUTH_MC_URI, {
+        json: {
+            identityToken: `XBL3.0 x=${UHS};${XSTSToken}`
         }
-        requestPromise(profileURI, options).then(response => {
-            const body = JSON.parse(response.body)
-
-            resolve(body)
-        }).catch(error => {
-            reject(error)
-        })
     })
-}  
+
+    const expiresAt = new Date()
+    expiresAt.setSeconds(expiresAt.getSeconds() + data.expires_in)
+
+    return {
+        expired_at: expiresAt,
+        access_token: data.access_token
+    }
+}
+
+exports.getAccessToken = async authCode => {
+    const {
+        expires_in,
+        access_token,
+        refresh_token
+    } = await got.post(TOKEN_URI, {
+        form: {
+            client_id: CLIENT_ID,
+            code: authCode,
+            scope: 'XboxLive.signin',
+            redirect_uri: 'https://login.microsoftonline.com/common/oauth2/nativeclient',
+            grant_type: 'authorization_code'
+        }
+    })
+
+    const expiresAt = new Date()
+    expiresAt.setSeconds(expiresAt.getSeconds() + expires_in)
+
+    return {
+        expires_at: expiresAt,
+        access_token,
+        refresh_token
+    }
+}
+
+exports.refreshAccessToken = async refreshToken => {
+    const {
+        expires_in,
+        access_token
+    } = await got.post(TOKEN_URI, {
+        form: {
+            client_id: CLIENT_ID,
+            refresh_token: refreshToken,
+            scope: 'XboxLive.signin',
+            redirect_uri: 'https://login.microsoftonline.com/common/oauth2/nativeclient',
+            grant_type: 'refresh_token'
+        },
+        responseType: 'json'
+    })
+
+    const expiresAt = new Date()
+    expiresAt.setSeconds(expiresAt.getSeconds() + expires_in)
+
+    return {
+        expires_at: expiresAt,
+        access_token
+    }
+}
+
+exports.authMinecraft = async accessToken => {
+    const XBLToken = await getXBLToken(accessToken)
+    const XSTSToken = await getXSTSToken(XBLToken.token)
+    const MCToken = await getMCAccessToken(XBLToken.uhs, XSTSToken)
+
+    return MCToken
+}
+
+exports.checkMCStore = async access_token => {
+    try {
+        const {items} = await got('https://api.minecraftservices.com/entitlements/mcstore', {
+            headers: {
+                Authorization: 'Bearer ' + access_token
+            },
+            responseType: 'json'
+        })
+
+        return items && items.length > 0
+    } catch {
+        return false
+    }
+}
+
+exports.getMCProfile = async MCAccessToken => {
+    const data = await got(PROFILE_URI, {
+        headers: {
+            Authorization: `Bearer ${MCAccessToken}`
+        }
+    })
+
+    return data
+}

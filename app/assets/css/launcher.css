@@ -869,28 +869,31 @@ body, button {
 }
 
 #loginMSButton {
-    background: none;
+    background-color: #006EFA;
     border: none;
     margin-top: 5px;
     margin-bottom: 10px;
     font-size: 20px;
+    display: flex;
+    padding: 16px;
+    gap: 15px;
+    font-weight: bold;
+    align-items: center;
+    cursor: pointer;
 }
 #loginMSButton:disabled {
     color: rgba(255, 255, 255, 0.75);
     pointer-events: none;
 }
-
 #loginMSButton:hover,
 #loginMSButton:focus {
     text-shadow: 0px 0px 20px #fff;
     outline: none;
 }
-
 #loginMSButton:active {
     color: #c7c7c7;
     text-shadow:  0px 0px 20px #c7c7c7;
-} 
-
+}
 /*
 #login_filter {
     height: calc(100% - 22px);

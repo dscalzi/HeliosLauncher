@@ -330,19 +330,18 @@ loginButton.addEventListener('click', () => {
 
 })
 
-loginMSButton.addEventListener('click', (event) => {
+loginMSButton.addEventListener('click', () => {
     // Show loading stuff.
     toggleOverlay(true, false, 'msOverlay')
     loginMSButton.disabled = true
     ipcRenderer.send('openMSALoginWindow', 'open')
 })
 
-ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
-    if (args[0] === 'error') {
-        
+ipcRenderer.on('MSALoginWindowReply', (_, ...arguments_) => {
+    if (arguments_[0] === 'error') {
         loginMSButton.disabled = false
         loginLoading(false)
-        switch (args[1]){
+        switch (arguments_[1]) {
             case 'AlreadyOpenException': {
                 setOverlayContent('ERROR', 'There is already a login window open!', 'OK')
                 setOverlayHandler(() => {
@@ -362,17 +361,17 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
                 return
             }
         }
-        
+
     }
     toggleOverlay(false, false, 'msOverlay')
-    const queryMap = args[0]
+    const queryMap = arguments_[0]
     if (queryMap.has('error')) {
         let error = queryMap.get('error')
         let errorDesc = queryMap.get('error_description')
-        if(error === 'access_denied'){
+        if (error === 'access_denied') {
             error = 'ERRPR'
-            errorDesc = 'To use the Vicarious Network Launcher, you must agree to the required permissions! Otherwise you can\'t use this launcher with Microsoft accounts.<br><br>Despite agreeing to the permissions you don\'t give us the possibility to do anything with your account, because all data will always be sent back to you (the launcher) IMMEDIATELY and WITHOUT WAY.'
-        }        
+            errorDesc = 'To use the Helios Launcher, you must agree to the required permissions! Otherwise you can\'t use this launcher with Microsoft accounts.<br><br>Despite agreeing to the permissions you don\'t give us the possibility to do anything with your account, because all data will always be sent back to you (the launcher) IMMEDIATELY and WITHOUT WAY.'
+        }
         setOverlayContent(error, errorDesc, 'OK')
         setOverlayHandler(() => {
             loginMSButton.disabled = false
@@ -407,8 +406,9 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
                 loginLoading(false)
                 loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.success'), Lang.queryJS('login.login'))
                 formDisabled(false)
+                toggleOverlay(false)
+                toggleOverlay(false, false, 'msOverlay')
             })
-            toggleOverlay(false)
         }, 1000)
     }).catch(error => {
         loginMSButton.disabled = false
@@ -421,5 +421,4 @@ ipcRenderer.on('MSALoginWindowReply', (event, ...args) => {
         toggleOverlay(true)
         loggerLogin.error(error)
     })
-
 })
