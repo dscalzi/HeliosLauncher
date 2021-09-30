@@ -455,7 +455,7 @@ function bindAuthAccountLogOut() {
     })
 }
 
-let  data = null
+let data = null
 
 /**
  * Process a log out.
@@ -463,7 +463,7 @@ let  data = null
  * @param {Element} val The log out button element.
  * @param {boolean} isLastAccount If this logout is on the last added account.
  */
-function processLogOut(val, isLastAccount, skip = false) {
+ function processLogOut(val, isLastAccount, skip = false) {
     data = {
         val,
         isLastAccount
@@ -479,7 +479,9 @@ function processLogOut(val, isLastAccount, skip = false) {
             ipcRenderer.send('openMSALogoutWindow', 'open')
         }
     }
+
     const prevSelAcc = ConfigManager.getSelectedAccount()
+
     AuthManager.removeAccount(uuid).then(() => {
         if (!isLastAccount && uuid === prevSelAcc.uuid) {
             const selAcc = ConfigManager.getSelectedAccount()
@@ -488,6 +490,7 @@ function processLogOut(val, isLastAccount, skip = false) {
             validateSelectedAccount()
         }
     })
+    
     $(parent).fadeOut(150, () => {
         parent.remove()
     })
