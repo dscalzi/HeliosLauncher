@@ -1,4 +1,5 @@
-require('@electron/remote/main').initialize()
+const remoteMain = require('@electron/remote/main')
+remoteMain.initialize()
 
 // Requirements
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
@@ -185,11 +186,12 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js'),
             nodeIntegration: true,
-            contextIsolation: false,
-            enableRemoteModule: true
+            contextIsolation: false
         },
         backgroundColor: '#171614'
     })
+
+    remoteMain.enable(win.webContents)
 
     ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))
 

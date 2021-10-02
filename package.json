@@ -23,9 +23,9 @@
     "node": "14.x.x"
   },
   "dependencies": {
-    "@electron/remote": "^1.2.0",
-    "adm-zip": "^0.5.5",
-    "async": "^3.2.0",
+    "@electron/remote": "^2.0.1",
+    "adm-zip": "^0.5.7",
+    "async": "^3.2.1",
     "discord-rpc": "^3.2.0",
     "ejs": "^3.1.6",
     "ejs-electron": "^2.1.1",
@@ -40,9 +40,9 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^13.1.4",
+    "electron": "^13.5.1",
     "electron-builder": "^22.11.7",
-    "eslint": "^7.29.0"
+    "eslint": "^7.32.0"
   },
   "repository": {
     "type": "git",
