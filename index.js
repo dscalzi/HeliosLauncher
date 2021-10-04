@@ -1,14 +1,15 @@
-require('@electron/remote/main').initialize()
+const remoteMain = require('@electron/remote/main')
+remoteMain.initialize()
 
 // Requirements
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
-const autoUpdater = require('electron-updater').autoUpdater
-const ejse = require('ejs-electron')
-const fs = require('fs')
-const isDev = require('./app/assets/js/isdev')
-const path = require('path')
-const semver = require('semver')
-const url = require('url')
+const autoUpdater                   = require('electron-updater').autoUpdater
+const ejse                          = require('ejs-electron')
+const fs                            = require('fs')
+const isDev                         = require('./app/assets/js/isdev')
+const path                          = require('path')
+const semver                        = require('semver')
+const { pathToFileURL }             = require('url')
 
 const redirectUriPrefix = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
 const clientID = '0c7c8228-98ff-4ed8-ae28-af41852ba6ab'
@@ -16,18 +17,18 @@ const clientID = '0c7c8228-98ff-4ed8-ae28-af41852ba6ab'
 // Setup auto updater.
 function initAutoUpdater(event, data) {
 
-    if (data) {
+    if(data){
         autoUpdater.allowPrerelease = true
     } else {
         // Defaults to true if application version contains prerelease components (e.g. 0.12.1-alpha.1)
         // autoUpdater.allowPrerelease = true
     }
-
-    if (isDev) {
+    
+    if(isDev){
         autoUpdater.autoInstallOnAppQuit = false
         autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml')
     }
-    if (process.platform === 'darwin') {
+    if(process.platform === 'darwin'){
         autoUpdater.autoDownload = false
     }
     autoUpdater.on('update-available', (info) => {
@@ -44,12 +45,12 @@ function initAutoUpdater(event, data) {
     })
     autoUpdater.on('error', (err) => {
         event.sender.send('autoUpdateNotification', 'realerror', err)
-    })
+    }) 
 }
 
 // Open channel to listen for update actions.
 ipcMain.on('autoUpdateAction', (event, arg, data) => {
-    switch (arg) {
+    switch(arg){
         case 'initAutoUpdater':
             console.log('Initializing auto updater.')
             initAutoUpdater(event, data)
@@ -62,9 +63,9 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
                 })
             break
         case 'allowPrereleaseChange':
-            if (!data) {
+            if(!data){
                 const preRelComp = semver.prerelease(app.getVersion())
-                if (preRelComp != null && preRelComp.length > 0) {
+                if(preRelComp != null && preRelComp.length > 0){
                     autoUpdater.allowPrerelease = true
                 } else {
                     autoUpdater.allowPrerelease = data
@@ -177,20 +178,15 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js'),
             nodeIntegration: true,
-            contextIsolation: false,
-            enableRemoteModule: true,
-            worldSafeExecuteJavaScript: true
+            contextIsolation: false
         },
         backgroundColor: '#171614'
     })
+    remoteMain.enable(win.webContents)
 
     ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))
 
-    win.loadURL(url.format({
-        pathname: path.join(__dirname, 'app', 'app.ejs'),
-        protocol: 'file:',
-        slashes: true
-    }))
+    win.loadURL(pathToFileURL(path.join(__dirname, 'app', 'app.ejs')).toString())
 
     /*win.once('ready-to-show', () => {
         win.show()
@@ -206,8 +202,8 @@ function createWindow() {
 }
 
 function createMenu() {
-
-    if (process.platform === 'darwin') {
+    
+    if(process.platform === 'darwin') {
 
         // Extend default included application menu to continue support for quit keyboard shortcut
         let applicationSubMenu = {
@@ -269,9 +265,9 @@ function createMenu() {
 
 }
 
-function getPlatformIcon(filename) {
+function getPlatformIcon(filename){
     let ext
-    switch (process.platform) {
+    switch(process.platform) {
         case 'win32':
             ext = 'ico'
             break
