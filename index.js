@@ -88,9 +88,6 @@ ipcMain.on('distributionIndexDone', (event, res) => {
 // https://electronjs.org/docs/tutorial/offscreen-rendering
 app.disableHardwareAcceleration()
 
-// https://github.com/electron/electron/issues/18397
-app.allowRendererProcessReuse = true
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
