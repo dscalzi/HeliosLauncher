@@ -173,11 +173,6 @@ const refreshMojangStatuses = async function(){
         for(let i=0; i<statuses.length; i++){
             const service = statuses[i]
 
-            // Mojang API is broken for sessionserver. https://bugs.mojang.com/browse/WEB-2303
-            if(service.service === 'sessionserver.mojang.com') {
-                service.status = 'green'
-            }
-
             if(service.essential){
                 tooltipEssentialHTML += `<div class="mojangStatusContainer">
                     <span class="mojangStatusIcon" style="color: ${Mojang.statusToHex(service.status)};">&#8226;</span>
@@ -221,6 +216,7 @@ const refreshMojangStatuses = async function(){
     document.getElementById('mojang_status_icon').style.color = Mojang.statusToHex(status)
 }
 
+
 const refreshServerStatus = async function(fade = false){
     loggerLanding.log('Refreshing Server Status')
     const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
@@ -259,6 +255,9 @@ refreshMojangStatuses()
 // Set refresh rate to once every 5 minutes.
 let mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 300000)
 let serverStatusListener = setInterval(() => refreshServerStatus(true), 300000)
+
+
+setTimeout(() => refreshMojangStatuses(true), 1000) //workaround to make sure statuses are correctly shown, else its a kinda broken
 
 /**
  * Shows an error overlay, toggles off the launch area.

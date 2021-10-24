@@ -7,7 +7,7 @@
  */
 // Requirements
 const request = require('request')
-const logger  = require('./loggerutil')('%c[Mojang]', 'color: #a02d2a; font-weight: bold')
+const logger = require('./loggerutil')('%c[Mojang]', 'color: #a02d2a; font-weight: bold')
 
 // Constants
 const minecraftAgent = {
@@ -15,44 +15,46 @@ const minecraftAgent = {
     version: 1
 }
 const authpath = 'https://authserver.mojang.com'
+// Service name comes from https://github.com/GeekcornerGH/helios-status-page/tree/master/api
 const statuses = [
     {
-        service: 'sessionserver.mojang.com',
+        service: 'mojang-multiplayer-session-service',
         status: 'grey',
         name: 'Multiplayer Session Service',
         essential: true
     },
     {
-        service: 'authserver.mojang.com',
+        service: 'mojang-authserver',
         status: 'grey',
         name: 'Authentication Service',
         essential: true
     },
     {
-        service: 'textures.minecraft.net',
+        service: 'minecraft-skins',
         status: 'grey',
         name: 'Minecraft Skins',
         essential: false
     },
     {
-        service: 'api.mojang.com',
+        service: 'mojang-s-public-api',
         status: 'grey',
         name: 'Public API',
         essential: false
     },
     {
-        service: 'minecraft.net',
+        service: 'minecraft-net-website',
         status: 'grey',
         name: 'Minecraft.net',
         essential: false
     },
     {
-        service: 'account.mojang.com',
+        service: 'mojang-accounts-website',
         status: 'grey',
         name: 'Mojang Accounts Website',
         essential: false
     }
 ]
+const requestURL = function (serviceURL) { return `https://raw.githubusercontent.com/GeekCornerGH/helios-status-page/master/api/${serviceURL.service}/uptime.json`}
 
 // Functions
 
@@ -64,8 +66,8 @@ const statuses = [
  * @param {string} status A valid status code.
  * @returns {string} The hex color of the status code.
  */
-exports.statusToHex = function(status){
-    switch(status.toLowerCase()){
+exports.statusToHex = function (status) {
+    switch (status.toLowerCase()) {
         case 'green':
             return '#a5c325'
         case 'yellow':
@@ -86,37 +88,32 @@ exports.statusToHex = function(status){
  * 
  * @see http://wiki.vg/Mojang_API#API_Status
  */
-exports.status = function(){
-    return new Promise((resolve, reject) => {
-        request.get('https://status.mojang.com/check',
-            {
-                json: true,
-                timeout: 2500
-            },
-            function(error, response, body){
+exports.status = async function () {
+    return new Promise(async (resolve, reject) => {
+        let data = []
+        for(let i=0; i<statuses.length; i++){
+            request.get(requestURL(statuses[i]),
+                {
+                    json: true,
+                    timeout: 10000
+                },
+                function (error, response, body) {
 
-                if(error || response.statusCode !== 200){
-                    logger.warn('Unable to retrieve Mojang status.')
-                    logger.debug('Error while retrieving Mojang statuses:', error)
-                    //reject(error || response.statusCode)
-                    for(let i=0; i<statuses.length; i++){
-                        statuses[i].status = 'grey'
+                    if (error || response.statusCode !== 200) {
+                        logger.warn('Unable to retrieve Mojang status.')
+                        logger.debug('Error while retrieving Mojang statuses:', error)
+                        data.push(statuses[i])
+                        //reject(error || response.statusCode)
+                        resolve(statuses)
+                    } else {
+                        if (response.body.color == "brightgreen") statuses[i].status = "green"
+                        else statuses[i].status = "red"
+                        data.push(statuses[i])
+                        resolve(statuses)
                     }
-                    resolve(statuses)
-                } else {
-                    for(let i=0; i<body.length; i++){
-                        const key = Object.keys(body[i])[0]
-                        inner:
-                        for(let j=0; j<statuses.length; j++){
-                            if(statuses[j].service === key) {
-                                statuses[j].status = body[i][key]
-                                break inner
-                            }
-                        }
-                    }
-                    resolve(statuses)
-                }
-            })
+                })
+        }
+        return data
     })
 }
 
@@ -131,16 +128,15 @@ exports.status = function(){
  * 
  * @see http://wiki.vg/Authentication#Authenticate
  */
-exports.authenticate = function(username, password, clientToken, requestUser = true, agent = minecraftAgent){
+exports.authenticate = function (username, password, clientToken, requestUser = true, agent = minecraftAgent) {
     return new Promise((resolve, reject) => {
-
         const body = {
             agent,
             username,
             password,
             requestUser
         }
-        if(clientToken != null){
+        if (clientToken != null) {
             body.clientToken = clientToken
         }
 
@@ -149,18 +145,19 @@ exports.authenticate = function(username, password, clientToken, requestUser = t
                 json: true,
                 body
             },
-            function(error, response, body){
-                if(error){
+            function (error, response, body) {
+                if (error) {
                     logger.error('Error during authentication.', error)
                     reject(error)
                 } else {
-                    if(response.statusCode === 200){
+                    if (response.statusCode === 200) {
                         resolve(body)
                     } else {
-                        reject(body || {code: 'ENOTFOUND'})
+                        reject(body || { code: 'ENOTFOUND' })
                     }
                 }
             })
+            setTimeout(resolve, 15000)
     })
 }
 
@@ -173,7 +170,7 @@ exports.authenticate = function(username, password, clientToken, requestUser = t
  * 
  * @see http://wiki.vg/Authentication#Validate
  */
-exports.validate = function(accessToken, clientToken){
+exports.validate = function (accessToken, clientToken) {
     return new Promise((resolve, reject) => {
         request.post(authpath + '/validate',
             {
@@ -183,15 +180,15 @@ exports.validate = function(accessToken, clientToken){
                     clientToken
                 }
             },
-            function(error, response, body){
-                if(error){
+            function (error, response, body) {
+                if (error) {
                     logger.error('Error during validation.', error)
                     reject(error)
                 } else {
-                    if(response.statusCode === 403){
+                    if (response.statusCode === 403) {
                         resolve(false)
                     } else {
-                    // 204 if valid
+                        // 204 if valid
                         resolve(true)
                     }
                 }
@@ -208,7 +205,7 @@ exports.validate = function(accessToken, clientToken){
  * 
  * @see http://wiki.vg/Authentication#Invalidate
  */
-exports.invalidate = function(accessToken, clientToken){
+exports.invalidate = function (accessToken, clientToken) {
     return new Promise((resolve, reject) => {
         request.post(authpath + '/invalidate',
             {
@@ -218,12 +215,12 @@ exports.invalidate = function(accessToken, clientToken){
                     clientToken
                 }
             },
-            function(error, response, body){
-                if(error){
+            function (error, response, body) {
+                if (error) {
                     logger.error('Error during invalidation.', error)
                     reject(error)
                 } else {
-                    if(response.statusCode === 204){
+                    if (response.statusCode === 204) {
                         resolve()
                     } else {
                         reject(body)
@@ -244,7 +241,7 @@ exports.invalidate = function(accessToken, clientToken){
  * 
  * @see http://wiki.vg/Authentication#Refresh
  */
-exports.refresh = function(accessToken, clientToken, requestUser = true){
+exports.refresh = function (accessToken, clientToken, requestUser = true) {
     return new Promise((resolve, reject) => {
         request.post(authpath + '/refresh',
             {
@@ -255,12 +252,12 @@ exports.refresh = function(accessToken, clientToken, requestUser = true){
                     requestUser
                 }
             },
-            function(error, response, body){
-                if(error){
+            function (error, response, body) {
+                if (error) {
                     logger.error('Error during refresh.', error)
                     reject(error)
                 } else {
-                    if(response.statusCode === 200){
+                    if (response.statusCode === 200) {
                         resolve(body)
                     } else {
                         reject(body)
