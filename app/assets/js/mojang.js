@@ -52,6 +52,36 @@ const statuses = [
         status: 'grey',
         name: 'Mojang Accounts Website',
         essential: false
+    },
+    {
+        service: 'microsoft-o-auth-server',
+        status: 'grey',
+        name: 'Microsoft OAuth Server',
+        essential: true
+    },
+    {
+        service: 'xbox-live-auth-server',
+        status: 'grey',
+        name: 'Xbox Live Auth Server',
+        essential: true
+    },
+    {
+        service: 'xbox-live-gatekeeper', // Server used to give XTokens
+        status: 'grey',
+        name: 'Xbox Live Gatekeeper',
+        essential: true
+    },
+    {
+        service: 'microsoft-minecraft-api',
+        status: 'grey',
+        name: "Minecraft API for Microsoft Accounts",
+        essential: true
+    },
+    {
+        service: 'microsoft-minecraft-profile',
+        status: "grey",
+        name: "Minecraft Profile for Microsoft Accounts",
+        essential: false
     }
 ]
 const requestURL = function (serviceURL) { return `https://raw.githubusercontent.com/GeekCornerGH/helios-status-page/master/api/${serviceURL.service}/uptime.json`}
