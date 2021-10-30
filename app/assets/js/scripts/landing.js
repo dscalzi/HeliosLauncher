@@ -2,24 +2,24 @@
  * Script for landing.ejs
  */
 // Requirements
-const cp                      = require('child_process')
-const crypto                  = require('crypto')
-const {URL}                   = require('url')
+const cp = require('child_process')
+const crypto = require('crypto')
+const { URL } = require('url')
 
 // Internal Requirements
-const DiscordWrapper          = require('./assets/js/discordwrapper')
-const Mojang                  = require('./assets/js/mojang')
-const ProcessBuilder          = require('./assets/js/processbuilder')
-const ServerStatus            = require('./assets/js/serverstatus')
+const DiscordWrapper = require('./assets/js/discordwrapper')
+const Mojang = require('./assets/js/mojang')
+const ProcessBuilder = require('./assets/js/processbuilder')
+const ServerStatus = require('./assets/js/serverstatus')
 
 // Launch Elements
-const launch_content          = document.getElementById('launch_content')
-const launch_details          = document.getElementById('launch_details')
-const launch_progress         = document.getElementById('launch_progress')
-const launch_progress_label   = document.getElementById('launch_progress_label')
-const launch_details_text     = document.getElementById('launch_details_text')
+const launch_content = document.getElementById('launch_content')
+const launch_details = document.getElementById('launch_details')
+const launch_progress = document.getElementById('launch_progress')
+const launch_progress_label = document.getElementById('launch_progress_label')
+const launch_details_text = document.getElementById('launch_details_text')
 const server_selection_button = document.getElementById('server_selection_button')
-const user_text               = document.getElementById('user_text')
+const user_text = document.getElementById('user_text')
 
 const loggerLanding = LoggerUtil('%c[Landing]', 'color: #000668; font-weight: bold')
 
@@ -30,8 +30,8 @@ const loggerLanding = LoggerUtil('%c[Landing]', 'color: #000668; font-weight: bo
  * 
  * @param {boolean} loading True if the loading area should be shown, otherwise false.
  */
-function toggleLaunchArea(loading){
-    if(loading){
+function toggleLaunchArea(loading) {
+    if (loading) {
         launch_details.style.display = 'flex'
         launch_content.style.display = 'none'
     } else {
@@ -45,7 +45,7 @@ function toggleLaunchArea(loading){
  * 
  * @param {string} details The new text for the loading details.
  */
-function setLaunchDetails(details){
+function setLaunchDetails(details) {
     launch_details_text.innerHTML = details
 }
 
@@ -56,7 +56,7 @@ function setLaunchDetails(details){
  * @param {number} max The total size.
  * @param {number|string} percent Optional. The percentage to display on the progress label.
  */
-function setLaunchPercentage(value, max, percent = ((value/max)*100)){
+function setLaunchPercentage(value, max, percent = ((value / max) * 100)) {
     launch_progress.setAttribute('max', max)
     launch_progress.setAttribute('value', value)
     launch_progress_label.innerHTML = percent + '%'
@@ -69,8 +69,8 @@ function setLaunchPercentage(value, max, percent = ((value/max)*100)){
  * @param {number} max The total download size.
  * @param {number|string} percent Optional. The percentage to display on the progress label.
  */
-function setDownloadPercentage(value, max, percent = ((value/max)*100)){
-    remote.getCurrentWindow().setProgressBar(value/max)
+function setDownloadPercentage(value, max, percent = ((value / max) * 100)) {
+    remote.getCurrentWindow().setProgressBar(value / max)
     setLaunchPercentage(value, max, percent)
 }
 
@@ -79,16 +79,16 @@ function setDownloadPercentage(value, max, percent = ((value/max)*100)){
  * 
  * @param {boolean} val True to enable, false to disable.
  */
-function setLaunchEnabled(val){
+function setLaunchEnabled(val) {
     document.getElementById('launch_button').disabled = !val
 }
 
 // Bind launch button
-document.getElementById('launch_button').addEventListener('click', function(e){
+document.getElementById('launch_button').addEventListener('click', function (e) {
     loggerLanding.log('Launching game..')
     const mcVersion = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
     const jExe = ConfigManager.getJavaExecutable()
-    if(jExe == null){
+    if (jExe == null) {
         asyncSystemScan(mcVersion)
     } else {
 
@@ -99,7 +99,7 @@ document.getElementById('launch_button').addEventListener('click', function(e){
         const jg = new JavaGuard(mcVersion)
         jg._validateJavaBinary(jExe).then((v) => {
             loggerLanding.log('Java version meta', v)
-            if(v.valid){
+            if (v.valid) {
                 dlAsync()
             } else {
                 asyncSystemScan(mcVersion)
@@ -123,13 +123,13 @@ document.getElementById('avatarOverlay').onclick = (e) => {
 }
 
 // Bind selected account
-function updateSelectedAccount(authUser){
+function updateSelectedAccount(authUser) {
     let username = 'No Account Selected'
-    if(authUser != null){
-        if(authUser.displayName != null){
+    if (authUser != null) {
+        if (authUser.displayName != null) {
             username = authUser.displayName
         }
-        if(authUser.uuid != null){
+        if (authUser.uuid != null) {
             document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/body/${authUser.uuid}/right')`
         }
     }
@@ -138,14 +138,14 @@ function updateSelectedAccount(authUser){
 updateSelectedAccount(ConfigManager.getSelectedAccount())
 
 // Bind selected server
-function updateSelectedServer(serv){
-    if(getCurrentView() === VIEWS.settings){
+function updateSelectedServer(serv) {
+    if (getCurrentView() === VIEWS.settings) {
         saveAllModConfigurations()
     }
     ConfigManager.setSelectedServer(serv != null ? serv.getID() : null)
     ConfigManager.save()
     server_selection_button.innerHTML = '\u2022 ' + (serv != null ? serv.getName() : 'No Server Selected')
-    if(getCurrentView() === VIEWS.settings){
+    if (getCurrentView() === VIEWS.settings) {
         animateModsTabRefresh()
     }
     setLaunchEnabled(serv != null)
@@ -158,7 +158,7 @@ server_selection_button.onclick = (e) => {
 }
 
 // Update Mojang Status Color
-const refreshMojangStatuses = async function(){
+const refreshMojangStatuses = async function () {
     loggerLanding.log('Refreshing Mojang Statuses..')
 
     let status = 'grey'
@@ -170,10 +170,10 @@ const refreshMojangStatuses = async function(){
         greenCount = 0
         greyCount = 0
 
-        for(let i=0; i<statuses.length; i++){
+        for (let i = 0; i < statuses.length; i++) {
             const service = statuses[i]
 
-            if(service.essential){
+            if (service.essential) {
                 tooltipEssentialHTML += `<div class="mojangStatusContainer">
                     <span class="mojangStatusIcon" style="color: ${Mojang.statusToHex(service.status)};">&#8226;</span>
                     <span class="mojangStatusName">${service.name}</span>
@@ -185,12 +185,12 @@ const refreshMojangStatuses = async function(){
                 </div>`
             }
 
-            if(service.status === 'yellow' && status !== 'red'){
+            if (service.status === 'yellow' && status !== 'red') {
                 status = 'yellow'
-            } else if(service.status === 'red'){
+            } else if (service.status === 'red') {
                 status = 'red'
             } else {
-                if(service.status === 'grey'){
+                if (service.status === 'grey') {
                     ++greyCount
                 }
                 ++greenCount
@@ -198,8 +198,8 @@ const refreshMojangStatuses = async function(){
 
         }
 
-        if(greenCount === statuses.length){
-            if(greyCount === statuses.length){
+        if (greenCount === statuses.length) {
+            if (greyCount === statuses.length) {
                 status = 'grey'
             } else {
                 status = 'green'
@@ -210,13 +210,13 @@ const refreshMojangStatuses = async function(){
         loggerLanding.warn('Unable to refresh Mojang service status.')
         loggerLanding.debug(err)
     }
-    
+
     document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML
     document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML
     document.getElementById('mojang_status_icon').style.color = Mojang.statusToHex(status)
 }
 
-const refreshServerStatus = async function(fade = false){
+const refreshServerStatus = async function (fade = false) {
     loggerLanding.log('Refreshing Server Status')
     const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
 
@@ -224,18 +224,17 @@ const refreshServerStatus = async function(fade = false){
     let pVal = 'OFFLINE'
 
     try {
-        const serverURL = new URL('my://' + serv.getAddress())
-        const servStat = await ServerStatus.getStatus(serverURL.hostname, serverURL.port)
-        if(servStat.online){
+        const serverAddress = serv.getAddress()
+        const servStat = await ServerStatus.getStatus(serverAddress)
+        if (servStat.online) {
             pLabel = 'PLAYERS'
             pVal = servStat.onlinePlayers + '/' + servStat.maxPlayers
         }
 
     } catch (err) {
         loggerLanding.warn('Unable to refresh server status, assuming offline.')
-        loggerLanding.debug(err)
     }
-    if(fade){
+    if (fade) {
         $('#server_status_wrapper').fadeOut(250, () => {
             document.getElementById('landingPlayerLabel').innerHTML = pLabel
             document.getElementById('player_count').innerHTML = pVal
@@ -245,7 +244,7 @@ const refreshServerStatus = async function(fade = false){
         document.getElementById('landingPlayerLabel').innerHTML = pLabel
         document.getElementById('player_count').innerHTML = pVal
     }
-    
+
 }
 
 refreshMojangStatuses()
@@ -261,7 +260,7 @@ let serverStatusListener = setInterval(() => refreshServerStatus(true), 300000)
  * @param {string} title The overlay title.
  * @param {string} desc The overlay description.
  */
-function showLaunchFailure(title, desc){
+function showLaunchFailure(title, desc) {
     setOverlayContent(
         title,
         desc,
@@ -285,7 +284,7 @@ let extractListener
  * @param {string} mcVersion The Minecraft version we are scanning for.
  * @param {boolean} launchAfter Whether we should begin to launch after scanning. 
  */
-function asyncSystemScan(mcVersion, launchAfter = true){
+function asyncSystemScan(mcVersion, launchAfter = true) {
 
     setLaunchDetails('Please wait..')
     toggleLaunchArea(true)
@@ -314,11 +313,11 @@ function asyncSystemScan(mcVersion, launchAfter = true){
     sysAEx.stdio[2].on('data', (data) => {
         loggerSysAEx.log(data)
     })
-    
+
     sysAEx.on('message', (m) => {
 
-        if(m.context === 'validateJava'){
-            if(m.result == null){
+        if (m.context === 'validateJava') {
+            if (m.result == null) {
                 // If the result is null, no valid Java installation was found.
                 // Show this information to the user.
                 setOverlayContent(
@@ -329,8 +328,8 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 )
                 setOverlayHandler(() => {
                     setLaunchDetails('Preparing Java Download..')
-                    sysAEx.send({task: 'changeContext', class: 'AssetGuard', args: [ConfigManager.getCommonDirectory(),ConfigManager.getJavaExecutable()]})
-                    sysAEx.send({task: 'execute', function: '_enqueueOpenJDK', argsArr: [ConfigManager.getDataDirectory()]})
+                    sysAEx.send({ task: 'changeContext', class: 'AssetGuard', args: [ConfigManager.getCommonDirectory(), ConfigManager.getJavaExecutable()] })
+                    sysAEx.send({ task: 'execute', function: '_enqueueOpenJDK', argsArr: [ConfigManager.getDataDirectory()] })
                     toggleOverlay(false)
                 })
                 setDismissHandler(() => {
@@ -365,18 +364,18 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 settingsJavaExecVal.value = m.result
                 populateJavaExecDetails(settingsJavaExecVal.value)
 
-                if(launchAfter){
+                if (launchAfter) {
                     dlAsync()
                 }
                 sysAEx.disconnect()
             }
-        } else if(m.context === '_enqueueOpenJDK'){
+        } else if (m.context === '_enqueueOpenJDK') {
 
-            if(m.result === true){
+            if (m.result === true) {
 
                 // Oracle JRE enqueued successfully, begin download.
                 setLaunchDetails('Downloading Java..')
-                sysAEx.send({task: 'execute', function: 'processDlQueues', argsArr: [[{id:'java', limit:1}]]})
+                sysAEx.send({ task: 'execute', function: 'processDlQueues', argsArr: [[{ id: 'java', limit: 1 }]] })
 
             } else {
 
@@ -396,18 +395,18 @@ function asyncSystemScan(mcVersion, launchAfter = true){
 
             }
 
-        } else if(m.context === 'progress'){
+        } else if (m.context === 'progress') {
 
-            switch(m.data){
+            switch (m.data) {
                 case 'download':
                     // Downloading..
                     setDownloadPercentage(m.value, m.total, m.percent)
                     break
             }
 
-        } else if(m.context === 'complete'){
+        } else if (m.context === 'complete') {
 
-            switch(m.data){
+            switch (m.data) {
                 case 'download': {
                     // Show installing progress bar.
                     remote.getCurrentWindow().setProgressBar(2)
@@ -417,7 +416,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                     let dotStr = ''
                     setLaunchDetails(eLStr)
                     extractListener = setInterval(() => {
-                        if(dotStr.length >= 3){
+                        if (dotStr.length >= 3) {
                             dotStr = ''
                         } else {
                             dotStr += '.'
@@ -427,21 +426,21 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                     break
                 }
                 case 'java':
-                // Download & extraction complete, remove the loading from the OS progress bar.
+                    // Download & extraction complete, remove the loading from the OS progress bar.
                     remote.getCurrentWindow().setProgressBar(-1)
 
                     // Extraction completed successfully.
                     ConfigManager.setJavaExecutable(m.args[0])
                     ConfigManager.save()
 
-                    if(extractListener != null){
+                    if (extractListener != null) {
                         clearInterval(extractListener)
                         extractListener = null
                     }
 
                     setLaunchDetails('Java Installed!')
 
-                    if(launchAfter){
+                    if (launchAfter) {
                         dlAsync()
                     }
 
@@ -449,14 +448,14 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                     break
             }
 
-        } else if(m.context === 'error'){
+        } else if (m.context === 'error') {
             console.log(m.error)
         }
     })
 
     // Begin system Java scan.
     setLaunchDetails('Checking system info..')
-    sysAEx.send({task: 'execute', function: 'validateJava', argsArr: [ConfigManager.getDataDirectory()]})
+    sysAEx.send({ task: 'execute', function: 'validateJava', argsArr: [ConfigManager.getDataDirectory()] })
 
 }
 
@@ -477,13 +476,13 @@ let forgeData
 
 let progressListener
 
-function dlAsync(login = true){
+function dlAsync(login = true) {
 
     // Login parameter is temporary for debug purposes. Allows testing the validation/downloads without
     // launching the game.
 
-    if(login) {
-        if(ConfigManager.getSelectedAccount() == null){
+    if (login) {
+        if (ConfigManager.getSelectedAccount() == null) {
             loggerLanding.error('You must be logged into an account.')
             return
         }
@@ -523,7 +522,7 @@ function dlAsync(login = true){
         showLaunchFailure('Error During Launch', err.message || 'See console (CTRL + Shift + i) for more details.')
     })
     aEx.on('close', (code, signal) => {
-        if(code !== 0){
+        if (code !== 0) {
             loggerLaunchSuite.error(`AssetExec exited with code ${code}, assuming error.`)
             showLaunchFailure('Error During Launch', 'See console (CTRL + Shift + i) for more details.')
         }
@@ -532,8 +531,8 @@ function dlAsync(login = true){
     // Establish communications between the AssetExec and current process.
     aEx.on('message', (m) => {
 
-        if(m.context === 'validate'){
-            switch(m.data){
+        if (m.context === 'validate') {
+            switch (m.data) {
                 case 'distribution':
                     setLaunchPercentage(20, 100)
                     loggerLaunchSuite.log('Validated distibution index.')
@@ -560,11 +559,11 @@ function dlAsync(login = true){
                     setLaunchDetails('Downloading files..')
                     break
             }
-        } else if(m.context === 'progress'){
-            switch(m.data){
+        } else if (m.context === 'progress') {
+            switch (m.data) {
                 case 'assets': {
-                    const perc = (m.value/m.total)*20
-                    setLaunchPercentage(40+perc, 100, parseInt(40+perc))
+                    const perc = (m.value / m.total) * 20
+                    setLaunchPercentage(40 + perc, 100, parseInt(40 + perc))
                     break
                 }
                 case 'download':
@@ -579,7 +578,7 @@ function dlAsync(login = true){
                     let dotStr = ''
                     setLaunchDetails(eLStr)
                     progressListener = setInterval(() => {
-                        if(dotStr.length >= 3){
+                        if (dotStr.length >= 3) {
                             dotStr = ''
                         } else {
                             dotStr += '.'
@@ -589,12 +588,12 @@ function dlAsync(login = true){
                     break
                 }
             }
-        } else if(m.context === 'complete'){
-            switch(m.data){
+        } else if (m.context === 'complete') {
+            switch (m.data) {
                 case 'download':
                     // Download and extraction complete, remove the loading from the OS progress bar.
                     remote.getCurrentWindow().setProgressBar(-1)
-                    if(progressListener != null){
+                    if (progressListener != null) {
                         clearInterval(progressListener)
                         progressListener = null
                     }
@@ -602,12 +601,12 @@ function dlAsync(login = true){
                     setLaunchDetails('Preparing to launch..')
                     break
             }
-        } else if(m.context === 'error'){
-            switch(m.data){
+        } else if (m.context === 'error') {
+            switch (m.data) {
                 case 'download':
                     loggerLaunchSuite.error('Error while downloading:', m.error)
-                    
-                    if(m.error.code === 'ENOENT'){
+
+                    if (m.error.code === 'ENOENT') {
                         showLaunchFailure(
                             'Download Error',
                             'Could not connect to the file server. Ensure that you are connected to the internet and try again.'
@@ -625,12 +624,12 @@ function dlAsync(login = true){
                     aEx.disconnect()
                     break
             }
-        } else if(m.context === 'validateEverything'){
+        } else if (m.context === 'validateEverything') {
 
             let allGood = true
 
             // If these properties are not defined it's likely an error.
-            if(m.result.forgeData == null || m.result.versionData == null){
+            if (m.result.forgeData == null || m.result.versionData == null) {
                 loggerLaunchSuite.error('Error during validation:', m.result)
 
                 loggerLaunchSuite.error('Error during launch', m.result.error)
@@ -642,7 +641,7 @@ function dlAsync(login = true){
             forgeData = m.result.forgeData
             versionData = m.result.versionData
 
-            if(login && allGood) {
+            if (login && allGood) {
                 const authUser = ConfigManager.getSelectedAccount()
                 loggerLaunchSuite.log(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
                 let pb = new ProcessBuilder(serv, versionData, forgeData, authUser, remote.app.getVersion())
@@ -653,7 +652,7 @@ function dlAsync(login = true){
 
                 const onLoadComplete = () => {
                     toggleLaunchArea(false)
-                    if(hasRPC){
+                    if (hasRPC) {
                         DiscordWrapper.updateDetails('Loading game..')
                     }
                     proc.stdout.on('data', gameStateChange)
@@ -666,11 +665,11 @@ function dlAsync(login = true){
                 // Will wait for a certain bit of text meaning that
                 // the client application has started, and we can hide
                 // the progress bar stuff.
-                const tempListener = function(data){
-                    if(GAME_LAUNCH_REGEX.test(data.trim())){
-                        const diff = Date.now()-start
-                        if(diff < MIN_LINGER) {
-                            setTimeout(onLoadComplete, MIN_LINGER-diff)
+                const tempListener = function (data) {
+                    if (GAME_LAUNCH_REGEX.test(data.trim())) {
+                        const diff = Date.now() - start
+                        if (diff < MIN_LINGER) {
+                            setTimeout(onLoadComplete, MIN_LINGER - diff)
                         } else {
                             onLoadComplete()
                         }
@@ -678,18 +677,18 @@ function dlAsync(login = true){
                 }
 
                 // Listener for Discord RPC.
-                const gameStateChange = function(data){
+                const gameStateChange = function (data) {
                     data = data.trim()
-                    if(SERVER_JOINED_REGEX.test(data)){
+                    if (SERVER_JOINED_REGEX.test(data)) {
                         DiscordWrapper.updateDetails('Exploring the Realm!')
-                    } else if(GAME_JOINED_REGEX.test(data)){
+                    } else if (GAME_JOINED_REGEX.test(data)) {
                         DiscordWrapper.updateDetails('Sailing to Westeros!')
                     }
                 }
 
-                const gameErrorListener = function(data){
+                const gameErrorListener = function (data) {
                     data = data.trim()
-                    if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
+                    if (data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1) {
                         loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
                         showLaunchFailure('Error During Launch', 'The main file, LaunchWrapper, failed to download properly. As a result, the game cannot launch.<br><br>To fix this issue, temporarily turn off your antivirus software and launch the game again.<br><br>If you have time, please <a href="https://github.com/dscalzi/HeliosLauncher/issues">submit an issue</a> and let us know what antivirus software you use. We\'ll contact them and try to straighten things out.')
                     }
@@ -707,7 +706,7 @@ function dlAsync(login = true){
 
                     // Init Discord Hook
                     const distro = DistroManager.getDistribution()
-                    if(distro.discord != null && serv.discord != null){
+                    if (distro.discord != null && serv.discord != null) {
                         DiscordWrapper.initRPC(distro.discord, serv.discord)
                         hasRPC = true
                         proc.on('close', (code, signal) => {
@@ -718,7 +717,7 @@ function dlAsync(login = true){
                         })
                     }
 
-                } catch(err) {
+                } catch (err) {
 
                     loggerLaunchSuite.error('Error during launch', err)
                     showLaunchFailure('Error During Launch', 'Please check the console (CTRL + Shift + i) for more details.')
@@ -740,23 +739,23 @@ function dlAsync(login = true){
     refreshDistributionIndex(true, (data) => {
         onDistroRefresh(data)
         serv = data.getServer(ConfigManager.getSelectedServer())
-        aEx.send({task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()]})
+        aEx.send({ task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()] })
     }, (err) => {
         loggerLaunchSuite.log('Error while fetching a fresh copy of the distribution index.', err)
         refreshDistributionIndex(false, (data) => {
             onDistroRefresh(data)
             serv = data.getServer(ConfigManager.getSelectedServer())
-            aEx.send({task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()]})
+            aEx.send({ task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()] })
         }, (err) => {
             loggerLaunchSuite.error('Unable to refresh distribution index.', err)
-            if(DistroManager.getDistribution() == null){
+            if (DistroManager.getDistribution() == null) {
                 showLaunchFailure('Fatal Error', 'Could not load a copy of the distribution index. See the console (CTRL + Shift + i) for more details.')
 
                 // Disconnect from AssetExec
                 aEx.disconnect()
             } else {
                 serv = data.getServer(ConfigManager.getSelectedServer())
-                aEx.send({task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()]})
+                aEx.send({ task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()] })
             }
         })
     })
@@ -767,14 +766,14 @@ function dlAsync(login = true){
  */
 
 // DOM Cache
-const newsContent                   = document.getElementById('newsContent')
-const newsArticleTitle              = document.getElementById('newsArticleTitle')
-const newsArticleDate               = document.getElementById('newsArticleDate')
-const newsArticleAuthor             = document.getElementById('newsArticleAuthor')
-const newsArticleComments           = document.getElementById('newsArticleComments')
-const newsNavigationStatus          = document.getElementById('newsNavigationStatus')
-const newsArticleContentScrollable  = document.getElementById('newsArticleContentScrollable')
-const nELoadSpan                    = document.getElementById('nELoadSpan')
+const newsContent = document.getElementById('newsContent')
+const newsArticleTitle = document.getElementById('newsArticleTitle')
+const newsArticleDate = document.getElementById('newsArticleDate')
+const newsArticleAuthor = document.getElementById('newsArticleAuthor')
+const newsArticleComments = document.getElementById('newsArticleComments')
+const newsNavigationStatus = document.getElementById('newsNavigationStatus')
+const newsArticleContentScrollable = document.getElementById('newsArticleContentScrollable')
+const nELoadSpan = document.getElementById('nELoadSpan')
 
 // News slide caches.
 let newsActive = false
@@ -785,7 +784,7 @@ let newsGlideCount = 0
  * 
  * @param {boolean} up True to slide up, otherwise false. 
  */
-function slide_(up){
+function slide_(up) {
     const lCUpper = document.querySelector('#landingContainer > #upper')
     const lCLLeft = document.querySelector('#landingContainer > #lower > #left')
     const lCLCenter = document.querySelector('#landingContainer > #lower > #center')
@@ -796,7 +795,7 @@ function slide_(up){
 
     newsGlideCount++
 
-    if(up){
+    if (up) {
         lCUpper.style.top = '-200vh'
         lCLLeft.style.top = '-200vh'
         lCLCenter.style.top = '-200vh'
@@ -807,7 +806,7 @@ function slide_(up){
         //landingContainer.style.background = 'rgba(29, 29, 29, 0.55)'
         landingContainer.style.background = 'rgba(0, 0, 0, 0.50)'
         setTimeout(() => {
-            if(newsGlideCount === 1){
+            if (newsGlideCount === 1) {
                 lCLCenter.style.transition = 'none'
                 newsBtn.style.transition = 'none'
             }
@@ -832,13 +831,13 @@ function slide_(up){
 // Bind news button.
 document.getElementById('newsButton').onclick = () => {
     // Toggle tabbing.
-    if(newsActive){
+    if (newsActive) {
         $('#landingContainer *').removeAttr('tabindex')
         $('#newsContainer *').attr('tabindex', '-1')
     } else {
         $('#landingContainer *').attr('tabindex', '-1')
         $('#newsContainer, #newsContainer *, #lower, #lower #center *').removeAttr('tabindex')
-        if(newsAlertShown){
+        if (newsAlertShown) {
             $('#newsButtonAlert').fadeOut(2000)
             newsAlertShown = false
             ConfigManager.setNewsCacheDismissed(true)
@@ -860,13 +859,13 @@ let newsLoadingListener = null
  * 
  * @param {boolean} val True to set loading animation, otherwise false.
  */
-function setNewsLoading(val){
-    if(val){
+function setNewsLoading(val) {
+    if (val) {
         const nLStr = 'Checking for News'
         let dotStr = '..'
         nELoadSpan.innerHTML = nLStr + dotStr
         newsLoadingListener = setInterval(() => {
-            if(dotStr.length >= 3){
+            if (dotStr.length >= 3) {
                 dotStr = ''
             } else {
                 dotStr += '.'
@@ -874,7 +873,7 @@ function setNewsLoading(val){
             nELoadSpan.innerHTML = nLStr + dotStr
         }, 750)
     } else {
-        if(newsLoadingListener != null){
+        if (newsLoadingListener != null) {
             clearInterval(newsLoadingListener)
             newsLoadingListener = null
         }
@@ -890,7 +889,7 @@ newsErrorRetry.onclick = () => {
 }
 
 newsArticleContentScrollable.onscroll = (e) => {
-    if(e.target.scrollTop > Number.parseFloat($('.newsArticleSpacerTop').css('height'))){
+    if (e.target.scrollTop > Number.parseFloat($('.newsArticleSpacerTop').css('height'))) {
         newsContent.setAttribute('scrolled', '')
     } else {
         newsContent.removeAttribute('scrolled')
@@ -903,7 +902,7 @@ newsArticleContentScrollable.onscroll = (e) => {
  * @returns {Promise.<void>} A promise which resolves when the news
  * content has finished loading and transitioning.
  */
-function reloadNews(){
+function reloadNews() {
     return new Promise((resolve, reject) => {
         $('#newsContent').fadeOut(250, () => {
             $('#newsErrorLoading').fadeIn(250)
@@ -919,7 +918,7 @@ let newsAlertShown = false
 /**
  * Show the news alert indicating there is new news.
  */
-function showNewsAlert(){
+function showNewsAlert() {
     newsAlertShown = true
     $(newsButtonAlert).fadeIn(250)
 }
@@ -931,7 +930,7 @@ function showNewsAlert(){
  * @returns {Promise.<void>} A promise which resolves when the news
  * content has finished loading and transitioning.
  */
-function initNews(){
+function initNews() {
 
     return new Promise((resolve, reject) => {
         setNewsLoading(true)
@@ -941,7 +940,7 @@ function initNews(){
 
             newsArr = news.articles || null
 
-            if(newsArr == null){
+            if (newsArr == null) {
                 // News Loading Failed
                 setNewsLoading(false)
 
@@ -950,7 +949,7 @@ function initNews(){
                         resolve()
                     })
                 })
-            } else if(newsArr.length === 0) {
+            } else if (newsArr.length === 0) {
                 // No News Articles
                 setNewsLoading(false)
 
@@ -976,16 +975,16 @@ function initNews(){
                 let newDate = new Date(lN.date)
                 let isNew = false
 
-                if(cached.date != null && cached.content != null){
+                if (cached.date != null && cached.content != null) {
 
-                    if(new Date(cached.date) >= newDate){
+                    if (new Date(cached.date) >= newDate) {
 
                         // Compare Content
-                        if(cached.content !== newHash){
+                        if (cached.content !== newHash) {
                             isNew = true
                             showNewsAlert()
                         } else {
-                            if(!cached.dismissed){
+                            if (!cached.dismissed) {
                                 isNew = true
                                 showNewsAlert()
                             }
@@ -1001,7 +1000,7 @@ function initNews(){
                     showNewsAlert()
                 }
 
-                if(isNew){
+                if (isNew) {
                     ConfigManager.setNewsCache({
                         date: newDate.getTime(),
                         content: newHash,
@@ -1012,9 +1011,9 @@ function initNews(){
 
                 const switchHandler = (forward) => {
                     let cArt = parseInt(newsContent.getAttribute('article'))
-                    let nxtArt = forward ? (cArt >= newsArr.length-1 ? 0 : cArt + 1) : (cArt <= 0 ? newsArr.length-1 : cArt - 1)
-            
-                    displayArticle(newsArr[nxtArt], nxtArt+1)
+                    let nxtArt = forward ? (cArt >= newsArr.length - 1 ? 0 : cArt + 1) : (cArt <= 0 ? newsArr.length - 1 : cArt - 1)
+
+                    displayArticle(newsArr[nxtArt], nxtArt + 1)
                 }
 
                 document.getElementById('newsNavigateRight').onclick = () => { switchHandler(true) }
@@ -1029,7 +1028,7 @@ function initNews(){
             }
 
         })
-        
+
     })
 }
 
@@ -1039,8 +1038,8 @@ function initNews(){
  * open the news UI.
  */
 document.addEventListener('keydown', (e) => {
-    if(newsActive){
-        if(e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
+    if (newsActive) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
             document.getElementById(e.key === 'ArrowRight' ? 'newsNavigateRight' : 'newsNavigateLeft').click()
         }
         // Interferes with scrolling an article using the down arrow.
@@ -1049,8 +1048,8 @@ document.addEventListener('keydown', (e) => {
         //     document.getElementById('newsButton').click()
         // }
     } else {
-        if(getCurrentView() === VIEWS.landing){
-            if(e.key === 'ArrowUp'){
+        if (getCurrentView() === VIEWS.landing) {
+            if (e.key === 'ArrowUp') {
                 document.getElementById('newsButton').click()
             }
         }
@@ -1063,7 +1062,7 @@ document.addEventListener('keydown', (e) => {
  * @param {Object} articleObject The article meta object.
  * @param {number} index The article index.
  */
-function displayArticle(articleObject, index){
+function displayArticle(articleObject, index) {
     newsArticleTitle.innerHTML = articleObject.title
     newsArticleTitle.href = articleObject.link
     newsArticleAuthor.innerHTML = 'by ' + articleObject.author
@@ -1078,14 +1077,14 @@ function displayArticle(articleObject, index){
         }
     })
     newsNavigationStatus.innerHTML = index + ' of ' + newsArr.length
-    newsContent.setAttribute('article', index-1)
+    newsContent.setAttribute('article', index - 1)
 }
 
 /**
  * Load news information from the RSS feed specified in the
  * distribution index.
  */
-function loadNews(){
+function loadNews() {
     return new Promise((resolve, reject) => {
         const distroData = DistroManager.getDistribution()
         const newsFeed = distroData.getRSS()
@@ -1096,12 +1095,12 @@ function loadNews(){
                 const items = $(data).find('item')
                 const articles = []
 
-                for(let i=0; i<items.length; i++){
-                // JQuery Element
+                for (let i = 0; i < items.length; i++) {
+                    // JQuery Element
                     const el = $(items[i])
 
                     // Resolve date.
-                    const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
+                    const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' })
 
                     // Resolve comments.
                     let comments = el.find('slash\\:comments').text() || '0'
@@ -1111,12 +1110,12 @@ function loadNews(){
                     let content = el.find('content\\:encoded').text()
                     let regex = /src="(?!http:\/\/|https:\/\/)(.+?)"/g
                     let matches
-                    while((matches = regex.exec(content))){
+                    while ((matches = regex.exec(content))) {
                         content = content.replace(`"${matches[1]}"`, `"${newsHost + matches[1]}"`)
                     }
 
-                    let link   = el.find('link').text()
-                    let title  = el.find('title').text()
+                    let link = el.find('link').text()
+                    let title = el.find('title').text()
                     let author = el.find('dc\\:creator').text()
 
                     // Generate article.
