@@ -84,7 +84,7 @@ const statuses = [
         essential: false
     }
 ]
-const requestURL = function (serviceURL) { return `https://raw.githubusercontent.com/GeekCornerGH/helios-status-page/master/api/${serviceURL.service}/uptime.json`}
+const requestURL = function (serviceURL) { return `https://raw.githubusercontent.com/GeekCornerGH/helios-status-page/master/api/${serviceURL.service}/uptime-day.json`}
 
 // Functions
 
