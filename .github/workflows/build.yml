@@ -19,6 +19,8 @@ jobs:
         with:
           node-version: 16
 
+      - run: npm install --no-optional
+
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
