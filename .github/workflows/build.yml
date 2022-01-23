@@ -20,7 +20,7 @@ jobs:
           node-version: 16
 
       - name: Install Dependencies
-        run: npm ci --no-optional
+        run: npm ci
         shell: bash
 
       - name: Build
