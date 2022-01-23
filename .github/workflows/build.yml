@@ -8,13 +8,13 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
 
-      - name: Setup Node
+      - name: Set up Node
         uses: actions/setup-node@v1
         with:
           node-version: 16
