@@ -16,13 +16,6 @@ const ConfigManager = require('./configmanager')
 const DistroManager = require('./distromanager')
 const isDev         = require('./isdev')
 
-// Constants
-// const PLATFORM_MAP = {
-//     win32: '-windows-x64.tar.gz',
-//     darwin: '-macosx-x64.tar.gz',
-//     linux: '-linux-x64.tar.gz'
-// }
-
 // Classes
 
 /** Class representing a base asset. */

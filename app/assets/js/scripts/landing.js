@@ -5,13 +5,12 @@
 const cp                      = require('child_process')
 const crypto                  = require('crypto')
 const { URL }                 = require('url')
-const { getServerStatus }     = require('helios-core')
+const { MojangRestAPI, getServerStatus }     = require('helios-core/mojang')
 
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
-const Mojang                  = require('./assets/js/mojang')
 const ProcessBuilder          = require('./assets/js/processbuilder')
-const ServerStatus            = require('./assets/js/serverstatus')
+const { RestResponseStatus } = require('helios-core/common')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -166,55 +165,57 @@ const refreshMojangStatuses = async function(){
     let tooltipEssentialHTML = ''
     let tooltipNonEssentialHTML = ''
 
-    try {
-        const statuses = await Mojang.status()
-        greenCount = 0
-        greyCount = 0
-
-        for(let i=0; i<statuses.length; i++){
-            const service = statuses[i]
-
-            if(service.essential){
-                tooltipEssentialHTML += `<div class="mojangStatusContainer">
-                    <span class="mojangStatusIcon" style="color: ${Mojang.statusToHex(service.status)};">&#8226;</span>
-                    <span class="mojangStatusName">${service.name}</span>
-                </div>`
-            } else {
-                tooltipNonEssentialHTML += `<div class="mojangStatusContainer">
-                    <span class="mojangStatusIcon" style="color: ${Mojang.statusToHex(service.status)};">&#8226;</span>
-                    <span class="mojangStatusName">${service.name}</span>
-                </div>`
-            }
-
-            if(service.status === 'yellow' && status !== 'red'){
-                status = 'yellow'
-            } else if(service.status === 'red'){
-                status = 'red'
-            } else {
-                if(service.status === 'grey'){
-                    ++greyCount
-                }
-                ++greenCount
-            }
-
-        }
-
-        if(greenCount === statuses.length){
-            if(greyCount === statuses.length){
-                status = 'grey'
-            } else {
-                status = 'green'
-            }
-        }
-
-    } catch (err) {
+    const response = await MojangRestAPI.status()
+    let statuses
+    if(response.responseStatus === RestResponseStatus.SUCCESS) {
+        statuses = response.data
+    } else {
         loggerLanding.warn('Unable to refresh Mojang service status.')
-        loggerLanding.debug(err)
+        statuses = MojangRestAPI.getDefaultStatuses()
+    }
+    
+    greenCount = 0
+    greyCount = 0
+
+    for(let i=0; i<statuses.length; i++){
+        const service = statuses[i]
+
+        if(service.essential){
+            tooltipEssentialHTML += `<div class="mojangStatusContainer">
+                <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">&#8226;</span>
+                <span class="mojangStatusName">${service.name}</span>
+            </div>`
+        } else {
+            tooltipNonEssentialHTML += `<div class="mojangStatusContainer">
+                <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">&#8226;</span>
+                <span class="mojangStatusName">${service.name}</span>
+            </div>`
+        }
+
+        if(service.status === 'yellow' && status !== 'red'){
+            status = 'yellow'
+        } else if(service.status === 'red'){
+            status = 'red'
+        } else {
+            if(service.status === 'grey'){
+                ++greyCount
+            }
+            ++greenCount
+        }
+
+    }
+
+    if(greenCount === statuses.length){
+        if(greyCount === statuses.length){
+            status = 'grey'
+        } else {
+            status = 'green'
+        }
     }
     
     document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML
     document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML
-    document.getElementById('mojang_status_icon').style.color = Mojang.statusToHex(status)
+    document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
 }
 
 const refreshServerStatus = async function(fade = false){

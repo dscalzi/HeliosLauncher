@@ -10,10 +10,11 @@
  */
 // Requirements
 const ConfigManager = require('./configmanager')
-const LoggerUtil    = require('./loggerutil')
-const Mojang        = require('./mojang')
-const logger        = LoggerUtil('%c[AuthManager]', 'color: #a02d2a; font-weight: bold')
-const loggerSuccess = LoggerUtil('%c[AuthManager]', 'color: #209b07; font-weight: bold')
+const { LoggerUtil } = require('helios-core')
+const { MojangRestAPI, mojangErrorDisplayable, MojangErrorCode } = require('helios-core/mojang')
+const { RestResponseStatus } = require('helios-core/common')
+
+const log = LoggerUtil.getLogger('AuthManager')
 
 // Functions
 
@@ -28,20 +29,29 @@ const loggerSuccess = LoggerUtil('%c[AuthManager]', 'color: #209b07; font-weight
  */
 exports.addAccount = async function(username, password){
     try {
-        const session = await Mojang.authenticate(username, password, ConfigManager.getClientToken())
-        if(session.selectedProfile != null){
-            const ret = ConfigManager.addAuthAccount(session.selectedProfile.id, session.accessToken, username, session.selectedProfile.name)
-            if(ConfigManager.getClientToken() == null){
-                ConfigManager.setClientToken(session.clientToken)
+        const response = await MojangRestAPI.authenticate(username, password, ConfigManager.getClientToken())
+        console.log(response)
+        if(response.responseStatus === RestResponseStatus.SUCCESS) {
+
+            const session = response.data
+            if(session.selectedProfile != null){
+                const ret = ConfigManager.addAuthAccount(session.selectedProfile.id, session.accessToken, username, session.selectedProfile.name)
+                if(ConfigManager.getClientToken() == null){
+                    ConfigManager.setClientToken(session.clientToken)
+                }
+                ConfigManager.save()
+                return ret
+            } else {
+                return Promise.reject(mojangErrorDisplayable(MojangErrorCode.ERROR_NOT_PAID))
             }
-            ConfigManager.save()
-            return ret
+
         } else {
-            throw new Error('NotPaidAccount')
+            return Promise.reject(mojangErrorDisplayable(response.mojangErrorCode))
         }
         
     } catch (err){
-        return Promise.reject(err)
+        log.error(err)
+        return Promise.reject(mojangErrorDisplayable(MojangErrorCode.UNKNOWN))
     }
 }
 
@@ -55,11 +65,17 @@ exports.addAccount = async function(username, password){
 exports.removeAccount = async function(uuid){
     try {
         const authAcc = ConfigManager.getAuthAccount(uuid)
-        await Mojang.invalidate(authAcc.accessToken, ConfigManager.getClientToken())
-        ConfigManager.removeAuthAccount(uuid)
-        ConfigManager.save()
-        return Promise.resolve()
+        const response = await MojangRestAPI.invalidate(authAcc.accessToken, ConfigManager.getClientToken())
+        if(response.responseStatus === RestResponseStatus.SUCCESS) {
+            ConfigManager.removeAuthAccount(uuid)
+            ConfigManager.save()
+            return Promise.resolve()
+        } else {
+            log.error('Error while removing account', response.error)
+            return Promise.reject(response.error)
+        }
     } catch (err){
+        log.error('Error while removing account', err)
         return Promise.reject(err)
     }
 }
@@ -76,24 +92,27 @@ exports.removeAccount = async function(uuid){
  */
 exports.validateSelected = async function(){
     const current = ConfigManager.getSelectedAccount()
-    const isValid = await Mojang.validate(current.accessToken, ConfigManager.getClientToken())
-    if(!isValid){
-        try {
-            const session = await Mojang.refresh(current.accessToken, ConfigManager.getClientToken())
-            ConfigManager.updateAuthAccount(current.uuid, session.accessToken)
-            ConfigManager.save()
-        } catch(err) {
-            logger.debug('Error while validating selected profile:', err)
-            if(err && err.error === 'ForbiddenOperationException'){
-                // What do we do?
+    const response = await MojangRestAPI.validate(current.accessToken, ConfigManager.getClientToken())
+
+    if(response.responseStatus === RestResponseStatus.SUCCESS) {
+        const isValid = response.data
+        if(!isValid){
+            const refreshResponse = await MojangRestAPI.refresh(current.accessToken, ConfigManager.getClientToken())
+            if(refreshResponse.responseStatus === RestResponseStatus.SUCCESS) {
+                const session = refreshResponse.data
+                ConfigManager.updateAuthAccount(current.uuid, session.accessToken)
+                ConfigManager.save()
+            } else {
+                log.error('Error while validating selected profile:', refreshResponse.error)
+                log.info('Account access token is invalid.')
+                return false
             }
-            logger.log('Account access token is invalid.')
-            return false
+            log.info('Account access token validated.')
+            return true
+        } else {
+            log.info('Account access token validated.')
+            return true
         }
-        loggerSuccess.log('Account access token validated.')
-        return true
-    } else {
-        loggerSuccess.log('Account access token validated.')
-        return true
     }
+    
 }
