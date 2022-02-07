@@ -145,6 +145,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent) => {
 // Microsoft Auth Logout
 let msftLogoutWindow
 let msftLogoutSuccess
+let msftLogoutSuccessSent
 ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
     if (msftLogoutWindow) {
         ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.ALREADY_OPEN)
@@ -152,6 +153,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
     }
 
     msftLogoutSuccess = false
+    msftLogoutSuccessSent = false
     msftLogoutWindow = new BrowserWindow({
         title: 'Microsoft Logout',
         backgroundColor: '#222222',
@@ -168,21 +170,27 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
     msftLogoutWindow.on('close', () => {
         if(!msftLogoutSuccess) {
             ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.NOT_FINISHED)
+        } else if(!msftLogoutSuccessSent) {
+            msftLogoutSuccessSent = true
+            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.SUCCESS, uuid, isLastAccount)
         }
     })
     
-    msftLogoutWindow.webContents.on('did-navigate', () => {
-        setTimeout(() => {
-            if(msftLogoutWindow) {
-                ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.SUCCESS, uuid, isLastAccount)
-                msftLogoutSuccess = true
+    msftLogoutWindow.webContents.on('did-navigate', (_, uri) => {
+        if(uri.startsWith('https://login.microsoftonline.com/common/oauth2/v2.0/logoutsession')) {
+            msftLogoutSuccess = true
+            setTimeout(() => {
+                if(!msftLogoutSuccessSent) {
+                    msftLogoutSuccessSent = true
+                    ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.SUCCESS, uuid, isLastAccount)
+                }
 
                 if(msftLogoutWindow) {
                     msftLogoutWindow.close()
                     msftLogoutWindow = null
                 }
-            }
-        }, 5000)
+            }, 5000)
+        }
     })
     
     msftLogoutWindow.removeMenu()

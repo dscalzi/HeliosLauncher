@@ -315,6 +315,9 @@ settingsNavDone.onclick = () => {
  * Account Management Tab
  */
 
+const msftLoginLogger = LoggerUtil.getLogger('Microsoft Login')
+const msftLogoutLogger = LoggerUtil.getLogger('Microsoft Logout')
+
 // Bind the add mojang account button.
 document.getElementById('settingsAddMojangAccount').onclick = (e) => {
     switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
@@ -338,8 +341,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
 
             if(arguments_.length > 1 && arguments_[1] === MSFT_ERROR.NOT_FINISHED) {
                 // User cancelled.
-                // TODO Get logger from LoggerUtil
-                console.log('Login Cancelled')
+                msftLoginLogger.info('Login cancelled by user.')
                 return
             }
 
@@ -379,8 +381,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
             toggleOverlay(true)
         } else {
 
-            // TODO Update logging message
-            console.log('Acquired authCode')
+            msftLoginLogger.info('Acquired authCode, proceeding with authentication.')
 
             const authCode = queryMap.code
             AuthManager.addMicrosoftAccount(authCode).then(value => {
@@ -483,14 +484,12 @@ function processLogOut(val, isLastAccount){
 
 // Bind reply for Microsoft Logout.
 ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
-    console.log('on logout, ', arguments_)
     if (arguments_[0] === MSFT_REPLY_TYPE.ERROR) {
         switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
 
             if(arguments_.length > 1 && arguments_[1] === MSFT_ERROR.NOT_FINISHED) {
                 // User cancelled.
-                // TODO Get logger from LoggerUtil
-                console.log('Logout Cancelled')
+                msftLogoutLogger.info('Logout cancelled by user.')
                 return
             }
 
@@ -511,7 +510,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
         const isLastAccount = arguments_[2]
         const prevSelAcc = ConfigManager.getSelectedAccount()
 
-        console.log('Logout Successful. uuid:', uuid)
+        msftLogoutLogger.info('Logout Successful. uuid:', uuid)
         
         AuthManager.removeMicrosoftAccount(uuid)
             .then(() => {
