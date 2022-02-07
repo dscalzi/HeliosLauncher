@@ -387,6 +387,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
             AuthManager.addMicrosoftAccount(authCode).then(value => {
                 updateSelectedAccount(value)
                 switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
+                    prepareSettings()
                 })
             })
         }
@@ -451,6 +452,7 @@ function bindAuthAccountLogOut(){
     })
 }
 
+let msAccDomElementCache
 /**
  * Process a log out.
  * 
@@ -463,6 +465,7 @@ function processLogOut(val, isLastAccount){
     const prevSelAcc = ConfigManager.getSelectedAccount()
     const targetAcc = ConfigManager.getAuthAccount(uuid)
     if(targetAcc.type === 'microsoft') {
+        msAccDomElementCache = parent
         switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
             ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount)
         })
@@ -519,6 +522,10 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
                     refreshAuthAccountSelected(selAcc.uuid)
                     updateSelectedAccount(selAcc)
                     validateSelectedAccount()
+                }
+                if(msAccDomElementCache) {
+                    msAccDomElementCache.remove()
+                    msAccDomElementCache = null
                 }
             })
             .finally(() => {
