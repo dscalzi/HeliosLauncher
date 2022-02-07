@@ -4,6 +4,7 @@ const semver = require('semver')
 
 const { JavaGuard } = require('./assets/js/assetguard')
 const DropinModUtil  = require('./assets/js/dropinmodutil')
+const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
 
 const settingsState = {
     invalid: new Set()
@@ -314,7 +315,7 @@ settingsNavDone.onclick = () => {
  * Account Management Tab
  */
 
-// Bind the add account button.
+// Bind the add mojang account button.
 document.getElementById('settingsAddMojangAccount').onclick = (e) => {
     switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
         loginViewOnCancel = VIEWS.settings
@@ -322,6 +323,74 @@ document.getElementById('settingsAddMojangAccount').onclick = (e) => {
         loginCancelEnabled(true)
     })
 }
+
+// Bind the add microsoft account button.
+document.getElementById('settingsAddMicrosoftAccount').onclick = (e) => {
+    switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
+        ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN)
+    })
+}
+
+// Bind reply for Microsoft Login.
+ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
+    if (arguments_[0] === MSFT_REPLY_TYPE.ERROR) {
+        switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
+
+            if(arguments_.length > 1 && arguments_[1] === MSFT_ERROR.NOT_FINISHED) {
+                // User cancelled.
+                // TODO Get logger from LoggerUtil
+                console.log('Login Cancelled')
+                return
+            }
+
+            // Unexpected error.
+            setOverlayContent(
+                'Something Went Wrong',
+                'Microsoft authentication failed. Please try again.',
+                'OK'
+            )
+            setOverlayHandler(() => {
+                toggleOverlay(false)
+            })
+            toggleOverlay(true)
+        })
+    } else if(arguments_[0] === MSFT_REPLY_TYPE.SUCCESS) {
+        const queryMap = arguments_[1]
+
+        // Error from request to Microsoft.
+        if (Object.prototype.hasOwnProperty.call(queryMap, 'error')) {
+            let error = queryMap.error
+            let errorDesc = queryMap.error_description
+            title = error
+            description = errorDesc
+            if (error === 'access_denied') {
+                // TODO Write custom error messages.
+                title = error
+                description = errorDesc
+            }
+            setOverlayContent(
+                title,
+                description,
+                'OK'
+            )
+            setOverlayHandler(() => {
+                toggleOverlay(false)
+            })
+            toggleOverlay(true)
+        } else {
+
+            // TODO Update logging message
+            console.log('Acquired authCode')
+
+            const authCode = queryMap.code
+            AuthManager.addMicrosoftAccount(authCode).then(value => {
+                updateSelectedAccount(value)
+                switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
+                })
+            })
+        }
+    }
+})
 
 /**
  * Bind functionality for the account selection buttons. If another account
@@ -391,18 +460,74 @@ function processLogOut(val, isLastAccount){
     const parent = val.closest('.settingsAuthAccount')
     const uuid = parent.getAttribute('uuid')
     const prevSelAcc = ConfigManager.getSelectedAccount()
-    AuthManager.removeAccount(uuid).then(() => {
-        if(!isLastAccount && uuid === prevSelAcc.uuid){
-            const selAcc = ConfigManager.getSelectedAccount()
-            refreshAuthAccountSelected(selAcc.uuid)
-            updateSelectedAccount(selAcc)
-            validateSelectedAccount()
-        }
-    })
-    $(parent).fadeOut(250, () => {
-        parent.remove()
-    })
+    const targetAcc = ConfigManager.getAuthAccount(uuid)
+    if(targetAcc.type === 'microsoft') {
+        switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
+            ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount)
+        })
+        // TODO ADD LOGIC FOR LAST ACCOUNT - SAME AS SOLUTION FOR FIRST TIME LOGIN!
+    } else {
+        AuthManager.removeMojangAccount(uuid).then(() => {
+            if(!isLastAccount && uuid === prevSelAcc.uuid){
+                const selAcc = ConfigManager.getSelectedAccount()
+                refreshAuthAccountSelected(selAcc.uuid)
+                updateSelectedAccount(selAcc)
+                validateSelectedAccount()
+            }
+        })
+        $(parent).fadeOut(250, () => {
+            parent.remove()
+        })
+    }
 }
+
+// Bind reply for Microsoft Logout.
+ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
+    console.log('on logout, ', arguments_)
+    if (arguments_[0] === MSFT_REPLY_TYPE.ERROR) {
+        switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
+
+            if(arguments_.length > 1 && arguments_[1] === MSFT_ERROR.NOT_FINISHED) {
+                // User cancelled.
+                // TODO Get logger from LoggerUtil
+                console.log('Logout Cancelled')
+                return
+            }
+
+            // Unexpected error.
+            setOverlayContent(
+                'Something Went Wrong',
+                'Microsoft logout failed. Please try again.',
+                'OK'
+            )
+            setOverlayHandler(() => {
+                toggleOverlay(false)
+            })
+            toggleOverlay(true)
+        })
+    } else if(arguments_[0] === MSFT_REPLY_TYPE.SUCCESS) {
+        
+        const uuid = arguments_[1]
+        const isLastAccount = arguments_[2]
+        const prevSelAcc = ConfigManager.getSelectedAccount()
+
+        console.log('Logout Successful. uuid:', uuid)
+        
+        AuthManager.removeMicrosoftAccount(uuid)
+            .then(() => {
+                if(!isLastAccount && uuid === prevSelAcc.uuid){
+                    const selAcc = ConfigManager.getSelectedAccount()
+                    refreshAuthAccountSelected(selAcc.uuid)
+                    updateSelectedAccount(selAcc)
+                    validateSelectedAccount()
+                }
+            })
+            .finally(() => {
+                switchView(getCurrentView(), VIEWS.settings, 500, 500)
+            })
+
+    }
+})
 
 /**
  * Refreshes the status of the selected account on the auth account

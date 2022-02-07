@@ -18,7 +18,8 @@ const VIEWS = {
     landing: '#landingContainer',
     login: '#loginContainer',
     settings: '#settingsContainer',
-    welcome: '#welcomeContainer'
+    welcome: '#welcomeContainer',
+    waiting: '#waitingContainer'
 }
 
 // The currently shown view container.
@@ -335,7 +336,7 @@ async function validateSelectedAccount(){
                 loginViewOnCancel = getCurrentView()
                 if(accLen > 0){
                     loginViewCancelHandler = () => {
-                        ConfigManager.addAuthAccount(selectedAcc.uuid, selectedAcc.accessToken, selectedAcc.username, selectedAcc.displayName)
+                        ConfigManager.addMojangAuthAccount(selectedAcc.uuid, selectedAcc.accessToken, selectedAcc.username, selectedAcc.displayName)
                         ConfigManager.save()
                         validateSelectedAccount()
                     }
