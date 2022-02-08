@@ -1348,58 +1348,65 @@ input:checked + .toggleSwitchSlider:before {
 * Settings View (Account Tab)
 * * */
 
-#settingsAddAuthAccountButtonContainer {
+.settingsAuthAccountTypeContainer {
     display: flex;
     width: 75%;
-    column-gap: 10px;
+    flex-direction: column;
 }
 
-.settingsAddAuthAccountContainer {
+.settingsAuthAccountTypeHeader {
+    display: flex;
+    align-items: center;
     width: 100%;
+    justify-content: space-between;
+    padding: 10px 0px;
+    border-bottom: 1px solid #ffffff85;
+    margin-bottom: 30px;
 }
 
-/* Add account button styles. */
+.settingsAuthAccountTypeHeaderLeft {
+    display: flex;
+    column-gap: 5px;
+}
+
+/* Settings add account button styles. */
 .settingsAddAuthAccount {
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(126, 126, 126, 0.57);
-    border-radius: 3px;
-    height: 50px;
-    width: 100%;
+    background: none;
+    border: none;
     text-align: left;
-    padding: 0px 25px;
+    padding: 2px 0px;
+    color: white;
     cursor: pointer;
     outline: none;
     transition: 0.25s ease;
-    display: flex;
-    align-items: center;
-    column-gap: 5px;
 }
 .settingsAddAuthAccount:hover,
 .settingsAddAuthAccount:focus {
-    background: rgba(54, 54, 54, 0.25);
-    text-shadow: 0px 0px 20px white;
+    text-shadow: 0px 0px 20px white, 0px 0px 20px white, 0px 0px 20px white;
 }
-
-/* Settings auth accounts header. */
-#settingsCurrentAccountsHeader {
-    margin: 20px 0px;
+.settingsAddAuthAccount:active {
+    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75), 0px 0px 20px rgba(255, 255, 255, 0.75), 0px 0px 20px rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+}
+.settingsAddAuthAccount:disabled {
+    color: rgba(255, 255, 255, 0.75);
+    pointer-events: none;
 }
 
 /* Auth account list container styles. */
-#settingsCurrentAccounts {
+.settingsCurrentAccounts {
     margin-bottom: 5%;
 }
-#settingsCurrentAccounts > .settingsAuthAccount:not(:last-child) {
+.settingsCurrentAccounts > .settingsAuthAccount:not(:last-child) {
     margin-bottom: 10px;
 }
-#settingsCurrentAccounts > .settingsAuthAccount:not(:first-child) {
+.settingsCurrentAccounts > .settingsAuthAccount:not(:first-child) {
     margin-top: 10px;
 }
 
 /* Auth account shared styles. */
 .settingsAuthAccount {
     display: flex;
-    width: 75%;
     background: rgba(0, 0, 0, 0.25);
     border-radius: 3px;
     border: 1px solid rgba(126, 126, 126, 0.57);

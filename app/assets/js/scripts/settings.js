@@ -556,7 +556,8 @@ function refreshAuthAccountSelected(uuid){
     })
 }
 
-const settingsCurrentAccounts = document.getElementById('settingsCurrentAccounts')
+const settingsCurrentMicrosoftAccounts = document.getElementById('settingsCurrentMicrosoftAccounts')
+const settingsCurrentMojangAccounts = document.getElementById('settingsCurrentMojangAccounts')
 
 /**
  * Add auth account elements for each one stored in the authentication database.
@@ -569,11 +570,13 @@ function populateAuthAccounts(){
     }
     const selectedUUID = ConfigManager.getSelectedAccount().uuid
 
-    let authAccountStr = ''
+    let microsoftAuthAccountStr = ''
+    let mojangAuthAccountStr = ''
 
-    authKeys.map((val) => {
+    authKeys.forEach((val) => {
         const acc = authAccounts[val]
-        authAccountStr += `<div class="settingsAuthAccount" uuid="${acc.uuid}">
+
+        const accHtml = `<div class="settingsAuthAccount" uuid="${acc.uuid}">
             <div class="settingsAuthAccountLeft">
                 <img class="settingsAuthAccountImage" alt="${acc.displayName}" src="https://mc-heads.net/body/${acc.uuid}/60">
             </div>
@@ -596,9 +599,17 @@ function populateAuthAccounts(){
                 </div>
             </div>
         </div>`
+
+        if(acc.type === 'microsoft') {
+            microsoftAuthAccountStr += accHtml
+        } else {
+            mojangAuthAccountStr += accHtml
+        }
+
     })
 
-    settingsCurrentAccounts.innerHTML = authAccountStr
+    settingsCurrentMicrosoftAccounts.innerHTML = microsoftAuthAccountStr
+    settingsCurrentMojangAccounts.innerHTML = mojangAuthAccountStr
 }
 
 /**
