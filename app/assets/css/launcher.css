@@ -970,19 +970,15 @@ body, button {
 }
 
 #loginOptionsContent {
-    background: rgba(0, 0, 0, 0.50);
     border-radius: 3px;
-    height: 450px;
-    width: 350px;
+    position: relative;
+    top: -5%;
 }
 
 .loginOptionsMainContent {
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
-    height: 100%;
-    padding-top: 25px;
 }
 
 .loginOptionActions {
@@ -1014,6 +1010,35 @@ body, button {
 .loginOptionButton:focus {
     background: rgba(54, 54, 54, 0.25);
     text-shadow: 0px 0px 20px white;
+}
+
+#loginOptionCancelContainer {
+    position: absolute;
+    bottom: -100px;
+}
+
+#loginOptionCancelButton {
+    background: none;
+    border: none;
+    padding: 2px 0px;
+    font-size: 16px;
+    font-weight: bold;
+    color: lightgrey;
+    cursor: pointer;
+    outline: none;
+    transition: 0.25s ease;
+}
+#loginOptionCancelButton:hover,
+#loginOptionCancelButton:focus {
+    text-shadow: 0px 0px 20px lightgrey;
+}
+#loginOptionCancelButton:active {
+    text-shadow: 0px 0px 20px rgba(211, 211, 211, 0.75);
+    color: rgba(211, 211, 211, 0.75);
+}
+#loginOptionCancelButton:disabled {
+    color: rgba(211, 211, 211, 0.75);
+    pointer-events: none;
 }
 
 
