@@ -445,7 +445,6 @@ function bindAuthAccountLogOut(){
                 setOverlayHandler(() => {
                     processLogOut(val, isLastAccount)
                     toggleOverlay(false)
-                    switchView(getCurrentView(), VIEWS.login)
                 })
                 setDismissHandler(() => {
                     toggleOverlay(false)
@@ -476,7 +475,6 @@ function processLogOut(val, isLastAccount){
         switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
             ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount)
         })
-        // TODO ADD LOGIC FOR LAST ACCOUNT - SAME AS SOLUTION FOR FIRST TIME LOGIN!
     } else {
         AuthManager.removeMojangAccount(uuid).then(() => {
             if(!isLastAccount && uuid === prevSelAcc.uuid){
@@ -484,6 +482,12 @@ function processLogOut(val, isLastAccount){
                 refreshAuthAccountSelected(selAcc.uuid)
                 updateSelectedAccount(selAcc)
                 validateSelectedAccount()
+            }
+            if(isLastAccount) {
+                loginOptionsCancelEnabled(false)
+                loginOptionsViewOnLoginSuccess = VIEWS.settings
+                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+                switchView(getCurrentView(), VIEWS.loginOptions)
             }
         })
         $(parent).fadeOut(250, () => {
@@ -530,13 +534,21 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
                     updateSelectedAccount(selAcc)
                     validateSelectedAccount()
                 }
+                if(isLastAccount) {
+                    loginOptionsCancelEnabled(false)
+                    loginOptionsViewOnLoginSuccess = VIEWS.settings
+                    loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+                    switchView(getCurrentView(), VIEWS.loginOptions)
+                }
                 if(msAccDomElementCache) {
                     msAccDomElementCache.remove()
                     msAccDomElementCache = null
                 }
             })
             .finally(() => {
-                switchView(getCurrentView(), VIEWS.settings, 500, 500)
+                if(!isLastAccount) {
+                    switchView(getCurrentView(), VIEWS.settings, 500, 500)
+                }
             })
 
     }

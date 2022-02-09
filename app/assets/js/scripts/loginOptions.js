@@ -1,9 +1,20 @@
+const loginOptionsCancelContainer = document.getElementById('loginOptionCancelContainer')
 const loginOptionMicrosoft = document.getElementById('loginOptionMicrosoft')
 const loginOptionMojang = document.getElementById('loginOptionMojang')
+
+let loginOptionsCancellable = false
 
 let loginOptionsViewOnLoginSuccess
 let loginOptionsViewOnLoginCancel
 let loginOptionsViewOnCancel
+
+function loginOptionsCancelEnabled(val){
+    if(val){
+        $(loginOptionsCancelContainer).show()
+    } else {
+        $(loginOptionsCancelContainer).hide()
+    }
+}
 
 loginOptionMicrosoft.onclick = (e) => {
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
