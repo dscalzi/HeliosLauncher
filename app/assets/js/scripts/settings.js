@@ -330,16 +330,19 @@ document.getElementById('settingsAddMojangAccount').onclick = (e) => {
 // Bind the add microsoft account button.
 document.getElementById('settingsAddMicrosoftAccount').onclick = (e) => {
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
-        ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN)
+        ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN, VIEWS.settings, VIEWS.settings)
     })
 }
 
 // Bind reply for Microsoft Login.
 ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
     if (arguments_[0] === MSFT_REPLY_TYPE.ERROR) {
-        switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
 
-            if(arguments_.length > 1 && arguments_[1] === MSFT_ERROR.NOT_FINISHED) {
+        const viewOnClose = arguments_[2]
+        console.log(arguments_)
+        switchView(getCurrentView(), viewOnClose, 500, 500, () => {
+
+            if(arguments_[1] === MSFT_ERROR.NOT_FINISHED) {
                 // User cancelled.
                 msftLoginLogger.info('Login cancelled by user.')
                 return
@@ -358,27 +361,31 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
         })
     } else if(arguments_[0] === MSFT_REPLY_TYPE.SUCCESS) {
         const queryMap = arguments_[1]
+        const viewOnClose = arguments_[2]
 
         // Error from request to Microsoft.
         if (Object.prototype.hasOwnProperty.call(queryMap, 'error')) {
-            let error = queryMap.error
-            let errorDesc = queryMap.error_description
-            title = error
-            description = errorDesc
-            if (error === 'access_denied') {
-                // TODO Write custom error messages.
+            switchView(getCurrentView(), viewOnClose, 500, 500, () => {
+                let error = queryMap.error
+                let errorDesc = queryMap.error_description
                 title = error
                 description = errorDesc
-            }
-            setOverlayContent(
-                title,
-                description,
-                'OK'
-            )
-            setOverlayHandler(() => {
-                toggleOverlay(false)
+                if (error === 'access_denied') {
+                    // TODO Write custom error messages.
+                    title = error
+                    description = errorDesc
+                }
+                setOverlayContent(
+                    title,
+                    description,
+                    'OK'
+                )
+                setOverlayHandler(() => {
+                    toggleOverlay(false)
+                })
+                toggleOverlay(true)
+
             })
-            toggleOverlay(true)
         } else {
 
             msftLoginLogger.info('Acquired authCode, proceeding with authentication.')
@@ -386,7 +393,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
             const authCode = queryMap.code
             AuthManager.addMicrosoftAccount(authCode).then(value => {
                 updateSelectedAccount(value)
-                switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
+                switchView(getCurrentView(), viewOnClose, 500, 500, () => {
                     prepareSettings()
                 })
             })

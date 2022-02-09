@@ -95,12 +95,16 @@ const REDIRECT_URI_PREFIX = 'https://login.microsoftonline.com/common/oauth2/nat
 // Microsoft Auth Login
 let msftAuthWindow
 let msftAuthSuccess
-ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent) => {
+let msftAuthViewSuccess
+let msftAuthViewOnClose
+ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
     if (msftAuthWindow) {
-        ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.ALREADY_OPEN)
+        ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.ALREADY_OPEN, msftAuthViewOnClose)
         return
     }
     msftAuthSuccess = false
+    msftAuthViewSuccess = arguments_[0]
+    msftAuthViewOnClose = arguments_[1]
     msftAuthWindow = new BrowserWindow({
         title: 'Microsoft Login',
         backgroundColor: '#222222',
@@ -116,7 +120,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent) => {
 
     msftAuthWindow.on('close', () => {
         if(!msftAuthSuccess) {
-            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.NOT_FINISHED)
+            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.NOT_FINISHED, msftAuthViewOnClose)
         }
     })
 
@@ -130,7 +134,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent) => {
                 queryMap[name] = decodeURI(value)
             })
 
-            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.SUCCESS, queryMap)
+            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.SUCCESS, queryMap, msftAuthViewSuccess)
 
             msftAuthSuccess = true
             msftAuthWindow.close()
