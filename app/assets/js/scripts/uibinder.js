@@ -88,8 +88,11 @@ function showMainUI(data){
                 currentView = VIEWS.landing
                 $(VIEWS.landing).fadeIn(1000)
             } else {
-                currentView = VIEWS.login
-                $(VIEWS.login).fadeIn(1000)
+                loginOptionsCancelEnabled(false)
+                loginOptionsViewOnLoginSuccess = VIEWS.landing
+                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+                currentView = VIEWS.loginOptions
+                $(VIEWS.loginOptions).fadeIn(1000)
             }
         }
 
