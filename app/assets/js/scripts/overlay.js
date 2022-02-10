@@ -197,6 +197,9 @@ document.getElementById('accountSelectConfirm').addEventListener('click', () => 
             const authAcc = ConfigManager.setSelectedAccount(listings[i].getAttribute('uuid'))
             ConfigManager.save()
             updateSelectedAccount(authAcc)
+            if(getCurrentView() === VIEWS.settings) {
+                prepareSettings()
+            }
             toggleOverlay(false)
             validateSelectedAccount()
             return
@@ -207,6 +210,9 @@ document.getElementById('accountSelectConfirm').addEventListener('click', () => 
         const authAcc = ConfigManager.setSelectedAccount(listings[0].getAttribute('uuid'))
         ConfigManager.save()
         updateSelectedAccount(authAcc)
+        if(getCurrentView() === VIEWS.settings) {
+            prepareSettings()
+        }
         toggleOverlay(false)
         validateSelectedAccount()
     }

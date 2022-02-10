@@ -334,20 +334,46 @@ async function validateSelectedAccount(){
                 'Select Another Account'
             )
             setOverlayHandler(() => {
-                document.getElementById('loginUsername').value = selectedAcc.username
-                validateEmail(selectedAcc.username)
-                loginViewOnSuccess = getCurrentView()
-                loginViewOnCancel = getCurrentView()
-                if(accLen > 0){
-                    loginViewCancelHandler = () => {
-                        ConfigManager.addMojangAuthAccount(selectedAcc.uuid, selectedAcc.accessToken, selectedAcc.username, selectedAcc.displayName)
+
+                const isMicrosoft = selectedAcc.type === 'microsoft'
+
+                if(isMicrosoft) {
+                    // Empty for now
+                } else {
+                    // Mojang
+                    // For convenience, pre-populate the username of the account.
+                    document.getElementById('loginUsername').value = selectedAcc.username
+                    validateEmail(selectedAcc.username)
+                }
+                
+                loginOptionsViewOnLoginSuccess = getCurrentView()
+                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+
+                if(accLen > 0) {
+                    loginOptionsViewOnCancel = getCurrentView()
+                    loginOptionsViewCancelHandler = () => {
+                        if(isMicrosoft) {
+                            ConfigManager.addMicrosoftAuthAccount(
+                                selectedAcc.uuid,
+                                selectedAcc.accessToken,
+                                selectedAcc.username,
+                                selectedAcc.expiresAt,
+                                selectedAcc.microsoft.access_token,
+                                selectedAcc.microsoft.refresh_token,
+                                selectedAcc.microsoft.expires_at
+                            )
+                        } else {
+                            ConfigManager.addMojangAuthAccount(selectedAcc.uuid, selectedAcc.accessToken, selectedAcc.username, selectedAcc.displayName)
+                        }
                         ConfigManager.save()
                         validateSelectedAccount()
                     }
-                    loginCancelEnabled(true)
+                    loginOptionsCancelEnabled(true)
+                } else {
+                    loginOptionsCancelEnabled(false)
                 }
                 toggleOverlay(false)
-                switchView(getCurrentView(), VIEWS.login)
+                switchView(getCurrentView(), VIEWS.loginOptions)
             })
             setDismissHandler(() => {
                 if(accLen > 1){
