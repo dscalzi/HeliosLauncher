@@ -10,7 +10,7 @@ const { MojangRestAPI, getServerStatus }     = require('helios-core/mojang')
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
-const { RestResponseStatus } = require('helios-core/common')
+const { RestResponseStatus, isDisplayableError } = require('helios-core/common')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')

@@ -13,7 +13,7 @@ const ConfigManager          = require('./configmanager')
 const { LoggerUtil }         = require('helios-core')
 const { RestResponseStatus } = require('helios-core/common')
 const { MojangRestAPI, mojangErrorDisplayable, MojangErrorCode } = require('helios-core/mojang')
-const { MicrosoftAuth }      = require('helios-core/microsoft')
+const { MicrosoftAuth, microsoftErrorDisplayable, MicrosoftErrorCode } = require('helios-core/microsoft')
 const { AZURE_CLIENT_ID }    = require('./ipcconstants')
 
 const log = LoggerUtil.getLogger('AuthManager')
@@ -71,48 +71,48 @@ const AUTH_MODE = { FULL: 0, MS_REFRESH: 1, MC_REFRESH: 2 }
  * @returns An object with all auth data. AccessToken object will be null when mode is MC_REFRESH.
  */
 async function fullMicrosoftAuthFlow(entryCode, authMode) {
+    try {
 
-    let accessTokenRaw
-    let accessToken
-    if(authMode !== AUTH_MODE.MC_REFRESH) {
-        const accessTokenResponse = await MicrosoftAuth.getAccessToken(entryCode, authMode === AUTH_MODE.MS_REFRESH, AZURE_CLIENT_ID)
-        if(accessTokenResponse.responseStatus === RestResponseStatus.ERROR) {
-            // TODO Fail.
-            return // TODO
+        let accessTokenRaw
+        let accessToken
+        if(authMode !== AUTH_MODE.MC_REFRESH) {
+            const accessTokenResponse = await MicrosoftAuth.getAccessToken(entryCode, authMode === AUTH_MODE.MS_REFRESH, AZURE_CLIENT_ID)
+            if(accessTokenResponse.responseStatus === RestResponseStatus.ERROR) {
+                return Promise.reject(microsoftErrorDisplayable(accessTokenResponse.microsoftErrorCode))
+            }
+            accessToken = accessTokenResponse.data
+            accessTokenRaw = accessToken.access_token
+        } else {
+            accessTokenRaw = entryCode
         }
-        accessToken = accessTokenResponse.data
-        accessTokenRaw = accessToken.access_token
-    } else {
-        accessTokenRaw = entryCode
-    }
-    
-    const xblResponse = await MicrosoftAuth.getXBLToken(accessTokenRaw)
-    if(xblResponse.responseStatus === RestResponseStatus.ERROR) {
-        // TODO Fail.
-        return // TODO
-    }
-    const xstsResonse = await MicrosoftAuth.getXSTSToken(xblResponse.data)
-    if(xstsResonse.responseStatus === RestResponseStatus.ERROR) {
-        // TODO Fail.
-        return // TODO
-    }
-    const mcTokenResponse = await MicrosoftAuth.getMCAccessToken(xstsResonse.data)
-    if(mcTokenResponse.responseStatus === RestResponseStatus.ERROR) {
-        // TODO Fail.
-        return // TODO
-    }
-    const mcProfileResponse = await MicrosoftAuth.getMCProfile(mcTokenResponse.data.access_token)
-    if(mcProfileResponse.responseStatus === RestResponseStatus.ERROR) {
-        // TODO Fail.
-        return // TODO
-    }
-    return {
-        accessToken,
-        accessTokenRaw,
-        xbl: xblResponse.data,
-        xsts: xstsResonse.data,
-        mcToken: mcTokenResponse.data,
-        mcProfile: mcProfileResponse.data
+        
+        const xblResponse = await MicrosoftAuth.getXBLToken(accessTokenRaw)
+        if(xblResponse.responseStatus === RestResponseStatus.ERROR) {
+            return Promise.reject(microsoftErrorDisplayable(xblResponse.microsoftErrorCode))
+        }
+        const xstsResonse = await MicrosoftAuth.getXSTSToken(xblResponse.data)
+        if(xstsResonse.responseStatus === RestResponseStatus.ERROR) {
+            return Promise.reject(microsoftErrorDisplayable(xstsResonse.microsoftErrorCode))
+        }
+        const mcTokenResponse = await MicrosoftAuth.getMCAccessToken(xstsResonse.data)
+        if(mcTokenResponse.responseStatus === RestResponseStatus.ERROR) {
+            return Promise.reject(microsoftErrorDisplayable(mcTokenResponse.microsoftErrorCode))
+        }
+        const mcProfileResponse = await MicrosoftAuth.getMCProfile(mcTokenResponse.data.access_token)
+        if(mcProfileResponse.responseStatus === RestResponseStatus.ERROR) {
+            return Promise.reject(microsoftErrorDisplayable(mcProfileResponse.microsoftErrorCode))
+        }
+        return {
+            accessToken,
+            accessTokenRaw,
+            xbl: xblResponse.data,
+            xsts: xstsResonse.data,
+            mcToken: mcTokenResponse.data,
+            mcProfile: mcProfileResponse.data
+        }
+    } catch(err) {
+        log.error(err)
+        return Promise.reject(microsoftErrorDisplayable(MicrosoftErrorCode.UNKNOWN))
     }
 }
 

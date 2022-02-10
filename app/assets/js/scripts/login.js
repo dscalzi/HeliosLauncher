@@ -214,13 +214,26 @@ loginButton.addEventListener('click', () => {
         }, 1000)
     }).catch((displayableError) => {
         loginLoading(false)
-        setOverlayContent(displayableError.title, displayableError.desc, Lang.queryJS('login.tryAgain'))
+
+        let actualDisplayableError
+        if(isDisplayableError(displayableError)) {
+            msftLoginLogger.error('Error while logging in.', displayableError)
+            actualDisplayableError = displayableError
+        } else {
+            // Uh oh.
+            msftLoginLogger.error('Unhandled error during login.', displayableError)
+            actualDisplayableError = {
+                title: 'Unknown Error During Login',
+                desc: 'An unknown error has occurred. Please see the console for details.'
+            }
+        }
+
+        setOverlayContent(actualDisplayableError.title, actualDisplayableError.desc, Lang.queryJS('login.tryAgain'))
         setOverlayHandler(() => {
             formDisabled(false)
             toggleOverlay(false)
         })
         toggleOverlay(true)
-        loggerLogin.log('Error while logging in.', displayableError)
     })
 
 })

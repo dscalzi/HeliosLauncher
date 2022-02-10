@@ -397,6 +397,29 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
                     prepareSettings()
                 })
             })
+                .catch((displayableError) => {
+
+                    let actualDisplayableError
+                    if(isDisplayableError(displayableError)) {
+                        msftLoginLogger.error('Error while logging in.', displayableError)
+                        actualDisplayableError = displayableError
+                    } else {
+                        // Uh oh.
+                        msftLoginLogger.error('Unhandled error during login.', displayableError)
+                        actualDisplayableError = {
+                            title: 'Unknown Error During Login',
+                            desc: 'An unknown error has occurred. Please see the console for details.'
+                        }
+                    }
+
+                    switchView(getCurrentView(), viewOnClose, 500, 500, () => {
+                        setOverlayContent(actualDisplayableError.title, actualDisplayableError.desc, Lang.queryJS('login.tryAgain'))
+                        setOverlayHandler(() => {
+                            toggleOverlay(false)
+                        })
+                        toggleOverlay(true)
+                    })
+                })
         }
     }
 })
