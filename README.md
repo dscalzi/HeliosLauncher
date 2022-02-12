@@ -15,6 +15,7 @@
 
 * 🔒 Full account management.
   * Add multiple accounts and easily switch between them.
+  * Microsoft (OAuth 2.0) + Mojang (Yggdrasil) authentication fully supported.
   * Credentials are never stored and transmitted directly to Mojang.
 * 📂 Efficient asset management.
   * Receive client updates as soon as we release them.
@@ -180,13 +181,15 @@ Note that you **cannot** open the DevTools window while using this debug configu
 
 Please give credit to the original author and provide a link to the original source. This is free software, please do at least this much.
 
+For instructions on setting up Microsoft Authentication, see https://github.com/dscalzi/HeliosLauncher/blob/feature/ms-auth/docs/MicrosoftAuth.md.
+
 ---
 
 ## Resources
 
 * [Wiki][wiki]
 * [Nebula (Create Distribution.json)][nebula]
-* [v2 Rewrite Branch (WIP)][v2branch]
+* [v2 Rewrite Branch (Inactive)][v2branch]
 
 The best way to contact the developers is on Discord.
 

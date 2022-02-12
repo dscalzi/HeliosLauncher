@@ -9,11 +9,12 @@ const $                              = require('jquery')
 const {ipcRenderer, shell, webFrame} = require('electron')
 const remote                         = require('@electron/remote')
 const isDev                          = require('./assets/js/isdev')
-const LoggerUtil                     = require('./assets/js/loggerutil')
+const { LoggerUtil }                 = require('helios-core')
+const LoggerUtil1                    = require('./assets/js/loggerutil')
 
-const loggerUICore             = LoggerUtil('%c[UICore]', 'color: #000668; font-weight: bold')
-const loggerAutoUpdater        = LoggerUtil('%c[AutoUpdater]', 'color: #000668; font-weight: bold')
-const loggerAutoUpdaterSuccess = LoggerUtil('%c[AutoUpdater]', 'color: #209b07; font-weight: bold')
+const loggerUICore             = LoggerUtil1('%c[UICore]', 'color: #000668; font-weight: bold')
+const loggerAutoUpdater        = LoggerUtil1('%c[AutoUpdater]', 'color: #000668; font-weight: bold')
+const loggerAutoUpdaterSuccess = LoggerUtil1('%c[AutoUpdater]', 'color: #209b07; font-weight: bold')
 
 // Log deprecation and process warnings.
 process.traceProcessWarnings = true
