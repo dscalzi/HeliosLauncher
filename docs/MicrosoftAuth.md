@@ -26,7 +26,7 @@ Reference: https://docs.microsoft.com/en-us/azure/active-directory/develop/quick
 
 ## Adding the Azure Client ID to Helios Launcher.
 
-In `app/assets/js/ipcconstants.js` you'll find **`AZURE_CLIENT_ID`**, replace `FILL-IN` with your application's id.
+In `app/assets/js/ipcconstants.js` you'll find **`AZURE_CLIENT_ID`**. Set it to your application's id.
 
 Note: Azure Client ID is NOT a secret value and **can** be stored in git. Reference: https://stackoverflow.com/questions/57306964/are-azure-active-directorys-tenantid-and-clientid-considered-secrets
 
