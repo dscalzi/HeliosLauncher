@@ -2,13 +2,13 @@ appId: 'helioslauncher'
 productName: 'Helios Launcher'
 artifactName: '${productName}-setup-${version}.${ext}'
 
-copyright: 'Copyright © 2018-2021 Daniel Scalzi'
+copyright: 'Copyright © 2018-2022 Daniel Scalzi'
 
 asar: true
 compression: 'maximum'
 
 files:
-  - '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.travis.yml,.nvmrc,.eslintrc.json,build.js}'
+  - '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.nvmrc,.eslintrc.json}'
 
 extraResources:
   - 'libraries'
