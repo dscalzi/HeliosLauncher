@@ -124,7 +124,7 @@ async function fullMicrosoftAuthFlow(entryCode, authMode) {
  * @param {number} epiresInS Expires in (seconds)
  * @returns 
  */
-async function calculateExpiryDate(nowMs, epiresInS) {
+function calculateExpiryDate(nowMs, epiresInS) {
     return nowMs + ((epiresInS-10)*1000)
 }
 
