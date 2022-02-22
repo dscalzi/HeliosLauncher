@@ -2503,7 +2503,7 @@ input:checked + .toggleSwitchSlider:before {
 #landingContainer > #lower > #center {
     position: relative;
     transition: top 2s ease;
-    top: 0px;
+    top: -50px;
     height: 100%;
     width: 34%;
     display: inline-flex;
@@ -3401,7 +3401,7 @@ input:checked + .toggleSwitchSlider:before {
     font-weight: 900;
     letter-spacing: 2px;
     text-shadow: 0px 0px 0px #bebcbb;
-    font-size: 20px;
+    font-size: 50px;
     padding: 0px;
     transition: 0.25s ease;
     outline: none;
