@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
+  "name": "lukienlivelauncher",
   "version": "1.9.0",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "productName": "LukiEnLive Launcher",
+  "description": "Launcher du serveur Moddé du Streameur LukiEnLive",
+  "author": "Daniel Scalzi (https://github.com/dscalzi/) SoraxDubbing / Luki",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/Sorax5/LukiEnLiveLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/Sorax5/LukiEnLiveLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -48,6 +48,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/Sorax5/LukiEnLiveLauncher.git"
   }
 }
