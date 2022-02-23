@@ -63,7 +63,7 @@ client.on("ready", () => {
       assets: {
         large_image: "pdp_512"
       },
-      details: "kuku",
+      //details: "kuku",
       state: "Serveur Minecraft Communautaire !",
       buttons: [{ label: "Twitch", url: "https://twitch.tv/lukienlive"}, { label: "Rejoins nous !", url: "https://discord.gg/TEZr3DdaFZ"}],
     }    
