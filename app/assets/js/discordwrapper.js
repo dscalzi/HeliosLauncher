@@ -61,7 +61,7 @@ client.on("ready", () => {
     pid: process.pid,
     activity: {
       assets: {
-        large_image: "pdp_512"
+        large_image: "pdp"
       },
       //details: "kuku",
       state: "Serveur Minecraft Communautaire !",
