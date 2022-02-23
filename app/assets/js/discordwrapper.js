@@ -1,5 +1,5 @@
 // Work in progress
-const logger = require('./loggerutil')('%c[DiscordWrapper]', 'color: #7289da; font-weight: bold')
+/*const logger = require('./loggerutil')('%c[DiscordWrapper]', 'color: #7289da; font-weight: bold')
 
 const {Client} = require('discord-rpc-patch')
 
@@ -38,6 +38,50 @@ exports.updateDetails = function(details){
     activity.details = details
     client.setActivity(activity)
 }
+
+exports.shutdownRPC = function(){
+    if(!client) return
+    client.clearActivity()
+    client.destroy()
+    client = null
+    activity = null
+}*/
+
+const logger = require('./loggerutil')('%c[DiscordWrapper]', 'color: #7289da; font-weight: bold')
+
+let rpc = require("discord-rpc")
+
+const client = new rpc.Client({ transport: 'ipc' })
+
+client.on("ready", () => {
+    logger.log('Discord RPC Connected')
+
+  client.request('SET_ACTIVITY', {
+
+    pid: process.pid,
+    activity: {
+      assets: {
+        large_image: "pdp_512"
+      },
+      details: "kuku",
+      state: "Serveur Minecraft Communautaire !",
+      buttons: [{ label: "Twitch", url: "https://twitch.tv/lukienlive"}, { label: "Rejoins nous !", url: "https://discord.gg/TEZr3DdaFZ"}],
+    }    
+  
+  })
+
+  logger.log(`Connecté à l'utilisateur: ${client.user.username}#${client.user.discriminator}`);
+
+})
+
+
+client.login({clientId: "946067255295369248"}).catch(error => {
+    if(error.message.includes('ENOENT')) {
+        logger.log('Unable to initialize Discord Rich Presence, no client detected.')
+    } else {
+        logger.log('Unable to initialize Discord Rich Presence: ' + error.message, error)
+    }
+})
 
 exports.shutdownRPC = function(){
     if(!client) return

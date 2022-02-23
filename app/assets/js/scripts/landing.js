@@ -156,7 +156,7 @@ server_selection_button.onclick = (e) => {
     e.target.blur()
     toggleServerSelection(true)
 }
-
+/*
 // Update Mojang Status Color
 const refreshMojangStatuses = async function(){
     loggerLanding.log('Refreshing Mojang Statuses..')
@@ -217,7 +217,7 @@ const refreshMojangStatuses = async function(){
     document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML
     document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
 }
-
+*/
 const refreshServerStatus = async function(fade = false){
     loggerLanding.log('Refreshing Server Status')
     const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
@@ -249,7 +249,7 @@ const refreshServerStatus = async function(fade = false){
     }
     
 }
-
+/*
 refreshMojangStatuses()
 // Server Status is refreshed in uibinder.js on distributionIndexDone.
 
@@ -830,7 +830,7 @@ function slide_(up){
         newsBtn.style.top = '10px'
     }
 }
-
+/*
 // Bind news button.
 document.getElementById('newsButton').onclick = () => {
     // Toggle tabbing.
@@ -861,7 +861,7 @@ let newsLoadingListener = null
  * Set the news loading animation.
  * 
  * @param {boolean} val True to set loading animation, otherwise false.
- */
+ *//*
 function setNewsLoading(val){
     if(val){
         const nLStr = 'Vérification des actualitées'
@@ -904,7 +904,7 @@ newsArticleContentScrollable.onscroll = (e) => {
  * 
  * @returns {Promise.<void>} A promise which resolves when the news
  * content has finished loading and transitioning.
- */
+ *//*
 function reloadNews(){
     return new Promise((resolve, reject) => {
         $('#newsContent').fadeOut(250, () => {
@@ -920,7 +920,7 @@ let newsAlertShown = false
 
 /**
  * Show the news alert indicating there is new news.
- */
+ *//*
 function showNewsAlert(){
     newsAlertShown = true
     $(newsButtonAlert).fadeIn(250)
@@ -932,7 +932,7 @@ function showNewsAlert(){
  * 
  * @returns {Promise.<void>} A promise which resolves when the news
  * content has finished loading and transitioning.
- */
+ *//*
 function initNews(){
 
     return new Promise((resolve, reject) => {
