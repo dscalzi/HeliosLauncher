@@ -65,7 +65,7 @@ client.on("ready", () => {
       },
       //details: "kuku",
       state: "Serveur Minecraft Communautaire !",
-      buttons: [{ label: "Twitch", url: "https://twitch.tv/lukienlive"}, { label: "Rejoins nous !", url: "https://discord.gg/TEZr3DdaFZ"}],
+      buttons: [{ label: "Twitch", url: "https://twitch.tv/lukienlive"}, { label: "Rejoins nous !", url: "https://discord.gg/RspuRbNn4M"}],
     }    
   
   })
