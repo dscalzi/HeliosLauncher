@@ -82,11 +82,3 @@ client.login({clientId: "946067255295369248"}).catch(error => {
         logger.log('Unable to initialize Discord Rich Presence: ' + error.message, error)
     }
 })
-
-exports.shutdownRPC = function(){
-    if(!client) return
-    client.clearActivity()
-    client.destroy()
-    client = null
-    activity = null
-}

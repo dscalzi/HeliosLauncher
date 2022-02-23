@@ -465,7 +465,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
 // Keep reference to Minecraft Process
 let proc
 // Is DiscordRPC enabled
-let hasRPC = false
+//let hasRPC = false
 // Joined server regex
 // Change this if your server uses something different.
 const GAME_JOINED_REGEX = /\[.+\]: Sound engine started/
@@ -655,9 +655,9 @@ function dlAsync(login = true){
 
                 const onLoadComplete = () => {
                     toggleLaunchArea(false)
-                    if(hasRPC){
+                    /*if(hasRPC){
                         DiscordWrapper.updateDetails('Loading game..')
-                    }
+                    }*/
                     proc.stdout.on('data', gameStateChange)
                     proc.stdout.removeListener('data', tempListener)
                     proc.stderr.removeListener('data', gameErrorListener)
@@ -707,10 +707,10 @@ function dlAsync(login = true){
 
                     setLaunchDetails('Done. Enjoy the server!')
 
-                    // Init Discord Hook
+                    /*// Init Discord Hook
                     const distro = DistroManager.getDistribution()
                     if(distro.discord != null && serv.discord != null){
-                        DiscordWrapper.initRPC(distro.discord, serv.discord)
+                        //DiscordWrapper.initRPC(distro.discord, serv.discord)
                         hasRPC = true
                         proc.on('close', (code, signal) => {
                             loggerLaunchSuite.log('Shutting down Discord Rich Presence..')
@@ -718,7 +718,7 @@ function dlAsync(login = true){
                             hasRPC = false
                             proc = null
                         })
-                    }
+                    }*/
 
                 } catch(err) {
 
