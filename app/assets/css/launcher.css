@@ -3173,6 +3173,14 @@ input:checked + .toggleSwitchSlider:before {
     fill: #657ac4;
 }
 
+#twitchSVG:hover,
+#twitchURL:focus #twitchSVG {
+    fill: rgb(119, 0, 255);
+}
+#twitchSVG:active {
+    fill: rgb(119, 0, 255);
+}
+
 /*******************************************************************************
  *                                                                             *
  * Landing View (Bottom Styles)                                                *
