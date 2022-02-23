@@ -658,7 +658,7 @@ function dlAsync(login = true){
                     /*if(hasRPC){
                         DiscordWrapper.updateDetails('Loading game..')
                     }*/
-                    proc.stdout.on('data', gameStateChange)
+                    //proc.stdout.on('data', gameStateChange)
                     proc.stdout.removeListener('data', tempListener)
                     proc.stderr.removeListener('data', gameErrorListener)
                 }
