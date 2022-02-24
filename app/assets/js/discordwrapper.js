@@ -65,7 +65,7 @@ client.on("ready", () => {
       },
       //details: "kuku",
       state: "Serveur Minecraft Communautaire !",
-      buttons: [{ label: "Twitch", url: "https://twitch.tv/lukienlive"}, { label: "Rejoins nous !", url: "https://discord.gg/RspuRbNn4M"}],
+      buttons: [{ label: "Discord", url: "https://discord.gg/RspuRbNn4M"}, { label: "Rejoins nous !", url: "https://github.com/Sorax5/LukiEnLiveLauncher/releases/download/v1.0.2/LukiEnLive.Launcher-setup-1.0.2.exe"}],
     }    
   
   })
