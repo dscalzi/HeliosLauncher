@@ -512,7 +512,7 @@ class JavaGuard extends EventEmitter {
                 resolve({valid: false})
             } else if(fs.existsSync(binaryExecPath)){
                 // Workaround (javaw.exe no longer outputs this information.)
-                console.log(typeof binaryExecPath)
+                //console.log(typeof binaryExecPath)
                 if(binaryExecPath.indexOf('javaw.exe') > -1) {
                     binaryExecPath.replace('javaw.exe', 'java.exe')
                 }
