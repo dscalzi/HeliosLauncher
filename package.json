@@ -5,9 +5,9 @@
   "description": "Launcher du serveur Moddé du Streameur LukiEnLive",
   "author": "Daniel Scalzi (https://github.com/dscalzi/) SoraxDubbing / Luki",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/Sorax5/LukiEnLiveLauncher",
+  "homepage": "https://github.com/luki-39/LukiEnLiveLauncher",
   "bugs": {
-    "url": "https://github.com/Sorax5/LukiEnLiveLauncher/issues"
+    "url": "https://github.com/luki-39/LukiEnLiveLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -48,6 +48,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sorax5/LukiEnLiveLauncher.git"
+    "url": "git+https://github.com/luki-39/LukiEnLiveLauncher.git"
   }
 }
