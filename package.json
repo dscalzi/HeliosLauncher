@@ -9,6 +9,13 @@
   "bugs": {
     "url": "https://github.com/luki-39/LukiEnLiveLauncher/issues"
   },
+  "build": {
+    "publish": [{
+        "provider": "github",
+        "owner": "luki-39",
+        "repo": "LukiEnLiveLauncher"
+    }]
+  },
   "private": true,
   "main": "index.js",
   "scripts": {
