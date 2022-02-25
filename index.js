@@ -3,7 +3,7 @@ remoteMain.initialize()
 
 // Requirements
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
-const autoUpdater                       = require('electron-updater').autoUpdater
+const { autoUpdater } = require("electron-updater")
 const ejse                              = require('ejs-electron')
 const fs                                = require('fs')
 const isDev                             = require('./app/assets/js/isdev')
