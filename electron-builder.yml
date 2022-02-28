@@ -1,5 +1,5 @@
 appId: 'lukienlivelauncher'
-productName: 'LukiEnLive Launcher'
+productName: 'LukiEnLiveLauncher'
 artifactName: '${productName}-setup-${version}.${ext}'
 
 copyright: 'Copyright © 2018-2022 Daniel Scalzi'
