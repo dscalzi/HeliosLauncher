@@ -227,7 +227,7 @@ class JavaGuard extends EventEmitter {
      * Fetch the last open JDK binary.
      * 
      * HOTFIX: Uses Corretto 8 for macOS.
-     * See: https://github.com/dscalzi/HeliosLauncher/issues/70
+     * See: https://github.com/luki-39/LukiEnLiveLauncher/issues/70
      * See: https://github.com/AdoptOpenJDK/openjdk-support/issues/101
      * 
      * @param {string} major The major version of Java to fetch.

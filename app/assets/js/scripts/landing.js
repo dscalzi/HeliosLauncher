@@ -340,7 +340,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                         //$('#overlayDismiss').toggle(false)
                         setOverlayContent(
                             'Java est requis<br>pour lancer',
-                            `Une installation x64 valide de Java 8 est requise pour le lancement.<br><br>Veuillez vous référer à notre <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a -valid-version-of-java">Guide de gestion Java</a> pour obtenir des instructions sur l'installation manuelle de Java.`,
+                            `Une installation x64 valide de Java 8 est requise pour le lancement.<br><br>Veuillez vous référer à notre <a href="https://github.com/luki-39/LukiEnLiveLauncher/wiki/Java-Management#manually-installing-a -valid-version-of-java">Guide de gestion Java</a> pour obtenir des instructions sur l'installation manuelle de Java.`,
                             'Je comprends',
                             'Retour'
                         )
@@ -386,7 +386,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 // User will have to follow the guide to install Java.
                 setOverlayContent(
                     'Problème inattendu :<br>Échec du téléchargement Java',
-                    `Malheureusement, nous avons rencontré un problème lors de la tentative d'installation de Java. Vous devrez installer manuellement une copie. Veuillez consulter notre <a href="https://github.com/dscalzi/HeliosLauncher/wiki">Guide de dépannage</a> pour plus de détails et d'instructions.`,
+                    `Malheureusement, nous avons rencontré un problème lors de la tentative d'installation de Java. Vous devrez installer manuellement une copie. Veuillez consulter notre <a href="https://github.com/luki-39/LukiEnLiveLauncher/wiki">Guide de dépannage</a> pour plus de détails et d'instructions.`,
                     'Je comprends'
                 )
                 setOverlayHandler(() => {
@@ -693,7 +693,7 @@ function dlAsync(login = true){
                     data = data.trim()
                     if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
                         loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
-                        showLaunchFailure('Erreur lors du lancement', `Le fichier principal, LaunchWrapper, n'a pas pu être téléchargé correctement. Par conséquent, le jeu ne peut pas se lancer.<br><br>Pour résoudre ce problème, désactivez temporairement votre logiciel antivirus et relancez le jeu.<br><br>Si vous avez le temps, veuillez <a href="https ://github.com/dscalzi/HeliosLauncher/issues">soumettez un problème</a> et faites-nous savoir quel logiciel antivirus vous utilisez. Nous allons les contacter et essayer d'arranger les choses.`)
+                        showLaunchFailure('Erreur lors du lancement', `Le fichier principal, LaunchWrapper, n'a pas pu être téléchargé correctement. Par conséquent, le jeu ne peut pas se lancer.<br><br>Pour résoudre ce problème, désactivez temporairement votre logiciel antivirus et relancez le jeu.<br><br>Si vous avez le temps, veuillez <a href="https ://github.com/luki-39/LukiEnLiveLauncher/issues">soumettez un problème</a> et faites-nous savoir quel logiciel antivirus vous utilisez. Nous allons les contacter et essayer d'arranger les choses.`)
                     }
                 }
 

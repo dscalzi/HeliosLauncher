@@ -4,7 +4,7 @@
 
 <em><h5 align="center">(formerly Electron Launcher)</h5></em>
 
-[<p align="center"><img src="https://img.shields.io/github/workflow/status/dscalzi/HeliosLauncher/Build.svg?style=for-the-badge" alt="gh actions">](https://github.com/luki-39/LukiEnLiveLauncher/actions) [<img src="https://img.shields.io/github/downloads/dscalzi/HeliosLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/luki-39/LukiEnLiveLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="winter-is-coming"></p>
+[<p align="center"><img src="https://img.shields.io/github/workflow/status/luki-39/LukiEnLiveLauncher/Build.svg?style=for-the-badge" alt="gh actions">](https://github.com/luki-39/LukiEnLiveLauncher/actions) [<img src="https://img.shields.io/github/downloads/luki-39/LukiEnLiveLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/luki-39/LukiEnLiveLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="winter-is-coming"></p>
 
 <p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
 
@@ -54,10 +54,10 @@ If you download from the [Releases](https://github.com/luki-39/LukiEnLiveLaunche
 
 | Platform | File |
 | -------- | ---- |
-| Windows x64 | `Helios-Launcher-setup-VERSION.exe` |
-| macOS x64 | `Helios-Launcher-setup-VERSION-x64.dmg` |
-| macOS arm64 | `Helios-Launcher-setup-VERSION-arm64.dmg` |
-| Linux x64 | `Helios-Launcher-setup-VERSION.AppImage` |
+| Windows x64 | `LukiEnLive-Launcher-setup-VERSION.exe` |
+| macOS x64 | `LukiEnLive-Launcher-setup-VERSION-x64.dmg` |
+| macOS arm64 | `LukiEnLive-Launcher-setup-VERSION-arm64.dmg` |
+| Linux x64 | `LukiEnLive-Launcher-setup-VERSION.AppImage` |
 
 ## Console
 
@@ -91,8 +91,8 @@ This section details the setup of a basic developmentment environment.
 **Clone and Install Dependencies**
 
 ```console
-> git clone https://github.com/dscalzi/HeliosLauncher.git
-> cd HeliosLauncher
+> git clone https://github.com/luki-39/LukiEnLiveLauncher.git
+> cd LukiEnLiveLauncher
 > npm install
 ```
 
@@ -181,7 +181,7 @@ Note that you **cannot** open the DevTools window while using this debug configu
 
 Please give credit to the original author and provide a link to the original source. This is free software, please do at least this much.
 
-For instructions on setting up Microsoft Authentication, see https://github.com/dscalzi/HeliosLauncher/blob/master/docs/MicrosoftAuth.md.
+For instructions on setting up Microsoft Authentication, see https://github.com/luki-39/LukiEnLiveLauncher/blob/master/docs/MicrosoftAuth.md.
 
 ---
 
@@ -206,6 +206,6 @@ The best way to contact the developers is on Discord.
 [rendererprocess]: https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes 'Renderer Process'
 [chromedebugger]: https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome 'Debugger for Chrome'
 [discord]: https://discord.gg/zNWUXdt 'Discord'
-[wiki]: https://github.com/dscalzi/HeliosLauncher/wiki 'wiki'
+[wiki]: https://github.com/luki-39/LukiEnLiveLauncherr/wiki 'wiki'
 [nebula]: https://github.com/dscalzi/Nebula 'dscalzi/Nebula'
-[v2branch]: https://github.com/dscalzi/HeliosLauncher/tree/ts-refactor 'v2 branch'
+[v2branch]: https://github.com/luki-39/LukiEnLiveLauncher/tree/ts-refactor 'v2 branch'
