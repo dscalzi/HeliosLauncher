@@ -1,8 +1,4 @@
-// NOTE FOR THIRD-PARTY
-// REPLACE THIS CLIENT ID WITH YOUR APPLICATION ID.
-// SEE https://github.com/dscalzi/luki-39/LukiEnLiveLauncher/blob/master/docs/MicrosoftAuth.md
 exports.AZURE_CLIENT_ID = '681c8525-6c74-411a-be03-8e367f2b0821'
-// SEE NOTE ABOVE.
 
 
 // Opcodes
