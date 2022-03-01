@@ -3,7 +3,7 @@
 <h1 align="center">LukiEnLive Launcher</h1>
 
 
-<p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
+<p align="center">Launcher du serveur LukiEnLive basé sur le launcher [Helios](https://github.com/dscalzi/HeliosLauncher).</p>
 
 ## Téléchargements
 
