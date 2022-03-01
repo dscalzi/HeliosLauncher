@@ -5,9 +5,9 @@
 
 <p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
 
-## Downloads
+## Téléchargements
 
-You can download from [GitHub Releases](https://github.com/luki-39/LukiEnLiveLauncher/releases)
+Vous pouvez télécharger depuis [GitHub Releases](https://github.com/luki-39/LukiEnLiveLauncher/releases)
 
 #### Latest Release
 
@@ -16,11 +16,11 @@ You can download from [GitHub Releases](https://github.com/luki-39/LukiEnLiveLau
 #### Latest Pre-Release
 [![](https://img.shields.io/github/release/luki-39/LukiEnLiveLauncher/all.svg?style=flat-square)](https://github.com/luki-39/LukiEnLiveLauncher/releases)
 
-**Supported Platforms**
+**Plateformes prise en charge**
 
-If you download from the [Releases](https://github.com/luki-39/LukiEnLiveLauncher/releases) tab, select the installer for your system.
+Si vous téléchargez à partir du [Releases](https://github.com/luki-39/LukiEnLiveLauncher/releases), sélectionnez le programme d'installation de votre système.
 
-| Platform | File |
+| Platforme | Fichier |
 | -------- | ---- |
 | Windows x64 | `LukiEnLive-Launcher-setup-VERSION.exe` |
 | macOS x64 | `LukiEnLive-Launcher-setup-VERSION-x64.dmg` |
