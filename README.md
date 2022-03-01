@@ -3,7 +3,7 @@
 <h1 align="center">LukiEnLive Launcher</h1>
 
 
-<p align="center">Launcher du serveur LukiEnLive basé sur le launcher [Helios](https://github.com/dscalzi/HeliosLauncher).</p>
+Launcher du serveur LukiEnLive basé sur le launcher [Helios](https://github.com/dscalzi/HeliosLauncher).
 
 ## Téléchargements
 
