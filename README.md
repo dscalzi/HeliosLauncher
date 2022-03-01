@@ -58,38 +58,3 @@ If you download from the [Releases](https://github.com/luki-39/LukiEnLiveLaunche
 | macOS x64 | `LukiEnLive-Launcher-setup-VERSION-x64.dmg` |
 | macOS arm64 | `LukiEnLive-Launcher-setup-VERSION-arm64.dmg` |
 | Linux x64 | `LukiEnLive-Launcher-setup-VERSION.AppImage` |
-
-## Console
-
-To open the console, use the following keybind.
-
-```console
-ctrl + shift + i
-```
-
-Ensure that you have the console tab selected. Do not paste anything into the console unless you are 100% sure of what it will do. Pasting the wrong thing can expose sensitive information.
-
-#### Export Output to a File
-
----
-
-## Resources
-
-* [Wiki][wiki]
-* [Nebula (Create Distribution.json)][nebula]
-* [v2 Rewrite Branch (Inactive)][v2branch]
-
----
-
-### See you ingame.
-
-
-[nodejs]: https://nodejs.org/en/ 'Node.js'
-[vscode]: https://code.visualstudio.com/ 'Visual Studio Code'
-[mainprocess]: https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes 'Main Process'
-[rendererprocess]: https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes 'Renderer Process'
-[chromedebugger]: https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome 'Debugger for Chrome'
-[discord]: https://discord.gg/zNWUXdt 'Discord'
-[wiki]: https://github.com/luki-39/LukiEnLiveLauncherr/wiki 'wiki'
-[nebula]: https://github.com/dscalzi/Nebula 'dscalzi/Nebula'
-[v2branch]: https://github.com/luki-39/LukiEnLiveLauncher/tree/ts-refactor 'v2 branch'
