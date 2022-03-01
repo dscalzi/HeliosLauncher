@@ -71,21 +71,6 @@ Ensure that you have the console tab selected. Do not paste anything into the co
 
 #### Export Output to a File
 
-If you want to export the console output, simply right click anywhere on the console and click **Save as..**
-
-![console example](https://i.imgur.com/T5e73jP.png)
-
-
-## Development
-
-This section details the setup of a basic developmentment environment.
-
-### Getting Started
-
-**System Requirements**
-
-* [Node.js][nodejs] v16
-
 ---
 
 ## Resources
