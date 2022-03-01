@@ -156,68 +156,7 @@ server_selection_button.onclick = (e) => {
     e.target.blur()
     toggleServerSelection(true)
 }
-/*
-// Update Mojang Status Color
-const refreshMojangStatuses = async function(){
-    loggerLanding.log('Refreshing Mojang Statuses..')
 
-    let status = 'grey'
-    let tooltipEssentialHTML = ''
-    let tooltipNonEssentialHTML = ''
-
-    const response = await MojangRestAPI.status()
-    let statuses
-    if(response.responseStatus === RestResponseStatus.SUCCESS) {
-        statuses = response.data
-    } else {
-        loggerLanding.warn('Unable to refresh Mojang service status.')
-        statuses = MojangRestAPI.getDefaultStatuses()
-    }
-    
-    greenCount = 0
-    greyCount = 0
-
-    for(let i=0; i<statuses.length; i++){
-        const service = statuses[i]
-
-        if(service.essential){
-            tooltipEssentialHTML += `<div class="mojangStatusContainer">
-                <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">&#8226;</span>
-                <span class="mojangStatusName">${service.name}</span>
-            </div>`
-        } else {
-            tooltipNonEssentialHTML += `<div class="mojangStatusContainer">
-                <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">&#8226;</span>
-                <span class="mojangStatusName">${service.name}</span>
-            </div>`
-        }
-
-        if(service.status === 'yellow' && status !== 'red'){
-            status = 'yellow'
-        } else if(service.status === 'red'){
-            status = 'red'
-        } else {
-            if(service.status === 'grey'){
-                ++greyCount
-            }
-            ++greenCount
-        }
-
-    }
-
-    if(greenCount === statuses.length){
-        if(greyCount === statuses.length){
-            status = 'grey'
-        } else {
-            status = 'green'
-        }
-    }
-    
-    document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML
-    document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML
-    document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
-}
-*/
 const refreshServerStatus = async function(fade = false){
     loggerLanding.log('Refreshing Server Status')
     const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
@@ -249,12 +188,8 @@ const refreshServerStatus = async function(fade = false){
     }
     
 }
-/*
-refreshMojangStatuses()
-// Server Status is refreshed in uibinder.js on distributionIndexDone.
 
 // Set refresh rate to once every 5 minutes.
-let mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 300000)
 let serverStatusListener = setInterval(() => refreshServerStatus(true), 300000)
 
 /**
@@ -679,16 +614,6 @@ function dlAsync(login = true){
                     }
                 }
 
-                // Listener for Discord RPC.
-                /*const gameStateChange = function(data){
-                    data = data.trim()
-                    if(SERVER_JOINED_REGEX.test(data)){
-                        DiscordWrapper.updateDetails('Exploring the Realm!')
-                    } else if(GAME_JOINED_REGEX.test(data)){
-                        DiscordWrapper.updateDetails('Sailing to Westeros!')
-                    }
-                }*/
-
                 const gameErrorListener = function(data){
                     data = data.trim()
                     if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
@@ -706,19 +631,6 @@ function dlAsync(login = true){
                     proc.stderr.on('data', gameErrorListener)
 
                     setLaunchDetails('Terminé. Profitez du serveur!')
-
-                    /*// Init Discord Hook
-                    const distro = DistroManager.getDistribution()
-                    if(distro.discord != null && serv.discord != null){
-                        //DiscordWrapper.initRPC(distro.discord, serv.discord)
-                        hasRPC = true
-                        proc.on('close', (code, signal) => {
-                            loggerLaunchSuite.log('Shutting down Discord Rich Presence..')
-                            DiscordWrapper.shutdownRPC()
-                            hasRPC = false
-                            proc = null
-                        })
-                    }*/
 
                 } catch(err) {
 
@@ -829,210 +741,6 @@ function slide_(up){
         lCLRight.style.top = '0px'
         newsBtn.style.top = '10px'
     }
-}
-/*
-// Bind news button.
-document.getElementById('newsButton').onclick = () => {
-    // Toggle tabbing.
-    if(newsActive){
-        $('#landingContainer *').removeAttr('tabindex')
-        $('#newsContainer *').attr('tabindex', '-1')
-    } else {
-        $('#landingContainer *').attr('tabindex', '-1')
-        $('#newsContainer, #newsContainer *, #lower, #lower #center *').removeAttr('tabindex')
-        if(newsAlertShown){
-            $('#newsButtonAlert').fadeOut(2000)
-            newsAlertShown = false
-            ConfigManager.setNewsCacheDismissed(true)
-            ConfigManager.save()
-        }
-    }
-    slide_(!newsActive)
-    newsActive = !newsActive
-}
-
-// Array to store article meta.
-let newsArr = null
-
-// News load animation listener.
-let newsLoadingListener = null
-
-/**
- * Set the news loading animation.
- * 
- * @param {boolean} val True to set loading animation, otherwise false.
- *//*
-function setNewsLoading(val){
-    if(val){
-        const nLStr = 'Vérification des actualitées'
-        let dotStr = '...'
-        nELoadSpan.innerHTML = nLStr + dotStr
-        newsLoadingListener = setInterval(() => {
-            if(dotStr.length >= 3){
-                dotStr = ''
-            } else {
-                dotStr += '.'
-            }
-            nELoadSpan.innerHTML = nLStr + dotStr
-        }, 750)
-    } else {
-        if(newsLoadingListener != null){
-            clearInterval(newsLoadingListener)
-            newsLoadingListener = null
-        }
-    }
-}
-
-// Bind retry button.
-newsErrorRetry.onclick = () => {
-    $('#newsErrorFailed').fadeOut(250, () => {
-        initNews()
-        $('#newsErrorLoading').fadeIn(250)
-    })
-}
-
-newsArticleContentScrollable.onscroll = (e) => {
-    if(e.target.scrollTop > Number.parseFloat($('.newsArticleSpacerTop').css('height'))){
-        newsContent.setAttribute('scrolled', '')
-    } else {
-        newsContent.removeAttribute('scrolled')
-    }
-}
-
-/**
- * Reload the news without restarting.
- * 
- * @returns {Promise.<void>} A promise which resolves when the news
- * content has finished loading and transitioning.
- *//*
-function reloadNews(){
-    return new Promise((resolve, reject) => {
-        $('#newsContent').fadeOut(250, () => {
-            $('#newsErrorLoading').fadeIn(250)
-            initNews().then(() => {
-                resolve()
-            })
-        })
-    })
-}
-
-let newsAlertShown = false
-
-/**
- * Show the news alert indicating there is new news.
- *//*
-function showNewsAlert(){
-    newsAlertShown = true
-    $(newsButtonAlert).fadeIn(250)
-}
-
-/**
- * Initialize News UI. This will load the news and prepare
- * the UI accordingly.
- * 
- * @returns {Promise.<void>} A promise which resolves when the news
- * content has finished loading and transitioning.
- *//*
-function initNews(){
-
-    return new Promise((resolve, reject) => {
-        setNewsLoading(true)
-
-        let news = {}
-        loadNews().then(news => {
-
-            newsArr = news.articles || null
-
-            if(newsArr == null){
-                // News Loading Failed
-                setNewsLoading(false)
-
-                $('#newsErrorLoading').fadeOut(250, () => {
-                    $('#newsErrorFailed').fadeIn(250, () => {
-                        resolve()
-                    })
-                })
-            } else if(newsArr.length === 0) {
-                // No News Articles
-                setNewsLoading(false)
-
-                ConfigManager.setNewsCache({
-                    date: null,
-                    content: null,
-                    dismissed: false
-                })
-                ConfigManager.save()
-
-                $('#newsErrorLoading').fadeOut(250, () => {
-                    $('#newsErrorNone').fadeIn(250, () => {
-                        resolve()
-                    })
-                })
-            } else {
-                // Success
-                setNewsLoading(false)
-
-                const lN = newsArr[0]
-                const cached = ConfigManager.getNewsCache()
-                let newHash = crypto.createHash('sha1').update(lN.content).digest('hex')
-                let newDate = new Date(lN.date)
-                let isNew = false
-
-                if(cached.date != null && cached.content != null){
-
-                    if(new Date(cached.date) >= newDate){
-
-                        // Compare Content
-                        if(cached.content !== newHash){
-                            isNew = true
-                            showNewsAlert()
-                        } else {
-                            if(!cached.dismissed){
-                                isNew = true
-                                showNewsAlert()
-                            }
-                        }
-
-                    } else {
-                        isNew = true
-                        showNewsAlert()
-                    }
-
-                } else {
-                    isNew = true
-                    showNewsAlert()
-                }
-
-                if(isNew){
-                    ConfigManager.setNewsCache({
-                        date: newDate.getTime(),
-                        content: newHash,
-                        dismissed: false
-                    })
-                    ConfigManager.save()
-                }
-
-                const switchHandler = (forward) => {
-                    let cArt = parseInt(newsContent.getAttribute('article'))
-                    let nxtArt = forward ? (cArt >= newsArr.length-1 ? 0 : cArt + 1) : (cArt <= 0 ? newsArr.length-1 : cArt - 1)
-            
-                    displayArticle(newsArr[nxtArt], nxtArt+1)
-                }
-
-                document.getElementById('newsNavigateRight').onclick = () => { switchHandler(true) }
-                document.getElementById('newsNavigateLeft').onclick = () => { switchHandler(false) }
-
-                $('#newsErrorContainer').fadeOut(250, () => {
-                    displayArticle(newsArr[0], 1)
-                    $('#newsContent').fadeIn(250, () => {
-                        resolve()
-                    })
-                })
-            }
-
-        })
-        
-    })
 }
 
 /**
