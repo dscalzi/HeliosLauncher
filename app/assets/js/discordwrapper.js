@@ -1,5 +1,7 @@
 const logger = require('./loggerutil')('%c[DiscordWrapper]', 'color: #7289da; font-weight: bold')
 
+const t = require("../../../package.json")
+
 let rpc = require("discord-rpc")
 
 const client = new rpc.Client({ transport: 'ipc' })
@@ -16,7 +18,7 @@ client.on("ready", () => {
       },
       //details: "kuku",
       state: "Serveur Minecraft Communautaire !",
-      buttons: [{ label: "Discord", url: "https://discord.gg/RspuRbNn4M"}, { label: "Rejoins nous !", url: "https://github.com/luki-39/LukiEnLiveLauncher/releases/download/v2.0.3/LukiEnLiveLauncher-setup-2.0.3.exe"}],
+      buttons: [{ label: "Discord", url: "https://discord.gg/RspuRbNn4M"}, { label: "Rejoins nous !", url: `https://github.com/luki-39/LukiEnLiveLauncher/releases/download/v${t.version}/LukiEnLiveLauncher-setup-${t.version}.exe`}],
     }    
   
   })

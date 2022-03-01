@@ -537,7 +537,7 @@ exports.pullRemote = function(){
         return exports.pullLocal()
     }
     return new Promise((resolve, reject) => {
-        const distroURL = 'http://45.140.164.232:1800/lukienlivelauncher/distribution.json'
+        const distroURL = 'https://raw.githubusercontent.com/luki-39/distribution/main/distribution.json'
         const opts = {
             url: distroURL,
             timeout: 2500

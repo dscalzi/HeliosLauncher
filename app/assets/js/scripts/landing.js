@@ -122,6 +122,11 @@ document.getElementById('avatarOverlay').onclick = (e) => {
     })
 }
 
+// Bind avatar overlay button.
+document.getElementById('ouiheberg').onclick = (e) => {
+    
+}
+
 // Bind selected account
 function updateSelectedAccount(authUser){
     let username = 'Aucun compte sélectionné'
