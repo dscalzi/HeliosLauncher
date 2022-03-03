@@ -363,6 +363,89 @@ body, button {
     align-items: center;
 }
 
+
+#ouihebergButton {
+    background: none;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border: none;
+    padding: 15px 5px;
+    margin: 10px 0px;
+    cursor: pointer;
+    position: relative;
+    right: -20px;
+    transition: 0.5s ease;
+    margin-top: 5%;
+    margin-bottom: -5%;
+}
+#ouihebergButton:disabled {
+    color: rgba(255, 255, 255, 0.75);
+    pointer-events: none;
+}
+#ouihebergButton:hover,
+#ouihebergButton:focus {
+    text-shadow: 0px 0px 20px #fff;
+    outline: none;
+}
+#ouihebergButton:active {
+    color: #c7c7c7;
+    text-shadow: 0px 0px 20px #c7c7c7;
+}
+
+#ouihebergButtonContent {
+    display: flex;
+    align-items: center;
+}
+
+#ouihebergContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    top: -10%;
+    position: relative;
+}
+
+#ouihebergDescription {
+    text-align: justify;
+    font-size: 13px;
+    font-weight: 100;
+    text-shadow: rgba(255, 255, 255, 0.75) 0px 0px 20px
+}
+
+#ouihebergHeader {
+    font-family: 'Avenir Medium';
+    text-align: center;
+    color: white;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+    font-size: 20px;
+    text-shadow: white 0px 0px 0px;
+}
+
+#ouihebergImageSeal {
+    border-radius: 50%;
+    border: 2px solid #cad7e1;
+    background: rgba(1, 2, 1, 0.5);
+    height: 125px;
+    width: 125px;
+    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    margin-bottom: 5%;
+    margin-top: 10%;
+}
+
+#testouiheberg {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.50);
+}
+
+
 /*******************************************************************************
  *                                                                             *
  * Login View (login.ejs)                                                      *

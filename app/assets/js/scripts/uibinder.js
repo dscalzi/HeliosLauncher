@@ -20,7 +20,8 @@ const VIEWS = {
     login: '#loginContainer',
     settings: '#settingsContainer',
     welcome: '#welcomeContainer',
-    waiting: '#waitingContainer'
+    waiting: '#waitingContainer',
+    testouiheberg: '#testouiheberg',
 }
 
 // The currently shown view container.

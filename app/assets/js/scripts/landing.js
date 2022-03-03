@@ -122,9 +122,9 @@ document.getElementById('avatarOverlay').onclick = (e) => {
     })
 }
 
-// Bind avatar overlay button.
+// Bind ouiheberg overlay button.
 document.getElementById('ouiheberg').onclick = (e) => {
-    
+    switchView(getCurrentView(), VIEWS.testouiheberg)
 }
 
 // Bind selected account
