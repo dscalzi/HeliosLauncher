@@ -2,7 +2,7 @@ const remoteMain = require('@electron/remote/main')
 remoteMain.initialize()
 
 // Requirements
-const { app, BrowserWindow, ipcMain, Menu } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
 const autoUpdater                       = require('electron-updater').autoUpdater
 const ejse                              = require('ejs-electron')
 const fs                                = require('fs')
@@ -10,7 +10,7 @@ const isDev                             = require('./app/assets/js/isdev')
 const path                              = require('path')
 const semver                            = require('semver')
 const { pathToFileURL }                 = require('url')
-const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./app/assets/js/ipcconstants')
+const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
 
 // Setup auto updater.
 function initAutoUpdater(event, data) {
@@ -83,6 +83,21 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
 // Redirect distribution index event from preloader to renderer.
 ipcMain.on('distributionIndexDone', (event, res) => {
     event.sender.send('distributionIndexDone', res)
+})
+
+// Handle trash item.
+ipcMain.handle(SHELL_OPCODE.TRASH_ITEM, async (event, ...args) => {
+    try {
+        await shell.trashItem(args[0])
+        return {
+            result: true
+        }
+    } catch(error) {
+        return {
+            result: false,
+            error: error
+        }
+    }
 })
 
 // Disable hardware acceleration.
