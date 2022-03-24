@@ -399,6 +399,13 @@ class Server {
     }
 
     /**
+    * @returns {string} The server code for this server
+    */
+    getServerCode(){
+       return this.serverCode
+    }
+
+    /**
      * @returns {boolean} Whether or not the server is autoconnect.
      * by default.
      */
@@ -497,6 +504,25 @@ class DistroIndex {
             }
         }
         return null
+    }
+
+
+    /**
+     * Get a server configuration by its ID. If it does not
+     * exist, null will be returned.
+     *
+     * @param {string} id The ID of the server.
+     *
+     * @returns {Server[]} The server configuration with the given ID or null.
+     */
+    getServersFromCode(code){
+       let servs = []
+        for(let serv of this.servers){
+            if(serv.serverCode === code){
+                servs.push(serv)
+            }
+        }
+        return servs
     }
 
     /**
