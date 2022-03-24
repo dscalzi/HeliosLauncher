@@ -1,6 +1,6 @@
 {
   "name": "helioslauncher",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "productName": "Helios Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
@@ -20,28 +20,31 @@
     "lint": "eslint --config .eslintrc.json ."
   },
   "engines": {
-    "node": "14.x.x"
+    "node": "16.x.x"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.1",
-    "adm-zip": "^0.5.7",
-    "async": "^3.2.1",
-    "discord-rpc": "^3.2.0",
+    "@electron/remote": "^2.0.5",
+    "adm-zip": "^0.5.9",
+    "async": "^3.2.3",
+    "discord-rpc-patch": "^4.0.1",
     "ejs": "^3.1.6",
     "ejs-electron": "^2.1.1",
-    "electron-updater": "^4.3.9",
-    "fs-extra": "^10.0.0",
+    "electron-updater": "^4.6.5",
+    "fs-extra": "^10.0.1",
     "github-syntax-dark": "^0.5.0",
+    "got": "^11.8.3",
+    "helios-core": "~0.1.0",
     "jquery": "^3.6.0",
+    "node-stream-zip": "^1.15.0",
     "request": "^2.88.2",
     "semver": "^7.3.5",
     "tar-fs": "^2.1.1",
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^13.5.1",
-    "electron-builder": "^22.11.7",
-    "eslint": "^7.32.0"
+    "electron": "^17.1.0",
+    "electron-builder": "^22.14.13",
+    "eslint": "^8.10.0"
   },
   "repository": {
     "type": "git",

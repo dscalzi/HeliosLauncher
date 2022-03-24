@@ -21,7 +21,7 @@ const loginForm             = document.getElementById('loginForm')
 // Control variables.
 let lu = false, lp = false
 
-const loggerLogin = LoggerUtil('%c[Login]', 'color: #000668; font-weight: bold')
+const loggerLogin = LoggerUtil1('%c[Login]', 'color: #000668; font-weight: bold')
 
 
 /**
@@ -154,79 +154,6 @@ function formDisabled(v){
     loginRememberOption.disabled = v
 }
 
-/**
- * Parses an error and returns a user-friendly title and description
- * for our error overlay.
- * 
- * @param {Error | {cause: string, error: string, errorMessage: string}} err A Node.js
- * error or Mojang error response.
- */
-function resolveError(err){
-    // Mojang Response => err.cause | err.error | err.errorMessage
-    // Node error => err.code | err.message
-    if(err.cause != null && err.cause === 'UserMigratedException') {
-        return {
-            title: Lang.queryJS('login.error.userMigrated.title'),
-            desc: Lang.queryJS('login.error.userMigrated.desc')
-        }
-    } else {
-        if(err.error != null){
-            if(err.error === 'ForbiddenOperationException'){
-                if(err.errorMessage != null){
-                    if(err.errorMessage === 'Invalid credentials. Invalid username or password.'){
-                        return {
-                            title: Lang.queryJS('login.error.invalidCredentials.title'),
-                            desc: Lang.queryJS('login.error.invalidCredentials.desc')
-                        }
-                    } else if(err.errorMessage === 'Invalid credentials.'){
-                        return {
-                            title: Lang.queryJS('login.error.rateLimit.title'),
-                            desc: Lang.queryJS('login.error.rateLimit.desc')
-                        }
-                    }
-                }
-            }
-        } else {
-            // Request errors (from Node).
-            if(err.code != null){
-                if(err.code === 'ENOENT'){
-                    // No Internet.
-                    return {
-                        title: Lang.queryJS('login.error.noInternet.title'),
-                        desc: Lang.queryJS('login.error.noInternet.desc')
-                    }
-                } else if(err.code === 'ENOTFOUND'){
-                    // Could not reach server.
-                    return {
-                        title: Lang.queryJS('login.error.authDown.title'),
-                        desc: Lang.queryJS('login.error.authDown.desc')
-                    }
-                }
-            }
-        }
-    }
-    if(err.message != null){
-        if(err.message === 'NotPaidAccount'){
-            return {
-                title: Lang.queryJS('login.error.notPaid.title'),
-                desc: Lang.queryJS('login.error.notPaid.desc')
-            }
-        } else {
-            // Unknown error with request.
-            return {
-                title: Lang.queryJS('login.error.unknown.title'),
-                desc: err.message
-            }
-        }
-    } else {
-        // Unknown Mojang error.
-        return {
-            title: err.error,
-            desc: err.errorMessage
-        }
-    }
-}
-
 let loginViewOnSuccess = VIEWS.landing
 let loginViewOnCancel = VIEWS.settings
 let loginViewCancelHandler
@@ -262,7 +189,7 @@ loginButton.addEventListener('click', () => {
     // Show loading stuff.
     loginLoading(true)
 
-    AuthManager.addAccount(loginUsername.value, loginPassword.value).then((value) => {
+    AuthManager.addMojangAccount(loginUsername.value, loginPassword.value).then((value) => {
         updateSelectedAccount(value)
         loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.loggingIn'), Lang.queryJS('login.success'))
         $('.circle-loader').toggleClass('load-complete')
@@ -285,16 +212,28 @@ loginButton.addEventListener('click', () => {
                 formDisabled(false)
             })
         }, 1000)
-    }).catch((err) => {
+    }).catch((displayableError) => {
         loginLoading(false)
-        const errF = resolveError(err)
-        setOverlayContent(errF.title, errF.desc, Lang.queryJS('login.tryAgain'))
+
+        let actualDisplayableError
+        if(isDisplayableError(displayableError)) {
+            msftLoginLogger.error('Error while logging in.', displayableError)
+            actualDisplayableError = displayableError
+        } else {
+            // Uh oh.
+            msftLoginLogger.error('Unhandled error during login.', displayableError)
+            actualDisplayableError = {
+                title: 'Unknown Error During Login',
+                desc: 'An unknown error has occurred. Please see the console for details.'
+            }
+        }
+
+        setOverlayContent(actualDisplayableError.title, actualDisplayableError.desc, Lang.queryJS('login.tryAgain'))
         setOverlayHandler(() => {
             formDisabled(false)
             toggleOverlay(false)
         })
         toggleOverlay(true)
-        loggerLogin.log('Error while logging in.', err)
     })
 
 })

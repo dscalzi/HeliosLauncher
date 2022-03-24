@@ -222,6 +222,7 @@ body, button {
     align-items: center;
     height: 100%;
     width: 100%;
+    background: rgba(0, 0, 0, 0.50);
 }
 
 #welcomeContent {
@@ -874,6 +875,175 @@ body, button {
 
 /*******************************************************************************
  *                                                                             *
+ * Waiting View (waiting.ejs)                                                  *
+ *                                                                             *
+ ******************************************************************************/
+
+#waitingContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    transition: filter 0.25s ease;
+    background: rgba(0, 0, 0, 0.50);
+}
+
+#waitingContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    top: -10%;
+    position: relative;
+}
+
+.waitingSpinner:before {
+    transform: rotateX(60deg) rotateY(45deg) rotateZ(45deg);
+    animation: 750ms rotateBefore infinite linear reverse;
+}
+.waitingSpinner:after {
+    transform: rotateX(240deg) rotateY(45deg) rotateZ(45deg);
+    animation: 750ms rotateAfter infinite linear;
+}
+.waitingSpinner:before,
+.waitingSpinner:after {
+    box-sizing: border-box;
+    content: '';
+    display: block;
+    position: fixed;
+    top: calc(50% - 5em);
+    /* left: 50%; */
+    margin-top: -5em;
+    margin-left: -5em;
+    width: 10em;
+    height: 10em;
+    transform-style: preserve-3d;
+    transform-origin: 50%;
+    transform: rotateY(50%);
+    perspective-origin: 50% 50%;
+    perspective: 340px;
+    background-size: 10em 10em;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjI2NnB4IiBoZWlnaHQ9IjI5N3B4IiB2aWV3Qm94PSIwIDAgMjY2IDI5NyIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpza2V0Y2g9Imh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaC9ucyI+CiAgICA8dGl0bGU+c3Bpbm5lcjwvdGl0bGU+CiAgICA8ZGVzY3JpcHRpb24+Q3JlYXRlZCB3aXRoIFNrZXRjaCAoaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoKTwvZGVzY3JpcHRpb24+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0iUGFnZS0xIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBza2V0Y2g6dHlwZT0iTVNQYWdlIj4KICAgICAgICA8cGF0aCBkPSJNMTcxLjUwNzgxMywzLjI1MDAwMDM4IEMyMjYuMjA4MTgzLDEyLjg1NzcxMTEgMjk3LjExMjcyMiw3MS40OTEyODIzIDI1MC44OTU1OTksMTA4LjQxMDE1NSBDMjE2LjU4MjAyNCwxMzUuODIwMzEgMTg2LjUyODQwNSw5Ny4wNjI0OTY0IDE1Ni44MDA3NzQsODUuNzczNDM0NiBDMTI3LjA3MzE0Myw3NC40ODQzNzIxIDc2Ljg4ODQ2MzIsODQuMjE2MTQ2MiA2MC4xMjg5MDY1LDEwOC40MTAxNTMgQy0xNS45ODA0Njg1LDIxOC4yODEyNDcgMTQ1LjI3NzM0NCwyOTYuNjY3OTY4IDE0NS4yNzczNDQsMjk2LjY2Nzk2OCBDMTQ1LjI3NzM0NCwyOTYuNjY3OTY4IC0yNS40NDkyMTg3LDI1Ny4yNDIxOTggMy4zOTg0Mzc1LDEwOC40MTAxNTUgQzE2LjMwNzA2NjEsNDEuODExNDE3NCA4NC43Mjc1ODI5LC0xMS45OTIyOTg1IDE3MS41MDc4MTMsMy4yNTAwMDAzOCBaIiBpZD0iUGF0aC0xIiBmaWxsPSIjZmZmZmZmIiBza2V0Y2g6dHlwZT0iTVNTaGFwZUdyb3VwIj48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg==);
+}
+
+#waitingTextContainer {
+    position: fixed;
+    top: 50%;
+}
+
+@keyframes rotateBefore {
+    from {
+      transform: rotateX(60deg) rotateY(45deg) rotateZ(0deg);
+    }
+    to {
+      transform: rotateX(60deg) rotateY(45deg) rotateZ(-360deg);
+    }
+}
+
+@keyframes rotateAfter {
+    from {
+      transform: rotateX(240deg) rotateY(45deg) rotateZ(0deg);
+    }
+    to {
+      transform: rotateX(240deg) rotateY(45deg) rotateZ(360deg);
+    }
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Login Options View (loginOptions.ejs)                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+#loginOptionsContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    transition: filter 0.25s ease;
+    background: rgba(0, 0, 0, 0.50);
+}
+
+#loginOptionsContent {
+    border-radius: 3px;
+    position: relative;
+    top: -5%;
+}
+
+.loginOptionsMainContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loginOptionActions {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}
+
+.loginOptionButtonContainer {
+    width: 16em;
+}
+
+.loginOptionButton {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(126, 126, 126, 0.57);
+    border-radius: 3px;
+    height: 50px;
+    width: 100%;
+    text-align: left;
+    padding: 0px 25px;
+    cursor: pointer;
+    outline: none;
+    transition: 0.25s ease;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+.loginOptionButton:hover,
+.loginOptionButton:focus {
+    background: rgba(54, 54, 54, 0.25);
+    text-shadow: 0px 0px 20px white;
+}
+
+#loginOptionCancelContainer {
+    position: absolute;
+    bottom: -100px;
+}
+
+#loginOptionCancelButton {
+    background: none;
+    border: none;
+    padding: 2px 0px;
+    font-size: 16px;
+    font-weight: bold;
+    color: lightgrey;
+    cursor: pointer;
+    outline: none;
+    transition: 0.25s ease;
+}
+#loginOptionCancelButton:hover,
+#loginOptionCancelButton:focus {
+    text-shadow: 0px 0px 20px lightgrey;
+}
+#loginOptionCancelButton:active {
+    text-shadow: 0px 0px 20px rgba(211, 211, 211, 0.75);
+    color: rgba(211, 211, 211, 0.75);
+}
+#loginOptionCancelButton:disabled {
+    color: rgba(211, 211, 211, 0.75);
+    pointer-events: none;
+}
+
+
+/*******************************************************************************
+ *                                                                             *
  * Settings View (sttings.ejs)                                                 *
  *                                                                             *
  ******************************************************************************/
@@ -1269,45 +1439,65 @@ input:checked + .toggleSwitchSlider:before {
 * Settings View (Account Tab)
 * * */
 
-/* Add account button styles. */
-#settingsAddAccount {
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(126, 126, 126, 0.57);
-    border-radius: 3px;
-    height: 50px;
+.settingsAuthAccountTypeContainer {
+    display: flex;
     width: 75%;
+    flex-direction: column;
+}
+
+.settingsAuthAccountTypeHeader {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    padding: 10px 0px;
+    border-bottom: 1px solid #ffffff85;
+    margin-bottom: 30px;
+}
+
+.settingsAuthAccountTypeHeaderLeft {
+    display: flex;
+    column-gap: 5px;
+}
+
+/* Settings add account button styles. */
+.settingsAddAuthAccount {
+    background: none;
+    border: none;
     text-align: left;
-    padding: 0px 50px;
+    padding: 2px 0px;
+    color: white;
     cursor: pointer;
     outline: none;
     transition: 0.25s ease;
 }
-#settingsAddAccount:hover,
-#settingsAddAccount:focus {
-    background: rgba(54, 54, 54, 0.25);
-    text-shadow: 0px 0px 20px white;
+.settingsAddAuthAccount:hover,
+.settingsAddAuthAccount:focus {
+    text-shadow: 0px 0px 20px white, 0px 0px 20px white, 0px 0px 20px white;
 }
-
-/* Settings auth accounts header. */
-#settingsCurrentAccountsHeader {
-    margin: 20px 0px;
+.settingsAddAuthAccount:active {
+    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75), 0px 0px 20px rgba(255, 255, 255, 0.75), 0px 0px 20px rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+}
+.settingsAddAuthAccount:disabled {
+    color: rgba(255, 255, 255, 0.75);
+    pointer-events: none;
 }
 
 /* Auth account list container styles. */
-#settingsCurrentAccounts {
+.settingsCurrentAccounts {
     margin-bottom: 5%;
 }
-#settingsCurrentAccounts > .settingsAuthAccount:not(:last-child) {
+.settingsCurrentAccounts > .settingsAuthAccount:not(:last-child) {
     margin-bottom: 10px;
 }
-#settingsCurrentAccounts > .settingsAuthAccount:not(:first-child) {
+.settingsCurrentAccounts > .settingsAuthAccount:not(:first-child) {
     margin-top: 10px;
 }
 
 /* Auth account shared styles. */
 .settingsAuthAccount {
     display: flex;
-    width: 75%;
     background: rgba(0, 0, 0, 0.25);
     border-radius: 3px;
     border: 1px solid rgba(126, 126, 126, 0.57);

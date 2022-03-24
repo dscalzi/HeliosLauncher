@@ -4,7 +4,7 @@
 
 <em><h5 align="center">(formerly Electron Launcher)</h5></em>
 
-[<p align="center"><img src="https://img.shields.io/travis/dscalzi/HeliosLauncher.svg?style=for-the-badge" alt="travis">](https://travis-ci.org/dscalzi/HeliosLauncher) [<img src="https://img.shields.io/github/downloads/dscalzi/HeliosLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/dscalzi/HeliosLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="stark"></p>
+[<p align="center"><img src="https://img.shields.io/github/workflow/status/dscalzi/HeliosLauncher/Build.svg?style=for-the-badge" alt="gh actions">](https://github.com/dscalzi/HeliosLauncher/actions) [<img src="https://img.shields.io/github/downloads/dscalzi/HeliosLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/dscalzi/HeliosLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="winter-is-coming"></p>
 
 <p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
 
@@ -15,6 +15,7 @@
 
 * 🔒 Full account management.
   * Add multiple accounts and easily switch between them.
+  * Microsoft (OAuth 2.0) + Mojang (Yggdrasil) authentication fully supported.
   * Credentials are never stored and transmitted directly to Mojang.
 * 📂 Efficient asset management.
   * Receive client updates as soon as we release them.
@@ -54,7 +55,7 @@ If you download from the [Releases](https://github.com/dscalzi/HeliosLauncher/re
 | Platform | File |
 | -------- | ---- |
 | Windows x64 | `Helios-Launcher-setup-VERSION.exe` |
-| macOS x64 | `Helios-Launcher-setup-VERSION.dmg` |
+| macOS x64 | `Helios-Launcher-setup-VERSION-x64.dmg` |
 | macOS arm64 | `Helios-Launcher-setup-VERSION-arm64.dmg` |
 | Linux x64 | `Helios-Launcher-setup-VERSION.AppImage` |
 
@@ -83,7 +84,7 @@ This section details the setup of a basic developmentment environment.
 
 **System Requirements**
 
-* [Node.js][nodejs] v14
+* [Node.js][nodejs] v16
 
 ---
 
@@ -180,13 +181,15 @@ Note that you **cannot** open the DevTools window while using this debug configu
 
 Please give credit to the original author and provide a link to the original source. This is free software, please do at least this much.
 
+For instructions on setting up Microsoft Authentication, see https://github.com/dscalzi/HeliosLauncher/blob/master/docs/MicrosoftAuth.md.
+
 ---
 
 ## Resources
 
 * [Wiki][wiki]
 * [Nebula (Create Distribution.json)][nebula]
-* [v2 Rewrite Branch (WIP)][v2branch]
+* [v2 Rewrite Branch (Inactive)][v2branch]
 
 The best way to contact the developers is on Discord.
 

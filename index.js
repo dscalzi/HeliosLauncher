@@ -2,14 +2,15 @@ const remoteMain = require('@electron/remote/main')
 remoteMain.initialize()
 
 // Requirements
-const { app, BrowserWindow, ipcMain, Menu } = require('electron')
-const autoUpdater                   = require('electron-updater').autoUpdater
-const ejse                          = require('ejs-electron')
-const fs                            = require('fs')
-const isDev                         = require('./app/assets/js/isdev')
-const path                          = require('path')
-const semver                        = require('semver')
-const { pathToFileURL }             = require('url')
+const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
+const autoUpdater                       = require('electron-updater').autoUpdater
+const ejse                              = require('ejs-electron')
+const fs                                = require('fs')
+const isDev                             = require('./app/assets/js/isdev')
+const path                              = require('path')
+const semver                            = require('semver')
+const { pathToFileURL }                 = require('url')
+const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
 
 // Setup auto updater.
 function initAutoUpdater(event, data) {
@@ -84,12 +85,136 @@ ipcMain.on('distributionIndexDone', (event, res) => {
     event.sender.send('distributionIndexDone', res)
 })
 
+// Handle trash item.
+ipcMain.handle(SHELL_OPCODE.TRASH_ITEM, async (event, ...args) => {
+    try {
+        await shell.trashItem(args[0])
+        return {
+            result: true
+        }
+    } catch(error) {
+        return {
+            result: false,
+            error: error
+        }
+    }
+})
+
 // Disable hardware acceleration.
 // https://electronjs.org/docs/tutorial/offscreen-rendering
 app.disableHardwareAcceleration()
 
-// https://github.com/electron/electron/issues/18397
-app.allowRendererProcessReuse = true
+
+const REDIRECT_URI_PREFIX = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
+
+// Microsoft Auth Login
+let msftAuthWindow
+let msftAuthSuccess
+let msftAuthViewSuccess
+let msftAuthViewOnClose
+ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
+    if (msftAuthWindow) {
+        ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.ALREADY_OPEN, msftAuthViewOnClose)
+        return
+    }
+    msftAuthSuccess = false
+    msftAuthViewSuccess = arguments_[0]
+    msftAuthViewOnClose = arguments_[1]
+    msftAuthWindow = new BrowserWindow({
+        title: 'Microsoft Login',
+        backgroundColor: '#222222',
+        width: 520,
+        height: 600,
+        frame: true,
+        icon: getPlatformIcon('SealCircle')
+    })
+
+    msftAuthWindow.on('closed', () => {
+        msftAuthWindow = undefined
+    })
+
+    msftAuthWindow.on('close', () => {
+        if(!msftAuthSuccess) {
+            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.NOT_FINISHED, msftAuthViewOnClose)
+        }
+    })
+
+    msftAuthWindow.webContents.on('did-navigate', (_, uri) => {
+        if (uri.startsWith(REDIRECT_URI_PREFIX)) {
+            let queries = uri.substring(REDIRECT_URI_PREFIX.length).split('#', 1).toString().split('&')
+            let queryMap = {}
+
+            queries.forEach(query => {
+                const [name, value] = query.split('=')
+                queryMap[name] = decodeURI(value)
+            })
+
+            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.SUCCESS, queryMap, msftAuthViewSuccess)
+
+            msftAuthSuccess = true
+            msftAuthWindow.close()
+            msftAuthWindow = null
+        }
+    })
+
+    msftAuthWindow.removeMenu()
+    msftAuthWindow.loadURL(`https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?prompt=select_account&client_id=${AZURE_CLIENT_ID}&response_type=code&scope=XboxLive.signin%20offline_access&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient`)
+})
+
+// Microsoft Auth Logout
+let msftLogoutWindow
+let msftLogoutSuccess
+let msftLogoutSuccessSent
+ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
+    if (msftLogoutWindow) {
+        ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.ALREADY_OPEN)
+        return
+    }
+
+    msftLogoutSuccess = false
+    msftLogoutSuccessSent = false
+    msftLogoutWindow = new BrowserWindow({
+        title: 'Microsoft Logout',
+        backgroundColor: '#222222',
+        width: 520,
+        height: 600,
+        frame: true,
+        icon: getPlatformIcon('SealCircle')
+    })
+
+    msftLogoutWindow.on('closed', () => {
+        msftLogoutWindow = undefined
+    })
+
+    msftLogoutWindow.on('close', () => {
+        if(!msftLogoutSuccess) {
+            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.NOT_FINISHED)
+        } else if(!msftLogoutSuccessSent) {
+            msftLogoutSuccessSent = true
+            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.SUCCESS, uuid, isLastAccount)
+        }
+    })
+    
+    msftLogoutWindow.webContents.on('did-navigate', (_, uri) => {
+        if(uri.startsWith('https://login.microsoftonline.com/common/oauth2/v2.0/logoutsession')) {
+            msftLogoutSuccess = true
+            setTimeout(() => {
+                if(!msftLogoutSuccessSent) {
+                    msftLogoutSuccessSent = true
+                    ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.SUCCESS, uuid, isLastAccount)
+                }
+
+                if(msftLogoutWindow) {
+                    msftLogoutWindow.close()
+                    msftLogoutWindow = null
+                }
+            }, 5000)
+        }
+    })
+    
+    msftLogoutWindow.removeMenu()
+    msftLogoutWindow.loadURL('https://login.microsoftonline.com/common/oauth2/v2.0/logout')
+})
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
