@@ -180,7 +180,11 @@ function saveSettingsValues(){
                 if(v.type === 'number' || v.type === 'text'){
                     // Special Conditions
                     if(cVal === 'JVMOptions'){
-                        sFn(v.value.split(' '))
+                        if(!v.value.trim()) {
+                            sFn([])
+                        } else {
+                            sFn(v.value.trim().split(/\s+/))
+                        }
                     } else {
                         sFn(v.value)
                     }
