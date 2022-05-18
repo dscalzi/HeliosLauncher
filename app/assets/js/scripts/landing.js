@@ -265,7 +265,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 // Show this information to the user.
                 setOverlayContent(
                     `Aucune installation<br>Java compatible n'a été trouvée`,
-                    `Vous avez besoin d'une installation 64 bits de Java 8. Souhaitez-vous que nous en installions une copie ?`,
+                    `Vous avez besoin d'une installation 64 bits de Java 17. Souhaitez-vous que nous en installions une copie ?`,
                     'Installer Java',
                     'Installer manuellement'
                 )
@@ -280,7 +280,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                         //$('#overlayDismiss').toggle(false)
                         setOverlayContent(
                             'Java est requis<br>pour lancer',
-                            `Une installation x64 valide de Java 8 est requise pour le lancement.<br><br>Veuillez vous référer à notre <a href="https://github.com/luki-39/LukiEnLiveLauncher/wiki/Java-Management#manually-installing-a -valid-version-of-java">Guide de gestion Java</a> pour obtenir des instructions sur l'installation manuelle de Java.`,
+                            `Une installation x64 valide de Java 17 est requise pour le lancement.<br><br>Veuillez vous référer à notre <a href="https://github.com/luki-39/LukiEnLiveLauncher/wiki/Java-Management#manually-installing-a -valid-version-of-java">Guide de gestion Java</a> pour obtenir des instructions sur l'installation manuelle de Java.`,
                             'Je comprends',
                             'Retour'
                         )

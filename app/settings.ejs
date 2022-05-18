@@ -215,7 +215,7 @@
             <div class="settingsFileSelContainer">
                 <div class="settingsFileSelTitle">Exécutable Java</div>
                 <div class="settingsFileSelContent">
-                    <div id="settingsJavaExecDetails">Sélectionné : Java 8 mise à jour 172 (x64)</div>
+                    <div id="settingsJavaExecDetails">Sélectionné : Java 17 (x64)</div>
                     <div class="settingsFileSelActions">
                         <div class="settingsFileSelIcon">
                             <svg class="settingsFileSelSVG" x="0px" y="0px" viewBox="0 0 305.001 305.001">
@@ -235,7 +235,7 @@
                         <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="false">Choose File</button>
                     </div>
                 </div>
-                <div class="settingsFileSelDesc">L'exécutable Java est validé avant le lancement du jeu. <strong>Nécessite Java 8 x64.</strong><br>Le chemin doit se terminer par <strong>bin<%= process.platform === 'win32' ? '\\javaw.exe' : '/java' %></strong>.</div>
+                <div class="settingsFileSelDesc">L'exécutable Java est validé avant le lancement du jeu. <strong>Nécessite Java 17 x64.</strong><br>Le chemin doit se terminer par <strong>bin<%= process.platform === 'win32' ? '\\javaw.exe' : '/java' %></strong>.</div>
             </div>
             <div id="settingsJVMOptsContainer">
                 <div id="settingsJVMOptsTitle">Options JVM supplémentaires</div>
@@ -256,7 +256,7 @@
                     </div>
                     <input id="settingsJVMOptsVal" cValue="JVMOptions" type="text">
                 </div>
-                <div id="settingsJVMOptsDesc">Options à fournir à la JVM lors de l'exécution. <em>-Xms</em> et <em>-Xmx</em> ne devrait pas être inclus.<br><a href="https://docs.oracle.com/javase/8/docs/technotes/tools/<%= process.platform === 'win32' ? 'windows' : 'unix' %>/java.html">Options disponibles pour Java 8</a>.</div>
+                <div id="settingsJVMOptsDesc">Options à fournir à la JVM lors de l'exécution. <em>-Xms</em> et <em>-Xmx</em> ne devrait pas être inclus.<br><a href="https://docs.oracle.com/javase/17/docs/technotes/tools/<%= process.platform === 'win32' ? 'windows' : 'unix' %>/java.html">Options disponibles pour Java 17</a>.</div>
             </div>
         </div>
         <div id="settingsTabLauncher" class="settingsTab" style="display: none;">

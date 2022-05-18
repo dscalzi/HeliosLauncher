@@ -23,7 +23,7 @@ function initAutoUpdater(event, data) {
     }
     
     if(isDev){
-        autoUpdater.autoInstallOnAppQuit = false
+        autoUpdater.autoInstallOnAppQuit = true
         autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml')
     }
     if(process.platform === 'darwin'){
