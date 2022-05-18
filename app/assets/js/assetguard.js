@@ -234,7 +234,7 @@ class JavaGuard extends EventEmitter {
      * 
      * @returns {Promise.<OpenJDKData>} Promise which resolved to an object containing the JRE download data.
      */
-    static _latestOpenJDK(major = '8'){
+    static _latestOpenJDK(major = '17'){
 
         if(process.platform === 'darwin') {
             return this._latestCorretto(major)
@@ -1544,7 +1544,7 @@ class AssetGuard extends EventEmitter {
 
     _enqueueOpenJDK(dataDir){
         return new Promise((resolve, reject) => {
-            JavaGuard._latestOpenJDK('8').then(verData => {
+            JavaGuard._latestOpenJDK('17').then(verData => {
                 if(verData != null){
 
                     dataDir = path.join(dataDir, 'runtime', 'x64')
