@@ -88,7 +88,7 @@ document.getElementById('launch_button').addEventListener('click', function(e){
     loggerLanding.log('Launching game..')
     const mcVersion = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
     const jExe = ConfigManager.getJavaExecutable()
-    if(jExe == null){
+    if(jExe == null || jExe.includes('jdk8')){
         asyncSystemScan(mcVersion)
     } else {
 
@@ -260,7 +260,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
     sysAEx.on('message', (m) => {
 
         if(m.context === 'validateJava'){
-            if(m.result == null){
+            if(m.result == null || m.result.includes('jdk8')){
                 // If the result is null, no valid Java installation was found.
                 // Show this information to the user.
                 setOverlayContent(

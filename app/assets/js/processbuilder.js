@@ -409,6 +409,20 @@ class ProcessBuilder {
         }
         args.push('-Xmx' + ConfigManager.getMaxRAM())
         args.push('-Xms' + ConfigManager.getMinRAM())
+
+        const defaultjvmOption = [
+            '-XX:+UnlockExperimentalVMOptions',
+            '-XX:+UseG1GC',
+            '-XX:G1NewSizePercent=20',
+            '-XX:G1ReservePercent=20',
+            '-XX:MaxGCPauseMillis=50',
+            '-XX:G1HeapRegionSize=32M'
+        ]
+
+        if (ConfigManager.getJVMOptions().lenght < 6){
+            ConfigManager.setJVMOptions(defaultjvmOption)
+        }
+
         args = args.concat(ConfigManager.getJVMOptions())
 
         // Main Java Class
