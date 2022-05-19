@@ -419,7 +419,7 @@ class ProcessBuilder {
             '-XX:G1HeapRegionSize=32M'
         ]
 
-        if (ConfigManager.getJVMOptions().lenght < 6){
+        if (ConfigManager.getJVMOptions().length < 6){
             ConfigManager.setJVMOptions(defaultjvmOption)
         }
 
