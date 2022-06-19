@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
+  "name": "ouilauncher",
   "version": "1.9.0",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "productName": "Ouinaria Launcher",
+  "description": "Launcher pour le serveur Ouinaria",
+  "author": "Broussen",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/bastienenvrai/ouinarialauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/bastienenvrai/ouinarialauncher/issues"
   },
   "private": true,
   "main": "index.js",
