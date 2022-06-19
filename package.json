@@ -5,9 +5,9 @@
   "description": "Launcher pour le serveur Ouinaria",
   "author": "Broussen",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/bastienenvrai/ouinarialauncher",
+  "homepage": "https://github.com/BroussenDev/OuinariaLauncher",
   "bugs": {
-    "url": "https://github.com/bastienenvrai/ouinarialauncher/issues"
+    "url": "https://github.com/BroussenDev/OuinariaLauncher/issues"
   },
   "private": true,
   "main": "index.js",
