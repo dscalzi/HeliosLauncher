@@ -1,5 +1,5 @@
 appId: 'ouinarialauncher'
-productName: 'Ouinaria Launcher'
+productName: 'OuinariaLauncher'
 artifactName: '${productName}-setup-${version}.${ext}'
 
 copyright: 'Copyright © 2022-2022 Broussen'
