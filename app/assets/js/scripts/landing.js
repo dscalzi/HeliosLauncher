@@ -404,8 +404,8 @@ function asyncSystemScan(mcVersion, launchAfter = true){
 
 // Keep reference to Minecraft Process
 let proc
-// Is DiscordRPC enabled
-//let hasRPC = false
+
+let hasRPC= false
 // Joined server regex
 // Change this if your server uses something different.
 const GAME_JOINED_REGEX = /\[.+\]: Sound engine started/
@@ -595,10 +595,10 @@ function dlAsync(login = true){
 
                 const onLoadComplete = () => {
                     toggleLaunchArea(false)
-                    /*if(hasRPC){
-                        DiscordWrapper.updateDetails('Loading game..')
-                    }*/
-                    //proc.stdout.on('data', gameStateChange)
+                    if (hasRPC){
+                        DiscordWrapper.updateDetails('Jeu en cours de chargement..')
+                    }
+                    proc.stdout.on('data', gameStateChange)
                     proc.stdout.removeListener('data', tempListener)
                     proc.stderr.removeListener('data', gameErrorListener)
                 }
@@ -615,6 +615,21 @@ function dlAsync(login = true){
                             setTimeout(onLoadComplete, MIN_LINGER-diff)
                         } else {
                             onLoadComplete()
+                        }
+                    }
+                }
+
+                const gameStateChange = function(data){
+                    data = data.trim()
+                    if(SERVER_JOINED_REGEX.test(data)){
+                        if(hasRPC){
+                            DiscordWrapper.updateDetails('Exploration du Serveur !')
+                            DiscordWrapper.resetTime()
+                        }
+                    } else if(GAME_JOINED_REGEX.test(data)){
+                        if(hasRPC){
+                            DiscordWrapper.updateDetails('En route vers le Serveur !')
+                            DiscordWrapper.resetTime()
                         }
                     }
                 }
@@ -636,6 +651,15 @@ function dlAsync(login = true){
                     proc.stderr.on('data', gameErrorListener)
 
                     setLaunchDetails('Terminé. Profitez du serveur!')
+
+                    proc.on('close', (code, signal) => {
+                        if(hasRPC){
+                            DiscordWrapper.updateDetails('Dans le launcher..')
+                            DiscordWrapper.resetTime()
+                        }
+                        proc = null
+                    })
+
 
                 } catch(err) {
 
