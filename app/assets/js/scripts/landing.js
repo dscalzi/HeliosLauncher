@@ -591,7 +591,7 @@ function dlAsync(login = true){
                 setLaunchDetails('Lancement du jeu..')
 
                 // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
-                const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
+                const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] Welcome, Joueur${authUser.displayName}!`)
 
                 const onLoadComplete = () => {
                     toggleLaunchArea(false)
