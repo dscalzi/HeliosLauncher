@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
+  "name": "tabernalauncher",
   "version": "1.9.0",
-  "productName": "Helios Launcher",
+  "productName": "Taberna Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "author": "Yoann BRIGANT",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/ElBrigos/TabernaLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/ElBrigos/TabernaLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -48,6 +48,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/ElBrigos/TabernaLauncher.git"
   }
 }
