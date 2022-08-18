@@ -4,7 +4,7 @@
 
 <em><h5 align="center">(formerly Electron Launcher)</h5></em>
 
-[<p align="center"><img src="https://img.shields.io/github/workflow/status/ElBrigos/TabernaLauncher/Build.svg?style=for-the-badge" alt="gh actions">](https://github.com/dscalzi/HeliosLauncher/actions) [<img src="https://img.shields.io/github/downloads/ElBrigos/TabernaLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/dscalzi/HeliosLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="winter-is-coming"></p>
+[<p align="center"><img src="https://img.shields.io/github/workflow/status/ElBrigos/TabernaLauncher/Build.svg?style=for-the-badge" alt="gh actions">](https://github.com/ElBrigos/TabernaLauncher/actions) [<img src="https://img.shields.io/github/downloads/ElBrigos/TabernaLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/ElBrigos/TabernaLauncher/releases) <img src="https://el-taberna.com/assets/images/taberna-launcher.svg"  height="28px" alt="Taberna-Launcher"></p>
 
 <p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
 
