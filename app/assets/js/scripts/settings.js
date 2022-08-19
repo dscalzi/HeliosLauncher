@@ -1486,16 +1486,16 @@ function populateSettingsUpdateInformation(data){
                 shell.openExternal(data.darwindownload)
             })
         } else {
-            settingsUpdateButtonStatus('Downloading..', true)
+            settingsUpdateButtonStatus('Téléchargement..', true)
         }
     } else {
-        settingsUpdateTitle.innerHTML = 'You Are Running the Latest Version'
+        settingsUpdateTitle.innerHTML = 'Vous avez la dernière version'
         settingsUpdateChangelogCont.style.display = 'none'
         populateVersionInformation(remote.app.getVersion(), settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
-        settingsUpdateButtonStatus('Check for Updates', false, () => {
+        settingsUpdateButtonStatus('Vérifier les Mises à Jour', false, () => {
             if(!isDev){
                 ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
-                settingsUpdateButtonStatus('Checking for Updates..', true)
+                settingsUpdateButtonStatus('Vérification en Cours..', true)
             }
         })
     }
