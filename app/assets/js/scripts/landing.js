@@ -324,7 +324,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 // If the result is null, no valid Java installation was found.
                 // Show this information to the user.
                 setOverlayContent(
-                    'No Compatible<br>Java Installation Found',
+                    'Version non compatible<br>Installation de Java trouvé',
                     'In order to join WesterosCraft, you need a 64-bit installation of Java 8. Would you like us to install a copy?',
                     'Install Java',
                     'Install Manually'
