@@ -232,13 +232,13 @@
                             </svg>
                         </div>
                         <input class="settingsFileSelVal" id="settingsJavaExecVal" type="text" value="null" cValue="JavaExecutable" disabled>
-                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="false">Choose File</button>
+                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="false">Choisir Javaw.exe</button>
                     </div>
                 </div>
-                <div class="settingsFileSelDesc">The Java executable is validated before game launch. <strong>Requires Java 17 x64.</strong><br>The path should end with <strong>bin<%= process.platform === 'win32' ? '\\javaw.exe' : '/java' %></strong>.</div>
+                <div class="settingsFileSelDesc">La version de java est validé avant le lancement du jeu. <strong>requis: Java 17 x64 ou Java 18 x64.</strong><br>Le lien doit terminer avec <strong>bin<%= process.platform === 'win32' ? '\\javaw.exe' : '/java' %></strong>.</div>
             </div>
             <div id="settingsJVMOptsContainer">
-                <div id="settingsJVMOptsTitle">Additional JVM Options</div>
+                <div id="settingsJVMOptsTitle">Options JVM Arguments</div>
                 <div id="settingsJVMOptsContent">
                     <div class="settingsFileSelIcon">
                         <svg class="settingsFileSelSVG" x="0px" y="0px" viewBox="0 0 305.001 305.001">
@@ -293,7 +293,7 @@
                         <button class="settingsFileSelButton" dialogTitle="Select Data Directory" dialogDirectory="true">Choose Folder</button>
                     </div>
                 </div>
-                <div class="settingsFileSelDesc">All game files and local Java installations will be stored in the data directory.<br>Screenshots and world saves are stored in the instance folder for the corresponding server configuration.</div>
+                <div class="settingsFileSelDesc">Tout les fichiers du jeu et les installations local de java s'installent ici<br>Screenshots et sauvegardes de monde sont stockés dans le dossier instance du modPack sélectionné.</div>
             </div>
         </div>
         <div id="settingsTabAbout" class="settingsTab" style="display: none;">
