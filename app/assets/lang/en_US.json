@@ -1,6 +1,6 @@
 {
     "html": {
-        "avatarOverlay": "Edit"
+        "avatarOverlay": "Compte"
     },
     "js": {
         "login": {
@@ -38,11 +38,11 @@
             "login": "LOGIN",
             "loggingIn": "LOGGING IN",
             "success": "SUCCESS",
-            "tryAgain": "Try Again"
+            "tryAgain": "Réessayer"
         },
         "landing": {
             "launch": {
-                "pleaseWait": "Please wait.."
+                "pleaseWait": "S'il vous plaît, attendez.."
             }
         }
     }
