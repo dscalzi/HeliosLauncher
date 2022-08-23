@@ -75,12 +75,7 @@ const DEFAULT_CONFIG = {
             minRAM: resolveMinRAM(),
             maxRAM: resolveMaxRAM(), // Dynamic
             executable: null,
-            jvmOptions: [
-                '-XX:+UseConcMarkSweepGC',
-                '-XX:+CMSIncrementalMode',
-                '-XX:-UseAdaptiveSizePolicy',
-                '-Xmn128M'
-            ],
+            jvmOptions: [],
         },
         game: {
             resWidth: 1280,
