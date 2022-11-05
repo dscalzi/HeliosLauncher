@@ -1,7 +1,7 @@
 {
-  "name": "helioslauncher",
-  "version": "1.9.0",
-  "productName": "Helios Launcher",
+  "name": "ConceptionLauncher",
+  "version": "1.0.0",
+  "productName": "Conception Minecraft Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
   "license": "UNLICENSED",
@@ -48,6 +48,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/alextorreg/ConceptionLauncherLauncher.git"
   }
 }
