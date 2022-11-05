@@ -1,13 +1,13 @@
 {
-  "name": "ConceptionLauncher",
+  "name": "ConceptionRPLauncher",
   "version": "1.0.0",
   "productName": "Conception Minecraft Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "author": "alextorreg (https://github.com/alextorreg/)",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/alextorreg/ConceptionLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/alextorreg/ConceptionLauncher/issues"
   },
   "private": true,
   "main": "index.js",
