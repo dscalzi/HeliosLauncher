@@ -162,7 +162,7 @@ class Util {
 
     static isForgeGradle3(mcVersion, forgeVersion) {
 
-        if(Util.mcVersionAtLeast('1.13', mcVersion)) {
+        if(Util.mcVersionAtLeast('1.18.2', mcVersion)) {
             return true
         }
 
@@ -234,7 +234,7 @@ class JavaGuard extends EventEmitter {
      * 
      * @returns {Promise.<OpenJDKData>} Promise which resolved to an object containing the JRE download data.
      */
-    static _latestOpenJDK(major = '8'){
+    static _latestOpenJDK(major = '18'){
 
         if(process.platform === 'darwin') {
             return this._latestCorretto(major)
@@ -470,7 +470,7 @@ class JavaGuard extends EventEmitter {
                     }
                 } else {
                     // Java 9+
-                    if(Util.mcVersionAtLeast('1.13', this.mcVersion)){
+                    if(Util.mcVersionAtLeast('1.18.2', this.mcVersion)){
                         console.log('Java 9+ not yet tested.')
                         /* meta.version = verOb
                         ++checksum
