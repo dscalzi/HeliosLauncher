@@ -29,22 +29,22 @@
     "discord-rpc-patch": "^4.0.1",
     "ejs": "^3.1.8",
     "ejs-electron": "^2.1.1",
-    "electron-updater": "^5.2.3",
+    "electron-updater": "^5.3.0",
     "fs-extra": "^10.1.0",
     "github-syntax-dark": "^0.5.0",
     "got": "^11.8.5",
-    "helios-core": "~0.1.1",
+    "helios-core": "~0.1.2",
     "jquery": "^3.6.1",
     "node-stream-zip": "^1.15.0",
     "request": "^2.88.2",
-    "semver": "^7.3.7",
+    "semver": "^7.3.8",
     "tar-fs": "^2.1.1",
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^20.1.1",
-    "electron-builder": "^23.3.3",
-    "eslint": "^8.23.0"
+    "electron": "^21.2.2",
+    "electron-builder": "^23.6.0",
+    "eslint": "^8.27.0"
   },
   "repository": {
     "type": "git",
