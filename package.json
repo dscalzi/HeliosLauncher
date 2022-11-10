@@ -1,10 +1,10 @@
 {
   "name": "ConceptionRPLauncher",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "productName": "Conception Minecraft Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "alextorreg (https://github.com/alextorreg/)",
-  "license": "UNLICENSED",
+  "license": "alextorreg",
   "homepage": "https://github.com/alextorreg/ConceptionLauncher",
   "bugs": {
     "url": "https://github.com/alextorreg/ConceptionLauncher/issues"
