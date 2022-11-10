@@ -5,3 +5,5 @@
 <p align="center">Launcher Exclusivo para ConceptionRP</p>
 
 ![Screenshot 1](https://i.imgur.com/y3DxtFW.png)
+
+https://github.com/alextorreg/ConceptionLauncher/releases/tag/minecraft
