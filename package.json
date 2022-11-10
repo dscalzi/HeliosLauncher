@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "homepage": "https://github.com/GekoXD/GekostudiosBetatest",
   "bugs": {
-    "url": "https://github.com/GekoXD/GekostudiosBetatest/issues"
+    "url": "https://github.com/GekoXD/GekostudiosBetatest/pulls"
   },
   "private": true,
   "main": "index.js",
@@ -48,6 +48,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GekoXD/GekostudiosBetatest.git"
+    "url": "git+https://github.com/GekoXD/GekostudiosBetatest.git" 
   }
 }
