@@ -91,7 +91,7 @@ document.getElementById('launch_button').addEventListener('click', function(e){
         const jExe = ConfigManager.getJavaExecutable()
         if(jExe == null){
             asyncSystemScan(mcVersion)
-        }} else {
+        } else {
 
             setLaunchDetails(Lang.queryJS('landing.launch.pleaseWait'))
             toggleLaunchArea(true)
@@ -107,6 +107,7 @@ document.getElementById('launch_button').addEventListener('click', function(e){
                 }
             })
         }
+    }
 })
 // Bind settings button
 document.getElementById('settingsMediaButton').onclick = (e) => {
@@ -764,6 +765,39 @@ function dlAsync(login = true){
         })
     })
 }
+/**
+ * Checks the current server to ensure that they still have permission to play it (checking server code, if applicable) and open up an error overlay if specified
+ * @Param {boolean} whether or not to show the error overlay
+ */
+ function checkCurrentServer(errorOverlay = true){
+    const selectedServId = ConfigManager.getSelectedServer()
+    if(selectedServId){
+        const selectedServ = DistroManager.getDistribution().getServer(selectedServId)
+        if(selectedServ){
+            if(selectedServ.getServerCode() && selectedServ.getServerCode() !== ''){
+                if(!ConfigManager.getServerCodes().includes(selectedServ.getServerCode())){
+                    if(errorOverlay){
+                        setOverlayContent(
+                            'Current Server Restricted!',
+                            'It seems that you no longer have the server code required to access this server! Please switch to a different server to play on.<br><br>If you feel this is an error, please contact the server administrator',
+                            'Switch Server'
+                        )
+                        setOverlayHandler(() => {
+                            toggleServerSelection(true)
+                        })
+                        setDismissHandler(() => {
+                            toggleOverlay(false)
+                        })
+                        toggleOverlay(true, true)
+                    }
+                    return false
+                }
+            }
+        }
+        return true
+    }
+}
+
 /**
  * Checks the current server to ensure that they still have permission to play it (checking server code, if applicable) and open up an error overlay if specified
  * @Param {boolean} whether or not to show the error overlay

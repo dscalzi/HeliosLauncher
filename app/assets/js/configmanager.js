@@ -111,7 +111,6 @@ const DEFAULT_CONFIG = {
             allowPrerelease: false,
             dataDirectory: dataPath,
             serverCodes: []
-            
         }
     },
     newsCache: {
