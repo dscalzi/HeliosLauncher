@@ -1,7 +1,7 @@
 {
-  "name": "helioslauncher",
+  "name": "hobbitcraftlauncher",
   "version": "1.9.0",
-  "productName": "Helios Launcher",
+  "productName": "Hobbitcraft Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
   "license": "UNLICENSED",

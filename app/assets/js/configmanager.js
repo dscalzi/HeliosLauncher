@@ -6,7 +6,7 @@ const logger = require('./loggerutil')('%c[ConfigManager]', 'color: #a02d2a; fon
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME)
 // TODO change
-const dataPath = path.join(sysRoot, '.helioslauncher')
+const dataPath = path.join(sysRoot, '.hobbitcraftlauncher')
 
 // Forked processes do not have access to electron, so we have this workaround.
 const launcherDir = process.env.CONFIG_DIRECT_PATH || require('@electron/remote').app.getPath('userData')
@@ -37,6 +37,24 @@ exports.getDataDirectory = function(def = false){
  */
 exports.setDataDirectory = function(dataDirectory){
     config.settings.launcher.dataDirectory = dataDirectory
+}
+
+/**
+ * Get the launcher's available server codes. This will be used to load hidden servers.
+ *
+ * @returns {string[]} The server codes list that has been put into the launcher's configuration
+ */
+ exports.getServerCodes = function(){
+    return config.settings.launcher.serverCodes
+}
+
+/**
+ * Set the new server code
+ *
+ * @param {string[]} serverCodes The new server code list.
+ */
+exports.setServerCodes = function(serverCodes){
+    config.settings.launcher.serverCodes = serverCodes
 }
 
 const configPath = path.join(exports.getLauncherDirectory(), 'config.json')
@@ -91,7 +109,9 @@ const DEFAULT_CONFIG = {
         },
         launcher: {
             allowPrerelease: false,
-            dataDirectory: dataPath
+            dataDirectory: dataPath,
+            serverCodes: []
+            
         }
     },
     newsCache: {

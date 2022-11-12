@@ -5,7 +5,7 @@ const semver = require('semver')
 const { JavaGuard } = require('./assets/js/assetguard')
 const DropinModUtil  = require('./assets/js/dropinmodutil')
 const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
-
+const loggerSettings = require('./assets/js/loggerutil')('%c[Settings]', 'color: #353232; font-weight: bold')
 const settingsState = {
     invalid: new Set()
 }
@@ -139,6 +139,8 @@ function initSettingsValues(){
                         v.value = gFn()
                     } else if(cVal === 'JVMOptions'){
                         v.value = gFn().join(' ')
+                    } else if (cVal === 'ServerCode'){
+                        v.value = gFn()
                     } else {
                         v.value = gFn()
                     }
