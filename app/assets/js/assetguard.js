@@ -227,14 +227,13 @@ class JavaGuard extends EventEmitter {
      * Fetch the last open JDK binary.
      * 
      * HOTFIX: Uses Corretto 8 for macOS.
-     * See: https://github.com/dscalzi/HeliosLauncher/issues/70
      * See: https://github.com/AdoptOpenJDK/openjdk-support/issues/101
      * 
      * @param {string} major The major version of Java to fetch.
      * 
      * @returns {Promise.<OpenJDKData>} Promise which resolved to an object containing the JRE download data.
      */
-    static _latestOpenJDK(major = '8'){
+    static _latestOpenJDK(major = '17'){
 
         if(process.platform === 'darwin') {
             return this._latestCorretto(major)
@@ -380,7 +379,7 @@ class JavaGuard extends EventEmitter {
     static parseJavaRuntimeVersion(verString){
         const major = verString.split('.')[0]
         if(major == 1){
-            return JavaGuard._parseJavaRuntimeVersion_8(verString)
+            return JavaGuard._parseJavaRuntimeVersion_9(verString)
         } else {
             return JavaGuard._parseJavaRuntimeVersion_9(verString)
         }
@@ -459,24 +458,15 @@ class JavaGuard extends EventEmitter {
                 let verString = props[i].split('=')[1].trim()
                 console.log(props[i].trim())
                 const verOb = JavaGuard.parseJavaRuntimeVersion(verString)
-                if(verOb.major < 9){
-                    // Java 8
-                    if(verOb.major === 8 && verOb.update > 52){
+                if(verOb.major >= 16) {
+                    // TODO Make this logic better. Make java 16 required.
+                    // Java 9+
+                    if(Util.mcVersionAtLeast('1.17', this.mcVersion)){
                         meta.version = verOb
                         ++checksum
                         if(checksum === goal){
                             break
                         }
-                    }
-                } else {
-                    // Java 9+
-                    if(Util.mcVersionAtLeast('1.13', this.mcVersion)){
-                        console.log('Java 9+ not yet tested.')
-                        /* meta.version = verOb
-                        ++checksum
-                        if(checksum === goal){
-                            break
-                        } */
                     }
                 }
                 // Space included so we get only the vendor.
@@ -1544,7 +1534,7 @@ class AssetGuard extends EventEmitter {
 
     _enqueueOpenJDK(dataDir){
         return new Promise((resolve, reject) => {
-            JavaGuard._latestOpenJDK('8').then(verData => {
+            JavaGuard._latestOpenJDK('17').then(verData => {
                 if(verData != null){
 
                     dataDir = path.join(dataDir, 'runtime', 'x64')

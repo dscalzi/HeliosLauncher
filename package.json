@@ -3,11 +3,11 @@
   "version": "1.9.1",
   "productName": "GekostudiosBetatest",
   "description": "Launcher exclusivamente para GekoStudios, para probar Testeos",
-  "author": "GekoXD#00001 (https://github.com/GekoXD)",
+  "author": "GekoXD#0001 (https://github.com/GekoXD)",
   "license": "UNLICENSED",
   "homepage": "https://github.com/GekoXD/GekostudiosBetatest",
   "bugs": {
-    "url": "https://github.com/GekoXD/GekostudiosBetatest/pulls"
+    "url": "https://github.com/GekoXD/GekostudiosBetatest/issues"
   },
   "private": true,
   "main": "index.js",

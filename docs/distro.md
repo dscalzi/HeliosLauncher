@@ -80,7 +80,7 @@ A URL to a RSS feed. Used for loading news.
 ```JSON
 {
     "id": "Example_Server",
-    "name": "WesterosCraft Example Client",
+    "name": "BetaTest",
     "description": "Example WesterosCraft server. Connect for fun!",
     "icon": "http://mc.westeroscraft.com/WesterosCraftLauncher/files/example_icon.png",
     "version": "0.0.1",
