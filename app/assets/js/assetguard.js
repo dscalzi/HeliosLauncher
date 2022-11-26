@@ -5,6 +5,7 @@ const child_process = require('child_process')
 const crypto        = require('crypto')
 const EventEmitter  = require('events')
 const fs            = require('fs-extra')
+const nodeDiskInfo  = require('node-disk-info')
 const StreamZip     = require('node-stream-zip')
 const path          = require('path')
 const Registry      = require('winreg')
@@ -342,6 +343,9 @@ class JavaGuard extends EventEmitter {
      * @returns {boolean} True if the path points to a Java executable, otherwise false.
      */
     static isJavaExecPath(pth){
+        if(pth == null) {
+            return false
+        }
         if(process.platform === 'win32'){
             return pth.endsWith(path.join('bin', 'javaw.exe'))
         } else if(process.platform === 'darwin'){
@@ -459,13 +463,19 @@ class JavaGuard extends EventEmitter {
                 let verString = props[i].split('=')[1].trim()
                 console.log(props[i].trim())
                 const verOb = JavaGuard.parseJavaRuntimeVersion(verString)
+                // TODO implement a support matrix eventually. Right now this is good enough
+                // 1.7-1.16 = Java 8
+                // 1.17+ = Java 17
+                // Actual support may vary, but we're going with this rule for simplicity.
                 if(verOb.major < 9){
                     // Java 8
-                    if(verOb.major === 8 && verOb.update > 52){
-                        meta.version = verOb
-                        ++checksum
-                        if(checksum === goal){
-                            break
+                    if(!Util.mcVersionAtLeast('1.17', this.mcVersion)){
+                        if(verOb.major === 8 && verOb.update > 52){
+                            meta.version = verOb
+                            ++checksum
+                            if(checksum === goal){
+                                break
+                            }
                         }
                     }
                 } else if(verOb.major >= 16) {
@@ -804,13 +814,20 @@ class JavaGuard extends EventEmitter {
         // Get possible paths from the registry.
         let pathSet1 = await JavaGuard._scanRegistry()
         if(pathSet1.size === 0){
+
             // Do a manual file system scan of program files.
-            pathSet1 = new Set([
-                ...pathSet1,
-                ...(await JavaGuard._scanFileSystem('C:\\Program Files\\Java')),
-                ...(await JavaGuard._scanFileSystem('C:\\Program Files\\Eclipse Foundation')),
-                ...(await JavaGuard._scanFileSystem('C:\\Program Files\\AdoptOpenJDK'))
-            ])
+            // Check all drives
+            const driveMounts = nodeDiskInfo.getDiskInfoSync().map(({ mounted }) => mounted)
+            for(const mount of driveMounts) {
+                pathSet1 = new Set([
+                    ...pathSet1,
+                    ...(await JavaGuard._scanFileSystem(`${mount}\\Program Files\\Java`)),
+                    ...(await JavaGuard._scanFileSystem(`${mount}\\Program Files\\Eclipse Adoptium`)),
+                    ...(await JavaGuard._scanFileSystem(`${mount}\\Program Files\\Eclipse Foundation`)),
+                    ...(await JavaGuard._scanFileSystem(`${mount}\\Program Files\\AdoptOpenJDK`))
+                ])
+            }
+            
         }
 
         // Get possible paths from the data directory.

@@ -2,7 +2,7 @@
 const os     = require('os')
 const semver = require('semver')
 
-const { JavaGuard } = require('./assets/js/assetguard')
+const { JavaGuard, Util } = require('./assets/js/assetguard')
 const DropinModUtil  = require('./assets/js/dropinmodutil')
 const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
 
@@ -127,29 +127,34 @@ function initSettingsValues(){
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
     Array.from(sEls).map((v, index, arr) => {
         const cVal = v.getAttribute('cValue')
+        const serverDependent = v.hasAttribute('serverDependent') // Means the first argument is the server id.
         const gFn = ConfigManager['get' + cVal]
+        const gFnOpts = []
+        if(serverDependent) {
+            gFnOpts.push(ConfigManager.getSelectedServer())
+        }
         if(typeof gFn === 'function'){
             if(v.tagName === 'INPUT'){
                 if(v.type === 'number' || v.type === 'text'){
                     // Special Conditions
                     if(cVal === 'JavaExecutable'){
                         populateJavaExecDetails(v.value)
-                        v.value = gFn()
+                        v.value = gFn.apply(null, gFnOpts)
                     } else if (cVal === 'DataDirectory'){
-                        v.value = gFn()
+                        v.value = gFn.apply(null, gFnOpts)
                     } else if(cVal === 'JVMOptions'){
-                        v.value = gFn().join(' ')
+                        v.value = gFn.apply(null, gFnOpts).join(' ')
                     } else {
-                        v.value = gFn()
+                        v.value = gFn.apply(null, gFnOpts)
                     }
                 } else if(v.type === 'checkbox'){
-                    v.checked = gFn()
+                    v.checked = gFn.apply(null, gFnOpts)
                 }
             } else if(v.tagName === 'DIV'){
                 if(v.classList.contains('rangeSlider')){
                     // Special Conditions
                     if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
-                        let val = gFn()
+                        let val = gFn.apply(null, gFnOpts)
                         if(val.endsWith('M')){
                             val = Number(val.substring(0, val.length-1))/1000
                         } else {
@@ -158,7 +163,7 @@ function initSettingsValues(){
 
                         v.setAttribute('value', val)
                     } else {
-                        v.setAttribute('value', Number.parseFloat(gFn()))
+                        v.setAttribute('value', Number.parseFloat(gFn.apply(null, gFnOpts)))
                     }
                 }
             }
@@ -174,22 +179,31 @@ function saveSettingsValues(){
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
     Array.from(sEls).map((v, index, arr) => {
         const cVal = v.getAttribute('cValue')
+        const serverDependent = v.hasAttribute('serverDependent') // Means the first argument is the server id.
         const sFn = ConfigManager['set' + cVal]
+        const sFnOpts = []
+        if(serverDependent) {
+            sFnOpts.push(ConfigManager.getSelectedServer())
+        }
         if(typeof sFn === 'function'){
             if(v.tagName === 'INPUT'){
                 if(v.type === 'number' || v.type === 'text'){
                     // Special Conditions
                     if(cVal === 'JVMOptions'){
                         if(!v.value.trim()) {
-                            sFn([])
+                            sFnOpts.push([])
+                            sFn.apply(null, sFnOpts)
                         } else {
-                            sFn(v.value.trim().split(/\s+/))
+                            sFnOpts.push(v.value.trim().split(/\s+/))
+                            sFn.apply(null, sFnOpts)
                         }
                     } else {
-                        sFn(v.value)
+                        sFnOpts.push(v.value)
+                        sFn.apply(null, sFnOpts)
                     }
                 } else if(v.type === 'checkbox'){
-                    sFn(v.checked)
+                    sFnOpts.push(v.checked)
+                    sFn.apply(null, sFnOpts)
                     // Special Conditions
                     if(cVal === 'AllowPrerelease'){
                         changeAllowPrerelease(v.checked)
@@ -206,9 +220,11 @@ function saveSettingsValues(){
                             val = val + 'G'
                         }
 
-                        sFn(val)
+                        sFnOpts.push(val)
+                        sFn.apply(null, sFnOpts)
                     } else {
-                        sFn(v.getAttribute('value'))
+                        sFnOpts.push(v.getAttribute('value'))
+                        sFn.apply(null, sFnOpts)
                     }
                 }
             }
@@ -305,13 +321,17 @@ function settingsSaveDisabled(v){
     settingsNavDone.disabled = v
 }
 
-/* Closes the settings view and saves all data. */
-settingsNavDone.onclick = () => {
+function fullSettingsSave() {
     saveSettingsValues()
     saveModConfiguration()
     ConfigManager.save()
     saveDropinModConfiguration()
     saveShaderpackSettings()
+}
+
+/* Closes the settings view and saves all data. */
+settingsNavDone.onclick = () => {
+    fullSettingsSave()
     switchView(getCurrentView(), VIEWS.landing)
 }
 
@@ -1135,6 +1155,7 @@ const settingsMinRAMLabel     = document.getElementById('settingsMinRAMLabel')
 const settingsMemoryTotal     = document.getElementById('settingsMemoryTotal')
 const settingsMemoryAvail     = document.getElementById('settingsMemoryAvail')
 const settingsJavaExecDetails = document.getElementById('settingsJavaExecDetails')
+const settingsJavaReqDesc     = document.getElementById('settingsJavaReqDesc')
 
 // Store maximum memory values.
 const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM()
@@ -1342,12 +1363,24 @@ function populateJavaExecDetails(execPath){
     })
 }
 
+function populateJavaReqDesc() {
+    const mcVer = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
+    if(Util.mcVersionAtLeast('1.17', mcVer)) {
+        settingsJavaReqDesc.innerHTML = 'Requires Java 17 x64.'
+    } else {
+        settingsJavaReqDesc.innerHTML = 'Requires Java 8 x64.'
+    }
+    
+}
+
 /**
  * Prepare the Java tab for display.
  */
 function prepareJavaTab(){
     bindRangeSlider()
     populateMemoryStatus()
+    populateJavaReqDesc()
+    populateJavaExecDetails()
 }
 
 /**

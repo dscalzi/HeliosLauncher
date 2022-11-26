@@ -137,6 +137,7 @@ function onDistroRefresh(data){
     refreshServerStatus()
     initNews()
     syncModConfigurations(data)
+    ensureJavaSettings(data)
 }
 
 /**
@@ -220,6 +221,21 @@ function syncModConfigurations(data){
     }
 
     ConfigManager.setModConfigurations(syncedCfgs)
+    ConfigManager.save()
+}
+
+/**
+ * Ensure java configurations are present for the available servers.
+ * 
+ * @param {Object} data The distro index object.
+ */
+function ensureJavaSettings(data) {
+
+    // Nothing too fancy for now.
+    for(const serv of data.getServers()){
+        ConfigManager.ensureJavaConfig(serv.getID(), serv.getMinecraftVersion())
+    }
+
     ConfigManager.save()
 }
 
@@ -434,6 +450,7 @@ ipcRenderer.on('distributionIndexDone', (event, res) => {
     if(res) {
         const data = DistroManager.getDistribution()
         syncModConfigurations(data)
+        ensureJavaSettings(data)
         if(document.readyState === 'interactive' || document.readyState === 'complete'){
             showMainUI(data)
         } else {
@@ -448,3 +465,13 @@ ipcRenderer.on('distributionIndexDone', (event, res) => {
         }
     }
 })
+
+// Util for development
+function devModeToggle() {
+    DistroManager.setDevMode(true)
+    DistroManager.pullLocal().then((data) => {
+        ensureJavaSettings(data)
+        updateSelectedServer(data.getServers()[0])
+        syncModConfigurations(data)
+    })
+}

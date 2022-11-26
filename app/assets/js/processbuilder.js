@@ -61,7 +61,7 @@ class ProcessBuilder {
 
         logger.log('Launch Arguments:', args)
 
-        const child = child_process.spawn(ConfigManager.getJavaExecutable(), args, {
+        const child = child_process.spawn(ConfigManager.getJavaExecutable(this.server.getID()), args, {
             cwd: this.gameDir,
             detached: ConfigManager.getLaunchDetached()
         })
@@ -356,9 +356,9 @@ class ProcessBuilder {
             args.push('-Xdock:name=HeliosLauncher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
-        args.push('-Xmx' + ConfigManager.getMaxRAM())
-        args.push('-Xms' + ConfigManager.getMinRAM())
-        args = args.concat(ConfigManager.getJVMOptions())
+        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.getID()))
+        args.push('-Xms' + ConfigManager.getMinRAM(this.server.getID()))
+        args = args.concat(ConfigManager.getJVMOptions(this.server.getID()))
         args.push('-Djava.library.path=' + tempNativePath)
 
         // Main Java Class
@@ -407,9 +407,9 @@ class ProcessBuilder {
             args.push('-Xdock:name=HeliosLauncher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
-        args.push('-Xmx' + ConfigManager.getMaxRAM())
-        args.push('-Xms' + ConfigManager.getMinRAM())
-        args = args.concat(ConfigManager.getJVMOptions())
+        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.getID()))
+        args.push('-Xms' + ConfigManager.getMinRAM(this.server.getID()))
+        args = args.concat(ConfigManager.getJVMOptions(this.server.getID()))
 
         // Main Java Class
         args.push(this.forgeData.mainClass)

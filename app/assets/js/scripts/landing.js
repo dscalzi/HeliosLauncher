@@ -87,7 +87,7 @@ function setLaunchEnabled(val){
 document.getElementById('launch_button').addEventListener('click', function(e){
     loggerLanding.log('Launching game..')
     const mcVersion = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
-    const jExe = ConfigManager.getJavaExecutable()
+    const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
     if(jExe == null){
         asyncSystemScan(mcVersion)
     } else {
@@ -140,7 +140,7 @@ updateSelectedAccount(ConfigManager.getSelectedAccount())
 // Bind selected server
 function updateSelectedServer(serv){
     if(getCurrentView() === VIEWS.settings){
-        saveAllModConfigurations()
+        fullSettingsSave()
     }
     ConfigManager.setSelectedServer(serv != null ? serv.getID() : null)
     ConfigManager.save()
@@ -332,7 +332,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 )
                 setOverlayHandler(() => {
                     setLaunchDetails('Preparing Java Download..')
-                    sysAEx.send({task: 'changeContext', class: 'AssetGuard', args: [ConfigManager.getCommonDirectory(),ConfigManager.getJavaExecutable()]})
+                    sysAEx.send({task: 'changeContext', class: 'AssetGuard', args: [ConfigManager.getCommonDirectory(),ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())]})
                     sysAEx.send({task: 'execute', function: '_enqueueOpenJDK', argsArr: [ConfigManager.getDataDirectory()]})
                     toggleOverlay(false)
                 })
@@ -360,7 +360,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
 
             } else {
                 // Java installation found, use this to launch the game.
-                ConfigManager.setJavaExecutable(m.result)
+                ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), m.result)
                 ConfigManager.save()
 
                 // We need to make sure that the updated value is on the settings UI.
@@ -434,7 +434,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                     remote.getCurrentWindow().setProgressBar(-1)
 
                     // Extraction completed successfully.
-                    ConfigManager.setJavaExecutable(m.args[0])
+                    ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), m.args[0])
                     ConfigManager.save()
 
                     if(extractListener != null){
@@ -506,7 +506,7 @@ function dlAsync(login = true){
     aEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
         'AssetGuard',
         ConfigManager.getCommonDirectory(),
-        ConfigManager.getJavaExecutable()
+        ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
     ], {
         env: forkEnv,
         stdio: 'pipe'
