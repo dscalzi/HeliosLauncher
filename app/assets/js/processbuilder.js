@@ -816,15 +816,9 @@ class ProcessBuilder {
         for(let sm of mdl.getSubModules()){
             if(sm.getType() === DistroManager.Types.Library){
 
-                // TODO Add as file or something.
-                const x = sm.getIdentifier()
-                console.log(x)
-                if(x.includes(':universal') || x.includes(':slim') || x.includes(':extra') || x.includes(':srg') || x.includes(':client')) {
-                    console.log('SKIPPING ' + x)
-                    continue
+                if(sm.getClasspath()) {
+                    libs.push(sm.getArtifact().getPath())
                 }
-
-                libs.push(sm.getArtifact().getPath())
             }
             // If this module has submodules, we need to resolve the libraries for those.
             // To avoid unnecessary recursive calls, base case is checked here.
