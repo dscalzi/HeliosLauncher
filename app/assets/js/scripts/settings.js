@@ -1056,33 +1056,37 @@ function bindShaderpackButton() {
 function loadSelectedServerOnModsTab(){
     const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
 
-    document.getElementById('settingsSelServContent').innerHTML = `
-        <img class="serverListingImg" src="${serv.getIcon()}"/>
-        <div class="serverListingDetails">
-            <span class="serverListingName">${serv.getName()}</span>
-            <span class="serverListingDescription">${serv.getDescription()}</span>
-            <div class="serverListingInfo">
-                <div class="serverListingVersion">${serv.getMinecraftVersion()}</div>
-                <div class="serverListingRevision">${serv.getVersion()}</div>
-                ${serv.isMainServer() ? `<div class="serverListingStarWrapper">
-                    <svg id="Layer_1" viewBox="0 0 107.45 104.74" width="20px" height="20px">
-                        <defs>
-                            <style>.cls-1{fill:#fff;}.cls-2{fill:none;stroke:#fff;stroke-miterlimit:10;}</style>
-                        </defs>
-                        <path class="cls-1" d="M100.93,65.54C89,62,68.18,55.65,63.54,52.13c2.7-5.23,18.8-19.2,28-27.55C81.36,31.74,63.74,43.87,58.09,45.3c-2.41-5.37-3.61-26.52-4.37-39-.77,12.46-2,33.64-4.36,39-5.7-1.46-23.3-13.57-33.49-20.72,9.26,8.37,25.39,22.36,28,27.55C39.21,55.68,18.47,62,6.52,65.55c12.32-2,33.63-6.06,39.34-4.9-.16,5.87-8.41,26.16-13.11,37.69,6.1-10.89,16.52-30.16,21-33.9,4.5,3.79,14.93,23.09,21,34C70,86.84,61.73,66.48,61.59,60.65,67.36,59.49,88.64,63.52,100.93,65.54Z"/>
-                        <circle class="cls-2" cx="53.73" cy="53.9" r="38"/>
-                    </svg>
-                    <span class="serverListingStarTooltip">Main Server</span>
-                </div>` : ''}
+    for(const el of document.getElementsByClassName('settingsSelServContent')) {
+        el.innerHTML = `
+            <img class="serverListingImg" src="${serv.getIcon()}"/>
+            <div class="serverListingDetails">
+                <span class="serverListingName">${serv.getName()}</span>
+                <span class="serverListingDescription">${serv.getDescription()}</span>
+                <div class="serverListingInfo">
+                    <div class="serverListingVersion">${serv.getMinecraftVersion()}</div>
+                    <div class="serverListingRevision">${serv.getVersion()}</div>
+                    ${serv.isMainServer() ? `<div class="serverListingStarWrapper">
+                        <svg id="Layer_1" viewBox="0 0 107.45 104.74" width="20px" height="20px">
+                            <defs>
+                                <style>.cls-1{fill:#fff;}.cls-2{fill:none;stroke:#fff;stroke-miterlimit:10;}</style>
+                            </defs>
+                            <path class="cls-1" d="M100.93,65.54C89,62,68.18,55.65,63.54,52.13c2.7-5.23,18.8-19.2,28-27.55C81.36,31.74,63.74,43.87,58.09,45.3c-2.41-5.37-3.61-26.52-4.37-39-.77,12.46-2,33.64-4.36,39-5.7-1.46-23.3-13.57-33.49-20.72,9.26,8.37,25.39,22.36,28,27.55C39.21,55.68,18.47,62,6.52,65.55c12.32-2,33.63-6.06,39.34-4.9-.16,5.87-8.41,26.16-13.11,37.69,6.1-10.89,16.52-30.16,21-33.9,4.5,3.79,14.93,23.09,21,34C70,86.84,61.73,66.48,61.59,60.65,67.36,59.49,88.64,63.52,100.93,65.54Z"/>
+                            <circle class="cls-2" cx="53.73" cy="53.9" r="38"/>
+                        </svg>
+                        <span class="serverListingStarTooltip">Main Server</span>
+                    </div>` : ''}
+                </div>
             </div>
-        </div>
-    `
+        `
+    }
 }
 
 // Bind functionality to the server switch button.
-document.getElementById('settingsSwitchServerButton').addEventListener('click', (e) => {
-    e.target.blur()
-    toggleServerSelection(true)
+Array.from(document.getElementsByClassName('settingsSwitchServerButton')).forEach(el => {
+    el.addEventListener('click', (e) => {
+        e.target.blur()
+        toggleServerSelection(true)
+    })
 })
 
 /**
@@ -1095,13 +1099,13 @@ function saveAllModConfigurations(){
 }
 
 /**
- * Function to refresh the mods tab whenever the selected
+ * Function to refresh the current tab whenever the selected
  * server is changed.
  */
-function animateModsTabRefresh(){
-    $('#settingsTabMods').fadeOut(500, () => {
-        prepareModsTab()
-        $('#settingsTabMods').fadeIn(500)
+function animateSettingsTabRefresh(){
+    $(`#${selectedSettingsTab}`).fadeOut(500, () => {
+        prepareSettings()
+        $(`#${selectedSettingsTab}`).fadeIn(500)
     })
 }
 

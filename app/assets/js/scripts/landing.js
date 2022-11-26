@@ -146,7 +146,7 @@ function updateSelectedServer(serv){
     ConfigManager.save()
     server_selection_button.innerHTML = '\u2022 ' + (serv != null ? serv.getName() : 'No Server Selected')
     if(getCurrentView() === VIEWS.settings){
-        animateModsTabRefresh()
+        animateSettingsTabRefresh()
     }
     setLaunchEnabled(serv != null)
 }
