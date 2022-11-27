@@ -208,6 +208,12 @@ The name of the module. Used on the UI.
 
 The type of the module.
 
+### `Module.classpath: boolean`
+
+**OPTIONAL**
+
+If the module is of type `Library`, whether the library should be added to the classpath. Defaults to true.
+
 ### `Module.required: Required`
 
 **OPTIONAL**

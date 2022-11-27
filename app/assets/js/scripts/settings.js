@@ -127,29 +127,34 @@ function initSettingsValues(){
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
     Array.from(sEls).map((v, index, arr) => {
         const cVal = v.getAttribute('cValue')
+        const serverDependent = v.hasAttribute('serverDependent') // Means the first argument is the server id.
         const gFn = ConfigManager['get' + cVal]
+        const gFnOpts = []
+        if(serverDependent) {
+            gFnOpts.push(ConfigManager.getSelectedServer())
+        }
         if(typeof gFn === 'function'){
             if(v.tagName === 'INPUT'){
                 if(v.type === 'number' || v.type === 'text'){
                     // Special Conditions
                     if(cVal === 'JavaExecutable'){
+                        v.value = gFn.apply(null, gFnOpts)
                         populateJavaExecDetails(v.value)
-                        v.value = gFn()
                     } else if (cVal === 'DataDirectory'){
-                        v.value = gFn()
+                        v.value = gFn.apply(null, gFnOpts)
                     } else if(cVal === 'JVMOptions'){
-                        v.value = gFn().join(' ')
+                        v.value = gFn.apply(null, gFnOpts).join(' ')
                     } else {
-                        v.value = gFn()
+                        v.value = gFn.apply(null, gFnOpts)
                     }
                 } else if(v.type === 'checkbox'){
-                    v.checked = gFn()
+                    v.checked = gFn.apply(null, gFnOpts)
                 }
             } else if(v.tagName === 'DIV'){
                 if(v.classList.contains('rangeSlider')){
                     // Special Conditions
                     if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
-                        let val = gFn()
+                        let val = gFn.apply(null, gFnOpts)
                         if(val.endsWith('M')){
                             val = Number(val.substring(0, val.length-1))/1000
                         } else {
@@ -158,7 +163,7 @@ function initSettingsValues(){
 
                         v.setAttribute('value', val)
                     } else {
-                        v.setAttribute('value', Number.parseFloat(gFn()))
+                        v.setAttribute('value', Number.parseFloat(gFn.apply(null, gFnOpts)))
                     }
                 }
             }
@@ -174,22 +179,31 @@ function saveSettingsValues(){
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
     Array.from(sEls).map((v, index, arr) => {
         const cVal = v.getAttribute('cValue')
+        const serverDependent = v.hasAttribute('serverDependent') // Means the first argument is the server id.
         const sFn = ConfigManager['set' + cVal]
+        const sFnOpts = []
+        if(serverDependent) {
+            sFnOpts.push(ConfigManager.getSelectedServer())
+        }
         if(typeof sFn === 'function'){
             if(v.tagName === 'INPUT'){
                 if(v.type === 'number' || v.type === 'text'){
                     // Special Conditions
                     if(cVal === 'JVMOptions'){
                         if(!v.value.trim()) {
-                            sFn([])
+                            sFnOpts.push([])
+                            sFn.apply(null, sFnOpts)
                         } else {
-                            sFn(v.value.trim().split(/\s+/))
+                            sFnOpts.push(v.value.trim().split(/\s+/))
+                            sFn.apply(null, sFnOpts)
                         }
                     } else {
-                        sFn(v.value)
+                        sFnOpts.push(v.value)
+                        sFn.apply(null, sFnOpts)
                     }
                 } else if(v.type === 'checkbox'){
-                    sFn(v.checked)
+                    sFnOpts.push(v.checked)
+                    sFn.apply(null, sFnOpts)
                     // Special Conditions
                     if(cVal === 'AllowPrerelease'){
                         changeAllowPrerelease(v.checked)
@@ -206,9 +220,11 @@ function saveSettingsValues(){
                             val = val + 'G'
                         }
 
-                        sFn(val)
+                        sFnOpts.push(val)
+                        sFn.apply(null, sFnOpts)
                     } else {
-                        sFn(v.getAttribute('value'))
+                        sFnOpts.push(v.getAttribute('value'))
+                        sFn.apply(null, sFnOpts)
                     }
                 }
             }
@@ -305,13 +321,17 @@ function settingsSaveDisabled(v){
     settingsNavDone.disabled = v
 }
 
-/* Closes the settings view and saves all data. */
-settingsNavDone.onclick = () => {
+function fullSettingsSave() {
     saveSettingsValues()
     saveModConfiguration()
     ConfigManager.save()
     saveDropinModConfiguration()
     saveShaderpackSettings()
+}
+
+/* Closes the settings view and saves all data. */
+settingsNavDone.onclick = () => {
+    fullSettingsSave()
     switchView(getCurrentView(), VIEWS.landing)
 }
 
@@ -1056,33 +1076,37 @@ function bindShaderpackButton() {
 function loadSelectedServerOnModsTab(){
     const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
 
-    document.getElementById('settingsSelServContent').innerHTML = `
-        <img class="serverListingImg" src="${serv.getIcon()}"/>
-        <div class="serverListingDetails">
-            <span class="serverListingName">${serv.getName()}</span>
-            <span class="serverListingDescription">${serv.getDescription()}</span>
-            <div class="serverListingInfo">
-                <div class="serverListingVersion">${serv.getMinecraftVersion()}</div>
-                <div class="serverListingRevision">${serv.getVersion()}</div>
-                ${serv.isMainServer() ? `<div class="serverListingStarWrapper">
-                    <svg id="Layer_1" viewBox="0 0 107.45 104.74" width="20px" height="20px">
-                        <defs>
-                            <style>.cls-1{fill:#fff;}.cls-2{fill:none;stroke:#fff;stroke-miterlimit:10;}</style>
-                        </defs>
-                        <path class="cls-1" d="M100.93,65.54C89,62,68.18,55.65,63.54,52.13c2.7-5.23,18.8-19.2,28-27.55C81.36,31.74,63.74,43.87,58.09,45.3c-2.41-5.37-3.61-26.52-4.37-39-.77,12.46-2,33.64-4.36,39-5.7-1.46-23.3-13.57-33.49-20.72,9.26,8.37,25.39,22.36,28,27.55C39.21,55.68,18.47,62,6.52,65.55c12.32-2,33.63-6.06,39.34-4.9-.16,5.87-8.41,26.16-13.11,37.69,6.1-10.89,16.52-30.16,21-33.9,4.5,3.79,14.93,23.09,21,34C70,86.84,61.73,66.48,61.59,60.65,67.36,59.49,88.64,63.52,100.93,65.54Z"/>
-                        <circle class="cls-2" cx="53.73" cy="53.9" r="38"/>
-                    </svg>
-                    <span class="serverListingStarTooltip">Main Server</span>
-                </div>` : ''}
+    for(const el of document.getElementsByClassName('settingsSelServContent')) {
+        el.innerHTML = `
+            <img class="serverListingImg" src="${serv.getIcon()}"/>
+            <div class="serverListingDetails">
+                <span class="serverListingName">${serv.getName()}</span>
+                <span class="serverListingDescription">${serv.getDescription()}</span>
+                <div class="serverListingInfo">
+                    <div class="serverListingVersion">${serv.getMinecraftVersion()}</div>
+                    <div class="serverListingRevision">${serv.getVersion()}</div>
+                    ${serv.isMainServer() ? `<div class="serverListingStarWrapper">
+                        <svg id="Layer_1" viewBox="0 0 107.45 104.74" width="20px" height="20px">
+                            <defs>
+                                <style>.cls-1{fill:#fff;}.cls-2{fill:none;stroke:#fff;stroke-miterlimit:10;}</style>
+                            </defs>
+                            <path class="cls-1" d="M100.93,65.54C89,62,68.18,55.65,63.54,52.13c2.7-5.23,18.8-19.2,28-27.55C81.36,31.74,63.74,43.87,58.09,45.3c-2.41-5.37-3.61-26.52-4.37-39-.77,12.46-2,33.64-4.36,39-5.7-1.46-23.3-13.57-33.49-20.72,9.26,8.37,25.39,22.36,28,27.55C39.21,55.68,18.47,62,6.52,65.55c12.32-2,33.63-6.06,39.34-4.9-.16,5.87-8.41,26.16-13.11,37.69,6.1-10.89,16.52-30.16,21-33.9,4.5,3.79,14.93,23.09,21,34C70,86.84,61.73,66.48,61.59,60.65,67.36,59.49,88.64,63.52,100.93,65.54Z"/>
+                            <circle class="cls-2" cx="53.73" cy="53.9" r="38"/>
+                        </svg>
+                        <span class="serverListingStarTooltip">Main Server</span>
+                    </div>` : ''}
+                </div>
             </div>
-        </div>
-    `
+        `
+    }
 }
 
 // Bind functionality to the server switch button.
-document.getElementById('settingsSwitchServerButton').addEventListener('click', (e) => {
-    e.target.blur()
-    toggleServerSelection(true)
+Array.from(document.getElementsByClassName('settingsSwitchServerButton')).forEach(el => {
+    el.addEventListener('click', (e) => {
+        e.target.blur()
+        toggleServerSelection(true)
+    })
 })
 
 /**
@@ -1095,13 +1119,13 @@ function saveAllModConfigurations(){
 }
 
 /**
- * Function to refresh the mods tab whenever the selected
+ * Function to refresh the current tab whenever the selected
  * server is changed.
  */
-function animateModsTabRefresh(){
-    $('#settingsTabMods').fadeOut(500, () => {
-        prepareModsTab()
-        $('#settingsTabMods').fadeIn(500)
+function animateSettingsTabRefresh(){
+    $(`#${selectedSettingsTab}`).fadeOut(500, () => {
+        prepareSettings()
+        $(`#${selectedSettingsTab}`).fadeIn(500)
     })
 }
 
@@ -1131,6 +1155,8 @@ const settingsMinRAMLabel     = document.getElementById('settingsMinRAMLabel')
 const settingsMemoryTotal     = document.getElementById('settingsMemoryTotal')
 const settingsMemoryAvail     = document.getElementById('settingsMemoryAvail')
 const settingsJavaExecDetails = document.getElementById('settingsJavaExecDetails')
+const settingsJavaReqDesc     = document.getElementById('settingsJavaReqDesc')
+const settingsJvmOptsLink     = document.getElementById('settingsJvmOptsLink')
 
 // Store maximum memory values.
 const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM()
@@ -1338,12 +1364,34 @@ function populateJavaExecDetails(execPath){
     })
 }
 
+function populateJavaReqDesc() {
+    const mcVer = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
+    if(Util.mcVersionAtLeast('1.17', mcVer)) {
+        settingsJavaReqDesc.innerHTML = 'Requires Java 17 x64.'
+    } else {
+        settingsJavaReqDesc.innerHTML = 'Requires Java 8 x64.'
+    }
+}
+
+function populateJvmOptsLink() {
+    const mcVer = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
+    if(Util.mcVersionAtLeast('1.17', mcVer)) {
+        settingsJvmOptsLink.innerHTML = 'Available Options for Java 17 (HotSpot VM)'
+        settingsJvmOptsLink.href = 'https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html#extra-options-for-java'
+    } else {
+        settingsJvmOptsLink.innerHTML = 'Available Options for Java 8 (HotSpot VM)'
+        settingsJvmOptsLink.href = `https://docs.oracle.com/javase/8/docs/technotes/tools/${process.platform === 'win32' ? 'windows' : 'unix'}/java.html`
+    }
+}
+
 /**
  * Prepare the Java tab for display.
  */
 function prepareJavaTab(){
     bindRangeSlider()
     populateMemoryStatus()
+    populateJavaReqDesc()
+    populateJvmOptsLink()
 }
 
 /**

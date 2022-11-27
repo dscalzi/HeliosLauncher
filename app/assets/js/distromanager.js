@@ -118,7 +118,7 @@ class Module {
      * @returns {Module} The parsed Module.
      */
     static fromJSON(json, serverid){
-        return new Module(json.id, json.name, json.type, json.required, json.artifact, json.subModules, serverid)
+        return new Module(json.id, json.name, json.type, json.classpath, json.required, json.artifact, json.subModules, serverid)
     }
 
     /**
@@ -143,9 +143,10 @@ class Module {
         }
     }
 
-    constructor(id, name, type, required, artifact, subModules, serverid) {
+    constructor(id, name, type, classpath, required, artifact, subModules, serverid) {
         this.identifier = id
         this.type = type
+        this.classpath = classpath
         this._resolveMetaData()
         this.name = name
         this.required = Required.fromJSON(required)
@@ -304,6 +305,13 @@ class Module {
      */
     getType(){
         return this.type
+    }
+
+    /**
+     * @returns {boolean} Whether or not this library should be on the classpath.
+     */
+    getClasspath(){
+        return this.classpath ?? true
     }
 
 }
