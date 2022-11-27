@@ -10,6 +10,7 @@ const { MojangRestAPI, getServerStatus }     = require('helios-core/mojang')
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
+const { Util } = require('./assets/js/assetguard')
 const { RestResponseStatus, isDisplayableError } = require('helios-core/common')
 
 // Launch Elements
@@ -317,6 +318,8 @@ function asyncSystemScan(mcVersion, launchAfter = true){
     sysAEx.stdio[2].on('data', (data) => {
         loggerSysAEx.log(data)
     })
+
+    const javaVer = Util.mcVersionAtLeast('1.17', mcVersion) ? '17' : '8'
     
     sysAEx.on('message', (m) => {
 
@@ -326,14 +329,14 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 // Show this information to the user.
                 setOverlayContent(
                     'No Compatible<br>Java Installation Found',
-                    'In order to join WesterosCraft, you need a 64-bit installation of Java 8. Would you like us to install a copy?',
+                    `In order to join WesterosCraft, you need a 64-bit installation of Java ${javaVer}. Would you like us to install a copy?`,
                     'Install Java',
                     'Install Manually'
                 )
                 setOverlayHandler(() => {
                     setLaunchDetails('Preparing Java Download..')
                     sysAEx.send({task: 'changeContext', class: 'AssetGuard', args: [ConfigManager.getCommonDirectory(),ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())]})
-                    sysAEx.send({task: 'execute', function: '_enqueueOpenJDK', argsArr: [ConfigManager.getDataDirectory()]})
+                    sysAEx.send({task: 'execute', function: '_enqueueOpenJDK', argsArr: [ConfigManager.getDataDirectory(), mcVersion]})
                     toggleOverlay(false)
                 })
                 setDismissHandler(() => {
@@ -341,7 +344,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                         //$('#overlayDismiss').toggle(false)
                         setOverlayContent(
                             'Java is Required<br>to Launch',
-                            'A valid x64 installation of Java 8 is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.',
+                            `A valid x64 installation of Java ${javaVer} is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.`,
                             'I Understand',
                             'Go Back'
                         )

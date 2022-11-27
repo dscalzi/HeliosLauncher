@@ -478,8 +478,7 @@ class JavaGuard extends EventEmitter {
                             }
                         }
                     }
-                } else if(verOb.major >= 16) {
-                    // TODO Make this logic better. Make java 16 required.
+                } else if(verOb.major >= 17) {
                     // Java 9+
                     if(Util.mcVersionAtLeast('1.17', this.mcVersion)){
                         meta.version = verOb
@@ -1559,9 +1558,10 @@ class AssetGuard extends EventEmitter {
     // Java (Category=''') Validation (download) Functions
     // #region
 
-    _enqueueOpenJDK(dataDir){
+    _enqueueOpenJDK(dataDir, mcVersion){
         return new Promise((resolve, reject) => {
-            JavaGuard._latestOpenJDK('8').then(verData => {
+            const major = Util.mcVersionAtLeast('1.17', mcVersion) ? '17' : '8'
+            JavaGuard._latestOpenJDK(major).then(verData => {
                 if(verData != null){
 
                     dataDir = path.join(dataDir, 'runtime', 'x64')

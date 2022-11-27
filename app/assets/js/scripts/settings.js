@@ -2,7 +2,7 @@
 const os     = require('os')
 const semver = require('semver')
 
-const { JavaGuard, Util } = require('./assets/js/assetguard')
+const { JavaGuard } = require('./assets/js/assetguard')
 const DropinModUtil  = require('./assets/js/dropinmodutil')
 const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
 
@@ -1156,6 +1156,7 @@ const settingsMemoryTotal     = document.getElementById('settingsMemoryTotal')
 const settingsMemoryAvail     = document.getElementById('settingsMemoryAvail')
 const settingsJavaExecDetails = document.getElementById('settingsJavaExecDetails')
 const settingsJavaReqDesc     = document.getElementById('settingsJavaReqDesc')
+const settingsJvmOptsLink     = document.getElementById('settingsJvmOptsLink')
 
 // Store maximum memory values.
 const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM()
@@ -1370,7 +1371,17 @@ function populateJavaReqDesc() {
     } else {
         settingsJavaReqDesc.innerHTML = 'Requires Java 8 x64.'
     }
-    
+}
+
+function populateJvmOptsLink() {
+    const mcVer = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
+    if(Util.mcVersionAtLeast('1.17', mcVer)) {
+        settingsJvmOptsLink.innerHTML = 'Available Options for Java 17 (HotSpot VM)'
+        settingsJvmOptsLink.href = 'https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html#extra-options-for-java'
+    } else {
+        settingsJvmOptsLink.innerHTML = 'Available Options for Java 8 (HotSpot VM)'
+        settingsJvmOptsLink.href = `https://docs.oracle.com/javase/8/docs/technotes/tools/${process.platform === 'win32' ? 'windows' : 'unix'}/java.html`
+    }
 }
 
 /**
@@ -1380,6 +1391,7 @@ function prepareJavaTab(){
     bindRangeSlider()
     populateMemoryStatus()
     populateJavaReqDesc()
+    populateJvmOptsLink()
 }
 
 /**
