@@ -138,8 +138,8 @@ function initSettingsValues(){
                 if(v.type === 'number' || v.type === 'text'){
                     // Special Conditions
                     if(cVal === 'JavaExecutable'){
-                        populateJavaExecDetails(v.value)
                         v.value = gFn.apply(null, gFnOpts)
+                        populateJavaExecDetails(v.value)
                     } else if (cVal === 'DataDirectory'){
                         v.value = gFn.apply(null, gFnOpts)
                     } else if(cVal === 'JVMOptions'){
@@ -1380,7 +1380,6 @@ function prepareJavaTab(){
     bindRangeSlider()
     populateMemoryStatus()
     populateJavaReqDesc()
-    populateJavaExecDetails()
 }
 
 /**
