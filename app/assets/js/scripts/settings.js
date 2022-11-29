@@ -1454,28 +1454,58 @@ function populateAboutVersionInformation(){
  * of the current version. This value is displayed on the UI.
  */
 function populateReleaseNotes(){
-    $.ajax({
-        url: 'https://github.com/dscalzi/HeliosLauncher/releases.atom',
-        success: (data) => {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: 'https://github.com/dscalzi/HeliosLauncher/releases.atom',
+            timeout: 2500
+        }).done(function(data) {
             const version = 'v' + remote.app.getVersion()
             const entries = $(data).find('entry')
-            
+            let latestVersionData = {}
+            latestVersionData.version = version
             for(let i=0; i<entries.length; i++){
                 const entry = $(entries[i])
                 let id = entry.find('id').text()
                 id = id.substring(id.lastIndexOf('/')+1)
+                if(semver.lt(latestVersionData.version, id)){
+                    latestVersionData.version = id
+                    latestVersionData.releaseName = entry.find('title').text()
+                    latestVersionData.releaseNotes = entry.find('content').text()
+                }
 
-                if(id === version){
+                if(semver.satisfies(version, "="+id)){
                     settingsAboutChangelogTitle.innerHTML = entry.find('title').text()
                     settingsAboutChangelogText.innerHTML = entry.find('content').text()
                     settingsAboutChangelogButton.href = entry.find('link').attr('href')
                 }
             }
-
-        },
-        timeout: 2500
-    }).catch(err => {
-        settingsAboutChangelogText.innerHTML = 'Failed to load release notes.'
+            if(semver.lt(version, latestVersionData.version)){
+                $.ajax({
+                    url: 'https://api.github.com/repos/dscalzi/HeliosLauncher/releases/tags/'+latestVersionData.version,
+                    timeout: 2500
+                }).done(function(assetsData) {
+                    const assets = assetsData.assets
+                    for(let i=0; i<assets.length; i++){
+                        const url = assets[i].browser_download_url
+                        if(/\.dmg$/.test(url)){
+                            latestVersionData.darwindownload = url
+                        } else if(/\.exe$/.test(url)){
+                            latestVersionData.windowsdownload = url
+                        }
+                    }
+                    resolve(latestVersionData)
+                }).fail(function() {
+                    console.log("fail")
+                    reject()
+                })
+            } else {
+                latestVersionData = null
+                resolve(latestVersionData)
+            }
+        }).fail(function() {
+            settingsAboutChangelogText.innerHTML = 'Failed to load release notes.'
+            reject()
+        })
     })
 }
 
@@ -1484,7 +1514,6 @@ function populateReleaseNotes(){
  */
 function prepareAboutTab(){
     populateAboutVersionInformation()
-    populateReleaseNotes()
 }
 
 /**
@@ -1567,11 +1596,12 @@ function prepareUpdateTab(data = null){
   * 
   * @param {boolean} first Whether or not it is the first load.
   */
-function prepareSettings(first = false) {
+async function prepareSettings(first = false) {
     if(first){
+        const vdata = await populateReleaseNotes()
         setupSettingsTabs()
         initSettingsValidators()
-        prepareUpdateTab()
+        prepareUpdateTab(vdata)
     } else {
         prepareModsTab()
     }
