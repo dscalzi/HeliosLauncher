@@ -333,8 +333,9 @@ document.getElementById('settingsAddMojangAccount').onclick = (e) => {
 
 // Bind the add microsoft account button.
 document.getElementById('settingsAddMicrosoftAccount').onclick = (e) => {
+    document.getElementById("waitingText").innerHTML = "Please login in the window that has just opened"
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
-        ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN, VIEWS.settings, VIEWS.settings)
+        ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN, VIEWS.landing, VIEWS.settings)
     })
 }
 
@@ -363,7 +364,8 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
             })
             toggleOverlay(true)
         })
-    } else if(arguments_[0] === MSFT_REPLY_TYPE.SUCCESS) {
+    } else if (arguments_[0] === MSFT_REPLY_TYPE.SUCCESS) {
+        document.getElementById("waitingText").innerHTML = "Retrieving your account information from Microsoft"
         const queryMap = arguments_[1]
         const viewOnClose = arguments_[2]
 
@@ -374,7 +376,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
                 // This is probably if you messed up the app registration with Azure.
                 console.log('Error getting authCode, is Azure application registered correctly?')
                 console.log(error)
-                console.log(error_description)
+                console.log(errorDesc)
                 console.log('Full query map', queryMap)
                 let error = queryMap.error // Error might be 'access_denied' ?
                 let errorDesc = queryMap.error_description
@@ -386,7 +388,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
                 setOverlayHandler(() => {
                     toggleOverlay(false)
                 })
-                toggleOverlay(true)
+                if (errorDesc !== "The user has denied access to the scope requested by the client application.") toggleOverlay(true)//If the user clicks "Back" button and closes the window
 
             })
         } else {
@@ -395,6 +397,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
 
             const authCode = queryMap.code
             AuthManager.addMicrosoftAccount(authCode).then(value => {
+                document.getElementById("waitingText").innerHTML = "Finished"
                 updateSelectedAccount(value)
                 switchView(getCurrentView(), viewOnClose, 500, 500, () => {
                     prepareSettings()
@@ -479,7 +482,7 @@ function bindAuthAccountLogOut(){
             } else {
                 processLogOut(val, isLastAccount)
             }
-            
+
         }
     })
 }
@@ -499,6 +502,7 @@ function processLogOut(val, isLastAccount){
     if(targetAcc.type === 'microsoft') {
         msAccDomElementCache = parent
         switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
+            document.getElementById("waitingText").innerHTML = "Removing your Microsoft account from the launcher" //We actually don't have to wait anything from Mirosoft
             ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount)
         })
     } else {
@@ -509,16 +513,16 @@ function processLogOut(val, isLastAccount){
                 updateSelectedAccount(selAcc)
                 validateSelectedAccount()
             }
-            if(isLastAccount) {
-                loginOptionsCancelEnabled(false)
-                loginOptionsViewOnLoginSuccess = VIEWS.settings
-                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
-                switchView(getCurrentView(), VIEWS.loginOptions)
-            }
+            $(parent).fadeOut(250, () => {
+                parent.remove()
+            })
         })
-        $(parent).fadeOut(250, () => {
-            parent.remove()
-        })
+        if (isLastAccount) {
+            loginOptionsCancelEnabled(false)
+            loginOptionsViewOnLoginSuccess = VIEWS.landing
+            loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+            switchView(getCurrentView(), VIEWS.loginOptions)
+        }
     }
 }
 
@@ -551,7 +555,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
         const prevSelAcc = ConfigManager.getSelectedAccount()
 
         msftLogoutLogger.info('Logout Successful. uuid:', uuid)
-        
+
         AuthManager.removeMicrosoftAccount(uuid)
             .then(() => {
                 if(!isLastAccount && uuid === prevSelAcc.uuid){
@@ -562,7 +566,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
                 }
                 if(isLastAccount) {
                     loginOptionsCancelEnabled(false)
-                    loginOptionsViewOnLoginSuccess = VIEWS.settings
+                    loginOptionsViewOnLoginSuccess = VIEWS.landing
                     loginOptionsViewOnLoginCancel = VIEWS.loginOptions
                     switchView(getCurrentView(), VIEWS.loginOptions)
                 }
