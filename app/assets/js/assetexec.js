@@ -1,3 +1,8 @@
+/**
+ * @author Daniel D. Scalzi
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0/
+ */
+
 let target = require('./assetguard')[process.argv[2]]
 if(target == null){
     process.send({context: 'error', data: null, error: 'Invalid class name'})

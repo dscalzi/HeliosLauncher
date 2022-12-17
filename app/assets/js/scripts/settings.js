@@ -1,3 +1,8 @@
+/**
+ * @author Daniel D. Scalzi
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0/
+ */
+
 // Requirements
 const os     = require('os')
 const semver = require('semver')

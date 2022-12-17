@@ -4,7 +4,7 @@
   "productName": "Helios Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
-  "license": "UNLICENSED",
+  "license": "CC-BY-NC",
   "homepage": "https://github.com/dscalzi/HeliosLauncher",
   "bugs": {
     "url": "https://github.com/dscalzi/HeliosLauncher/issues"

@@ -1,4 +1,9 @@
 /**
+ * @author Daniel D. Scalzi
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0/
+ */
+
+/**
  * Initialize UI functions which depend on internal modules.
  * Loaded after core UI functions are initialized in uicore.js.
  */
