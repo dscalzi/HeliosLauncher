@@ -6,8 +6,11 @@ if(target == null){
 }
 let tracker = new target(...(process.argv.splice(3)))
 
+const { LoggerUtil } = require('helios-core')
+const logger = LoggerUtil.getLogger('AssetExec')
+
 //const tracker = new AssetGuard(process.argv[2], process.argv[3])
-console.log('AssetExec Started')
+logger.info('AssetExec Started')
 
 // Temporary for debug purposes.
 process.on('unhandledRejection', r => console.log(r))
@@ -66,6 +69,6 @@ process.on('message', (msg) => {
 })
 
 process.on('disconnect', () => {
-    console.log('AssetExec Disconnected')
+    logger.info('AssetExec Disconnected')
     process.exit(0)
 })

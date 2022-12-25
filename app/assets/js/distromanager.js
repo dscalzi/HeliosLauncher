@@ -1,9 +1,11 @@
 const fs = require('fs')
 const path = require('path')
 const request = require('request')
+const { LoggerUtil } = require('helios-core')
 
 const ConfigManager = require('./configmanager')
-const logger        = require('./loggerutil')('%c[DistroManager]', 'color: #a02d2a; font-weight: bold')
+
+const logger = LoggerUtil.getLogger('DistroManager')
 
 /**
  * Represents the download information
@@ -599,10 +601,10 @@ exports.pullLocal = function(){
 
 exports.setDevMode = function(value){
     if(value){
-        logger.log('Developer mode enabled.')
-        logger.log('If you don\'t know what that means, revert immediately.')
+        logger.info('Developer mode enabled.')
+        logger.info('If you don\'t know what that means, revert immediately.')
     } else {
-        logger.log('Developer mode disabled.')
+        logger.info('Developer mode disabled.')
     }
     DEV_MODE = value
 }

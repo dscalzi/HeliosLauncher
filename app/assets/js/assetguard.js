@@ -5,6 +5,7 @@ const child_process = require('child_process')
 const crypto        = require('crypto')
 const EventEmitter  = require('events')
 const fs            = require('fs-extra')
+const { LoggerUtil } = require('helios-core')
 const nodeDiskInfo  = require('node-disk-info')
 const StreamZip     = require('node-stream-zip')
 const path          = require('path')
@@ -215,6 +216,7 @@ class JavaGuard extends EventEmitter {
     constructor(mcVersion){
         super()
         this.mcVersion = mcVersion
+        this.logger = LoggerUtil.getLogger('JavaGuard')
     }
 
     /**
@@ -451,7 +453,7 @@ class JavaGuard extends EventEmitter {
             if(props[i].indexOf('sun.arch.data.model') > -1){
                 let arch = props[i].split('=')[1].trim()
                 arch = parseInt(arch)
-                console.log(props[i].trim())
+                this.logger.debug(props[i].trim())
                 if(arch === 64){
                     meta.arch = arch
                     ++checksum
@@ -461,7 +463,7 @@ class JavaGuard extends EventEmitter {
                 }
             } else if(props[i].indexOf('java.runtime.version') > -1){
                 let verString = props[i].split('=')[1].trim()
-                console.log(props[i].trim())
+                this.logger.debug(props[i].trim())
                 const verOb = JavaGuard.parseJavaRuntimeVersion(verString)
                 // TODO implement a support matrix eventually. Right now this is good enough
                 // 1.7-1.16 = Java 8
@@ -491,7 +493,7 @@ class JavaGuard extends EventEmitter {
                 // Space included so we get only the vendor.
             } else if(props[i].lastIndexOf('java.vendor ') > -1) {
                 let vendorName = props[i].split('=')[1].trim()
-                console.log(props[i].trim())
+                this.logger.debug(props[i].trim())
                 meta.vendor = vendorName
             }
         }
@@ -521,7 +523,7 @@ class JavaGuard extends EventEmitter {
                 resolve({valid: false})
             } else if(fs.existsSync(binaryExecPath)){
                 // Workaround (javaw.exe no longer outputs this information.)
-                console.log(typeof binaryExecPath)
+                this.logger.debug(typeof binaryExecPath)
                 if(binaryExecPath.indexOf('javaw.exe') > -1) {
                     binaryExecPath.replace('javaw.exe', 'java.exe')
                 }
@@ -958,6 +960,8 @@ class JavaGuard extends EventEmitter {
  */
 class AssetGuard extends EventEmitter {
 
+    static logger = LoggerUtil.getLogger('AssetGuard')
+
     /**
      * Create an instance of AssetGuard.
      * On creation the object's properties are never-null default
@@ -1116,7 +1120,8 @@ class AssetGuard extends EventEmitter {
      * @returns {Promise.<void>} An empty promise to indicate the extraction has completed.
      */
     static _extractPackXZ(filePaths, javaExecutable){
-        console.log('[PackXZExtract] Starting')
+        const extractLogger = LoggerUtil.getLogger('PackXZExtract')
+        extractLogger.info('Starting')
         return new Promise((resolve, reject) => {
 
             let libPath
@@ -1133,13 +1138,13 @@ class AssetGuard extends EventEmitter {
             const filePath = filePaths.join(',')
             const child = child_process.spawn(javaExecutable, ['-jar', libPath, '-packxz', filePath])
             child.stdout.on('data', (data) => {
-                console.log('[PackXZExtract]', data.toString('utf8'))
+                extractLogger.info(data.toString('utf8'))
             })
             child.stderr.on('data', (data) => {
-                console.log('[PackXZExtract]', data.toString('utf8'))
+                extractLogger.info(data.toString('utf8'))
             })
             child.on('close', (code, signal) => {
-                console.log('[PackXZExtract]', 'Exited with code', code)
+                extractLogger.info('Exited with code', code)
                 resolve()
             })
         })
@@ -1205,7 +1210,7 @@ class AssetGuard extends EventEmitter {
             if(!fs.existsSync(versionFile) || force){
                 const url = await self._getVersionDataUrl(version)
                 //This download will never be tracked as it's essential and trivial.
-                console.log('Preparing download of ' + version + ' assets.')
+                AssetGuard.logger.info('Preparing download of ' + version + ' assets.')
                 fs.ensureDirSync(versionPath)
                 const stream = request(url).pipe(fs.createWriteStream(versionFile))
                 stream.on('finish', () => {
@@ -1287,7 +1292,7 @@ class AssetGuard extends EventEmitter {
 
             let data = null
             if(!fs.existsSync(assetIndexLoc) || force){
-                console.log('Downloading ' + versionData.id + ' asset index.')
+                AssetGuard.logger.info('Downloading ' + versionData.id + ' asset index.')
                 fs.ensureDirSync(indexPath)
                 const stream = request(assetIndex.url).pipe(fs.createWriteStream(assetIndexLoc))
                 stream.on('finish', () => {
@@ -1576,9 +1581,9 @@ class AssetGuard extends EventEmitter {
                             // Tar.gz
                             let h = null
                             fs.createReadStream(a.to)
-                                .on('error', err => console.log(err))
+                                .on('error', err => AssetGuard.logger.error(err))
                                 .pipe(zlib.createGunzip())
-                                .on('error', err => console.log(err))
+                                .on('error', err => AssetGuard.logger.error(err))
                                 .pipe(tar.extract(dataDir, {
                                     map: (header) => {
                                         if(h == null){
@@ -1586,11 +1591,11 @@ class AssetGuard extends EventEmitter {
                                         }
                                     }
                                 }))
-                                .on('error', err => console.log(err))
+                                .on('error', err => AssetGuard.logger.error(err))
                                 .on('finish', () => {
                                     fs.unlink(a.to, err => {
                                         if(err){
-                                            console.log(err)
+                                            AssetGuard.logger.error(err)
                                         }
                                         if(h.indexOf('/') > -1){
                                             h = h.substring(0, h.indexOf('/'))
@@ -1623,14 +1628,14 @@ class AssetGuard extends EventEmitter {
             const entries = await zip.entries()
             pos = path.join(runtimeDir, Object.keys(entries)[0])
 
-            console.log('Extracting jdk..')
+            AssetGuard.logger.info('Extracting jdk..')
             await zip.extract(null, runtimeDir)
-            console.log('Cleaning up..')
+            AssetGuard.logger.info('Cleaning up..')
             await fs.remove(zipPath)
-            console.log('Jdk extraction complete.')
+            AssetGuard.logger.info('Jdk extraction complete.')
 
         } catch(err) {
-            console.log(err)
+            AssetGuard.logger.error(err)
         } finally {
             zip.close()
             self.emit('complete', 'java', JavaGuard.javaExecFromRoot(pos))
@@ -1696,7 +1701,7 @@ class AssetGuard extends EventEmitter {
         const dlQueue = dlTracker.dlqueue
 
         if(dlQueue.length > 0){
-            console.log('DLQueue', dlQueue)
+            AssetGuard.logger.info('DLQueue', dlQueue)
 
             async.eachLimit(dlQueue, limit, (asset, cb) => {
 
@@ -1713,7 +1718,7 @@ class AssetGuard extends EventEmitter {
                         const contentLength = parseInt(resp.headers['content-length'])
 
                         if(contentLength !== asset.size){
-                            console.log(`WARN: Got ${contentLength} bytes for ${asset.id}: Expected ${asset.size}`)
+                            AssetGuard.logger.warn(`WARN: Got ${contentLength} bytes for ${asset.id}: Expected ${asset.size}`)
                             doHashCheck = true
 
                             // Adjust download
@@ -1730,9 +1735,9 @@ class AssetGuard extends EventEmitter {
                             if(doHashCheck){
                                 const v = AssetGuard._validateLocal(asset.to, asset.type != null ? 'md5' : 'sha1', asset.hash)
                                 if(v){
-                                    console.log(`Hashes match for ${asset.id}, byte mismatch is an issue in the distro index.`)
+                                    AssetGuard.logger.warn(`Hashes match for ${asset.id}, byte mismatch is an issue in the distro index.`)
                                 } else {
-                                    console.error(`Hashes do not match, ${asset.id} may be corrupted.`)
+                                    AssetGuard.logger.error(`Hashes do not match, ${asset.id} may be corrupted.`)
                                 }
                             }
 
@@ -1744,7 +1749,7 @@ class AssetGuard extends EventEmitter {
                     } else {
 
                         req.abort()
-                        console.log(`Failed to download ${asset.id}(${typeof asset.from === 'object' ? asset.from.url : asset.from}). Response code ${resp.statusCode}`)
+                        AssetGuard.logger.error(`Failed to download ${asset.id}(${typeof asset.from === 'object' ? asset.from.url : asset.from}). Response code ${resp.statusCode}`)
                         self.progress += asset.size*1
                         self.emit('progress', 'download', self.progress, self.totaldlsize)
                         cb()
@@ -1765,9 +1770,9 @@ class AssetGuard extends EventEmitter {
             }, (err) => {
 
                 if(err){
-                    console.log('An item in ' + identifier + ' failed to process')
+                    AssetGuard.logger.warn('An item in ' + identifier + ' failed to process')
                 } else {
-                    console.log('All ' + identifier + ' have been processed successfully')
+                    AssetGuard.logger.info('All ' + identifier + ' have been processed successfully')
                 }
 
                 //self.totaldlsize -= dlTracker.dlsize

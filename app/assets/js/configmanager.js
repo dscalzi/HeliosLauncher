@@ -1,8 +1,9 @@
 const fs   = require('fs-extra')
+const { LoggerUtil } = require('helios-core')
 const os   = require('os')
 const path = require('path')
 
-const logger = require('./loggerutil')('%c[ConfigManager]', 'color: #a02d2a; font-weight: bold')
+const logger = LoggerUtil.getLogger('ConfigManager')
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME)
 // TODO change
@@ -155,8 +156,8 @@ exports.load = function(){
             doValidate = true
         } catch (err){
             logger.error(err)
-            logger.log('Configuration file contains malformed JSON or is corrupt.')
-            logger.log('Generating a new configuration file.')
+            logger.info('Configuration file contains malformed JSON or is corrupt.')
+            logger.info('Generating a new configuration file.')
             fs.ensureDirSync(path.join(configPath, '..'))
             config = DEFAULT_CONFIG
             exports.save()
@@ -166,7 +167,7 @@ exports.load = function(){
             exports.save()
         }
     }
-    logger.log('Successfully Loaded')
+    logger.info('Successfully Loaded')
 }
 
 /**

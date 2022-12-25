@@ -60,7 +60,7 @@ function getCurrentView(){
 function showMainUI(data){
 
     if(!isDev){
-        loggerAutoUpdater.log('Initializing..')
+        loggerAutoUpdater.info('Initializing..')
         ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
     }
 

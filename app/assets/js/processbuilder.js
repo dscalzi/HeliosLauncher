@@ -2,6 +2,7 @@ const AdmZip                = require('adm-zip')
 const child_process         = require('child_process')
 const crypto                = require('crypto')
 const fs                    = require('fs-extra')
+const { LoggerUtil }        = require('helios-core')
 const os                    = require('os')
 const path                  = require('path')
 const { URL }               = require('url')
@@ -9,9 +10,8 @@ const { URL }               = require('url')
 const { Util, Library }  = require('./assetguard')
 const ConfigManager            = require('./configmanager')
 const DistroManager            = require('./distromanager')
-const LoggerUtil               = require('./loggerutil')
 
-const logger = LoggerUtil('%c[ProcessBuilder]', 'color: #003996; font-weight: bold')
+const logger = LoggerUtil.getLogger('ProcessBuilder')
 
 class ProcessBuilder {
 
@@ -40,7 +40,7 @@ class ProcessBuilder {
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         this.setupLiteLoader()
-        logger.log('Using liteloader:', this.usingLiteLoader)
+        logger.info('Using liteloader:', this.usingLiteLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
         
         // Mod list below 1.13
@@ -59,7 +59,7 @@ class ProcessBuilder {
             args = args.concat(this.constructModList(modObj.fMods))
         }
 
-        logger.log('Launch Arguments:', args)
+        logger.info('Launch Arguments:', args)
 
         const child = child_process.spawn(ConfigManager.getJavaExecutable(this.server.getID()), args, {
             cwd: this.gameDir,
@@ -73,22 +73,20 @@ class ProcessBuilder {
         child.stdout.setEncoding('utf8')
         child.stderr.setEncoding('utf8')
 
-        const loggerMCstdout = LoggerUtil('%c[Minecraft]', 'color: #36b030; font-weight: bold')
-        const loggerMCstderr = LoggerUtil('%c[Minecraft]', 'color: #b03030; font-weight: bold')
-
         child.stdout.on('data', (data) => {
-            loggerMCstdout.log(data)
+            data.trim().split('\n').forEach(x => console.log(`\x1b[32m[Minecraft]\x1b[0m ${x}`))
+            
         })
         child.stderr.on('data', (data) => {
-            loggerMCstderr.log(data)
+            data.trim().split('\n').forEach(x => console.log(`\x1b[31m[Minecraft]\x1b[0m ${x}`))
         })
         child.on('close', (code, signal) => {
-            logger.log('Exited with code', code)
+            logger.info('Exited with code', code)
             fs.remove(tempNativePath, (err) => {
                 if(err){
                     logger.warn('Error while deleting temp dir', err)
                 } else {
-                    logger.log('Temp dir deleted successfully.')
+                    logger.info('Temp dir deleted successfully.')
                 }
             })
         })
