@@ -1,13 +1,13 @@
 {
-  "name": "ConceptionRPLauncher",
-  "version": "1.0.3",
-  "productName": "Conception Minecraft Launcher",
+  "name": "Oena Launcher",
+  "version": "1.0.0",
+  "productName": "Oena Minecraft Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "alextorreg (https://github.com/alextorreg/)",
   "license": "alextorreg",
-  "homepage": "https://github.com/alextorreg/ConceptionLauncher",
+  "homepage": "https://github.com/alextorreg/OenaLauncher",
   "bugs": {
-    "url": "https://github.com/alextorreg/ConceptionLauncher/issues"
+    "url": "https://github.com/alextorreg/OenaLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -48,6 +48,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alextorreg/ConceptionLauncherLauncher.git"
+    "url": "git+https://github.com/alextorreg/OenaLauncher.git"
   }
 }

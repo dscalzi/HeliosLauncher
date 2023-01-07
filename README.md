@@ -6,4 +6,4 @@
 
 ![Screenshot 1](https://i.imgur.com/y3DxtFW.png)
 
-https://github.com/alextorreg/ConceptionLauncher/releases/tag/minecraft
+https://github.com/alextorreg/OenaLauncher/releases/tag/minecraft

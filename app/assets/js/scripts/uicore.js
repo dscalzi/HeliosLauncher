@@ -50,7 +50,7 @@ if(!isDev){
                 loggerAutoUpdaterSuccess.log('New update available', info.version)
                 
                 if(process.platform === 'darwin'){
-                    info.darwindownload = `https://github.com/alextorreg/ConceptionLauncher/releases/download/v${info.version}/Conception.Launcher-setup-${info.version}${process.arch === 'arm64' ? '-arm64' : '-x64'}.exe`
+                    info.darwindownload = `https://github.com/alextorreg/ConceptionLauncher/tree/Oena-Launcher/releases/download/v${info.version}/Conception.Launcher-setup-${info.version}${process.arch === 'arm64' ? '-arm64' : '-x64'}.exe`
                     showUpdateUI(info)
                 }
                 
