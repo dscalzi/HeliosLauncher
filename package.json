@@ -30,7 +30,7 @@
     "ejs": "^3.1.8",
     "ejs-electron": "^2.1.1",
     "electron-updater": "^5.3.0",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.1.0",
     "github-syntax-dark": "^0.5.0",
     "got": "^11.8.5",
     "helios-core": "~0.1.2",
@@ -43,7 +43,7 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^21.3.1",
+    "electron": "^22.0.0",
     "electron-builder": "^23.6.0",
     "eslint": "^8.30.0"
   },
