@@ -20,7 +20,7 @@
     "lint": "eslint --config .eslintrc.json ."
   },
   "engines": {
-    "node": "16.x.x"
+    "node": "18.x.x"
   },
   "dependencies": {
     "@electron/remote": "^2.0.8",
@@ -43,9 +43,9 @@
     "winreg": "^1.2.4"
   },
   "devDependencies": {
-    "electron": "^22.0.0",
+    "electron": "^23.0.0",
     "electron-builder": "^23.6.0",
-    "eslint": "^8.30.0"
+    "eslint": "^8.34.0"
   },
   "repository": {
     "type": "git",
