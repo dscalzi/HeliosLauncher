@@ -5,13 +5,24 @@
 const cp                      = require('child_process')
 const crypto                  = require('crypto')
 const { URL }                 = require('url')
-const { MojangRestAPI, getServerStatus }     = require('helios-core/mojang')
+const {
+    MojangRestAPI,
+    getServerStatus
+}                             = require('helios-core/mojang')
+const {
+    RestResponseStatus,
+    isDisplayableError,
+    mcVersionAtLeast
+}                             = require('helios-core/common')
+const {
+    FullRepair,
+    DistributionIndexProcessor,
+    MojangIndexProcessor
+}                             = require('helios-core/dl')
 
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
-const { RestResponseStatus, isDisplayableError, mcVersionAtLeast } = require('helios-core/common')
-const { stdout } = require('process')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -53,26 +64,22 @@ function setLaunchDetails(details){
 /**
  * Set the value of the loading progress bar and display that value.
  * 
- * @param {number} value The progress value.
- * @param {number} max The total size.
- * @param {number|string} percent Optional. The percentage to display on the progress label.
+ * @param {number} percent Percentage (0-100)
  */
-function setLaunchPercentage(value, max, percent = ((value/max)*100)){
-    launch_progress.setAttribute('max', max)
-    launch_progress.setAttribute('value', value)
+function setLaunchPercentage(percent){
+    launch_progress.setAttribute('max', 100)
+    launch_progress.setAttribute('value', percent)
     launch_progress_label.innerHTML = percent + '%'
 }
 
 /**
  * Set the value of the OS progress bar and display that on the UI.
  * 
- * @param {number} value The progress value.
- * @param {number} max The total download size.
- * @param {number|string} percent Optional. The percentage to display on the progress label.
+ * @param {number} percent Percentage (0-100)
  */
-function setDownloadPercentage(value, max, percent = ((value/max)*100)){
-    remote.getCurrentWindow().setProgressBar(value/max)
-    setLaunchPercentage(value, max, percent)
+function setDownloadPercentage(percent){
+    remote.getCurrentWindow().setProgressBar(percent/100)
+    setLaunchPercentage(percent)
 }
 
 /**
@@ -98,10 +105,10 @@ document.getElementById('launch_button').addEventListener('click', async (e) => 
         setLaunchPercentage(0, 100)
 
         const jg = new JavaGuard(mcVersion)
-        jg._validateJavaBinary(jExe).then((v) => {
+        jg._validateJavaBinary(jExe).then(async v => {
             loggerLanding.info('Java version meta', v)
             if(v.valid){
-                dlAsync()
+                await dlAsync()
             } else {
                 asyncSystemScan(mcVersion)
             }
@@ -369,7 +376,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 await populateJavaExecDetails(settingsJavaExecVal.value)
 
                 if(launchAfter){
-                    dlAsync()
+                    await dlAsync()
                 }
                 sysAEx.disconnect()
             }
@@ -445,7 +452,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                     setLaunchDetails('Java Installed!')
 
                     if(launchAfter){
-                        dlAsync()
+                        await dlAsync()
                     }
 
                     sysAEx.disconnect()
@@ -473,17 +480,27 @@ const GAME_JOINED_REGEX = /\[.+\]: Sound engine started/
 const GAME_LAUNCH_REGEX = /^\[.+\]: (?:MinecraftForge .+ Initialized|ModLauncher .+ starting: .+)$/
 const MIN_LINGER = 5000
 
-let aEx
-let serv
-let versionData
-let forgeData
-
-let progressListener
-
-function dlAsync(login = true){
+async function dlAsync(login = true) {
 
     // Login parameter is temporary for debug purposes. Allows testing the validation/downloads without
     // launching the game.
+
+    const loggerLaunchSuite = LoggerUtil.getLogger('LaunchSuite')
+
+    setLaunchDetails('Loading server information..')
+
+    let distro
+
+    try {
+        distro = await DistroAPI.refreshDistributionOrFallback()
+        onDistroRefresh(distro)
+    } catch(err) {
+        loggerLaunchSuite.error('Unable to refresh distribution index.', err)
+        showLaunchFailure('Fatal Error', 'Could not load a copy of the distribution index. See the console (CTRL + Shift + i) for more details.')
+        return
+    }
+
+    const serv = distro.getServerById(ConfigManager.getSelectedServer())
 
     if(login) {
         if(ConfigManager.getSelectedAccount() == null){
@@ -496,262 +513,147 @@ function dlAsync(login = true){
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
-    const loggerLaunchSuite = LoggerUtil.getLogger('LaunchSuite')
-
-    const forkEnv = JSON.parse(JSON.stringify(process.env))
-    forkEnv.CONFIG_DIRECT_PATH = ConfigManager.getLauncherDirectory()
-
-    // Start AssetExec to run validations and downloads in a forked process.
-    aEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
-        'AssetGuard',
+    const fullRepairModule = new FullRepair(
         ConfigManager.getCommonDirectory(),
-        ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
-    ], {
-        env: forkEnv,
-        stdio: 'pipe'
-    })
-    // Stdout
-    aEx.stdio[1].setEncoding('utf8')
-    aEx.stdio[1].on('data', (data) => {
-        console.log(`\x1b[32m[AEx]\x1b[0m ${data}`)
-    })
-    // Stderr
-    aEx.stdio[2].setEncoding('utf8')
-    aEx.stdio[2].on('data', (data) => {
-        console.log(`\x1b[31m[AEx]\x1b[0m ${data}`)
-    })
-    aEx.on('error', (err) => {
+        ConfigManager.getLauncherDirectory(),
+        ConfigManager.getSelectedServer(),
+        DistroAPI.isDevMode()
+    )
+
+    fullRepairModule.spawnReceiver()
+
+    fullRepairModule.childProcess.on('error', (err) => {
         loggerLaunchSuite.error('Error during launch', err)
         showLaunchFailure('Error During Launch', err.message || 'See console (CTRL + Shift + i) for more details.')
     })
-    aEx.on('close', (code, signal) => {
+    fullRepairModule.childProcess.on('close', (code, _signal) => {
         if(code !== 0){
             loggerLaunchSuite.error(`AssetExec exited with code ${code}, assuming error.`)
             showLaunchFailure('Error During Launch', 'See console (CTRL + Shift + i) for more details.')
         }
     })
 
-    // Establish communications between the AssetExec and current process.
-    aEx.on('message', async (m) => {
+    loggerLaunchSuite.info('Validating files.')
+    setLaunchDetails('Validating file integrity..')
+    const invalidFileCount = await fullRepairModule.verifyFiles(percent => {
+        setLaunchPercentage(percent)
+    })
+    setLaunchPercentage(100)
 
-        if(m.context === 'validate'){
-            switch(m.data){
-                case 'distribution':
-                    setLaunchPercentage(20, 100)
-                    loggerLaunchSuite.info('Validated distibution index.')
-                    setLaunchDetails('Loading version information..')
-                    break
-                case 'version':
-                    setLaunchPercentage(40, 100)
-                    loggerLaunchSuite.info('Version data loaded.')
-                    setLaunchDetails('Validating asset integrity..')
-                    break
-                case 'assets':
-                    setLaunchPercentage(60, 100)
-                    loggerLaunchSuite.info('Asset Validation Complete')
-                    setLaunchDetails('Validating library integrity..')
-                    break
-                case 'libraries':
-                    setLaunchPercentage(80, 100)
-                    loggerLaunchSuite.info('Library validation complete.')
-                    setLaunchDetails('Validating miscellaneous file integrity..')
-                    break
-                case 'files':
-                    setLaunchPercentage(100, 100)
-                    loggerLaunchSuite.info('File validation complete.')
-                    setLaunchDetails('Downloading files..')
-                    break
+    if(invalidFileCount > 0) {
+        loggerLaunchSuite.info('Downloading files.')
+        setLaunchDetails('Downloading files..')
+        await fullRepairModule.download(percent => {
+            setDownloadPercentage(percent)
+        })
+        setDownloadPercentage(100)
+    } else {
+        loggerLaunchSuite.info('No invalid files, skipping download.')
+    }
+
+    // Remove download bar.
+    remote.getCurrentWindow().setProgressBar(-1)
+
+    fullRepairModule.destroyReceiver()
+
+    setLaunchDetails('Preparing to launch..')
+
+    const mojangIndexProcessor = new MojangIndexProcessor(
+        ConfigManager.getCommonDirectory(),
+        serv.rawServer.minecraftVersion)
+    const distributionIndexProcessor = new DistributionIndexProcessor(
+        ConfigManager.getCommonDirectory(),
+        distro,
+        serv.rawServer.id
+    )
+
+    // TODO need to load these.
+    const forgeData = await distributionIndexProcessor.loadForgeVersionJson(serv)
+    const versionData = await mojangIndexProcessor.getVersionJson()
+
+    if(login) {
+        const authUser = ConfigManager.getSelectedAccount()
+        loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
+        let pb = new ProcessBuilder(serv, versionData, forgeData, authUser, remote.app.getVersion())
+        setLaunchDetails('Launching game..')
+
+        // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
+        const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
+
+        const onLoadComplete = () => {
+            toggleLaunchArea(false)
+            if(hasRPC){
+                DiscordWrapper.updateDetails('Loading game..')
             }
-        } else if(m.context === 'progress'){
-            switch(m.data){
-                case 'assets': {
-                    const perc = (m.value/m.total)*20
-                    setLaunchPercentage(40+perc, 100, parseInt(40+perc))
-                    break
-                }
-                case 'download':
-                    setDownloadPercentage(m.value, m.total, m.percent)
-                    break
-                case 'extract': {
-                    // Show installing progress bar.
-                    remote.getCurrentWindow().setProgressBar(2)
+            proc.stdout.on('data', gameStateChange)
+            proc.stdout.removeListener('data', tempListener)
+            proc.stderr.removeListener('data', gameErrorListener)
+        }
+        const start = Date.now()
 
-                    // Download done, extracting.
-                    const eLStr = 'Extracting libraries'
-                    let dotStr = ''
-                    setLaunchDetails(eLStr)
-                    progressListener = setInterval(() => {
-                        if(dotStr.length >= 3){
-                            dotStr = ''
-                        } else {
-                            dotStr += '.'
-                        }
-                        setLaunchDetails(eLStr + dotStr)
-                    }, 750)
-                    break
-                }
-            }
-        } else if(m.context === 'complete'){
-            switch(m.data){
-                case 'download':
-                    // Download and extraction complete, remove the loading from the OS progress bar.
-                    remote.getCurrentWindow().setProgressBar(-1)
-                    if(progressListener != null){
-                        clearInterval(progressListener)
-                        progressListener = null
-                    }
-
-                    setLaunchDetails('Preparing to launch..')
-                    break
-            }
-        } else if(m.context === 'error'){
-            switch(m.data){
-                case 'download':
-                    loggerLaunchSuite.error('Error while downloading:', m.error)
-                    
-                    if(m.error.code === 'ENOENT'){
-                        showLaunchFailure(
-                            'Download Error',
-                            'Could not connect to the file server. Ensure that you are connected to the internet and try again.'
-                        )
-                    } else {
-                        showLaunchFailure(
-                            'Download Error',
-                            'Check the console (CTRL + Shift + i) for more details. Please try again.'
-                        )
-                    }
-
-                    remote.getCurrentWindow().setProgressBar(-1)
-
-                    // Disconnect from AssetExec
-                    aEx.disconnect()
-                    break
-            }
-        } else if(m.context === 'validateEverything'){
-
-            let allGood = true
-
-            // If these properties are not defined it's likely an error.
-            if(m.result.forgeData == null || m.result.versionData == null){
-                loggerLaunchSuite.error('Error during validation:', m.result)
-
-                loggerLaunchSuite.error('Error during launch', m.result.error)
-                showLaunchFailure('Error During Launch', 'Please check the console (CTRL + Shift + i) for more details.')
-
-                allGood = false
-            }
-
-            forgeData = m.result.forgeData
-            versionData = m.result.versionData
-
-            if(login && allGood) {
-                const authUser = ConfigManager.getSelectedAccount()
-                loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
-                let pb = new ProcessBuilder(serv, versionData, forgeData, authUser, remote.app.getVersion())
-                setLaunchDetails('Launching game..')
-
-                // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
-                const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
-
-                const onLoadComplete = () => {
-                    toggleLaunchArea(false)
-                    if(hasRPC){
-                        DiscordWrapper.updateDetails('Loading game..')
-                    }
-                    proc.stdout.on('data', gameStateChange)
-                    proc.stdout.removeListener('data', tempListener)
-                    proc.stderr.removeListener('data', gameErrorListener)
-                }
-                const start = Date.now()
-
-                // Attach a temporary listener to the client output.
-                // Will wait for a certain bit of text meaning that
-                // the client application has started, and we can hide
-                // the progress bar stuff.
-                const tempListener = function(data){
-                    if(GAME_LAUNCH_REGEX.test(data.trim())){
-                        const diff = Date.now()-start
-                        if(diff < MIN_LINGER) {
-                            setTimeout(onLoadComplete, MIN_LINGER-diff)
-                        } else {
-                            onLoadComplete()
-                        }
-                    }
-                }
-
-                // Listener for Discord RPC.
-                const gameStateChange = function(data){
-                    data = data.trim()
-                    if(SERVER_JOINED_REGEX.test(data)){
-                        DiscordWrapper.updateDetails('Exploring the Realm!')
-                    } else if(GAME_JOINED_REGEX.test(data)){
-                        DiscordWrapper.updateDetails('Sailing to Westeros!')
-                    }
-                }
-
-                const gameErrorListener = function(data){
-                    data = data.trim()
-                    if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
-                        loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
-                        showLaunchFailure('Error During Launch', 'The main file, LaunchWrapper, failed to download properly. As a result, the game cannot launch.<br><br>To fix this issue, temporarily turn off your antivirus software and launch the game again.<br><br>If you have time, please <a href="https://github.com/dscalzi/HeliosLauncher/issues">submit an issue</a> and let us know what antivirus software you use. We\'ll contact them and try to straighten things out.')
-                    }
-                }
-
-                try {
-                    // Build Minecraft process.
-                    proc = pb.build()
-
-                    // Bind listeners to stdout.
-                    proc.stdout.on('data', tempListener)
-                    proc.stderr.on('data', gameErrorListener)
-
-                    setLaunchDetails('Done. Enjoy the server!')
-
-                    // Init Discord Hook
-                    const distro = await DistroAPI.getDistribution()
-                    if(distro.rawDistribution.discord != null && serv.rawServerdiscord != null){
-                        DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.rawServer.discord)
-                        hasRPC = true
-                        proc.on('close', (code, signal) => {
-                            loggerLaunchSuite.info('Shutting down Discord Rich Presence..')
-                            DiscordWrapper.shutdownRPC()
-                            hasRPC = false
-                            proc = null
-                        })
-                    }
-
-                } catch(err) {
-
-                    loggerLaunchSuite.error('Error during launch', err)
-                    showLaunchFailure('Error During Launch', 'Please check the console (CTRL + Shift + i) for more details.')
-
+        // Attach a temporary listener to the client output.
+        // Will wait for a certain bit of text meaning that
+        // the client application has started, and we can hide
+        // the progress bar stuff.
+        const tempListener = function(data){
+            if(GAME_LAUNCH_REGEX.test(data.trim())){
+                const diff = Date.now()-start
+                if(diff < MIN_LINGER) {
+                    setTimeout(onLoadComplete, MIN_LINGER-diff)
+                } else {
+                    onLoadComplete()
                 }
             }
+        }
 
-            // Disconnect from AssetExec
-            aEx.disconnect()
+        // Listener for Discord RPC.
+        const gameStateChange = function(data){
+            data = data.trim()
+            if(SERVER_JOINED_REGEX.test(data)){
+                DiscordWrapper.updateDetails('Exploring the Realm!')
+            } else if(GAME_JOINED_REGEX.test(data)){
+                DiscordWrapper.updateDetails('Sailing to Westeros!')
+            }
+        }
+
+        const gameErrorListener = function(data){
+            data = data.trim()
+            if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
+                loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
+                showLaunchFailure('Error During Launch', 'The main file, LaunchWrapper, failed to download properly. As a result, the game cannot launch.<br><br>To fix this issue, temporarily turn off your antivirus software and launch the game again.<br><br>If you have time, please <a href="https://github.com/dscalzi/HeliosLauncher/issues">submit an issue</a> and let us know what antivirus software you use. We\'ll contact them and try to straighten things out.')
+            }
+        }
+
+        try {
+            // Build Minecraft process.
+            proc = pb.build()
+
+            // Bind listeners to stdout.
+            proc.stdout.on('data', tempListener)
+            proc.stderr.on('data', gameErrorListener)
+
+            setLaunchDetails('Done. Enjoy the server!')
+
+            // Init Discord Hook
+            if(distro.rawDistribution.discord != null && serv.rawServerdiscord != null){
+                DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.rawServer.discord)
+                hasRPC = true
+                proc.on('close', (code, signal) => {
+                    loggerLaunchSuite.info('Shutting down Discord Rich Presence..')
+                    DiscordWrapper.shutdownRPC()
+                    hasRPC = false
+                    proc = null
+                })
+            }
+
+        } catch(err) {
+
+            loggerLaunchSuite.error('Error during launch', err)
+            showLaunchFailure('Error During Launch', 'Please check the console (CTRL + Shift + i) for more details.')
 
         }
-    })
+    }
 
-    // Begin Validations
-
-    // Validate Forge files.
-    setLaunchDetails('Loading server information..')
-
-    DistroAPI.refreshDistributionOrFallback()
-        .then(data => {
-            onDistroRefresh(data)
-            serv = data.getServerById(ConfigManager.getSelectedServer())
-            aEx.send({task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroAPI.isDevMode()]})
-        })
-        .catch(err => {
-            loggerLaunchSuite.error('Unable to refresh distribution index.', err)
-            showLaunchFailure('Fatal Error', 'Could not load a copy of the distribution index. See the console (CTRL + Shift + i) for more details.')
-
-            // Disconnect from AssetExec
-            aEx.disconnect()
-        })
 }
 
 /**

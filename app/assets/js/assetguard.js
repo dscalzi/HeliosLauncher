@@ -1661,43 +1661,6 @@ class AssetGuard extends EventEmitter {
         }
     }
 
-    // _enqueueMojangJRE(dir){
-    //     return new Promise((resolve, reject) => {
-    //         // Mojang does not host the JRE for linux.
-    //         if(process.platform === 'linux'){
-    //             resolve(false)
-    //         }
-    //         AssetGuard.loadMojangLauncherData().then(data => {
-    //             if(data != null) {
-
-    //                 try {
-    //                     const mJRE = data[Library.mojangFriendlyOS()]['64'].jre
-    //                     const url = mJRE.url
-
-    //                     request.head(url, (err, resp, body) => {
-    //                         if(err){
-    //                             resolve(false)
-    //                         } else {
-    //                             const name = url.substring(url.lastIndexOf('/')+1)
-    //                             const fDir = path.join(dir, name)
-    //                             const jre = new Asset('jre' + mJRE.version, mJRE.sha1, resp.headers['content-length'], url, fDir)
-    //                             this.java = new DLTracker([jre], jre.size, a => {
-    //                                 fs.readFile(a.to, (err, data) => {
-    //                                     // Data buffer needs to be decompressed from lzma,
-    //                                     // not really possible using node.js
-    //                                 })
-    //                             })
-    //                         }
-    //                     })
-    //                 } catch (err){
-    //                     resolve(false)
-    //                 }
-
-    //             }
-    //         })
-    //     })
-    // }
-
 
     // #endregion
 
@@ -1911,7 +1874,6 @@ class AssetGuard extends EventEmitter {
 }
 
 module.exports = {
-    Util,
     AssetGuard,
     JavaGuard,
     Asset,

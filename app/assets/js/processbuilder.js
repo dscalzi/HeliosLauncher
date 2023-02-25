@@ -7,7 +7,6 @@ const { getMojangOS, isLibraryCompatible, mcVersionAtLeast }  = require('helios-
 const { Type }              = require('helios-distribution-types')
 const os                    = require('os')
 const path                  = require('path')
-const { URL }               = require('url')
 
 const ConfigManager            = require('./configmanager')
 
@@ -16,7 +15,7 @@ const logger = LoggerUtil.getLogger('ProcessBuilder')
 class ProcessBuilder {
 
     constructor(distroServer, versionData, forgeData, authUser, launcherVersion){
-        this.gameDir = path.join(ConfigManager.getInstanceDirectory(), distroServer.getID())
+        this.gameDir = path.join(ConfigManager.getInstanceDirectory(), distroServer.rawServer.id)
         this.commonDir = ConfigManager.getCommonDirectory()
         this.server = distroServer
         this.versionData = versionData
@@ -41,10 +40,10 @@ class ProcessBuilder {
         process.throwDeprecation = true
         this.setupLiteLoader()
         logger.info('Using liteloader:', this.usingLiteLoader)
-        const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
+        const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.rawServer.id).mods, this.server.modules)
         
         // Mod list below 1.13
-        if(!mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        if(!mcVersionAtLeast('1.13', this.server.rawServer.minecraftVersion)){
             this.constructJSONModList('forge', modObj.fMods, true)
             if(this.usingLiteLoader){
                 this.constructJSONModList('liteloader', modObj.lMods, true)
@@ -54,14 +53,14 @@ class ProcessBuilder {
         const uberModArr = modObj.fMods.concat(modObj.lMods)
         let args = this.constructJVMArguments(uberModArr, tempNativePath)
 
-        if(mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        if(mcVersionAtLeast('1.13', this.server.rawServer.minecraftVersion)){
             //args = args.concat(this.constructModArguments(modObj.fMods))
             args = args.concat(this.constructModList(modObj.fMods))
         }
 
         logger.info('Launch Arguments:', args)
 
-        const child = child_process.spawn(ConfigManager.getJavaExecutable(this.server.getID()), args, {
+        const child = child_process.spawn(ConfigManager.getJavaExecutable(this.server.rawServer.id), args, {
             cwd: this.gameDir,
             detached: ConfigManager.getLaunchDetached()
         })
@@ -137,15 +136,15 @@ class ProcessBuilder {
                 if(!ll.getRequired().value){
                     const modCfg = ConfigManager.getModConfiguration(this.server.rawServer.id).mods
                     if(ProcessBuilder.isModEnabled(modCfg[ll.getVersionlessMavenIdentifier()], ll.getRequired())){
-                        if(fs.existsSync(ll.localPath)){
+                        if(fs.existsSync(ll.getPath())){
                             this.usingLiteLoader = true
-                            this.llPath = ll.localPath
+                            this.llPath = ll.getPath()
                         }
                     }
                 } else {
-                    if(fs.existsSync(ll.localPath)){
+                    if(fs.existsSync(ll.getPath())){
                         this.usingLiteLoader = true
-                        this.llPath = ll.localPath
+                        this.llPath = ll.getPath()
                     }
                 }
             }
@@ -307,14 +306,11 @@ class ProcessBuilder {
     }
 
     _processAutoConnectArg(args){
-        if(ConfigManager.getAutoConnect() && this.server.isAutoConnect()){
-            const serverURL = new URL('my://' + this.server.getAddress())
+        if(ConfigManager.getAutoConnect() && this.server.rawServer.autoconnect){
             args.push('--server')
-            args.push(serverURL.hostname)
-            if(serverURL.port){
-                args.push('--port')
-                args.push(serverURL.port)
-            }
+            args.push(this.server.hostname)
+            args.push('--port')
+            args.push(this.server.port)
         }
     }
 
@@ -326,7 +322,7 @@ class ProcessBuilder {
      * @returns {Array.<string>} An array containing the full JVM arguments for this process.
      */
     constructJVMArguments(mods, tempNativePath){
-        if(mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        if(mcVersionAtLeast('1.13', this.server.rawServer.minecraftVersion)){
             return this._constructJVMArguments113(mods, tempNativePath)
         } else {
             return this._constructJVMArguments112(mods, tempNativePath)
@@ -354,9 +350,9 @@ class ProcessBuilder {
             args.push('-Xdock:name=HeliosLauncher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
-        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.getID()))
-        args.push('-Xms' + ConfigManager.getMinRAM(this.server.getID()))
-        args = args.concat(ConfigManager.getJVMOptions(this.server.getID()))
+        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
+        args.push('-Xms' + ConfigManager.getMinRAM(this.server.rawServer.id))
+        args = args.concat(ConfigManager.getJVMOptions(this.server.rawServer.id))
         args.push('-Djava.library.path=' + tempNativePath)
 
         // Main Java Class
@@ -405,9 +401,9 @@ class ProcessBuilder {
             args.push('-Xdock:name=HeliosLauncher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
-        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.getID()))
-        args.push('-Xms' + ConfigManager.getMinRAM(this.server.getID()))
-        args = args.concat(ConfigManager.getJVMOptions(this.server.getID()))
+        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
+        args.push('-Xms' + ConfigManager.getMinRAM(this.server.rawServer.id))
+        args = args.concat(ConfigManager.getJVMOptions(this.server.rawServer.id))
 
         // Main Java Class
         args.push(this.forgeData.mainClass)
@@ -471,7 +467,7 @@ class ProcessBuilder {
                             break
                         case 'version_name':
                             //val = versionData.id
-                            val = this.server.getID()
+                            val = this.server.rawServer.id
                             break
                         case 'game_directory':
                             val = this.gameDir
@@ -569,7 +565,7 @@ class ProcessBuilder {
                         break
                     case 'version_name':
                         //val = versionData.id
-                        val = this.server.getID()
+                        val = this.server.rawServer.id
                         break
                     case 'game_directory':
                         val = this.gameDir
@@ -668,7 +664,7 @@ class ProcessBuilder {
     classpathArg(mods, tempNativePath){
         let cpArgs = []
 
-        if(!mcVersionAtLeast('1.17', this.server.getMinecraftVersion())) {
+        if(!mcVersionAtLeast('1.17', this.server.rawServer.minecraftVersion)) {
             // Add the version.jar to the classpath.
             // Must not be added to the classpath for Forge 1.17+.
             const version = this.versionData.id
@@ -826,15 +822,15 @@ class ProcessBuilder {
      * @returns {{[id: string]: string}} An object containing the paths of each library this server requires.
      */
     _resolveServerLibraries(mods){
-        const mdls = this.server.getModules()
+        const mdls = this.server.modules
         let libs = {}
 
         // Locate Forge/Libraries
         for(let mdl of mdls){
-            const type = mdl.getType()
+            const type = mdl.rawModule.type
             if(type === Type.ForgeHosted || type === Type.Library){
-                libs[mdl.getVersionlessID()] = mdl.getArtifact().getPath()
-                if(mdl.hasSubModules()){
+                libs[mdl.getVersionlessMavenIdentifier()] = mdl.getPath()
+                if(mdl.subModules.length > 0){
                     const res = this._resolveModuleLibraries(mdl)
                     if(res.length > 0){
                         libs = {...libs, ...res}
@@ -863,20 +859,20 @@ class ProcessBuilder {
      * @returns {Array.<string>} An array containing the paths of each library this module requires.
      */
     _resolveModuleLibraries(mdl){
-        if(!mdl.hasSubModules()){
+        if(!mdl.subModules.length > 0){
             return []
         }
         let libs = []
-        for(let sm of mdl.getSubModules()){
-            if(sm.getType() === Type.Library){
+        for(let sm of mdl.subModules){
+            if(sm.rawModule.type === Type.Library){
 
-                if(sm.getClasspath()) {
-                    libs.push(sm.getArtifact().getPath())
+                if(sm.rawModule.classpath ?? true) {
+                    libs.push(sm.getPath())
                 }
             }
             // If this module has submodules, we need to resolve the libraries for those.
             // To avoid unnecessary recursive calls, base case is checked here.
-            if(mdl.hasSubModules()){
+            if(mdl.subModules.length > 0){
                 const res = this._resolveModuleLibraries(sm)
                 if(res.length > 0){
                     libs = libs.concat(res)
