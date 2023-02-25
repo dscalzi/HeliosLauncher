@@ -4,9 +4,11 @@ const os             = require('os')
 const path           = require('path')
 
 const ConfigManager  = require('./configmanager')
-const DistroManager  = require('./distromanager')
+const { DistroAPI }  = require('./distromanager')
 const LangLoader     = require('./langloader')
 const { LoggerUtil } = require('helios-core')
+// eslint-disable-next-line no-unused-vars
+const { HeliosDistribution } = require('helios-core/common')
 
 const logger = LoggerUtil.getLogger('Preloader')
 
@@ -18,13 +20,17 @@ ConfigManager.load()
 // Load Strings
 LangLoader.loadLanguage('en_US')
 
+/**
+ * 
+ * @param {HeliosDistribution} data 
+ */
 function onDistroLoad(data){
     if(data != null){
         
         // Resolve the selected server if its value has yet to be set.
-        if(ConfigManager.getSelectedServer() == null || data.getServer(ConfigManager.getSelectedServer()) == null){
+        if(ConfigManager.getSelectedServer() == null || data.getServerById(ConfigManager.getSelectedServer()) == null){
             logger.info('Determining default selected server..')
-            ConfigManager.setSelectedServer(data.getMainServer().getID())
+            ConfigManager.setSelectedServer(data.getMainServer().rawServer.id)
             ConfigManager.save()
         }
     }
@@ -32,34 +38,19 @@ function onDistroLoad(data){
 }
 
 // Ensure Distribution is downloaded and cached.
-DistroManager.pullRemote().then((data) => {
-    logger.info('Loaded distribution index.')
+DistroAPI.getDistribution()
+    .then(heliosDistro => {
+        logger.info('Loaded distribution index.')
 
-    onDistroLoad(data)
-
-}).catch((err) => {
-    logger.info('Failed to load distribution index.')
-    logger.error(err)
-
-    logger.info('Attempting to load an older version of the distribution index.')
-    // Try getting a local copy, better than nothing.
-    DistroManager.pullLocal().then((data) => {
-        logger.info('Successfully loaded an older version of the distribution index.')
-
-        onDistroLoad(data)
-
-
-    }).catch((err) => {
-
+        onDistroLoad(heliosDistro)
+    })
+    .catch(err => {
         logger.info('Failed to load an older version of the distribution index.')
         logger.info('Application cannot run.')
         logger.error(err)
 
         onDistroLoad(null)
-
     })
-
-})
 
 // Clean up temp dir incase previous launches ended unexpectedly. 
 fs.remove(path.join(os.tmpdir(), ConfigManager.getTempNativeFolder()), (err) => {

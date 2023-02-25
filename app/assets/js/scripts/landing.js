@@ -10,8 +10,7 @@ const { MojangRestAPI, getServerStatus }     = require('helios-core/mojang')
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
-const { Util } = require('./assets/js/assetguard')
-const { RestResponseStatus, isDisplayableError } = require('helios-core/common')
+const { RestResponseStatus, isDisplayableError, mcVersionAtLeast } = require('helios-core/common')
 const { stdout } = require('process')
 
 // Launch Elements
@@ -86,9 +85,9 @@ function setLaunchEnabled(val){
 }
 
 // Bind launch button
-document.getElementById('launch_button').addEventListener('click', function(e){
+document.getElementById('launch_button').addEventListener('click', async (e) => {
     loggerLanding.info('Launching game..')
-    const mcVersion = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
+    const mcVersion = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer()).rawServer.minecraftVersion
     const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
     if(jExe == null){
         asyncSystemScan(mcVersion)
@@ -111,14 +110,14 @@ document.getElementById('launch_button').addEventListener('click', function(e){
 })
 
 // Bind settings button
-document.getElementById('settingsMediaButton').onclick = (e) => {
-    prepareSettings()
+document.getElementById('settingsMediaButton').onclick = async e => {
+    await prepareSettings()
     switchView(getCurrentView(), VIEWS.settings)
 }
 
 // Bind avatar overlay button.
-document.getElementById('avatarOverlay').onclick = (e) => {
-    prepareSettings()
+document.getElementById('avatarOverlay').onclick = async e => {
+    await prepareSettings()
     switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
         settingsNavItemListener(document.getElementById('settingsNavAccount'), false)
     })
@@ -144,9 +143,9 @@ function updateSelectedServer(serv){
     if(getCurrentView() === VIEWS.settings){
         fullSettingsSave()
     }
-    ConfigManager.setSelectedServer(serv != null ? serv.getID() : null)
+    ConfigManager.setSelectedServer(serv != null ? serv.rawServer.id : null)
     ConfigManager.save()
-    server_selection_button.innerHTML = '\u2022 ' + (serv != null ? serv.getName() : 'No Server Selected')
+    server_selection_button.innerHTML = '\u2022 ' + (serv != null ? serv.rawServer.name : 'No Server Selected')
     if(getCurrentView() === VIEWS.settings){
         animateSettingsTabRefresh()
     }
@@ -154,9 +153,9 @@ function updateSelectedServer(serv){
 }
 // Real text is set in uibinder.js on distributionIndexDone.
 server_selection_button.innerHTML = '\u2022 Loading..'
-server_selection_button.onclick = (e) => {
+server_selection_button.onclick = async e => {
     e.target.blur()
-    toggleServerSelection(true)
+    await toggleServerSelection(true)
 }
 
 // Update Mojang Status Color
@@ -220,17 +219,16 @@ const refreshMojangStatuses = async function(){
     document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
 }
 
-const refreshServerStatus = async function(fade = false){
+const refreshServerStatus = async (fade = false) => {
     loggerLanding.info('Refreshing Server Status')
-    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+    const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
 
     let pLabel = 'SERVER'
     let pVal = 'OFFLINE'
 
     try {
-        const serverURL = new URL('my://' + serv.getAddress())
 
-        const servStat = await getServerStatus(47, serverURL.hostname, Number(serverURL.port))
+        const servStat = await getServerStatus(47, serv.hostname, serv.port)
         console.log(servStat)
         pLabel = 'PLAYERS'
         pVal = servStat.players.online + '/' + servStat.players.max
@@ -318,9 +316,9 @@ function asyncSystemScan(mcVersion, launchAfter = true){
         console.log(`\x1b[31m[SysAEx]\x1b[0m ${data}`)
     })
 
-    const javaVer = Util.mcVersionAtLeast('1.17', mcVersion) ? '17' : '8'
+    const javaVer = mcVersionAtLeast('1.17', mcVersion) ? '17' : '8'
     
-    sysAEx.on('message', (m) => {
+    sysAEx.on('message', async (m) => {
 
         if(m.context === 'validateJava'){
             if(m.result == null){
@@ -368,7 +366,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 // We need to make sure that the updated value is on the settings UI.
                 // Just incase the settings UI is already open.
                 settingsJavaExecVal.value = m.result
-                populateJavaExecDetails(settingsJavaExecVal.value)
+                await populateJavaExecDetails(settingsJavaExecVal.value)
 
                 if(launchAfter){
                     dlAsync()
@@ -534,7 +532,7 @@ function dlAsync(login = true){
     })
 
     // Establish communications between the AssetExec and current process.
-    aEx.on('message', (m) => {
+    aEx.on('message', async (m) => {
 
         if(m.context === 'validate'){
             switch(m.data){
@@ -710,9 +708,9 @@ function dlAsync(login = true){
                     setLaunchDetails('Done. Enjoy the server!')
 
                     // Init Discord Hook
-                    const distro = DistroManager.getDistribution()
-                    if(distro.discord != null && serv.discord != null){
-                        DiscordWrapper.initRPC(distro.discord, serv.discord)
+                    const distro = await DistroAPI.getDistribution()
+                    if(distro.rawDistribution.discord != null && serv.rawServerdiscord != null){
+                        DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.rawServer.discord)
                         hasRPC = true
                         proc.on('close', (code, signal) => {
                             loggerLaunchSuite.info('Shutting down Discord Rich Presence..')
@@ -741,29 +739,19 @@ function dlAsync(login = true){
     // Validate Forge files.
     setLaunchDetails('Loading server information..')
 
-    refreshDistributionIndex(true, (data) => {
-        onDistroRefresh(data)
-        serv = data.getServer(ConfigManager.getSelectedServer())
-        aEx.send({task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()]})
-    }, (err) => {
-        loggerLaunchSuite.info('Error while fetching a fresh copy of the distribution index.', err)
-        refreshDistributionIndex(false, (data) => {
+    DistroAPI.refreshDistributionOrFallback()
+        .then(data => {
             onDistroRefresh(data)
-            serv = data.getServer(ConfigManager.getSelectedServer())
-            aEx.send({task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()]})
-        }, (err) => {
-            loggerLaunchSuite.error('Unable to refresh distribution index.', err)
-            if(DistroManager.getDistribution() == null){
-                showLaunchFailure('Fatal Error', 'Could not load a copy of the distribution index. See the console (CTRL + Shift + i) for more details.')
-
-                // Disconnect from AssetExec
-                aEx.disconnect()
-            } else {
-                serv = data.getServer(ConfigManager.getSelectedServer())
-                aEx.send({task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()]})
-            }
+            serv = data.getServerById(ConfigManager.getSelectedServer())
+            aEx.send({task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroAPI.isDevMode()]})
         })
-    })
+        .catch(err => {
+            loggerLaunchSuite.error('Unable to refresh distribution index.', err)
+            showLaunchFailure('Fatal Error', 'Could not load a copy of the distribution index. See the console (CTRL + Shift + i) for more details.')
+
+            // Disconnect from AssetExec
+            aEx.disconnect()
+        })
 }
 
 /**
@@ -1089,10 +1077,13 @@ function displayArticle(articleObject, index){
  * Load news information from the RSS feed specified in the
  * distribution index.
  */
-function loadNews(){
-    return new Promise((resolve, reject) => {
-        const distroData = DistroManager.getDistribution()
-        const newsFeed = distroData.getRSS()
+async function loadNews(){
+
+    const distroData = await DistroAPI.getDistribution()
+
+    const promise = new Promise((resolve, reject) => {
+        
+        const newsFeed = distroData.rawDistribution.rss
         const newsHost = new URL(newsFeed).origin + '/'
         $.ajax({
             url: newsFeed,
@@ -1147,4 +1138,6 @@ function loadNews(){
             })
         })
     })
+
+    return await promise
 }

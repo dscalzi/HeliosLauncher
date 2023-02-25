@@ -3,13 +3,13 @@ const child_process         = require('child_process')
 const crypto                = require('crypto')
 const fs                    = require('fs-extra')
 const { LoggerUtil }        = require('helios-core')
+const { getMojangOS, isLibraryCompatible, mcVersionAtLeast }  = require('helios-core/common')
+const { Type }              = require('helios-distribution-types')
 const os                    = require('os')
 const path                  = require('path')
 const { URL }               = require('url')
 
-const { Util, Library }  = require('./assetguard')
 const ConfigManager            = require('./configmanager')
-const DistroManager            = require('./distromanager')
 
 const logger = LoggerUtil.getLogger('ProcessBuilder')
 
@@ -44,7 +44,7 @@ class ProcessBuilder {
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
         
         // Mod list below 1.13
-        if(!Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        if(!mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
             this.constructJSONModList('forge', modObj.fMods, true)
             if(this.usingLiteLoader){
                 this.constructJSONModList('liteloader', modObj.lMods, true)
@@ -54,7 +54,7 @@ class ProcessBuilder {
         const uberModArr = modObj.fMods.concat(modObj.lMods)
         let args = this.constructJVMArguments(uberModArr, tempNativePath)
 
-        if(Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        if(mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
             //args = args.concat(this.constructModArguments(modObj.fMods))
             args = args.concat(this.constructModList(modObj.fMods))
         }
@@ -122,7 +122,7 @@ class ProcessBuilder {
      * @returns {boolean} True if the mod is enabled, false otherwise.
      */
     static isModEnabled(modCfg, required = null){
-        return modCfg != null ? ((typeof modCfg === 'boolean' && modCfg) || (typeof modCfg === 'object' && (typeof modCfg.value !== 'undefined' ? modCfg.value : true))) : required != null ? required.isDefault() : true
+        return modCfg != null ? ((typeof modCfg === 'boolean' && modCfg) || (typeof modCfg === 'object' && (typeof modCfg.value !== 'undefined' ? modCfg.value : true))) : required != null ? required.def : true
     }
 
     /**
@@ -132,20 +132,20 @@ class ProcessBuilder {
      * mod. It must not be declared as a submodule.
      */
     setupLiteLoader(){
-        for(let ll of this.server.getModules()){
-            if(ll.getType() === DistroManager.Types.LiteLoader){
-                if(!ll.getRequired().isRequired()){
-                    const modCfg = ConfigManager.getModConfiguration(this.server.getID()).mods
-                    if(ProcessBuilder.isModEnabled(modCfg[ll.getVersionlessID()], ll.getRequired())){
-                        if(fs.existsSync(ll.getArtifact().getPath())){
+        for(let ll of this.server.modules){
+            if(ll.rawModule.type === Type.LiteLoader){
+                if(!ll.getRequired().value){
+                    const modCfg = ConfigManager.getModConfiguration(this.server.rawServer.id).mods
+                    if(ProcessBuilder.isModEnabled(modCfg[ll.getVersionlessMavenIdentifier()], ll.getRequired())){
+                        if(fs.existsSync(ll.localPath)){
                             this.usingLiteLoader = true
-                            this.llPath = ll.getArtifact().getPath()
+                            this.llPath = ll.localPath
                         }
                     }
                 } else {
-                    if(fs.existsSync(ll.getArtifact().getPath())){
+                    if(fs.existsSync(ll.localPath)){
                         this.usingLiteLoader = true
-                        this.llPath = ll.getArtifact().getPath()
+                        this.llPath = ll.localPath
                     }
                 }
             }
@@ -166,20 +166,20 @@ class ProcessBuilder {
         let lMods = []
 
         for(let mdl of mdls){
-            const type = mdl.getType()
-            if(type === DistroManager.Types.ForgeMod || type === DistroManager.Types.LiteMod || type === DistroManager.Types.LiteLoader){
-                const o = !mdl.getRequired().isRequired()
-                const e = ProcessBuilder.isModEnabled(modCfg[mdl.getVersionlessID()], mdl.getRequired())
+            const type = mdl.rawModule.type
+            if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader){
+                const o = !mdl.getRequired().value
+                const e = ProcessBuilder.isModEnabled(modCfg[mdl.getVersionlessMavenIdentifier()], mdl.getRequired())
                 if(!o || (o && e)){
-                    if(mdl.hasSubModules()){
-                        const v = this.resolveModConfiguration(modCfg[mdl.getVersionlessID()].mods, mdl.getSubModules())
+                    if(mdl.subModules.length > 0){
+                        const v = this.resolveModConfiguration(modCfg[mdl.getVersionlessMavenIdentifier()].mods, mdl.subModules)
                         fMods = fMods.concat(v.fMods)
                         lMods = lMods.concat(v.lMods)
-                        if(mdl.type === DistroManager.Types.LiteLoader){
+                        if(mdl.type === Type.LiteLoader){
                             continue
                         }
                     }
-                    if(mdl.type === DistroManager.Types.ForgeMod){
+                    if(mdl.type === Type.ForgeMod){
                         fMods.push(mdl)
                     } else {
                         lMods.push(mdl)
@@ -326,7 +326,7 @@ class ProcessBuilder {
      * @returns {Array.<string>} An array containing the full JVM arguments for this process.
      */
     constructJVMArguments(mods, tempNativePath){
-        if(Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        if(mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
             return this._constructJVMArguments113(mods, tempNativePath)
         } else {
             return this._constructJVMArguments112(mods, tempNativePath)
@@ -421,7 +421,7 @@ class ProcessBuilder {
                 let checksum = 0
                 for(let rule of args[i].rules){
                     if(rule.os != null){
-                        if(rule.os.name === Library.mojangFriendlyOS()
+                        if(rule.os.name === getMojangOS()
                             && (rule.os.version == null || new RegExp(rule.os.version).test(os.release))){
                             if(rule.action === 'allow'){
                                 checksum++
@@ -523,7 +523,7 @@ class ProcessBuilder {
         // Autoconnect
         let isAutoconnectBroken
         try {
-            isAutoconnectBroken = Util.isAutoconnectBroken(this.forgeData.id.split('-')[2])
+            isAutoconnectBroken = ProcessBuilder.isAutoconnectBroken(this.forgeData.id.split('-')[2])
         } catch(err) {
             logger.error(err)
             logger.error('Forge version format changed.. assuming autoconnect works.')
@@ -668,7 +668,7 @@ class ProcessBuilder {
     classpathArg(mods, tempNativePath){
         let cpArgs = []
 
-        if(!Util.mcVersionAtLeast('1.17', this.server.getMinecraftVersion())) {
+        if(!mcVersionAtLeast('1.17', this.server.getMinecraftVersion())) {
             // Add the version.jar to the classpath.
             // Must not be added to the classpath for Forge 1.17+.
             const version = this.versionData.id
@@ -714,13 +714,13 @@ class ProcessBuilder {
         fs.ensureDirSync(tempNativePath)
         for(let i=0; i<libArr.length; i++){
             const lib = libArr[i]
-            if(Library.validateRules(lib.rules, lib.natives)){
+            if(isLibraryCompatible(lib.rules, lib.natives)){
 
                 // Pre-1.19 has a natives object.
                 if(lib.natives != null) {
                     // Extract the native library.
                     const exclusionArr = lib.extract != null ? lib.extract.exclude : ['META-INF/']
-                    const artifact = lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()].replace('${arch}', process.arch.replace('x', ''))]
+                    const artifact = lib.downloads.classifiers[lib.natives[getMojangOS()].replace('${arch}', process.arch.replace('x', ''))]
 
                     // Location of native zip.
                     const to = path.join(this.libPath, artifact.path)
@@ -832,7 +832,7 @@ class ProcessBuilder {
         // Locate Forge/Libraries
         for(let mdl of mdls){
             const type = mdl.getType()
-            if(type === DistroManager.Types.ForgeHosted || type === DistroManager.Types.Library){
+            if(type === Type.ForgeHosted || type === Type.Library){
                 libs[mdl.getVersionlessID()] = mdl.getArtifact().getPath()
                 if(mdl.hasSubModules()){
                     const res = this._resolveModuleLibraries(mdl)
@@ -868,7 +868,7 @@ class ProcessBuilder {
         }
         let libs = []
         for(let sm of mdl.getSubModules()){
-            if(sm.getType() === DistroManager.Types.Library){
+            if(sm.getType() === Type.Library){
 
                 if(sm.getClasspath()) {
                     libs.push(sm.getArtifact().getPath())
@@ -884,6 +884,24 @@ class ProcessBuilder {
             }
         }
         return libs
+    }
+
+    static isAutoconnectBroken(forgeVersion) {
+
+        const minWorking = [31, 2, 15]
+        const verSplit = forgeVersion.split('.').map(v => Number(v))
+
+        if(verSplit[0] === 31) {
+            for(let i=0; i<minWorking.length; i++) {
+                if(verSplit[i] > minWorking[i]) {
+                    return false
+                } else if(verSplit[i] < minWorking[i]) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 
 }

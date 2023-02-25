@@ -117,8 +117,8 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
     }
 }
 
-function toggleServerSelection(toggleState){
-    prepareServerSelectionList()
+async function toggleServerSelection(toggleState){
+    await prepareServerSelectionList()
     toggleOverlay(toggleState, true, 'serverSelectContent')
 }
 
@@ -171,11 +171,11 @@ function setDismissHandler(handler){
 
 /* Server Select View */
 
-document.getElementById('serverSelectConfirm').addEventListener('click', () => {
+document.getElementById('serverSelectConfirm').addEventListener('click', async () => {
     const listings = document.getElementsByClassName('serverListing')
     for(let i=0; i<listings.length; i++){
         if(listings[i].hasAttribute('selected')){
-            const serv = DistroManager.getDistribution().getServer(listings[i].getAttribute('servid'))
+            const serv = (await DistroAPI.getDistribution()).getServerById(listings[i].getAttribute('servid'))
             updateSelectedServer(serv)
             refreshServerStatus(true)
             toggleOverlay(false)
@@ -184,13 +184,13 @@ document.getElementById('serverSelectConfirm').addEventListener('click', () => {
     }
     // None are selected? Not possible right? Meh, handle it.
     if(listings.length > 0){
-        const serv = DistroManager.getDistribution().getServer(listings[i].getAttribute('servid'))
+        const serv = (await DistroAPI.getDistribution()).getServerById(listings[i].getAttribute('servid'))
         updateSelectedServer(serv)
         toggleOverlay(false)
     }
 })
 
-document.getElementById('accountSelectConfirm').addEventListener('click', () => {
+document.getElementById('accountSelectConfirm').addEventListener('click', async () => {
     const listings = document.getElementsByClassName('accountListing')
     for(let i=0; i<listings.length; i++){
         if(listings[i].hasAttribute('selected')){
@@ -198,7 +198,7 @@ document.getElementById('accountSelectConfirm').addEventListener('click', () => 
             ConfigManager.save()
             updateSelectedAccount(authAcc)
             if(getCurrentView() === VIEWS.settings) {
-                prepareSettings()
+                await prepareSettings()
             }
             toggleOverlay(false)
             validateSelectedAccount()
@@ -211,7 +211,7 @@ document.getElementById('accountSelectConfirm').addEventListener('click', () => 
         ConfigManager.save()
         updateSelectedAccount(authAcc)
         if(getCurrentView() === VIEWS.settings) {
-            prepareSettings()
+            await prepareSettings()
         }
         toggleOverlay(false)
         validateSelectedAccount()
@@ -267,21 +267,21 @@ function setAccountListingHandlers(){
     })
 }
 
-function populateServerListings(){
-    const distro = DistroManager.getDistribution()
+async function populateServerListings(){
+    const distro = await DistroAPI.getDistribution()
     const giaSel = ConfigManager.getSelectedServer()
-    const servers = distro.getServers()
+    const servers = distro.servers
     let htmlString = ''
     for(const serv of servers){
-        htmlString += `<button class="serverListing" servid="${serv.getID()}" ${serv.getID() === giaSel ? 'selected' : ''}>
-            <img class="serverListingImg" src="${serv.getIcon()}"/>
+        htmlString += `<button class="serverListing" servid="${serv.rawServer.id}" ${serv.rawServer.id === giaSel ? 'selected' : ''}>
+            <img class="serverListingImg" src="${serv.rawServer.icon}"/>
             <div class="serverListingDetails">
-                <span class="serverListingName">${serv.getName()}</span>
-                <span class="serverListingDescription">${serv.getDescription()}</span>
+                <span class="serverListingName">${serv.rawServer.name}</span>
+                <span class="serverListingDescription">${serv.rawServer.description}</span>
                 <div class="serverListingInfo">
-                    <div class="serverListingVersion">${serv.getMinecraftVersion()}</div>
-                    <div class="serverListingRevision">${serv.getVersion()}</div>
-                    ${serv.isMainServer() ? `<div class="serverListingStarWrapper">
+                    <div class="serverListingVersion">${serv.rawServer.minecraftVersion}</div>
+                    <div class="serverListingRevision">${serv.rawServer.version}</div>
+                    ${serv.rawServer.mainServer ? `<div class="serverListingStarWrapper">
                         <svg id="Layer_1" viewBox="0 0 107.45 104.74" width="20px" height="20px">
                             <defs>
                                 <style>.cls-1{fill:#fff;}.cls-2{fill:none;stroke:#fff;stroke-miterlimit:10;}</style>
@@ -313,8 +313,8 @@ function populateAccountListings(){
 
 }
 
-function prepareServerSelectionList(){
-    populateServerListings()
+async function prepareServerSelectionList(){
+    await populateServerListings()
     setServerListingHandlers()
 }
 

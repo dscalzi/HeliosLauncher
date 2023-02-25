@@ -1,5 +1,6 @@
 const fs   = require('fs-extra')
 const { LoggerUtil } = require('helios-core')
+const { mcVersionAtLeast } = require('helios-core/common')
 const os   = require('os')
 const path = require('path')
 
@@ -62,27 +63,6 @@ function resolveMaxRAM(){
 
 function resolveMinRAM(){
     return resolveMaxRAM()
-}
-
-/**
- * TODO Copy pasted, should be in a utility file.
- * 
- * Returns true if the actual version is greater than
- * or equal to the desired version.
- * 
- * @param {string} desired The desired version.
- * @param {string} actual The actual version.
- */
-function mcVersionAtLeast(desired, actual){
-    const des = desired.split('.')
-    const act = actual.split('.')
-
-    for(let i=0; i<des.length; i++){
-        if(!(parseInt(act[i]) >= parseInt(des[i]))){
-            return false
-        }
-    }
-    return true
 }
 
 /**

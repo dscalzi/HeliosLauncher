@@ -6,6 +6,8 @@ const crypto        = require('crypto')
 const EventEmitter  = require('events')
 const fs            = require('fs-extra')
 const { LoggerUtil } = require('helios-core')
+const { DistributionAPI } = require('helios-core/common')
+const { Type }      = require('helios-distribution-types')
 const nodeDiskInfo  = require('node-disk-info')
 const StreamZip     = require('node-stream-zip')
 const path          = require('path')
@@ -15,7 +17,7 @@ const tar           = require('tar-fs')
 const zlib          = require('zlib')
 
 const ConfigManager = require('./configmanager')
-const DistroManager = require('./distromanager')
+const { REMOTE_DISTRO_URL } = require('./distromanager')
 const isDev         = require('./isdev')
 
 const isARM64 = process.arch === 'arm64'
@@ -1538,11 +1540,11 @@ class AssetGuard extends EventEmitter {
             const modules = server.getModules()
             for(let ob of modules){
                 const type = ob.getType()
-                if(type === DistroManager.Types.ForgeHosted || type === DistroManager.Types.Forge){
+                if(type === Type.ForgeHosted || type === Type.Forge){
                     if(Util.isForgeGradle3(server.getMinecraftVersion(), ob.getVersion())){
                         // Read Manifest
                         for(let sub of ob.getSubModules()){
-                            if(sub.getType() === DistroManager.Types.VersionManifest){
+                            if(sub.getType() === Type.VersionManifest){
                                 resolve(JSON.parse(fs.readFileSync(sub.getArtifact().getPath(), 'utf-8')))
                                 return
                             }
@@ -1861,9 +1863,15 @@ class AssetGuard extends EventEmitter {
             if(!ConfigManager.isLoaded()){
                 ConfigManager.load()
             }
-            DistroManager.setDevMode(dev)
-            const dI = await DistroManager.pullLocal()
+            const api = new DistributionAPI(
+                ConfigManager.getLauncherDirectory(),
+                REMOTE_DISTRO_URL,
+                dev
+            )
+
+            const dI = await api.getDistributionLocalLoadOnly()
     
+            // TODO replace all
             const server = dI.getServer(serverid)
     
             // Validate Everything
