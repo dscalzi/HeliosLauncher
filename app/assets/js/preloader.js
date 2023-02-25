@@ -17,6 +17,11 @@ logger.info('Loading..')
 // Load ConfigManager
 ConfigManager.load()
 
+// Yuck!
+// TODO Fix this
+DistroAPI['commonDir'] = ConfigManager.getCommonDirectory()
+DistroAPI['instanceDir'] = ConfigManager.getInstanceDirectory()
+
 // Load Strings
 LangLoader.loadLanguage('en_US')
 

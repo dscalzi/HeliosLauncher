@@ -6,6 +6,8 @@ exports.REMOTE_DISTRO_URL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/d
 
 const api = new DistributionAPI(
     ConfigManager.getLauncherDirectory(),
+    null, // Injected forcefully by the preloader.
+    null, // Injected forcefully by the preloader.
     exports.REMOTE_DISTRO_URL,
     false
 )
