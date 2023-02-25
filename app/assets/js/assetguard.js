@@ -1,5 +1,4 @@
 // Requirements
-const AdmZip        = require('adm-zip')
 const async         = require('async')
 const child_process = require('child_process')
 const crypto        = require('crypto')
@@ -938,26 +937,6 @@ class AssetGuard extends EventEmitter {
     }
 
     /**
-     * Used to parse a checksums file. This is specifically designed for
-     * the checksums.sha1 files found inside the forge scala dependencies.
-     * 
-     * @param {string} content The string content of the checksums file.
-     * @returns {Object} An object with keys being the file names, and values being the hashes.
-     */
-    static _parseChecksumsFile(content){
-        let finalContent = {}
-        let lines = content.split('\n')
-        for(let i=0; i<lines.length; i++){
-            let bits = lines[i].split(' ')
-            if(bits[1] == null) {
-                continue
-            }
-            finalContent[bits[1]] = bits[0]
-        }
-        return finalContent
-    }
-
-    /**
      * Validate that a file exists and matches a given hash value.
      * 
      * @param {string} filePath The path of the file to validate.
@@ -976,71 +955,6 @@ class AssetGuard extends EventEmitter {
             return calcdhash === hash.toLowerCase()
         }
         return false
-    }
-
-    /**
-     * Validates a file in the style used by forge's version index.
-     * 
-     * @param {string} filePath The path of the file to validate.
-     * @param {Array.<string>} checksums The checksums listed in the forge version index.
-     * @returns {boolean} True if the file exists and the hashes match, otherwise false.
-     */
-    static _validateForgeChecksum(filePath, checksums){
-        if(fs.existsSync(filePath)){
-            if(checksums == null || checksums.length === 0){
-                return true
-            }
-            let buf = fs.readFileSync(filePath)
-            let calcdhash = AssetGuard._calculateHash(buf, 'sha1')
-            let valid = checksums.includes(calcdhash)
-            if(!valid && filePath.endsWith('.jar')){
-                valid = AssetGuard._validateForgeJar(filePath, checksums)
-            }
-            return valid
-        }
-        return false
-    }
-
-    /**
-     * Validates a forge jar file dependency who declares a checksums.sha1 file.
-     * This can be an expensive task as it usually requires that we calculate thousands
-     * of hashes.
-     * 
-     * @param {Buffer} buf The buffer of the jar file.
-     * @param {Array.<string>} checksums The checksums listed in the forge version index.
-     * @returns {boolean} True if all hashes declared in the checksums.sha1 file match the actual hashes.
-     */
-    static _validateForgeJar(buf, checksums){
-        // Double pass method was the quickest I found. I tried a version where we store data
-        // to only require a single pass, plus some quick cleanup but that seemed to take slightly more time.
-
-        const hashes = {}
-        let expected = {}
-
-        const zip = new AdmZip(buf)
-        const zipEntries = zip.getEntries()
-
-        //First pass
-        for(let i=0; i<zipEntries.length; i++){
-            let entry = zipEntries[i]
-            if(entry.entryName === 'checksums.sha1'){
-                expected = AssetGuard._parseChecksumsFile(zip.readAsText(entry))
-            }
-            hashes[entry.entryName] = AssetGuard._calculateHash(entry.getData(), 'sha1')
-        }
-
-        if(!checksums.includes(hashes['checksums.sha1'])){
-            return false
-        }
-
-        //Check against expected
-        const expectedEntries = Object.keys(expected)
-        for(let i=0; i<expectedEntries.length; i++){
-            if(expected[expectedEntries[i]] !== hashes[expectedEntries[i]]){
-                return false
-            }
-        }
-        return true
     }
 
     // #endregion
