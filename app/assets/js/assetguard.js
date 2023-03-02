@@ -904,7 +904,7 @@ class JavaGuard extends EventEmitter {
                 // If ARM JRE is not installed, AMD64 JRE still will run through Rosseta2
                 return amd64Path
             }
-            return pathArr.find(({ isARM }) => !isARM).execPath
+            return amd64Path
         } else {
             return null
         }
