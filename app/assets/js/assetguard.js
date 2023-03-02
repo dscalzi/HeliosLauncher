@@ -858,7 +858,7 @@ class JavaGuard extends EventEmitter {
 
     /**
      * Attempts to find a valid x64 installation of Java on MacOS.
-     * If using Apple Silicon
+     * If using ARM arch tries to get ARM Java version first.
      * The system JVM directory is scanned for possible installations.
      * The JAVA_HOME enviroment variable and internet plugins directory
      * are also scanned and validated.
@@ -901,8 +901,7 @@ class JavaGuard extends EventEmitter {
             let armPath = pathArr.find(({ isARM }) => isARM).execPath
             if (process.arch.includes("arm")) { 
                 if (armPath) return armPath
-                // If ARM JRE is not installed, AMD64 JRE still will run through Rosseta2
-                return amd64Path
+                return null
             }
             return amd64Path
         } else {
