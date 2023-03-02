@@ -302,7 +302,7 @@ class JavaGuard extends EventEmitter {
                 break
         }
 
-        const url = `https://corretto.aws/downloads/latest/amazon-corretto-${major}-x64-${sanitizedOS}-jdk.${ext}`
+        const url = `https://corretto.aws/downloads/latest/amazon-corretto-${major}-${process.arch.includes("arm") ? "aarch64" : "x64"}-${sanitizedOS}-jdk.${ext}`
 
         return new Promise((resolve, reject) => {
             request.head({url, json: true}, (err, resp) => {
@@ -495,6 +495,8 @@ class JavaGuard extends EventEmitter {
                 let vendorName = props[i].split('=')[1].trim()
                 this.logger.debug(props[i].trim())
                 meta.vendor = vendorName
+            } else if (props[i].indexOf('os.arch') > -1) {
+                meta.isARM = props[i].split('=')[1].trim() === 'aarch64'
             }
         }
 
@@ -856,6 +858,7 @@ class JavaGuard extends EventEmitter {
 
     /**
      * Attempts to find a valid x64 installation of Java on MacOS.
+     * If using Apple Silicon
      * The system JVM directory is scanned for possible installations.
      * The JAVA_HOME enviroment variable and internet plugins directory
      * are also scanned and validated.
@@ -894,7 +897,14 @@ class JavaGuard extends EventEmitter {
         pathArr = JavaGuard._sortValidJavaArray(pathArr)
 
         if(pathArr.length > 0){
-            return pathArr[0].execPath
+            let amd64Path = pathArr.find(({ isARM }) => !isARM).execPath
+            let armPath = pathArr.find(({ isARM }) => isARM).execPath
+            if (process.arch.includes("arm")) { 
+                if (armPath) return armPath
+                // If ARM JRE is not installed, AMD64 JRE still will run through Rosseta2
+                return amd64Path
+            }
+            return pathArr.find(({ isARM }) => !isARM).execPath
         } else {
             return null
         }
