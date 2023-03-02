@@ -899,13 +899,13 @@ class JavaGuard extends EventEmitter {
         pathArr = JavaGuard._sortValidJavaArray(pathArr)
 
         if(pathArr.length > 0){
-            let amd64Path = pathArr.find(({ isARM }) => !isARM).execPath
-            let armPath = pathArr.find(({ isARM }) => isARM).execPath
+            let amd64 = pathArr.find(({ isARM }) => !isARM)
+            let arm = pathArr.find(({ isARM }) => isARM)
             if (process.arch.includes("arm")) { 
-                if (armPath) return armPath
+                if (arm) return arm.execPath
                 return null
             }
-            return amd64Path
+            return amd64.execPath
         } else {
             return null
         }
