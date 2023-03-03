@@ -4,7 +4,7 @@ const semver = require('semver')
 
 const { JavaGuard } = require('./assets/js/assetguard')
 const DropinModUtil  = require('./assets/js/dropinmodutil')
-const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
+/* const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants') */
 
 const settingsState = {
     invalid: new Set()
@@ -339,8 +339,8 @@ settingsNavDone.onclick = () => {
  * Account Management Tab
  */
 
-const msftLoginLogger = LoggerUtil.getLogger('Microsoft Login')
-const msftLogoutLogger = LoggerUtil.getLogger('Microsoft Logout')
+/*const msftLoginLogger = LoggerUtil.getLogger('Microsoft Login')
+const msftLogoutLogger = LoggerUtil.getLogger('Microsoft Logout')*/
 
 // Bind the add mojang account button.
 document.getElementById('settingsAddMojangAccount').onclick = (e) => {
@@ -352,7 +352,7 @@ document.getElementById('settingsAddMojangAccount').onclick = (e) => {
 }
 
 // Bind the add microsoft account button.
-document.getElementById('settingsAddMicrosoftAccount').onclick = (e) => {
+/* document.getElementById('settingsAddMicrosoftAccount').onclick = (e) => {
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
         ipcRenderer.send(MSFT_OPCODE.OPEN_LOGIN, VIEWS.settings, VIEWS.settings)
     })
@@ -445,7 +445,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
                 })
         }
     }
-})
+}) */
 
 /**
  * Bind functionality for the account selection buttons. If another account
@@ -511,7 +511,32 @@ let msAccDomElementCache
  * @param {Element} val The log out button element.
  * @param {boolean} isLastAccount If this logout is on the last added account.
  */
-function processLogOut(val, isLastAccount){
+function processLogOut(val, isLastAccount) {
+    const parent = val.closest('.settingsAuthAccount')
+    const uuid = parent.getAttribute('uuid')
+    const prevSelAcc = ConfigManager.getSelectedAccount()
+    const targetAcc = ConfigManager.getAuthAccount(uuid)
+    const accessToken = targetAcc.accessToken;
+    AuthManager.removeAzAuthAccount(uuid, accessToken).then(() => {
+        if(!isLastAccount && uuid === prevSelAcc.uuid){
+            const selAcc = ConfigManager.getSelectedAccount()
+            refreshAuthAccountSelected(selAcc.uuid)
+            updateSelectedAccount(selAcc)
+            validateSelectedAccount()
+        }
+        if(isLastAccount) {
+            loginOptionsCancelEnabled(false)
+            loginOptionsViewOnLoginSuccess = VIEWS.settings
+            loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+            switchView(getCurrentView(), VIEWS.loginOptions)
+        }
+    })
+    $(parent).fadeOut(250, () => {
+        parent.remove()
+    })
+}
+
+/* function processLogOut(val, isLastAccount){
     const parent = val.closest('.settingsAuthAccount')
     const uuid = parent.getAttribute('uuid')
     const prevSelAcc = ConfigManager.getSelectedAccount()
@@ -598,7 +623,7 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGOUT, (_, ...arguments_) => {
             })
 
     }
-})
+}) */
 
 /**
  * Refreshes the status of the selected account on the auth account
@@ -621,7 +646,7 @@ function refreshAuthAccountSelected(uuid){
     })
 }
 
-const settingsCurrentMicrosoftAccounts = document.getElementById('settingsCurrentMicrosoftAccounts')
+/*const settingsCurrentMicrosoftAccounts = document.getElementById('settingsCurrentMicrosoftAccounts')*/
 const settingsCurrentMojangAccounts = document.getElementById('settingsCurrentMojangAccounts')
 
 /**
@@ -635,7 +660,7 @@ function populateAuthAccounts(){
     }
     const selectedUUID = ConfigManager.getSelectedAccount().uuid
 
-    let microsoftAuthAccountStr = ''
+    //let microsoftAuthAccountStr = ''
     let mojangAuthAccountStr = ''
 
     authKeys.forEach((val) => {
@@ -643,7 +668,7 @@ function populateAuthAccounts(){
 
         const accHtml = `<div class="settingsAuthAccount" uuid="${acc.uuid}">
             <div class="settingsAuthAccountLeft">
-                <img class="settingsAuthAccountImage" alt="${acc.displayName}" src="https://mc-heads.net/body/${acc.uuid}/60">
+                <img class="settingsAuthAccountImage" alt="${acc.displayName}" src="https://site-33.net/api/skin-api/avatars/face/${acc.username}">
             </div>
             <div class="settingsAuthAccountRight">
                 <div class="settingsAuthAccountDetails">
@@ -665,15 +690,15 @@ function populateAuthAccounts(){
             </div>
         </div>`
 
-        if(acc.type === 'microsoft') {
+        /**if(acc.type === 'microsoft') {
             microsoftAuthAccountStr += accHtml
         } else {
             mojangAuthAccountStr += accHtml
-        }
-
+        }*/
+        mojangAuthAccountStr += accHtml
     })
 
-    settingsCurrentMicrosoftAccounts.innerHTML = microsoftAuthAccountStr
+    /**settingsCurrentMicrosoftAccounts.innerHTML = microsoftAuthAccountStr*/
     settingsCurrentMojangAccounts.innerHTML = mojangAuthAccountStr
 }
 
@@ -1404,10 +1429,10 @@ const settingsAboutChangelogText   = settingsTabAbout.getElementsByClassName('se
 const settingsAboutChangelogButton = settingsTabAbout.getElementsByClassName('settingsChangelogButton')[0]
 
 // Bind the devtools toggle button.
-document.getElementById('settingsAboutDevToolsButton').onclick = (e) => {
+/**document.getElementById('settingsAboutDevToolsButton').onclick = (e) => {
     let window = remote.getCurrentWindow()
     window.toggleDevTools()
-}
+}*/
 
 /**
  * Return whether or not the provided version is a prerelease.
@@ -1455,7 +1480,7 @@ function populateAboutVersionInformation(){
  */
 function populateReleaseNotes(){
     $.ajax({
-        url: 'https://github.com/dscalzi/HeliosLauncher/releases.atom',
+        url: 'https://github.com/project-site-33/Site-33-Launcher/releases.atom',
         success: (data) => {
             const version = 'v' + remote.app.getVersion()
             const entries = $(data).find('entry')

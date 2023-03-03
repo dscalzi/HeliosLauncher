@@ -337,9 +337,14 @@ exports.getAuthAccount = function(uuid){
  * 
  * @returns {Object} The authenticated account object created by this action.
  */
-exports.updateMojangAuthAccount = function(uuid, accessToken){
+/**exports.updateMojangAuthAccount = function(uuid, accessToken){
     config.authenticationDatabase[uuid].accessToken = accessToken
     config.authenticationDatabase[uuid].type = 'mojang' // For gradual conversion.
+    return config.authenticationDatabase[uuid]
+}*/
+exports.updateAzAuthAccount = function(uuid, accessToken){
+    config.authenticationDatabase[uuid].accessToken = accessToken
+    config.authenticationDatabase[uuid].type = 'azAuth' // For gradual conversion.
     return config.authenticationDatabase[uuid]
 }
 
@@ -353,7 +358,7 @@ exports.updateMojangAuthAccount = function(uuid, accessToken){
  * 
  * @returns {Object} The authenticated account object created by this action.
  */
-exports.addMojangAuthAccount = function(uuid, accessToken, username, displayName){
+/**exports.addMojangAuthAccount = function(uuid, accessToken, username, displayName){
     config.selectedAccount = uuid
     config.authenticationDatabase[uuid] = {
         type: 'mojang',
@@ -361,6 +366,34 @@ exports.addMojangAuthAccount = function(uuid, accessToken, username, displayName
         username: username.trim(),
         uuid: uuid.trim(),
         displayName: displayName.trim()
+    }
+    return config.authenticationDatabase[uuid]
+}*/
+
+/**
+ * Adds an authenticated azuriom account to the database to be stored.
+ * 
+ * @param {string} uuid The uuid of the authenticated account.
+ * @param {string} accessToken The accessToken of the authenticated account.
+ * @param {string} username The username (usually email) of the authenticated account.
+ * @param {string} displayName The in game name of the authenticated account.
+ * @param {string} roleid The roleId
+ * @param {string} rolename The roleName
+ * @param {string} rolecolor The roleColor
+ * 
+ * @returns {Object} The authenticated account object created by this action.
+ */
+exports.addAzAuthAccount = function(uuid, accessToken, username, displayName, roleid, rolename, rolecolor) {
+    config.selectedAccount = uuid
+    config.authenticationDatabase[uuid] = {
+        type: 'azAuth',
+        accessToken,
+        username: username.trim(),
+        uuid: uuid.toString(),
+        displayName: displayName.trim(),
+        roleid: roleid,
+        rolename: rolename,
+        rolecolor: rolecolor
     }
     return config.authenticationDatabase[uuid]
 }
@@ -377,14 +410,14 @@ exports.addMojangAuthAccount = function(uuid, accessToken, username, displayName
  * 
  * @returns {Object} The authenticated account object created by this action.
  */
-exports.updateMicrosoftAuthAccount = function(uuid, accessToken, msAccessToken, msRefreshToken, msExpires, mcExpires) {
+/**exports.updateMicrosoftAuthAccount = function(uuid, accessToken, msAccessToken, msRefreshToken, msExpires, mcExpires) {
     config.authenticationDatabase[uuid].accessToken = accessToken
     config.authenticationDatabase[uuid].expiresAt = mcExpires
     config.authenticationDatabase[uuid].microsoft.access_token = msAccessToken
     config.authenticationDatabase[uuid].microsoft.refresh_token = msRefreshToken
     config.authenticationDatabase[uuid].microsoft.expires_at = msExpires
     return config.authenticationDatabase[uuid]
-}
+}*/
 
 /**
  * Adds an authenticated microsoft account to the database to be stored.
@@ -399,7 +432,7 @@ exports.updateMicrosoftAuthAccount = function(uuid, accessToken, msAccessToken, 
  * 
  * @returns {Object} The authenticated account object created by this action.
  */
-exports.addMicrosoftAuthAccount = function(uuid, accessToken, name, mcExpires, msAccessToken, msRefreshToken, msExpires) {
+/*exports.addMicrosoftAuthAccount = function(uuid, accessToken, name, mcExpires, msAccessToken, msRefreshToken, msExpires) {
     config.selectedAccount = uuid
     config.authenticationDatabase[uuid] = {
         type: 'microsoft',
@@ -415,7 +448,7 @@ exports.addMicrosoftAuthAccount = function(uuid, accessToken, name, mcExpires, m
         }
     }
     return config.authenticationDatabase[uuid]
-}
+}*/
 
 /**
  * Remove an authenticated account from the database. If the account

@@ -1,9 +1,9 @@
 {
-  "name": "helioslauncher",
-  "version": "1.9.0",
-  "productName": "Helios Launcher",
+  "name": "Site-33 Launcher",
+  "version": "0.0.1",
+  "productName": "Site-33 Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "author": "Site-33 (Fork of Daniel Scalzi (https://github.com/dscalzi/))",
   "license": "UNLICENSED",
   "homepage": "https://github.com/dscalzi/HeliosLauncher",
   "bugs": {
@@ -26,6 +26,7 @@
     "@electron/remote": "^2.0.8",
     "adm-zip": "^0.5.9",
     "async": "^3.2.4",
+    "azuriom-auth": "^1.0.1",
     "discord-rpc-patch": "^4.0.1",
     "ejs": "^3.1.8",
     "ejs-electron": "^2.1.1",

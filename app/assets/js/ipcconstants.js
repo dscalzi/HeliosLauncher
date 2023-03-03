@@ -1,7 +1,7 @@
 // NOTE FOR THIRD-PARTY
 // REPLACE THIS CLIENT ID WITH YOUR APPLICATION ID.
 // SEE https://github.com/dscalzi/HeliosLauncher/blob/master/docs/MicrosoftAuth.md
-exports.AZURE_CLIENT_ID = '1ce6e35a-126f-48fd-97fb-54d143ac6d45'
+/* exports.AZURE_CLIENT_ID = '1ce6e35a-126f-48fd-97fb-54d143ac6d45'
 // SEE NOTE ABOVE.
 
 
@@ -22,7 +22,7 @@ exports.MSFT_ERROR = {
     ALREADY_OPEN: 'MSFT_AUTH_ERR_ALREADY_OPEN',
     NOT_FINISHED: 'MSFT_AUTH_ERR_NOT_FINISHED'
 }
-
+ */
 exports.SHELL_OPCODE = {
     TRASH_ITEM: 'TRASH_ITEM'
 }

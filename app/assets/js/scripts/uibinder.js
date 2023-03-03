@@ -351,7 +351,7 @@ async function validateSelectedAccount(){
             )
             setOverlayHandler(() => {
 
-                const isMicrosoft = selectedAcc.type === 'microsoft'
+                /**const isMicrosoft = selectedAcc.type === 'microsoft'
 
                 if(isMicrosoft) {
                     // Empty for now
@@ -360,7 +360,10 @@ async function validateSelectedAccount(){
                     // For convenience, pre-populate the username of the account.
                     document.getElementById('loginUsername').value = selectedAcc.username
                     validateEmail(selectedAcc.username)
-                }
+                }*/
+
+                document.getElementById('loginUsername').value = selectedAcc.username
+                validateEmail(selectedAcc.username)
                 
                 loginOptionsViewOnLoginSuccess = getCurrentView()
                 loginOptionsViewOnLoginCancel = VIEWS.loginOptions
@@ -368,7 +371,7 @@ async function validateSelectedAccount(){
                 if(accLen > 0) {
                     loginOptionsViewOnCancel = getCurrentView()
                     loginOptionsViewCancelHandler = () => {
-                        if(isMicrosoft) {
+                        /*if(isMicrosoft) {
                             ConfigManager.addMicrosoftAuthAccount(
                                 selectedAcc.uuid,
                                 selectedAcc.accessToken,
@@ -380,7 +383,8 @@ async function validateSelectedAccount(){
                             )
                         } else {
                             ConfigManager.addMojangAuthAccount(selectedAcc.uuid, selectedAcc.accessToken, selectedAcc.username, selectedAcc.displayName)
-                        }
+                        }*/
+                        ConfigManager.addAzAuthAccount(selectedAcc.uuid, selectedAcc.accessToken, selectedAcc.username, selectedAcc.displayName)
                         ConfigManager.save()
                         validateSelectedAccount()
                     }

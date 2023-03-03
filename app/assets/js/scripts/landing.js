@@ -132,7 +132,7 @@ function updateSelectedAccount(authUser){
             username = authUser.displayName
         }
         if(authUser.uuid != null){
-            document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/body/${authUser.uuid}/right')`
+            document.getElementById('avatarContainer').style.backgroundImage = `url('https://site-33.net/api/skin-api/avatars/face/${authUser.username}')`
         }
     }
     user_text.innerHTML = username
@@ -231,7 +231,6 @@ const refreshServerStatus = async function(fade = false){
         const serverURL = new URL('my://' + serv.getAddress())
 
         const servStat = await getServerStatus(47, serverURL.hostname, Number(serverURL.port))
-        console.log(servStat)
         pLabel = 'PLAYERS'
         pVal = servStat.players.online + '/' + servStat.players.max
 
@@ -1092,7 +1091,7 @@ function displayArticle(articleObject, index){
 function loadNews(){
     return new Promise((resolve, reject) => {
         const distroData = DistroManager.getDistribution()
-        const newsFeed = distroData.getRSS()
+        const newsFeed =  isDev ? "https://site-33.net/api/rss" : distroData.getRSS()
         const newsHost = new URL(newsFeed).origin + '/'
         $.ajax({
             url: newsFeed,
@@ -1105,7 +1104,7 @@ function loadNews(){
                     const el = $(items[i])
 
                     // Resolve date.
-                    const date = new Date(el.find('pubDate').text()).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
+                    const date = new Date(el.find('pubDate').text()).toLocaleDateString('fr-FR', {month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'})
 
                     // Resolve comments.
                     let comments = el.find('slash\\:comments').text() || '0'
@@ -1122,11 +1121,13 @@ function loadNews(){
                     let link   = el.find('link').text()
                     let title  = el.find('title').text()
                     let author = el.find('dc\\:creator').text()
+                    let img    = el.find('enclosure').attr('url')
 
                     // Generate article.
                     articles.push(
                         {
                             link,
+                            img,
                             title,
                             date,
                             author,

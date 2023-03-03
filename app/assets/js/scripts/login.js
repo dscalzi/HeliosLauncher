@@ -10,9 +10,11 @@ const basicEmail            = /^\S+@\S+\.\S+$/
 const loginCancelContainer  = document.getElementById('loginCancelContainer')
 const loginCancelButton     = document.getElementById('loginCancelButton')
 const loginEmailError       = document.getElementById('loginEmailError')
-const loginUsername         = document.getElementById('loginUsername')
+const loginEmail            = document.getElementById('loginEmail')
 const loginPasswordError    = document.getElementById('loginPasswordError')
 const loginPassword         = document.getElementById('loginPassword')
+const loginA2FError         = document.getElementById('loginA2FError')
+const loginA2F              = document.getElementById('loginA2F')
 const checkmarkContainer    = document.getElementById('checkmarkContainer')
 const loginRememberOption   = document.getElementById('loginRememberOption')
 const loginButton           = document.getElementById('loginButton')
@@ -91,7 +93,7 @@ function validatePassword(value){
 }
 
 // Emphasize errors with shake when focus is lost.
-loginUsername.addEventListener('focusout', (e) => {
+loginEmail.addEventListener('focusout', (e) => {
     validateEmail(e.target.value)
     shakeError(loginEmailError)
 })
@@ -101,7 +103,7 @@ loginPassword.addEventListener('focusout', (e) => {
 })
 
 // Validate input for each field.
-loginUsername.addEventListener('input', (e) => {
+loginEmail.addEventListener('input', (e) => {
     validateEmail(e.target.value)
 })
 loginPassword.addEventListener('input', (e) => {
@@ -142,7 +144,7 @@ function loginLoading(v){
 function formDisabled(v){
     loginDisabled(v)
     loginCancelButton.disabled = v
-    loginUsername.disabled = v
+    loginEmail.disabled = v
     loginPassword.disabled = v
     if(v){
         checkmarkContainer.setAttribute('disabled', v)
@@ -166,7 +168,7 @@ function loginCancelEnabled(val){
 
 loginCancelButton.onclick = (e) => {
     switchView(getCurrentView(), loginViewOnCancel, 500, 500, () => {
-        loginUsername.value = ''
+        loginEmail.value = ''
         loginPassword.value = ''
         loginCancelEnabled(false)
         if(loginViewCancelHandler != null){
@@ -181,13 +183,16 @@ loginForm.onsubmit = () => { return false }
 
 // Bind login button behavior.
 loginButton.addEventListener('click', () => {
-    // Disable form.
     formDisabled(true)
 
     // Show loading stuff.
     loginLoading(true)
 
-    AuthManager.addMojangAccount(loginUsername.value, loginPassword.value).then((value) => {
+    login(loginEmail.value, loginPassword.value, loginA2F.value == undefined ? null : loginA2F.value)
+})
+
+function login(email, password, a2f) {
+    AuthManager.addMojangAccount(email, password, a2f).then((value) => {
         updateSelectedAccount(value)
         loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.loggingIn'), Lang.queryJS('login.success'))
         $('.circle-loader').toggleClass('load-complete')
@@ -201,8 +206,9 @@ loginButton.addEventListener('click', () => {
                 loginViewOnSuccess = VIEWS.landing // Reset this for good measure.
                 loginCancelEnabled(false) // Reset this for good measure.
                 loginViewCancelHandler = null // Reset this for good measure.
-                loginUsername.value = ''
+                loginEmail.value    = ''
                 loginPassword.value = ''
+                loginA2F.value      = ''
                 $('.circle-loader').toggleClass('load-complete')
                 $('.checkmark').toggle()
                 loginLoading(false)
@@ -215,14 +221,14 @@ loginButton.addEventListener('click', () => {
 
         let actualDisplayableError
         if(isDisplayableError(displayableError)) {
-            msftLoginLogger.error('Error while logging in.', displayableError)
+            console.log('Error while logging in.', displayableError)
             actualDisplayableError = displayableError
         } else {
             // Uh oh.
-            msftLoginLogger.error('Unhandled error during login.', displayableError)
+            console.log('Unhandled error during login.', displayableError)
             actualDisplayableError = {
-                title: 'Unknown Error During Login',
-                desc: 'An unknown error has occurred. Please see the console for details.'
+                title: 'Erreur inconnue pendant la connexion',
+                desc: 'Une erreur inconnue s\'est produite. Veuillez consulter la console pour plus de détails.'
             }
         }
 
@@ -233,5 +239,4 @@ loginButton.addEventListener('click', () => {
         })
         toggleOverlay(true)
     })
-
-})
+}
