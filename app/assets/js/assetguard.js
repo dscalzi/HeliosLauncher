@@ -81,34 +81,6 @@ class Util {
         return true
     }
 
-    static isForgeGradle3(mcVersion, forgeVersion) {
-
-        if(Util.mcVersionAtLeast('1.13', mcVersion)) {
-            return true
-        }
-
-        try {
-            
-            const forgeVer = forgeVersion.split('-')[1]
-
-            const maxFG2 = [14, 23, 5, 2847]
-            const verSplit = forgeVer.split('.').map(v => Number(v))
-
-            for(let i=0; i<maxFG2.length; i++) {
-                if(verSplit[i] > maxFG2[i]) {
-                    return true
-                } else if(verSplit[i] < maxFG2[i]) {
-                    return false
-                }
-            }
-        
-            return false
-
-        } catch(err) {
-            throw new Error('Forge version is complex (changed).. launcher requires a patch.')
-        }
-    }
-
     static isAutoconnectBroken(forgeVersion) {
 
         const minWorking = [31, 2, 15]
