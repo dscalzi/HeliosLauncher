@@ -18,6 +18,8 @@ const ConfigManager = require('./configmanager')
 const DistroManager = require('./distromanager')
 const isDev         = require('./isdev')
 
+const isARM64 = process.arch === 'arm64';
+
 // Classes
 
 /** Class representing a base asset. */
@@ -302,7 +304,8 @@ class JavaGuard extends EventEmitter {
                 break
         }
 
-        const url = `https://corretto.aws/downloads/latest/amazon-corretto-${major}-x64-${sanitizedOS}-jdk.${ext}`
+        const arch = isARM64 ? 'aarch64' : 'x64'
+        const url = `https://corretto.aws/downloads/latest/amazon-corretto-${major}-${arch}-${sanitizedOS}-jdk.${ext}`
 
         return new Promise((resolve, reject) => {
             request.head({url, json: true}, (err, resp) => {
@@ -495,6 +498,8 @@ class JavaGuard extends EventEmitter {
                 let vendorName = props[i].split('=')[1].trim()
                 this.logger.debug(props[i].trim())
                 meta.vendor = vendorName
+            } else if (props[i].indexOf('os.arch') > -1) {
+                meta.isARM = props[i].split('=')[1].trim() === 'aarch64'
             }
         }
 
@@ -866,6 +871,9 @@ class JavaGuard extends EventEmitter {
      * @param {string} dataDir The base launcher directory.
      * @returns {Promise.<string>} A Promise which resolves to the executable path of a valid 
      * x64 Java installation. If none are found, null is returned.
+     * 
+     * Added: On the system with ARM architecture attempts to find aarch64 Java.
+     * 
      */
     async _darwinJavaValidate(dataDir){
 
@@ -894,7 +902,16 @@ class JavaGuard extends EventEmitter {
         pathArr = JavaGuard._sortValidJavaArray(pathArr)
 
         if(pathArr.length > 0){
-            return pathArr[0].execPath
+
+            // TODO Revise this a bit, seems to work for now. Discovery logic should
+            // probably just filter out the invalid architectures before it even
+            // gets to this point.
+            if (isARM64) {
+                return pathArr.find(({ isARM }) => isARM)?.execPath ?? null
+            } else {
+                return pathArr.find(({ isARM }) => !isARM)?.execPath ?? null
+            }
+
         } else {
             return null
         }
