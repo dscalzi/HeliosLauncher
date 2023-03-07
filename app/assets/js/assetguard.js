@@ -152,7 +152,6 @@ class Util {
      * @param {string} desired The desired version.
      * @param {string} actual The actual version.
      */
-
     static mcVersionAtLeast(desired, actual){
         const des = desired.split('.')
         const act = actual.split('.')
