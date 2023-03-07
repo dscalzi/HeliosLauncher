@@ -18,6 +18,8 @@ const ConfigManager = require('./configmanager')
 const DistroManager = require('./distromanager')
 const isDev         = require('./isdev')
 
+const isARM64 = process.arch === "arm64";
+
 // Classes
 
 /** Class representing a base asset. */
@@ -142,9 +144,6 @@ class DLTracker {
 }
 
 class Util {
-
-
-    isARM64 = process.arch === "arm64";
 
     /**
      * Returns true if the actual version is greater than
@@ -306,7 +305,7 @@ class JavaGuard extends EventEmitter {
                 break
         }
 
-        const arch = isARM64 ? 'aarch64' : 'x64'
+        const arch = this. ? 'aarch64' : 'x64'
         const url = `https://corretto.aws/downloads/latest/amazon-corretto-${major}-${arch}-${sanitizedOS}-jdk.${ext}`
 
         return new Promise((resolve, reject) => {
