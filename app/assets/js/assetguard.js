@@ -302,7 +302,8 @@ class JavaGuard extends EventEmitter {
                 break
         }
 
-        const url = `https://corretto.aws/downloads/latest/amazon-corretto-${major}-${process.arch.includes("arm") ? "aarch64" : "x64"}-${sanitizedOS}-jdk.${ext}`
+        const arch = process.arch.includes('arm') ? 'aarch64' : 'x64'
+        const url = `https://corretto.aws/downloads/latest/amazon-corretto-${major}-${arch}-${sanitizedOS}-jdk.${ext}`
 
         return new Promise((resolve, reject) => {
             request.head({url, json: true}, (err, resp) => {
@@ -899,13 +900,16 @@ class JavaGuard extends EventEmitter {
         pathArr = JavaGuard._sortValidJavaArray(pathArr)
 
         if(pathArr.length > 0){
-            let amd64 = pathArr.find(({ isARM }) => !isARM)
-            let arm = pathArr.find(({ isARM }) => isARM)
-            if (process.arch.includes("arm")) { 
-                if (arm) return arm.execPath
-                return null
+
+            // TODO Revise this a bit, seems to work for now. Discovery logic should
+            // probably just filter out the invalid architectures before it even
+            // gets to this point.
+            if (process.arch.includes('arm')) {
+                return pathArr.find(({ isARM }) => isARM)?.execPath ?? null
+            } else {
+                return pathArr.find(({ isARM }) => !isARM)?.execPath ?? null
             }
-            return amd64.execPath
+
         } else {
             return null
         }
