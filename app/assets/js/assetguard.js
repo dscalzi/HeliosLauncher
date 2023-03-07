@@ -143,6 +143,9 @@ class DLTracker {
 
 class Util {
 
+
+    isARM64 = process.arch === "arm64";
+
     /**
      * Returns true if the actual version is greater than
      * or equal to the desired version.
@@ -150,6 +153,7 @@ class Util {
      * @param {string} desired The desired version.
      * @param {string} actual The actual version.
      */
+
     static mcVersionAtLeast(desired, actual){
         const des = desired.split('.')
         const act = actual.split('.')
@@ -302,7 +306,7 @@ class JavaGuard extends EventEmitter {
                 break
         }
 
-        const arch = process.arch.includes('arm') ? 'aarch64' : 'x64'
+        const arch = isARM64 ? 'aarch64' : 'x64'
         const url = `https://corretto.aws/downloads/latest/amazon-corretto-${major}-${arch}-${sanitizedOS}-jdk.${ext}`
 
         return new Promise((resolve, reject) => {
@@ -904,7 +908,7 @@ class JavaGuard extends EventEmitter {
             // TODO Revise this a bit, seems to work for now. Discovery logic should
             // probably just filter out the invalid architectures before it even
             // gets to this point.
-            if (process.arch.includes('arm')) {
+            if (isARM64) {
                 return pathArr.find(({ isARM }) => isARM)?.execPath ?? null
             } else {
                 return pathArr.find(({ isARM }) => !isARM)?.execPath ?? null
