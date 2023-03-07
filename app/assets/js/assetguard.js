@@ -305,7 +305,7 @@ class JavaGuard extends EventEmitter {
                 break
         }
 
-        const arch = this. ? 'aarch64' : 'x64'
+        const arch = isARM64 ? 'aarch64' : 'x64'
         const url = `https://corretto.aws/downloads/latest/amazon-corretto-${major}-${arch}-${sanitizedOS}-jdk.${ext}`
 
         return new Promise((resolve, reject) => {
