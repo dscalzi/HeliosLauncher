@@ -1,0 +1,393 @@
+<div id="settingsContainer" style="display: none;">
+    <div id="settingsContainerLeft">
+        <div id="settingsNavContainer">
+            <div id="settingsNavHeader">
+                <span id="settingsNavHeaderText">Settings</span>
+            </div>
+            <div id="settingsNavItemsContainer">
+                <div id="settingsNavItemsContent">
+                    <button class="settingsNavItem" rSc="settingsTabAccount" id="settingsNavAccount" selected>Account</button>
+                    <button class="settingsNavItem" rSc="settingsTabMinecraft">Minecraft</button>
+                    <button class="settingsNavItem" rSc="settingsTabMods">Mods</button>
+                    <button class="settingsNavItem" rSc="settingsTabJava">Java</button>
+                    <button class="settingsNavItem" rSc="settingsTabLauncher">Launcher</button>
+                    <div class="settingsNavSpacer"></div>
+                    <button class="settingsNavItem" rSc="settingsTabAbout">About</button>
+                    <button class="settingsNavItem" rSc="settingsTabUpdate" id="settingsNavUpdate">Updates</button>
+                    <div id="settingsNavContentBottom">
+                        <div class="settingsNavDivider"></div>
+                        <button id="settingsNavDone">Done</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="settingsContainerRight">
+        <div id="settingsTabAccount" class="settingsTab">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Account Settings</span>
+                <span class="settingsTabHeaderDesc">Add new accounts or manage existing ones.</span>
+            </div>
+            <div class="settingsAuthAccountTypeContainer">
+                <div class="settingsAuthAccountTypeHeader">
+                    <div class="settingsAuthAccountTypeHeaderLeft">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 23 23">
+                            <path fill="#f35325" d="M1 1h10v10H1z" />
+                            <path fill="#81bc06" d="M12 1h10v10H12z" />
+                            <path fill="#05a6f0" d="M1 12h10v10H1z" />
+                            <path fill="#ffba08" d="M12 12h10v10H12z" />
+                        </svg>
+                        <span>Microsoft</span>
+                    </div>
+                    <div class="settingsAuthAccountTypeHeaderRight">
+                        <button class="settingsAddAuthAccount" id="settingsAddMicrosoftAccount">+ Add Microsoft Account</button>
+                    </div>
+                </div>
+                
+                <div class="settingsCurrentAccounts" id="settingsCurrentMicrosoftAccounts">
+                    <!-- Microsoft auth accounts populated here. -->
+                </div>
+            </div>
+
+            <div class="settingsAuthAccountTypeContainer">
+                <div class="settingsAuthAccountTypeHeader">
+                    <div class="settingsAuthAccountTypeHeaderLeft">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 9.677 9.667">
+                            <path d="M-26.332-12.098h2.715c-1.357.18-2.574 1.23-2.715 2.633z" fill="#fff" />
+                            <path d="M2.598.022h7.07L9.665 7c-.003 1.334-1.113 2.46-2.402 2.654H0V2.542C.134 1.2 1.3.195 2.598.022z" fill="#db2331" />
+                            <path d="M1.54 2.844c.314-.76 1.31-.46 1.954-.528.785-.083 1.503.272 2.1.758l.164-.9c.327.345.587.756.964 1.052.28.254.655-.342.86-.013.42.864.408 1.86.54 2.795l-.788-.373C6.9 4.17 5.126 3.052 3.656 3.685c-1.294.592-1.156 2.65.06 3.255 1.354.703 2.953.51 4.405.292-.07.42-.34.87-.834.816l-4.95.002c-.5.055-.886-.413-.838-.89l.04-4.315z" fill="#fff" />
+                        </svg>
+                        <span>Mojang</span>
+                    </div>
+                    <div class="settingsAuthAccountTypeHeaderRight">
+                        <button class="settingsAddAuthAccount" id="settingsAddMojangAccount">+ Add Mojang Account</button>
+                    </div>
+                </div>
+                
+                <div class="settingsCurrentAccounts" id="settingsCurrentMojangAccounts">
+                    <!-- Mojang auth accounts populated here. -->
+                </div>
+            </div>
+        </div>
+        <div id="settingsTabMinecraft" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Minecraft Settings</span>
+                <span class="settingsTabHeaderDesc">Options related to game launch.</span>
+            </div>
+            <div id="settingsGameResolutionContainer">
+                <span class="settingsFieldTitle">Game Resolution</span>
+                <div id="settingsGameResolutionContent">
+                    <input type="number" id="settingsGameWidth" min="0" cValue="GameWidth">
+                    <div id="settingsGameResolutionCross">&#10006;</div>
+                    <input type="number" id="settingsGameHeight" min="0" cValue="GameHeight">
+                </div>
+            </div>
+            <div class="settingsFieldContainer">
+                <div class="settingsFieldLeft">
+                    <span class="settingsFieldTitle">Launch in fullscreen.</span>
+                </div>
+                <div class="settingsFieldRight">
+                    <label class="toggleSwitch">
+                        <input type="checkbox" cValue="Fullscreen">
+                        <span class="toggleSwitchSlider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="settingsFieldContainer">
+                <div class="settingsFieldLeft">
+                    <span class="settingsFieldTitle">Automatically connect to the server on launch.</span>
+                </div>
+                <div class="settingsFieldRight">
+                    <label class="toggleSwitch">
+                        <input type="checkbox" cValue="AutoConnect">
+                        <span class="toggleSwitchSlider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="settingsFieldContainer">
+                <div class="settingsFieldLeft">
+                    <span class="settingsFieldTitle">Launch game process detached from launcher.</span>
+                    <span class="settingsFieldDesc">If the game is not detached, closing the launcher will also close the game.</span>
+                </div>
+                <div class="settingsFieldRight">
+                    <label class="toggleSwitch">
+                        <input type="checkbox" cValue="LaunchDetached">
+                        <span class="toggleSwitchSlider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div id="settingsTabMods" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Mod Settings</span>
+                <span class="settingsTabHeaderDesc">Enable or disable mods.</span>
+            </div>
+            <div class="settingsSelServContainer">
+                <div class="settingsSelServContent">
+
+                </div>
+                <div class="settingsSwitchServerContainer">
+                    <div class="settingsSwitchServerContent">
+                        <button class="settingsSwitchServerButton">Switch</button>
+                    </div>
+                </div>
+            </div>
+            <div id="settingsModsContainer">
+                <div id="settingsReqModsContainer">
+                    <div class="settingsModsHeader">Required Mods</div>
+                    <div id="settingsReqModsContent">
+
+                    </div>
+                </div>
+                <div id="settingsOptModsContainer">
+                    <div class="settingsModsHeader">Optional Mods</div>
+                    <div id="settingsOptModsContent">
+                        
+                    </div>
+                </div>
+                <div id="settingsDropinModsContainer">
+                    <div class="settingsModsHeader">Drop-in Mods</div>
+                    <button id="settingsDropinFileSystemButton">+ Add Mods <span id="settingsDropinRefreshNote">(F5 to Refresh)</span></button>
+                    <div id="settingsDropinModsContent">
+                        
+                    </div>
+                </div>
+                <div id="settingsShadersContainer">
+                    <div class="settingsModsHeader">Shaderpacks</div>
+                    <div id="settingsShaderpackDesc">Enable or disable shaders. Please note, shaders will only run smoothly on powerful setups. You may add custom packs here.</div>
+                    <div id="settingsShaderpackWrapper">
+                        <button id="settingsShaderpackButton"> + </button>
+                        <div class="settingsSelectContainer">
+                            <div class="settingsSelectSelected" id="settingsShadersSelected">Select Shaderpack</div>
+                            <div class="settingsSelectOptions" id="settingsShadersOptions" hidden>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="settingsTabJava" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Java Settings</span>
+                <span class="settingsTabHeaderDesc">Manage the Java configuration (advanced).</span>
+            </div>
+            <div class="settingsSelServContainer">
+                <div class="settingsSelServContent">
+
+                </div>
+                <div class="settingsSwitchServerContainer">
+                    <div class="settingsSwitchServerContent">
+                        <button class="settingsSwitchServerButton">Switch</button>
+                    </div>
+                </div>
+            </div>
+            <div id="settingsMemoryContainer">
+                <div id="settingsMemoryTitle">Memory</div>
+                <div id="settingsMemoryContent">
+                    <div id="settingsMemoryContentLeft">
+                        <div class="settingsMemoryContentItem">
+                            <span class="settingsMemoryHeader">Maximum RAM</span>
+                            <div class="settingsMemoryActionContainer">
+                                <div id="settingsMaxRAMRange" class="rangeSlider" cValue="MaxRAM" serverDependent min="3" max="8" value="3" step="0.5">
+                                    <div class="rangeSliderBar"></div>
+                                    <div class="rangeSliderTrack"></div>
+                                </div>
+                                <span id="settingsMaxRAMLabel" class="settingsMemoryLabel">3G</span>
+                            </div>
+                        </div>
+                        <div class="settingsMemoryContentItem">
+                            <span class="settingsMemoryHeader">Minimum RAM</span>
+                            <div class="settingsMemoryActionContainer">
+                                <div id="settingsMinRAMRange" class="rangeSlider" cValue="MinRAM" serverDependent min="3" max="8" value="3" step="0.5">
+                                    <div class="rangeSliderBar"></div>
+                                    <div class="rangeSliderTrack"></div>
+                                </div>
+                                <span id="settingsMinRAMLabel" class="settingsMemoryLabel">3G</span>
+                            </div>
+                        </div>
+                        <div id="settingsMemoryDesc">The recommended minimum RAM is 3 gigabytes. Setting the minimum and maximum values to the same value may reduce lag.</div>
+                    </div>
+                    <div id="settingsMemoryContentRight">
+                        <div id="settingsMemoryStatus">
+                            <div class="settingsMemoryStatusContainer">
+                                <span class="settingsMemoryStatusTitle">Total</span>
+                                <span id="settingsMemoryTotal" class="settingsMemoryStatusValue">16G</span>
+                            </div>
+                            <div class="settingsMemoryStatusContainer">
+                                <span class="settingsMemoryStatusTitle">Available</span>
+                                <span id="settingsMemoryAvail" class="settingsMemoryStatusValue">7.3G</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="settingsFileSelContainer">
+                <div class="settingsFileSelTitle">Java Executable</div>
+                <div class="settingsFileSelContent">
+                    <div id="settingsJavaExecDetails">Selected: Java 8 Update 172 (x64)</div>
+                    <div class="settingsFileSelActions">
+                        <div class="settingsFileSelIcon">
+                            <svg class="settingsFileSelSVG" x="0px" y="0px" viewBox="0 0 305.001 305.001">
+                                <g>
+                                    <path d="M150.99,56.513c-14.093,9.912-30.066,21.147-38.624,39.734c-14.865,32.426,30.418,67.798,32.353,69.288c0.45,0.347,0.988,0.519,1.525,0.519c0.57,0,1.141-0.195,1.605-0.583c0.899-0.752,1.154-2.029,0.614-3.069c-0.164-0.316-16.418-31.888-15.814-54.539c0.214-7.888,11.254-16.837,22.942-26.312c10.705-8.678,22.839-18.514,29.939-30.02c15.586-25.327-1.737-50.231-1.914-50.479c-0.688-0.966-1.958-1.317-3.044-0.84c-1.085,0.478-1.686,1.652-1.438,2.811c0.035,0.164,3.404,16.633-5.97,33.6C169.301,43.634,160.816,49.603,150.99,56.513z"></path>
+                                    <path d="M210.365,67.682c0.994-0.749,1.286-2.115,0.684-3.205c-0.602-1.09-1.913-1.571-3.077-1.129c-2.394,0.91-58.627,22.585-58.627,48.776c0,18.053,7.712,27.591,13.343,34.556c2.209,2.731,4.116,5.09,4.744,7.104c1.769,5.804-2.422,16.294-4.184,19.846c-0.508,1.022-0.259,2.259,0.605,3.005c0.467,0.403,1.05,0.607,1.634,0.607c0.497,0,0.996-0.148,1.427-0.448c0.967-0.673,23.63-16.696,19.565-36.001c-1.514-7.337-5.12-12.699-8.302-17.43c-4.929-7.329-8.489-12.624-3.088-22.403C181.419,89.556,210.076,67.899,210.365,67.682z"></path>
+                                    <path d="M63.99,177.659c-0.964,2.885-0.509,5.75,1.315,8.283c6.096,8.462,27.688,13.123,60.802,13.123c0.002,0,0.003,0,0.004,0c4.487,0,9.224-0.088,14.076-0.262c52.943-1.896,72.58-18.389,73.39-19.09c0.883-0.764,1.119-2.037,0.57-3.067c-0.549-1.029-1.733-1.546-2.864-1.235c-18.645,5.091-53.463,6.898-77.613,6.898c-27.023,0-40.785-1.946-44.154-3.383c1.729-2.374,12.392-6.613,25.605-9.212c1.263-0.248,2.131-1.414,2.006-2.695c-0.125-1.281-1.201-2.258-2.488-2.258C106.893,164.762,68.05,165.384,63.99,177.659z"></path>
+                                    <path d="M241.148,160.673c-10.92,0-21.275,5.472-21.711,5.705c-1.01,0.541-1.522,1.699-1.245,2.811c0.278,1.111,1.277,1.892,2.423,1.893c0.232,0.001,23.293,0.189,25.382,13.365c1.85,11.367-21.82,29.785-31.097,35.923c-1.002,0.663-1.391,1.945-0.926,3.052c0.395,0.943,1.314,1.533,2.304,1.533c0.173,0,0.348-0.018,0.522-0.056c2.202-0.47,53.855-11.852,48.394-41.927C261.862,164.541,250.278,160.673,241.148,160.673z"></path>
+                                    <path d="M205.725,216.69c0.18-0.964-0.221-1.944-1.023-2.506l-12.385-8.675c-0.604-0.423-1.367-0.556-2.076-0.368c-0.129,0.034-13.081,3.438-31.885,5.526c-7.463,0.837-15.822,1.279-24.175,1.279c-18.799,0-31.091-2.209-32.881-3.829c-0.237-0.455-0.162-0.662-0.12-0.777c0.325-0.905,2.068-1.98,3.192-2.405c1.241-0.459,1.91-1.807,1.524-3.073c-0.385-1.266-1.69-2.012-2.978-1.702c-12.424,2.998-18.499,7.191-18.057,12.461c0.785,9.343,22.428,14.139,40.725,15.408c2.631,0.18,5.477,0.272,8.456,0.272c0.002,0,0.003,0,0.005,0c30.425,0,69.429-9.546,69.819-9.643C204.818,218.423,205.544,217.654,205.725,216.69z"></path>
+                                    <path d="M112.351,236.745c0.938-0.611,1.354-1.77,1.021-2.838c-0.332-1.068-1.331-1.769-2.453-1.755c-1.665,0.044-16.292,0.704-17.316,10.017c-0.31,2.783,0.487,5.325,2.37,7.556c5.252,6.224,19.428,9.923,43.332,11.31c2.828,0.169,5.7,0.254,8.539,0.254c30.39,0,50.857-9.515,51.714-9.92c0.831-0.393,1.379-1.209,1.428-2.127c0.049-0.917-0.409-1.788-1.193-2.267l-15.652-9.555c-0.543-0.331-1.193-0.441-1.813-0.314c-0.099,0.021-10.037,2.082-25.035,4.119c-2.838,0.385-6.392,0.581-10.562,0.581c-14.982,0-31.646-2.448-34.842-4.05C111.843,237.455,111.902,237.075,112.351,236.745z"></path>
+                                    <path d="M133.681,290.018c69.61-0.059,106.971-12.438,114.168-20.228c2.548-2.757,2.823-5.366,2.606-7.07c-0.535-4.194-4.354-6.761-4.788-7.04c-1.045-0.672-2.447-0.496-3.262,0.444c-0.813,0.941-0.832,2.314-0.016,3.253c0.439,0.565,0.693,1.51-0.591,2.795c-2.877,2.687-31.897,10.844-80.215,13.294c-6.619,0.345-13.561,0.519-20.633,0.52c-43.262,0-74.923-5.925-79.079-9.379c1.603-2.301,12.801-5.979,24.711-8.058c1.342-0.234,2.249-1.499,2.041-2.845c-0.208-1.346-1.449-2.273-2.805-2.096c-0.336,0.045-1.475,0.115-2.796,0.195c-19.651,1.2-42.36,3.875-43.545,13.999c-0.36,3.086,0.557,5.886,2.726,8.324c5.307,5.963,20.562,13.891,91.475,13.891C133.68,290.018,133.68,290.018,133.681,290.018z"></path>
+                                    <path d="M261.522,271.985c-0.984-0.455-2.146-0.225-2.881,0.567c-0.103,0.11-10.568,11.054-42.035,17.48c-12.047,2.414-34.66,3.638-67.211,3.638c-32.612,0-63.643-1.283-63.953-1.296c-1.296-0.063-2.405,0.879-2.581,2.155c-0.177,1.276,0.645,2.477,1.897,2.775c0.323,0.077,32.844,7.696,77.31,7.696c21.327,0,42.08-1.733,61.684-5.151c36.553-6.408,39.112-24.533,39.203-25.301C263.082,273.474,262.504,272.44,261.522,271.985z"></path>
+                                </g>
+                            </svg>
+                        </div>
+                        <input class="settingsFileSelVal" id="settingsJavaExecVal" type="text" value="null" cValue="JavaExecutable" serverDependent disabled>
+                        <button class="settingsFileSelButton" id="settingsJavaExecSel" dialogTitle="Select Java Executable" dialogDirectory="false">Choose File</button>
+                    </div>
+                </div>
+                <div class="settingsFileSelDesc">The Java executable is validated before game launch. <strong id="settingsJavaReqDesc">Requires Java 8 x64.</strong><br>The path should end with <strong>bin<%= process.platform === 'win32' ? '\\javaw.exe' : '/java' %></strong>.</div>
+            </div>
+            <div id="settingsJVMOptsContainer">
+                <div id="settingsJVMOptsTitle">Additional JVM Options</div>
+                <div id="settingsJVMOptsContent">
+                    <div class="settingsFileSelIcon">
+                        <svg class="settingsFileSelSVG" x="0px" y="0px" viewBox="0 0 305.001 305.001">
+                            <g>
+                                <path d="M150.99,56.513c-14.093,9.912-30.066,21.147-38.624,39.734c-14.865,32.426,30.418,67.798,32.353,69.288c0.45,0.347,0.988,0.519,1.525,0.519c0.57,0,1.141-0.195,1.605-0.583c0.899-0.752,1.154-2.029,0.614-3.069c-0.164-0.316-16.418-31.888-15.814-54.539c0.214-7.888,11.254-16.837,22.942-26.312c10.705-8.678,22.839-18.514,29.939-30.02c15.586-25.327-1.737-50.231-1.914-50.479c-0.688-0.966-1.958-1.317-3.044-0.84c-1.085,0.478-1.686,1.652-1.438,2.811c0.035,0.164,3.404,16.633-5.97,33.6C169.301,43.634,160.816,49.603,150.99,56.513z"></path>
+                                <path d="M210.365,67.682c0.994-0.749,1.286-2.115,0.684-3.205c-0.602-1.09-1.913-1.571-3.077-1.129c-2.394,0.91-58.627,22.585-58.627,48.776c0,18.053,7.712,27.591,13.343,34.556c2.209,2.731,4.116,5.09,4.744,7.104c1.769,5.804-2.422,16.294-4.184,19.846c-0.508,1.022-0.259,2.259,0.605,3.005c0.467,0.403,1.05,0.607,1.634,0.607c0.497,0,0.996-0.148,1.427-0.448c0.967-0.673,23.63-16.696,19.565-36.001c-1.514-7.337-5.12-12.699-8.302-17.43c-4.929-7.329-8.489-12.624-3.088-22.403C181.419,89.556,210.076,67.899,210.365,67.682z"></path>
+                                <path d="M63.99,177.659c-0.964,2.885-0.509,5.75,1.315,8.283c6.096,8.462,27.688,13.123,60.802,13.123c0.002,0,0.003,0,0.004,0c4.487,0,9.224-0.088,14.076-0.262c52.943-1.896,72.58-18.389,73.39-19.09c0.883-0.764,1.119-2.037,0.57-3.067c-0.549-1.029-1.733-1.546-2.864-1.235c-18.645,5.091-53.463,6.898-77.613,6.898c-27.023,0-40.785-1.946-44.154-3.383c1.729-2.374,12.392-6.613,25.605-9.212c1.263-0.248,2.131-1.414,2.006-2.695c-0.125-1.281-1.201-2.258-2.488-2.258C106.893,164.762,68.05,165.384,63.99,177.659z"></path>
+                                <path d="M241.148,160.673c-10.92,0-21.275,5.472-21.711,5.705c-1.01,0.541-1.522,1.699-1.245,2.811c0.278,1.111,1.277,1.892,2.423,1.893c0.232,0.001,23.293,0.189,25.382,13.365c1.85,11.367-21.82,29.785-31.097,35.923c-1.002,0.663-1.391,1.945-0.926,3.052c0.395,0.943,1.314,1.533,2.304,1.533c0.173,0,0.348-0.018,0.522-0.056c2.202-0.47,53.855-11.852,48.394-41.927C261.862,164.541,250.278,160.673,241.148,160.673z"></path>
+                                <path d="M205.725,216.69c0.18-0.964-0.221-1.944-1.023-2.506l-12.385-8.675c-0.604-0.423-1.367-0.556-2.076-0.368c-0.129,0.034-13.081,3.438-31.885,5.526c-7.463,0.837-15.822,1.279-24.175,1.279c-18.799,0-31.091-2.209-32.881-3.829c-0.237-0.455-0.162-0.662-0.12-0.777c0.325-0.905,2.068-1.98,3.192-2.405c1.241-0.459,1.91-1.807,1.524-3.073c-0.385-1.266-1.69-2.012-2.978-1.702c-12.424,2.998-18.499,7.191-18.057,12.461c0.785,9.343,22.428,14.139,40.725,15.408c2.631,0.18,5.477,0.272,8.456,0.272c0.002,0,0.003,0,0.005,0c30.425,0,69.429-9.546,69.819-9.643C204.818,218.423,205.544,217.654,205.725,216.69z"></path>
+                                <path d="M112.351,236.745c0.938-0.611,1.354-1.77,1.021-2.838c-0.332-1.068-1.331-1.769-2.453-1.755c-1.665,0.044-16.292,0.704-17.316,10.017c-0.31,2.783,0.487,5.325,2.37,7.556c5.252,6.224,19.428,9.923,43.332,11.31c2.828,0.169,5.7,0.254,8.539,0.254c30.39,0,50.857-9.515,51.714-9.92c0.831-0.393,1.379-1.209,1.428-2.127c0.049-0.917-0.409-1.788-1.193-2.267l-15.652-9.555c-0.543-0.331-1.193-0.441-1.813-0.314c-0.099,0.021-10.037,2.082-25.035,4.119c-2.838,0.385-6.392,0.581-10.562,0.581c-14.982,0-31.646-2.448-34.842-4.05C111.843,237.455,111.902,237.075,112.351,236.745z"></path>
+                                <path d="M133.681,290.018c69.61-0.059,106.971-12.438,114.168-20.228c2.548-2.757,2.823-5.366,2.606-7.07c-0.535-4.194-4.354-6.761-4.788-7.04c-1.045-0.672-2.447-0.496-3.262,0.444c-0.813,0.941-0.832,2.314-0.016,3.253c0.439,0.565,0.693,1.51-0.591,2.795c-2.877,2.687-31.897,10.844-80.215,13.294c-6.619,0.345-13.561,0.519-20.633,0.52c-43.262,0-74.923-5.925-79.079-9.379c1.603-2.301,12.801-5.979,24.711-8.058c1.342-0.234,2.249-1.499,2.041-2.845c-0.208-1.346-1.449-2.273-2.805-2.096c-0.336,0.045-1.475,0.115-2.796,0.195c-19.651,1.2-42.36,3.875-43.545,13.999c-0.36,3.086,0.557,5.886,2.726,8.324c5.307,5.963,20.562,13.891,91.475,13.891C133.68,290.018,133.68,290.018,133.681,290.018z"></path>
+                                <path d="M261.522,271.985c-0.984-0.455-2.146-0.225-2.881,0.567c-0.103,0.11-10.568,11.054-42.035,17.48c-12.047,2.414-34.66,3.638-67.211,3.638c-32.612,0-63.643-1.283-63.953-1.296c-1.296-0.063-2.405,0.879-2.581,2.155c-0.177,1.276,0.645,2.477,1.897,2.775c0.323,0.077,32.844,7.696,77.31,7.696c21.327,0,42.08-1.733,61.684-5.151c36.553-6.408,39.112-24.533,39.203-25.301C263.082,273.474,262.504,272.44,261.522,271.985z"></path>
+                            </g>
+                        </svg>
+                    </div>
+                    <input id="settingsJVMOptsVal" cValue="JVMOptions" serverDependent type="text">
+                </div>
+                <div id="settingsJVMOptsDesc">Options to be provided to the JVM at runtime. <em>-Xms</em> and <em>-Xmx</em> should not be included.<br><a href="https://docs.oracle.com/javase/8/docs/technotes/tools/<%= process.platform === 'win32' ? 'windows' : 'unix' %>/java.html" id="settingsJvmOptsLink">Available Options for Java 8</a>.</div>
+            </div>
+        </div>
+        <div id="settingsTabLauncher" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Launcher Settings</span>
+                <span class="settingsTabHeaderDesc">Options related to the launcher itself.</span>
+            </div>
+            <div class="settingsFieldContainer">
+                <div class="settingsFieldLeft">
+                    <span class="settingsFieldTitle">Allow Pre-Release Updates.</span>
+                    <span class="settingsFieldDesc">Pre-Releases include new features which may have not been fully tested or integrated.<br>This will always be true if you are using a pre-release version.</span>
+                </div>
+                <div class="settingsFieldRight">
+                    <label class="toggleSwitch">
+                        <input type="checkbox" cValue="AllowPrerelease">
+                        <span class="toggleSwitchSlider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="settingsFileSelContainer">
+                <div class="settingsFileSelContent">
+                    <div class="settingsFieldTitle" id="settingsDataDirTitle">Data Directory</div>
+                    <div class="settingsFileSelActions">
+                        <div class="settingsFileSelIcon">
+                            <svg class="settingsFileSelSVG">
+                                <g>
+                                    <path fill="gray" d="m10.044745,5c0,0.917174 -0.746246,1.667588 -1.667588,1.667588l-4.168971,0l-2.501382,0c-0.921009,0 -1.667588,0.750415 -1.667588,1.667588l0,6.670353l0,2.501382c0,0.917174 0.746604,1.667588 1.667588,1.667588l16.675882,0c0.921342,0 1.667588,-0.750415 1.667588,-1.667588l0,-2.501382l0,-8.337941c0,-0.917174 -0.746246,-1.667588 -1.667588,-1.667588l-8.337941,0z"/>
+                                    <path fill="gray" d="m1.627815,1.6c-0.921009,0 -1.667588,0.746579 -1.667588,1.667588l0,4.168971l8.337941,0l0,0.833794l11.673118,0l0,-4.168971c0,-0.921009 -0.746246,-1.667588 -1.667588,-1.667588l-8.572237,0c-0.288493,-0.497692 -0.816284,-0.833794 -1.433292,-0.833794l-6.670353,0z"/>
+                                    <path fill="lightgray" d="m10.025276,4c0,0.918984 -0.747719,1.670879 -1.670879,1.670879l-4.177198,0l-2.506319,0c-0.922827,0 -1.670879,0.751896 -1.670879,1.670879l0,6.683517l0,2.506319c0,0.918984 0.748078,1.670879 1.670879,1.670879l16.708794,0c0.923161,0 1.670879,-0.751896 1.670879,-1.670879l0,-2.506319l0,-8.354397c0,-0.918984 -0.747719,-1.670879 -1.670879,-1.670879l-8.354397,0z"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <input class="settingsFileSelVal" type="text" value="null" cValue="DataDirectory" disabled>
+                        <button class="settingsFileSelButton" dialogTitle="Select Data Directory" dialogDirectory="true">Choose Folder</button>
+                    </div>
+                </div>
+                <div class="settingsFileSelDesc">All game files and local Java installations will be stored in the data directory.<br>Screenshots and world saves are stored in the instance folder for the corresponding server configuration.</div>
+            </div>
+        </div>
+        <div id="settingsTabAbout" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">About</span>
+                <span class="settingsTabHeaderDesc">View information and release notes for the current version.</span>
+            </div>
+            <div id="settingsAboutCurrentContainer">
+                <div id="settingsAboutCurrentContent">
+                    <div id="settingsAboutCurrentHeadline">
+                        <img id="settingsAboutLogo" src="./assets/images/SealCircle.png">
+                        <span id="settingsAboutTitle">Helios Launcher</span>
+                    </div>
+                    <div id="settingsAboutCurrentVersion">
+                        <div id="settingsAboutCurrentVersionCheck">&#10003;</div>
+                        <div id="settingsAboutCurrentVersionDetails">
+                            <span id="settingsAboutCurrentVersionTitle">Stable Release</span>
+                            <div id="settingsAboutCurrentVersionLine">
+                                <span id="settingsAboutCurrentVersionText">Version </span>
+                                <span id="settingsAboutCurrentVersionValue">0.0.1-alpha.12</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="settingsAboutButtons">
+                    <a href="https://github.com/dscalZi/HeliosLauncher" id="settingsAboutSourceButton" class="settingsAboutButton">Source (GitHub)</a>
+                    <!-- The following must be included in third-party usage. -->
+                    <!-- <a href="https://github.com/dscalzi/HeliosLauncher" id="settingsAboutSourceButton" class="settingsAboutButton">Original Source</a> -->
+                    <a href="https://github.com/dscalZi/HeliosLauncher/issues" id="settingsAboutSupportButton" class="settingsAboutButton">Support</a>
+                    <a href="#" id="settingsAboutDevToolsButton" class="settingsAboutButton">DevTools Console</a>
+                </div>
+            </div>
+            <div class="settingsChangelogContainer">
+                <div class="settingsChangelogContent">
+                    <div class="settingsChangelogHeadline">
+                        <div class="settingsChangelogLabel">Release Notes</div>
+                        <div class="settingsChangelogTitle">Changelog</div>
+                    </div>
+                    <div class="settingsChangelogText">
+                        No Release Notes
+                    </div>
+                </div>
+                <div class="settingsChangelogActions">
+                    <a class="settingsChangelogButton settingsAboutButton" href="#">View Release Notes on GitHub</a>
+                </div>
+            </div>
+        </div>
+        <div id="settingsTabUpdate" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText">Launcher Updates</span>
+                <span class="settingsTabHeaderDesc">Download, install, and review updates for the launcher.</span>
+            </div>
+            <div id="settingsUpdateStatusContainer">
+                <div id="settingsUpdateStatusContent">
+                    <div id="settingsUpdateStatusHeadline">
+                        <span id="settingsUpdateTitle">You Are Running the Latest Version</span>
+                    </div>
+                    <div id="settingsUpdateVersion">
+                        <div id="settingsUpdateVersionCheck">&#10003;</div>
+                        <div id="settingsUpdateVersionDetails">
+                            <span id="settingsUpdateVersionTitle">Stable Release</span>
+                            <div id="settingsUpdateVersionLine">
+                                <span id="settingsUpdateVersionText">Version </span>
+                                <span id="settingsUpdateVersionValue">0.0.1-alpha.18</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="settingsUpdateActionContainer">
+                        <button id="settingsUpdateActionButton">Check for Updates</button>
+                    </div>
+                </div>
+            </div>
+            <div class="settingsChangelogContainer">
+                <div class="settingsChangelogContent">
+                    <div class="settingsChangelogHeadline">
+                        <div class="settingsChangelogLabel">What's New</div>
+                        <div class="settingsChangelogTitle">Update Release Notes</div>
+                    </div>
+                    <div class="settingsChangelogText">
+                        No Release Notes
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./assets/js/scripts/settings.js"></script>
+</div>

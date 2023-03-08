@@ -1,0 +1,65 @@
+<div id="loginContainer" style="display: none;">
+    <div id="loginCancelContainer" style="display: none;">
+        <button id="loginCancelButton">
+            <div id="loginCancelIcon">X</div>
+            <span id="loginCancelText">Cancel</span>
+        </button>
+    </div>
+    <div id="loginContent">
+        <form id="loginForm">
+            <img id="loginImageSeal" src="assets/images/SealCircle.png"/>
+            <span id="loginSubheader">MINECRAFT LOGIN</span>
+            <div class="loginFieldContainer">
+                <svg id="profileSVG" class="loginSVG" viewBox="40 37 65.36 61.43">
+                    <g>
+                        <path d="M86.77,58.12A13.79,13.79,0,1,0,73,71.91,13.79,13.79,0,0,0,86.77,58.12M97,103.67a3.41,3.41,0,0,0,3.39-3.84,27.57,27.57,0,0,0-54.61,0,3.41,3.41,0,0,0,3.39,3.84Z"/>
+                    </g>
+                </svg>
+                <span class="loginErrorSpan" id="loginEmailError">* Invalid Value</span>
+                <input id="loginUsername" class="loginField" type="text" placeholder="EMAIL OR USERNAME"/>
+            </div>
+            <div class="loginFieldContainer">
+                <svg id="lockSVG" class="loginSVG" viewBox="40 32 60.36 70.43">
+                    <g>
+                        <path d="M86.16,54a16.38,16.38,0,1,0-32,0H44V102.7H96V54Zm-25.9-3.39a9.89,9.89,0,1,1,19.77,0A9.78,9.78,0,0,1,79.39,54H60.89A9.78,9.78,0,0,1,60.26,50.59ZM70,96.2a6.5,6.5,0,0,1-6.5-6.5,6.39,6.39,0,0,1,3.1-5.4V67h6.5V84.11a6.42,6.42,0,0,1,3.39,5.6A6.5,6.5,0,0,1,70,96.2Z"/>
+                    </g>
+                </svg>
+                <span class="loginErrorSpan" id="loginPasswordError">* Required</span>
+                <input id="loginPassword" class="loginField" type="password" placeholder="PASSWORD"/>
+            </div>
+            <div id="loginOptions">
+                <span class="loginSpanDim">
+                    <a href="https://minecraft.net/password/forgot/">forgot password?</a>
+                </span>
+                <label id="checkmarkContainer">
+                    <input id="loginRememberOption" type="checkbox" checked>
+                    <span id="loginRememberText" class="loginSpanDim">remember me?</span>
+                    <span class="loginCheckmark"></span>
+                </label>
+            </div>
+            <button id="loginButton" disabled>
+                <div id="loginButtonContent">
+                    LOGIN
+                    <svg id="loginSVG" viewBox="0 0 24.87 13.97">
+                        <defs>
+                            <style>.arrowLine{fill:none;stroke:#FFF;stroke-width:2px;transition: 0.25s ease;}</style>
+                        </defs>
+                        <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"/>
+                    </svg>
+                    <div class="circle-loader">
+                        <div class="checkmark draw"></div>
+                    </div>
+                    <!--<div class="spinningCircle" id="loginSpinner"></div>-->
+                </div>
+            </button>
+            <div id="loginDisclaimer">
+                <span class="loginSpanDim" id="loginRegisterSpan">
+                    <a href="https://minecraft.net/store/minecraft-java-edition/">Need an Account?</a>
+                </span>
+                <p class="loginDisclaimerText">Your password is sent directly to mojang and never stored.</p>
+                <p class="loginDisclaimerText">Helios Launcher is not affiliated with Mojang AB.</p>
+            </div>
+        </form>
+    </div>
+    <script src="./assets/js/scripts/login.js"></script>
+</div>
