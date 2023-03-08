@@ -1222,7 +1222,5 @@ class AssetGuard extends EventEmitter {
 
 module.exports = {
     AssetGuard,
-    JavaGuard,
-    Asset,
-    Library
+    JavaGuard
 }
