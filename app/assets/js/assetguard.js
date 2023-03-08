@@ -18,7 +18,7 @@ const ConfigManager = require('./configmanager')
 const DistroManager = require('./distromanager')
 const isDev         = require('./isdev')
 
-const isARM64 = process.arch === 'arm64';
+const isARM64 = process.arch === 'arm64'
 
 // Classes
 
