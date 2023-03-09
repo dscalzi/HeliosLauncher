@@ -1,10 +1,26 @@
 import { LoggerUtil } from 'helios-core/.';
 import { ConfigManager } from '../manager/ConfigManager';
-import { Artifact } from './Artifact';
+import { Artifact, IArtifact } from './Artifact';
 import { join } from 'path';
 import { DistroTypes } from '../manager/DistroManager';
+import { Required, IRequired } from './Required';
 
 const logger = LoggerUtil.getLogger('Module')
+
+export interface IModule {
+    artifactExt: string;
+    artifactClassifier?: string;
+    artifactVersion: string;
+    artifactID: string;
+    artifactGroup: string;
+    subModules: IModule[];
+    required: IRequired;
+    artifact: IArtifact;
+    id: string,
+    name: string,
+    type: DistroTypes,
+    classpath: boolean
+}
 
 export class Module {
 
@@ -16,7 +32,7 @@ export class Module {
      * 
      * @returns {Module} The parsed Module.
      */
-    public static fromJSON(json, serverid) {
+    public static fromJSON(json: IModule, serverid: string) {
         return new Module(json.id, json.name, json.type, json.classpath, json.required, json.artifact, json.subModules, serverid)
     }
 
@@ -50,7 +66,8 @@ export class Module {
     public artifactGroup: string;
 
     public subModules: Module[] = []
-
+    public required: Required;
+    public artifact: Artifact
     /**
      * @returns {string} The identifier without he version or extension.
      */
@@ -70,17 +87,22 @@ export class Module {
     }
 
 
-    constructor(public identifier: string,
+
+    constructor(
+        public identifier: string,
         public name: string,
         public type: DistroTypes,
         public classpath: boolean = true,
-        public required = Required.fromJSON(required),
-        public artifact = Artifact.fromJSON(artifact),
-        subModules,
-        serverid
+        required: IRequired,
+        artifact: IArtifact,
+        subModules: IModule[],
+        serverid: string
     ) {
+        this.required = Required.fromJSON(required);
+        this.artifact = Artifact.fromJSON(artifact);
+
         this.resolveMetaData()
-        this.resolveArtifactPath(artifact.path, serverid)
+        this.resolveArtifactPath(this.artifact.path, serverid)
         this.resolveSubModules(subModules, serverid)
     }
 

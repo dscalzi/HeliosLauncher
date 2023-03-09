@@ -3,7 +3,7 @@ import { LoggerUtil } from "helios-core/.";
 import { existsSync, readFileSync, writeFileSync } from "fs-extra";
 import os from 'os';
 import { join } from 'path';
-import { mcVersionAtLeast } from "../util/MinecraftUtil";
+import { MinecraftUtil } from "../util/MinecraftUtil";
 import { resolveMaxRAM, resolveMinRAM } from "../util/System";
 
 const logger = LoggerUtil.getLogger("ConfigManager");
@@ -49,7 +49,7 @@ export class ConfigManager {
     private static launcherDir = process.env.CONFIG_DIRECT_PATH ?? require("@electron/remote").app.getPath("userData");
     public static readonly DistributionURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/distribution.json';
     public static readonly launcherName = 'Helios-Launcher'
-
+    public static readonly azureClientId = '1ce6e35a-126f-48fd-97fb-54d143ac6d45'
     /**
      * Three types of values:
      * Static = Explicitly declared.
@@ -771,7 +771,7 @@ export class ConfigManager {
     };
 
     private static defaultJavaConfig(mcVersion: string) {
-        if (mcVersionAtLeast("1.17", mcVersion)) {
+        if (MinecraftUtil.mcVersionAtLeast("1.17", mcVersion)) {
             return this.defaultJavaConfig117();
         } else {
             return this.defaultJavaConfigBelow117();

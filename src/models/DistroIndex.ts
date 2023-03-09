@@ -1,6 +1,6 @@
 import { IServer, Server } from './Server';
 
-interface IDistroIndex {
+export interface IDistroIndex {
     version: string,
     rss: string,
     servers: IServer[]
@@ -34,6 +34,10 @@ export class DistroIndex {
         servers: IServer[],
     ) {
         this.resolveServers(servers);
+    }
+
+    public getServer(id: string) {
+        return this.servers.find(server => server.id === id);
     }
 
     private resolveServers(serverJsons: IServer[]) {

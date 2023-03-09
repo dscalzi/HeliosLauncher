@@ -16,7 +16,6 @@ export class DLTracker {
         public dlqueue: Asset[],
         public dlsize: number,
         public callback?: (asset: Asset) => void) {
-
     }
 
 }

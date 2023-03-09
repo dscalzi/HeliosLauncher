@@ -21,14 +21,10 @@ export class MinecraftUtil {
 
     public static isForgeGradle3(mcVersion: string, forgeVersion: string) {
 
-        if (this.mcVersionAtLeast('1.13', mcVersion)) {
-            return true
-        }
+        if (this.mcVersionAtLeast('1.13', mcVersion)) return true;
 
         try {
-
             const forgeVer = forgeVersion.split('-')[1]
-
             const maxFG2 = [14, 23, 5, 2847]
             const verSplit = forgeVer.split('.').map(v => Number(v))
 
@@ -39,16 +35,13 @@ export class MinecraftUtil {
                     return false
                 }
             }
-
             return false
-
         } catch (err) {
             throw new Error('Forge version is complex (changed).. launcher requires a patch.')
         }
     }
 
     public static isAutoconnectBroken(forgeVersion: string) {
-
         const minWorking = [31, 2, 15]
         const verSplit = forgeVersion.split('.').map(v => Number(v))
 

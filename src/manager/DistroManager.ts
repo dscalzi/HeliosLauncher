@@ -1,10 +1,10 @@
 import { readFile, writeFile } from "fs-extra"
 import { LoggerUtil } from "helios-core/.";
-import { DevUtil } from '../util/isDev';
-import request from "request";
+import { DevUtil } from '../util/DevUtil';
 import { ConfigManager } from "./ConfigManager";
 import { join } from 'path';
-import { DistroIndex } from '../models/DistroIndex';
+import { DistroIndex, IDistroIndex } from '../models/DistroIndex';
+import fetch from 'node-fetch';
 
 const logger = LoggerUtil.getLogger('DistroManager')
 export enum DistroTypes {
@@ -20,69 +20,40 @@ export enum DistroTypes {
 
 export class DistroManager {
 
-    public distribution!: DistroIndex;
-    private readonly DISTRO_PATH = join(ConfigManager.getLauncherDirectory(), 'distribution.json')
-    private readonly DEV_PATH = join(ConfigManager.getLauncherDirectory(), 'dev_distribution.json')
+    public static distribution?: DistroIndex;
+    private static readonly DISTRO_PATH = join(ConfigManager.getLauncherDirectory(), 'distribution.json')
+    private static readonly DEV_PATH = join(ConfigManager.getLauncherDirectory(), 'dev_distribution.json')
 
     /**
      * @returns {Promise.<DistroIndex>}
      */
-    public pullRemote() {
-        if (DevUtil.IsDev) {
-            return exports.pullLocal()
-        }
-        return new Promise((resolve, reject) => {
-            const opts = {
-                url: ConfigManager.DistributionURL,
-                timeout: 2500
-            }
-            const distroDest = join(ConfigManager.getLauncherDirectory(), 'distribution.json')
-            request(opts, (error: Error, _resp: any, body: string) => {
-                if (!error) {
+    public static async pullRemote() {
+        if (DevUtil.IsDev) return this.pullLocal();
 
-                    try {
-                        this.distribution = DistroIndex.fromJSON(JSON.parse(body))
-                    } catch (e) {
-                        reject(e)
-                        return
-                    }
+        const distroDest = join(ConfigManager.getLauncherDirectory(), 'distribution.json')
+        const response = await fetch(ConfigManager.DistributionURL, { signal: AbortSignal.timeout(2500) });
 
-                    writeFile(distroDest, body, 'utf-8', (err) => {
-                        if (!err) {
-                            resolve(this.distribution)
-                            return
-                        } else {
-                            reject(err)
-                            return
-                        }
-                    })
-                } else {
-                    reject(error)
-                    return
-                }
-            })
-        })
+        this.distribution = DistroIndex.fromJSON(await response.json() as IDistroIndex);
+
+        writeFile(distroDest, JSON.stringify(this.distribution), 'utf-8').catch(e => {
+            logger.warn("Failed to save local distribution.json")
+            logger.warn(e);
+        });
+
+        return this.distribution;
     }
 
     /**
      * @returns {Promise.<DistroIndex>}
      */
-    public pullLocal() {
-        return new Promise((resolve, reject) => {
-            readFile(DevUtil.IsDev ? this.DEV_PATH : this.DISTRO_PATH, 'utf-8', (err, d) => {
-                if (!err) {
-                    this.distribution = DistroIndex.fromJSON(JSON.parse(d))
-                    resolve(this.distribution)
-                    return
-                } else {
-                    reject(err)
-                    return
-                }
-            })
-        })
+    public static async pullLocal() {
+        const file = await readFile(DevUtil.IsDev ? this.DEV_PATH : this.DISTRO_PATH, 'utf-8');
+        this.distribution = DistroIndex.fromJSON(JSON.parse(file));
+        return this.distribution;
+
     }
 
-    public setDevMode(value: boolean) {
+    public static setDevMode(value: boolean) {
         if (value) {
             logger.info('Developer mode enabled.')
             logger.info('If you don\'t know what that means, revert immediately.')

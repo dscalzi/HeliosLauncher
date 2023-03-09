@@ -12,6 +12,8 @@ import { DistroTypes } from "../manager/DistroManager";
 import { Library } from "../models/Library";
 import { Module } from "../models/Module";
 import { Required } from "../models/Required";
+import { ArgumentRule, MinecraftGameVersionManifest } from '../dto/Minecraft';
+import { Server } from '../models/Server';
 
 const logger = LoggerUtil.getLogger('ProcessBuilder')
 export default class ProcessBuilder {
@@ -42,14 +44,14 @@ export default class ProcessBuilder {
     public llPath?: string;
 
     constructor(
-        public server,
-        public versionData,
+        public server: Server,
+        public versionData: MinecraftGameVersionManifest,
         public forgeData,
         public authUser,
         public launcherVersion
     ) {
 
-        this.gameDir = join(ConfigManager.instanceDirectory, server.getID())
+        this.gameDir = join(ConfigManager.instanceDirectory, server.id)
         this.commonDir = ConfigManager.commonDirectory
         this.versionData = versionData
         this.forgeData = forgeData
@@ -72,27 +74,27 @@ export default class ProcessBuilder {
         process.throwDeprecation = true
         this.setupLiteLoader()
         logger.info('Using liteloader:', this.usingLiteLoader)
-        const modObj = this.resolveModConfiguration(ConfigManager.getModConfigurationForServer(this.server.getID()).mods, this.server.getModules())
+        const modObj = this.resolveModConfiguration(ConfigManager.getModConfigurationForServer(this.server.id).mods, this.server.modules)
 
         // Mod list below 1.13
-        if (!MinecraftUtil.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())) {
+        if (!MinecraftUtil.mcVersionAtLeast('1.13', this.server.minecraftVersion)) {
             this.constructJSONModList('forge', modObj.forgeMods, true)
             if (this.usingLiteLoader) {
                 this.constructJSONModList('liteloader', modObj.liteMods, true)
             }
         }
 
-        const uberModArr = modObj.forgeMods.concat(modObj.liteMods)
-        let args = this.constructJVMArguments(uberModArr, tempNativePath)
+        const everyMods = modObj.forgeMods.concat(modObj.liteMods)
+        let args = this.constructJVMArguments(everyMods, tempNativePath)
 
-        if (MinecraftUtil.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())) {
+        if (MinecraftUtil.mcVersionAtLeast('1.13', this.server.minecraftVersion)) {
             //args = args.concat(this.constructModArguments(modObj.forgeMods))
             args = args.concat(this.constructModList(modObj.forgeMods))
         }
 
         logger.info('Launch Arguments:', args)
 
-        const child = spawn(ConfigManager.getJavaExecutable(this.server.getID()), args, {
+        const child = spawn(ConfigManager.getJavaExecutable(this.server.id), args, {
             cwd: this.gameDir,
             detached: ConfigManager.getLaunchDetached()
         })
@@ -132,20 +134,20 @@ export default class ProcessBuilder {
      * mod. It must not be declared as a submodule.
      */
     public setupLiteLoader() {
-        for (let ll of this.server.getModules()) {
-            if (ll.getType() === DistroTypes.LiteLoader) {
-                if (!ll.getRequired().isRequired()) {
-                    const modCfg = ConfigManager.getModConfigurationForServer(this.server.getID()).mods
-                    if (ProcessBuilder.isModEnabled(modCfg[ll.getVersionlessID()], ll.getRequired())) {
-                        if (existsSync(ll.getArtifact().getPath())) {
+        for (let module of this.server.modules) {
+            if (module.type === DistroTypes.LiteLoader) {
+                if (!module.required.isRequired) {
+                    const modCfg = ConfigManager.getModConfigurationForServer(this.server.id).mods
+                    if (ProcessBuilder.isModEnabled(modCfg[module.versionlessID], module.required)) {
+                        if (existsSync(module.artifact.getPath())) {
                             this.usingLiteLoader = true
-                            this.llPath = ll.getArtifact().getPath()
+                            this.llPath = module.artifact.getPath()
                         }
                     }
                 } else {
-                    if (existsSync(ll.getArtifact().getPath())) {
+                    if (existsSync(module.artifact.getPath())) {
                         this.usingLiteLoader = true
-                        this.llPath = ll.getArtifact().getPath()
+                        this.llPath = module.artifact.getPath()
                     }
                 }
             }
@@ -168,7 +170,7 @@ export default class ProcessBuilder {
         for (let module of modules) {
             const type = module.type;
             if (type === DistroTypes.ForgeMod || type === DistroTypes.LiteMod || type === DistroTypes.LiteLoader) {
-                const isRequired = !module.required.isRequired()
+                const isRequired = !module.required.isRequired
                 const isEnabled = ProcessBuilder.isModEnabled(modConfig[module.versionlessID], module.required)
                 if (!isRequired || (isRequired && isEnabled)) {
                     if (module.hasSubModules) {
@@ -209,7 +211,7 @@ export default class ProcessBuilder {
             modRef: []
         }
 
-        const ids = []
+        const ids: string[] = []
         if (type === 'forge') {
             for (let mod of mods) {
                 ids.push(mod.extensionlessID)
@@ -237,8 +239,8 @@ export default class ProcessBuilder {
      * @param {string} tempNativePath The path to store the native libraries.
      * @returns {Array.<string>} An array containing the full JVM arguments for this process.
      */
-    public constructJVMArguments(mods: Module, tempNativePath: string) {
-        if (MinecraftUtil.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())) {
+    public constructJVMArguments(mods: Module[], tempNativePath: string): string[] {
+        if (MinecraftUtil.mcVersionAtLeast('1.13', this.server.minecraftVersion)) {
             return this.constructJVMArguments113(mods, tempNativePath)
         } else {
             return this.constructJVMArguments112(mods, tempNativePath)
@@ -258,7 +260,7 @@ export default class ProcessBuilder {
     public classpathArg(mods: Module[], tempNativePath: string) {
         let cpArgs: string[] = []
 
-        if (!MinecraftUtil.mcVersionAtLeast('1.17', this.server.getMinecraftVersion())) {
+        if (!MinecraftUtil.mcVersionAtLeast('1.17', this.server.minecraftVersion)) {
             // Add the version.jar to the classpath.
             // Must not be added to the classpath for Forge 1.17+.
             const version = this.versionData.id
@@ -340,7 +342,7 @@ export default class ProcessBuilder {
      * @returns {{[id: string]: string}} An object containing the paths of each library this server requires.
      */
     private resolveServerLibraries(mods: Module[]) {
-        const modules: Module[] = this.server.getModules();
+        const modules: Module[] = this.server.modules;
         let libs: Record<string, string> = {}
 
         // Locate Forge/Libraries
@@ -351,6 +353,8 @@ export default class ProcessBuilder {
                 if (!module.hasSubModules) continue;
                 const res = this.resolveModuleLibraries(module)
                 if (res.length > 0) {
+
+                    //TODO: I don't understand why ? 
                     libs = { ...libs, ...res }
                 }
             }
@@ -362,6 +366,7 @@ export default class ProcessBuilder {
             if (!mod.hasSubModules) continue;
             const res = this.resolveModuleLibraries(mods[i])
             if (res.length > 0) {
+                //TODO: I don't understand why ? 
                 libs = { ...libs, ...res }
             }
         }
@@ -539,9 +544,9 @@ export default class ProcessBuilder {
             args.push(`-Xdock:name=${ConfigManager.launcherName.replace(" ", "")}`)
             args.push('-Xdock:icon=' + join(__dirname, '..', 'images', 'minecraft.icns'))
         }
-        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.getID()))
-        args.push('-Xms' + ConfigManager.getMinRAM(this.server.getID()))
-        args = args.concat(ConfigManager.getJVMOptions(this.server.getID()))
+        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.id))
+        args.push('-Xms' + ConfigManager.getMinRAM(this.server.id))
+        args = args.concat(ConfigManager.getJVMOptions(this.server.id))
         args.push('-Djava.library.path=' + tempNativePath)
 
         // Main Java Class
@@ -563,12 +568,12 @@ export default class ProcessBuilder {
      * @param {string} tempNativePath The path to store the native libraries.
      * @returns {Array.<string>} An array containing the full JVM arguments for this process.
      */
-    private constructJVMArguments113(mods: Module, tempNativePath: string) {
+    private constructJVMArguments113(mods: Module[], tempNativePath: string): string[] {
 
         const argDiscovery = /\${*(.*)}/
 
         // JVM Arguments First
-        let args: string[] = this.versionData.arguments.jvm
+        let args = this.versionData.arguments.jvm
 
         // Debug securejarhandler
         // args.push('-Dbsl.debug=true')
@@ -590,9 +595,9 @@ export default class ProcessBuilder {
             args.push(`-Xdock:name=${ConfigManager.launcherName.replace(" ", "")}`)
             args.push('-Xdock:icon=' + join(__dirname, '..', 'images', 'minecraft.icns'))
         }
-        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.getID()))
-        args.push('-Xms' + ConfigManager.getMinRAM(this.server.getID()))
-        args = args.concat(ConfigManager.getJVMOptions(this.server.getID()))
+        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.id))
+        args.push('-Xms' + ConfigManager.getMinRAM(this.server.id))
+        args = args.concat(ConfigManager.getJVMOptions(this.server.id))
 
         // Main Java Class
         args.push(this.forgeData.mainClass)
@@ -601,62 +606,19 @@ export default class ProcessBuilder {
         args = args.concat(this.versionData.arguments.game)
 
         for (let i = 0; i < args.length; i++) {
-            if (typeof args[i] === 'object' && args[i].rules != null) {
+            const argument = args[i];
+            if (typeof argument === 'string') {
 
-                let checksum = 0
-                for (let rule of args[i].rules) {
-                    if (rule.os != null) {
-                        if (rule.os.name === Library.mojangFriendlyOS()
-                            && (rule.os.version == null || new RegExp(rule.os.version).test(os.release()))) {
-                            if (rule.action === 'allow') {
-                                checksum++
-                            }
-                        } else {
-                            if (rule.action === 'disallow') {
-                                checksum++
-                            }
-                        }
-                    } else if (rule.features != null) {
-                        // We don't have many 'features' in the index at the moment.
-                        // This should be fine for a while.
-                        if (rule.features.has_custom_resolution != null && rule.features.has_custom_resolution === true) {
-                            if (ConfigManager.getFullscreen()) {
-                                args[i].value = [
-                                    '--fullscreen',
-                                    'true'
-                                ]
-                            }
-                            checksum++
-                        }
-                    }
-                }
-
-                // TODO splice not push
-                if (checksum === args[i].rules.length) {
-                    if (typeof args[i].value === 'string') {
-                        args[i] = args[i].value
-                    } else if (typeof args[i].value === 'object') {
-                        //args = args.concat(args[i].value)
-                        args.splice(i, 1, ...args[i].value)
-                    }
-
-                    // Decrement i to reprocess the resolved value
-                    i--
-                } else {
-                    args[i] = null
-                }
-
-            } else if (typeof args[i] === 'string') {
-                if (argDiscovery.test(args[i])) {
-                    const identifier = args[i].match(argDiscovery)[1]
-                    let val = null
+                if (argDiscovery.test(argument)) {
+                    const identifier = argument.match(argDiscovery)![1]
+                    let val: string | null = null;
                     switch (identifier) {
                         case 'auth_player_name':
                             val = this.authUser.displayName.trim()
                             break
                         case 'version_name':
                             //val = versionData.id
-                            val = this.server.getID()
+                            val = this.server.id
                             break
                         case 'game_directory':
                             val = this.gameDir
@@ -680,27 +642,72 @@ export default class ProcessBuilder {
                             val = this.versionData.type
                             break
                         case 'resolution_width':
-                            val = ConfigManager.getGameWidth()
+                            val = ConfigManager.getGameWidth().toString();
                             break
                         case 'resolution_height':
-                            val = ConfigManager.getGameHeight()
+                            val = ConfigManager.getGameHeight().toString();
                             break
                         case 'natives_directory':
-                            val = args[i].replace(argDiscovery, tempNativePath)
+                            val = argument.replace(argDiscovery, tempNativePath)
                             break
                         case 'launcher_name':
-                            val = args[i].replace(argDiscovery, ConfigManager.launcherName)
+                            val = argument.replace(argDiscovery, ConfigManager.launcherName)
                             break
                         case 'launcher_version':
-                            val = args[i].replace(argDiscovery, this.launcherVersion)
+                            val = argument.replace(argDiscovery, this.launcherVersion)
                             break
                         case 'classpath':
                             val = this.classpathArg(mods, tempNativePath).join(ProcessBuilder.classpathSeparator)
                             break
                     }
-                    if (val != null) {
+                    if (val) {
                         args[i] = val
                     }
+                }
+
+            } else if (argument.rules != null) {
+                let checksum = 0
+                for (let rule of argument.rules) {
+                    if (rule.os != null) {
+                        if (rule.os.name === Library.mojangFriendlyOS()
+                            && (rule.os.version == null || new RegExp(rule.os.version).test(os.release()))) {
+                            if (rule.action === 'allow') {
+                                checksum++
+                            }
+                        } else {
+                            if (rule.action === 'disallow') {
+                                checksum++
+                            }
+                        }
+                    } else if (rule.features != null) {
+                        // We don't have many 'features' in the index at the moment.
+                        // This should be fine for a while.
+                        // TODO: Make it a bit better 
+                        if (rule.features.has_custom_resolution != null && rule.features.has_custom_resolution === true) {
+                            if (ConfigManager.getFullscreen()) {
+                                (args[i] as ArgumentRule).value = [
+                                    '--fullscreen',
+                                    'true'
+                                ]
+                            }
+                            checksum++
+                        }
+                    }
+                }
+
+                // TODO splice not push
+                if (checksum === argument.rules.length) {
+                    if (typeof argument.value === 'string') {
+                        args[i] = argument.value
+                    } else if (typeof argument.value === 'object') {
+                        args.splice(i, 1, ...argument.value)
+                    }
+
+                    // Decrement i to reprocess the resolved value
+                    i--;
+                } else {
+                    // If not whith the checksum remove the element.
+                    args.splice(i, 1)
                 }
             }
         }
@@ -727,11 +734,9 @@ export default class ProcessBuilder {
         args = args.concat(this.forgeData.arguments.game)
 
         // Filter null values
-        args = args.filter(arg => {
-            return arg != null
-        })
+        args = args.filter(arg => typeof arg === 'string')
 
-        return args
+        return args as string[]
     }
 
     private lteMinorVersion(version: number) {
@@ -782,14 +787,14 @@ export default class ProcessBuilder {
         for (let i = 0; i < mcArgs.length; ++i) {
             if (argDiscovery.test(mcArgs[i])) {
                 const identifier = mcArgs[i].match(argDiscovery)[1]
-                let val = null
+                let val: string | null = null
                 switch (identifier) {
                     case 'auth_player_name':
                         val = this.authUser.displayName.trim()
                         break
                     case 'version_name':
                         //val = versionData.id
-                        val = this.server.getID()
+                        val = this.server.id
                         break
                     case 'game_directory':
                         val = this.gameDir
@@ -858,10 +863,11 @@ export default class ProcessBuilder {
         return mcArgs
     }
 
-
-    private processAutoConnectArg(args: string[]) {
-        if (ConfigManager.getAutoConnect() && this.server.isAutoConnect()) {
-            const serverURL = new URL('my://' + this.server.getAddress())
+    //TODO: Not a huge fan of working by reference in Typescript/JS
+    // Can be a bit shitty some times
+    private processAutoConnectArg(args: any[]) {
+        if (ConfigManager.getAutoConnect() && this.server.autoconnect) {
+            const serverURL = new URL('my://' + this.server.address)
             args.push('--server')
             args.push(serverURL.hostname)
             if (serverURL.port) {

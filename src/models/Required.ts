@@ -17,7 +17,7 @@ export class Required {
      * 
      * @returns {Required} The parsed Required object.
      */
-    static fromJSON(json: IRequired) {
+    public static fromJSON(json: IRequired) {
         if (json == null) {
             return new Required(true, true)
         } else {
