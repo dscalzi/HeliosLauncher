@@ -4,18 +4,29 @@
     "es2021": true,
     "node": true
   },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["svelte3", "eslint-plugin-jsdoc", "eslint-plugin-prefer-arrow", "@typescript-eslint"],
   "extends": [
+    "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier"
   ],
-  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "tsconfig.svelte.json",
+    "project": "svelte.tsconfig.json",
     "ecmaVersion": 2021,
-    "sourceType": "module"
+    "sourceType": "module",
+    "extraFileExtensions": [".svelte"]
   },
-  "plugins": ["eslint-plugin-jsdoc", "eslint-plugin-prefer-arrow", "@typescript-eslint"],
+  "overrides": [
+    {
+      "files": ["*.svelte"],
+      "processor": "svelte3/svelte3"
+    }
+  ],
+  "settings": {
+    "svelte3/typescript": true
+  },
   "rules": {
     "@typescript-eslint/adjacent-overload-signatures": "error",
     "@typescript-eslint/array-type": [

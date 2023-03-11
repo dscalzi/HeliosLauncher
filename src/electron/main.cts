@@ -13,7 +13,6 @@ import logger from "./utils/logger.cjs";
 import settings from "./utils/settings.cjs";
 
 const isProd = process.env.NODE_ENV === "production" || app.isPackaged;
-console.log("isprod: ", isProd)
 logger.info("App starting...");
 settings.set("check", true);
 logger.info("Checking if settings store works correctly.");

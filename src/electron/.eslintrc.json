@@ -11,7 +11,7 @@
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "tsconfig.electron.json",
+    "project": "electron.tsconfig.json",
     "sourceType": "module"
   },
   "plugins": ["eslint-plugin-jsdoc", "eslint-plugin-prefer-arrow", "@typescript-eslint"],

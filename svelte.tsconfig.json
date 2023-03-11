@@ -13,10 +13,9 @@
   },
   "include": [
     "vite.config.ts",
-    "../src/frontend/**/*.d.ts",
-    "../src/frontend/**/*.ts",
-    "../src/frontend/**/*.js",
-    "../src/frontend/**/*.svelte"
-  ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+    "src/frontend/**/*.d.ts",
+    "src/frontend/**/*.ts",
+    "src/frontend/**/*.js",
+    "src/frontend/**/*.svelte"
+  ]
 }
