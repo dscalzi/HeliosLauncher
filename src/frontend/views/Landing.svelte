@@ -1,14 +1,24 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
+  import NewsComponent from "../components/landing/NewsComponent.svelte";
   import { currentView } from "../store/AppStore";
   import { PossibleViewState } from "../types/PossibleAppState";
+
+  let showNews = false;
+  $: hideLanding = showNews ? "-200vh" : "";
+  $: upNewsButton = showNews ? "-70vh" : "10px";
 </script>
 
-<div id="landingContainer" in:fade="{{ delay: 500 }}" out:fade>
-  <div id="upper">
+<div
+  id="landingContainer"
+  in:fade="{{ delay: 500 }}"
+  style="background: {showNews ? 'rgba(0, 0, 0, 0.50)' : ''} "
+  out:fade
+>
+  <div id="upper" style="top: {hideLanding}">
     <div id="left">
       <div id="image_seal_container">
-        <img id="image_seal" src="assets/images/SealCircle.png" />
+        <img id="image_seal" src="assets/images/SealCircle.png" alt="SealCircle.png" />
         <div id="updateAvailableTooltip">Update Available</div>
       </div>
     </div>
@@ -56,7 +66,7 @@
               </a>
             </div>
             <div class="mediaContainer">
-              <a href="#" class="mediaURL" id="twitterURL" disabled>
+              <a href="#" class="mediaURL" id="twitterURL">
                 <svg id="twitterSVG" class="mediaSVG" viewBox="0 0 5000 4060" preserveAspectRatio="xMidYMid meet">
                   <g>
                     <path
@@ -67,7 +77,7 @@
               </a>
             </div>
             <div class="mediaContainer">
-              <a href="#" class="mediaURL" id="instagramURL" disabled>
+              <a href="#" class="mediaURL" id="instagramURL">
                 <svg id="instagramSVG" class="mediaSVG" viewBox="0 0 5040 5040">
                   <defs>
                     <radialGradient id="instaFill" cx="30%" cy="107%" r="150%">
@@ -93,7 +103,7 @@
               </a>
             </div>
             <div class="mediaContainer">
-              <a href="#" class="mediaURL" id="youtubeURL" disabled>
+              <a href="#" class="mediaURL" id="youtubeURL">
                 <svg id="youtubeSVG" class="mediaSVG" viewBox="35.34 34.3575 70.68 68.71500">
                   <g>
                     <path
@@ -119,8 +129,9 @@
       </div>
     </div>
   </div>
+
   <div id="lower">
-    <div id="left">
+    <div id="left" style="top: {hideLanding}">
       <div class="bot_wrapper">
         <div id="content">
           <div id="server_status_wrapper">
@@ -151,8 +162,8 @@
     </div>
     <div id="center">
       <div class="bot_wrapper">
-        <div id="content">
-          <button id="newsButton">
+        <div id="content" style="top: {upNewsButton}">
+          <button id="newsButton" on:click="{(e) => (showNews = !showNews)}">
             <!--<img src="assets/images/icons/arrow.svg" id="newsButtonSVG"/>-->
             <div id="newsButtonAlert" style="display: none;"></div>
             <svg id="newsButtonSVG" viewBox="0 0 24.87 13.97">
@@ -172,7 +183,7 @@
         </div>
       </div>
     </div>
-    <div id="right">
+    <div id="right" style="top: {hideLanding}">
       <div class="bot_wrapper">
         <div id="launch_content">
           <button id="launch_button">PLAY</button>
@@ -192,76 +203,6 @@
       </div>
     </div>
   </div>
-  <div id="newsContainer">
-    <div id="newsContent" article="-1" style="display: none;">
-      <div id="newsStatusContainer">
-        <div id="newsStatusContent">
-          <div id="newsTitleContainer">
-            <a id="newsArticleTitle" href="#">Lorem Ipsum</a>
-          </div>
-          <div id="newsMetaContainer">
-            <div id="newsArticleDateWrapper">
-              <span id="newsArticleDate">Mar 15, 44 BC, 9:14 AM</span>
-            </div>
-            <div id="newsArticleAuthorWrapper">
-              <span id="newsArticleAuthor">by Cicero</span>
-            </div>
-            <a href="#" id="newsArticleComments">0 Comments</a>
-          </div>
-        </div>
-        <div id="newsNavigationContainer">
-          <button id="newsNavigateLeft">
-            <svg id="newsNavigationLeftSVG" viewBox="0 0 24.87 13.97">
-              <defs>
-                <style>
-                  .arrowLine {
-                    fill: none;
-                    stroke: #fff;
-                    stroke-width: 2px;
-                    transition: 0.25s ease;
-                  }
-                </style>
-              </defs>
-              <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"></polyline>
-            </svg>
-          </button>
-          <span id="newsNavigationStatus">1 of 1</span>
-          <button id="newsNavigateRight">
-            <svg id="newsNavigationRightSVG" viewBox="0 0 24.87 13.97">
-              <defs>
-                <style>
-                  .arrowLine {
-                    fill: none;
-                    stroke: #fff;
-                    stroke-width: 2px;
-                    transition: 0.25s ease;
-                  }
-                </style>
-              </defs>
-              <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"></polyline>
-            </svg>
-          </button>
-        </div>
-      </div>
-      <div id="newsArticleContainer">
-        <div id="newsArticleContent">
-          <div id="newsArticleContentScrollable">
-            <!-- Article Content -->
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="newsErrorContainer">
-      <div id="newsErrorLoading">
-        <span id="nELoadSpan" class="newsErrorContent">Checking for News..</span>
-      </div>
-      <div id="newsErrorFailed" style="display: none;">
-        <span id="nEFailedSpan" class="newsErrorContent">Failed to Load News</span>
-        <button id="newsErrorRetry">Try Again</button>
-      </div>
-      <div id="newsErrorNone" style="display: none;">
-        <span id="nENoneSpan" class="newsErrorContent">No News</span>
-      </div>
-    </div>
-  </div>
+
+  <NewsComponent showNews="{showNews}" />
 </div>
