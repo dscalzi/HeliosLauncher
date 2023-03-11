@@ -1,0 +1,5 @@
+{
+  "watch": ["build/electron"],
+  "exec": "npm run start:electron:run",
+  "ext": "js, cjs, json, ts, proto, css, png, jpeg, jpg, ico"
+}

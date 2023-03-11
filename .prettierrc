@@ -1,0 +1,9 @@
+{
+  "printWidth": 120,
+  "singleQuote": false,
+  "trailingComma": "es5",
+  "jsxSingleQuote": false,
+  "svelteSortOrder": "styles-scripts-markup",
+  "svelteStrictMode": true,
+  "svelteAllowShorthand": false
+}

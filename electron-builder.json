@@ -1,0 +1,28 @@
+{
+  "productName": "Minecraft Launcher",
+  "appId": "electron.minecraft.launcher",
+  "copyright": "Copyright © 2023 ${author}",
+
+  "win": {
+    "target": ["nsis"]
+  },
+  "mac": {
+    "target": ["dmg"],
+    "category": "productivity",
+    "type": "distribution",
+    "hardenedRuntime": "true"
+  },
+  "linux": {
+    "target": ["AppImage", "snap"],
+    "category": "productivity"
+  },
+  "files": ["./build/**/*", "./node_modules/**/*", "./package.json"],
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "Daniel Scalzi",
+      "contributers": ["Shadowner"],
+      "repo": "minecraftLauncher"
+    }
+  ]
+}
