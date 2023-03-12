@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
-  "version": "1.9.0",
-  "productName": "Helios Launcher",
+  "name": "hardiumlauncher",
+  "version": "1.0.0",
+  "productName": "Hardium Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "author": "MrPiano5454",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/MrPiano5454/hardiumLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/MrPiano5454/hardiumLauncher/pulls"
   },
   "private": true,
   "main": "index.js",
@@ -49,6 +49,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/MrPiano5454/hardiumLauncher.git"
   }
 }
