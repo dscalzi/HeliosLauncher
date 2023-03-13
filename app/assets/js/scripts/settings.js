@@ -2,7 +2,6 @@
 const os     = require('os')
 const semver = require('semver')
 
-const { JavaGuard } = require('./assets/js/assetguard')
 const DropinModUtil  = require('./assets/js/dropinmodutil')
 const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
 
@@ -1350,21 +1349,19 @@ function populateMemoryStatus(){
  * @param {string} execPath The executable path to populate against.
  */
 async function populateJavaExecDetails(execPath){
-    const jg = new JavaGuard((await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer()).rawServer.minecraftVersion)
-    jg._validateJavaBinary(execPath).then(v => {
-        if(v.valid){
-            const vendor = v.vendor != null ? ` (${v.vendor})` : ''
-            if(v.version.major < 9) {
-                settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major} Update ${v.version.update} (x${v.arch})${vendor}`
-            } else {
-                settingsJavaExecDetails.innerHTML = `Selected: Java ${v.version.major}.${v.version.minor}.${v.version.revision} (x${v.arch})${vendor}`
-            }
-        } else {
-            settingsJavaExecDetails.innerHTML = 'Invalid Selection'
-        }
-    })
+    const mcVer = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer()).rawServer.minecraftVersion
+
+    // TODO Update to use semver range
+    const details = await validateSelectedJvm(ensureJavaDirIsRoot(execPath), getDefaultSemverRange(mcVer))
+
+    if(details != null) {
+        settingsJavaExecDetails.innerHTML = `Selected: Java ${details.semverStr} (${vendor})`
+    } else {
+        settingsJavaExecDetails.innerHTML = 'Invalid Selection'
+    }
 }
 
+// TODO Update to use semver range
 async function populateJavaReqDesc() {
     const mcVer = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer()).rawServer.minecraftVersion
     if(mcVersionAtLeast('1.17', mcVer)) {
@@ -1374,6 +1371,7 @@ async function populateJavaReqDesc() {
     }
 }
 
+// TODO Update to use semver range
 async function populateJvmOptsLink() {
     const mcVer = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer()).rawServer.minecraftVersion
     if(mcVersionAtLeast('1.17', mcVer)) {

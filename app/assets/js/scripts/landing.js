@@ -19,6 +19,13 @@ const {
     DistributionIndexProcessor,
     MojangIndexProcessor
 }                             = require('helios-core/dl')
+const {
+    getDefaultSemverRange,
+    validateSelectedJvm,
+    ensureJavaDirIsRoot,
+    javaExecFromRoot,
+    discoverBestJvmInstallation
+}                             = require('helios-core/java')
 
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
@@ -97,22 +104,21 @@ document.getElementById('launch_button').addEventListener('click', async (e) => 
     const mcVersion = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer()).rawServer.minecraftVersion
     const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
     if(jExe == null){
-        asyncSystemScan(mcVersion)
+        await asyncSystemScan(mcVersion)
     } else {
 
         setLaunchDetails(Lang.queryJS('landing.launch.pleaseWait'))
         toggleLaunchArea(true)
         setLaunchPercentage(0, 100)
 
-        const jg = new JavaGuard(mcVersion)
-        jg._validateJavaBinary(jExe).then(async v => {
-            loggerLanding.info('Java version meta', v)
-            if(v.valid){
-                await dlAsync()
-            } else {
-                asyncSystemScan(mcVersion)
-            }
-        })
+        // TODO Update to use semver range
+        const details = await validateSelectedJvm(ensureJavaDirIsRoot(execPath), getDefaultSemverRange(mcVer))
+        if(details != null){
+            loggerLanding.info('Jvm Details', details)
+            await dlAsync()
+        } else {
+            await asyncSystemScan(mcVersion)
+        }
     }
 })
 
@@ -284,9 +290,6 @@ function showLaunchFailure(title, desc){
 
 /* System (Java) Scan */
 
-let sysAEx
-let scanAt
-
 let extractListener
 
 /**
@@ -295,178 +298,159 @@ let extractListener
  * @param {string} mcVersion The Minecraft version we are scanning for.
  * @param {boolean} launchAfter Whether we should begin to launch after scanning. 
  */
-function asyncSystemScan(mcVersion, launchAfter = true){
+async function asyncSystemScan(mcVersion, launchAfter = true){
 
-    setLaunchDetails('Please wait..')
+    setLaunchDetails('Checking system info..')
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
-    const forkEnv = JSON.parse(JSON.stringify(process.env))
-    forkEnv.CONFIG_DIRECT_PATH = ConfigManager.getLauncherDirectory()
-
-    // Fork a process to run validations.
-    sysAEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
-        'JavaGuard',
-        mcVersion
-    ], {
-        env: forkEnv,
-        stdio: 'pipe'
-    })
-    // Stdout
-    sysAEx.stdio[1].setEncoding('utf8')
-    sysAEx.stdio[1].on('data', (data) => {
-        console.log(`\x1b[32m[SysAEx]\x1b[0m ${data}`)
-    })
-    // Stderr
-    sysAEx.stdio[2].setEncoding('utf8')
-    sysAEx.stdio[2].on('data', (data) => {
-        console.log(`\x1b[31m[SysAEx]\x1b[0m ${data}`)
-    })
-
     const javaVer = mcVersionAtLeast('1.17', mcVersion) ? '17' : '8'
-    
-    sysAEx.on('message', async (m) => {
 
-        if(m.context === 'validateJava'){
-            if(m.result == null){
-                // If the result is null, no valid Java installation was found.
-                // Show this information to the user.
+    const jvmDetails = await discoverBestJvmInstallation(
+        ConfigManager.getDataDirectory(),
+        getDefaultSemverRange(mcVersion)
+    )
+
+    if(jvmDetails == null) {
+        // If the result is null, no valid Java installation was found.
+        // Show this information to the user.
+        setOverlayContent(
+            'No Compatible<br>Java Installation Found',
+            `In order to join WesterosCraft, you need a 64-bit installation of Java ${javaVer}. Would you like us to install a copy?`,
+            'Install Java',
+            'Install Manually'
+        )
+        setOverlayHandler(() => {
+            setLaunchDetails('Preparing Java Download..')
+            
+            // TODO Kick off JDK download.
+
+            toggleOverlay(false)
+        })
+        setDismissHandler(() => {
+            $('#overlayContent').fadeOut(250, () => {
+                //$('#overlayDismiss').toggle(false)
                 setOverlayContent(
-                    'No Compatible<br>Java Installation Found',
-                    `In order to join WesterosCraft, you need a 64-bit installation of Java ${javaVer}. Would you like us to install a copy?`,
-                    'Install Java',
-                    'Install Manually'
+                    'Java is Required<br>to Launch',
+                    `A valid x64 installation of Java ${javaVer} is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.`,
+                    'I Understand',
+                    'Go Back'
                 )
                 setOverlayHandler(() => {
-                    setLaunchDetails('Preparing Java Download..')
-                    sysAEx.send({task: 'changeContext', class: 'AssetGuard', args: [ConfigManager.getCommonDirectory(),ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())]})
-                    sysAEx.send({task: 'execute', function: '_enqueueOpenJDK', argsArr: [ConfigManager.getDataDirectory(), mcVersion]})
+                    toggleLaunchArea(false)
                     toggleOverlay(false)
                 })
                 setDismissHandler(() => {
-                    $('#overlayContent').fadeOut(250, () => {
-                        //$('#overlayDismiss').toggle(false)
-                        setOverlayContent(
-                            'Java is Required<br>to Launch',
-                            `A valid x64 installation of Java ${javaVer} is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.`,
-                            'I Understand',
-                            'Go Back'
-                        )
-                        setOverlayHandler(() => {
-                            toggleLaunchArea(false)
-                            toggleOverlay(false)
-                        })
-                        setDismissHandler(() => {
-                            toggleOverlay(false, true)
-                            asyncSystemScan()
-                        })
-                        $('#overlayContent').fadeIn(250)
-                    })
+                    toggleOverlay(false, true)
+
+                    // TODO Change this flow
+                    // Should be a separate function probably.
+                    asyncSystemScan()
                 })
-                toggleOverlay(true, true)
+                $('#overlayContent').fadeIn(250)
+            })
+        })
+        toggleOverlay(true, true)
+    } else {
+        // Java installation found, use this to launch the game.
+        const javaExec = javaExecFromRoot(jvmDetails.path)
+        ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), javaExec)
+        ConfigManager.save()
 
-            } else {
-                // Java installation found, use this to launch the game.
-                ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), m.result)
-                ConfigManager.save()
+        // We need to make sure that the updated value is on the settings UI.
+        // Just incase the settings UI is already open.
+        settingsJavaExecVal.value = javaExec
+        await populateJavaExecDetails(settingsJavaExecVal.value)
 
-                // We need to make sure that the updated value is on the settings UI.
-                // Just incase the settings UI is already open.
-                settingsJavaExecVal.value = m.result
-                await populateJavaExecDetails(settingsJavaExecVal.value)
-
-                if(launchAfter){
-                    await dlAsync()
-                }
-                sysAEx.disconnect()
-            }
-        } else if(m.context === '_enqueueOpenJDK'){
-
-            if(m.result === true){
-
-                // Oracle JRE enqueued successfully, begin download.
-                setLaunchDetails('Downloading Java..')
-                sysAEx.send({task: 'execute', function: 'processDlQueues', argsArr: [[{id:'java', limit:1}]]})
-
-            } else {
-
-                // Oracle JRE enqueue failed. Probably due to a change in their website format.
-                // User will have to follow the guide to install Java.
-                setOverlayContent(
-                    'Unexpected Issue:<br>Java Download Failed',
-                    'Unfortunately we\'ve encountered an issue while attempting to install Java. You will need to manually install a copy. Please check out our <a href="https://github.com/dscalzi/HeliosLauncher/wiki">Troubleshooting Guide</a> for more details and instructions.',
-                    'I Understand'
-                )
-                setOverlayHandler(() => {
-                    toggleOverlay(false)
-                    toggleLaunchArea(false)
-                })
-                toggleOverlay(true)
-                sysAEx.disconnect()
-
-            }
-
-        } else if(m.context === 'progress'){
-
-            switch(m.data){
-                case 'download':
-                    // Downloading..
-                    setDownloadPercentage(m.value, m.total, m.percent)
-                    break
-            }
-
-        } else if(m.context === 'complete'){
-
-            switch(m.data){
-                case 'download': {
-                    // Show installing progress bar.
-                    remote.getCurrentWindow().setProgressBar(2)
-
-                    // Wait for extration to complete.
-                    const eLStr = 'Extracting'
-                    let dotStr = ''
-                    setLaunchDetails(eLStr)
-                    extractListener = setInterval(() => {
-                        if(dotStr.length >= 3){
-                            dotStr = ''
-                        } else {
-                            dotStr += '.'
-                        }
-                        setLaunchDetails(eLStr + dotStr)
-                    }, 750)
-                    break
-                }
-                case 'java':
-                // Download & extraction complete, remove the loading from the OS progress bar.
-                    remote.getCurrentWindow().setProgressBar(-1)
-
-                    // Extraction completed successfully.
-                    ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), m.args[0])
-                    ConfigManager.save()
-
-                    if(extractListener != null){
-                        clearInterval(extractListener)
-                        extractListener = null
-                    }
-
-                    setLaunchDetails('Java Installed!')
-
-                    if(launchAfter){
-                        await dlAsync()
-                    }
-
-                    sysAEx.disconnect()
-                    break
-            }
-
-        } else if(m.context === 'error'){
-            console.log(m.error)
+        // TODO Move this out, separate concerns.
+        if(launchAfter){
+            await dlAsync()
         }
-    })
+    }
+    
+    // TODO Integrate into assetguard 2.
+    // if(m.context === '_enqueueOpenJDK'){
 
-    // Begin system Java scan.
-    setLaunchDetails('Checking system info..')
-    sysAEx.send({task: 'execute', function: 'validateJava', argsArr: [ConfigManager.getDataDirectory()]})
+    //     if(m.result === true){
+
+    //         // Oracle JRE enqueued successfully, begin download.
+    //         setLaunchDetails('Downloading Java..')
+    //         sysAEx.send({task: 'execute', function: 'processDlQueues', argsArr: [[{id:'java', limit:1}]]})
+
+    //     } else {
+
+    //         // Oracle JRE enqueue failed. Probably due to a change in their website format.
+    //         // User will have to follow the guide to install Java.
+    //         setOverlayContent(
+    //             'Unexpected Issue:<br>Java Download Failed',
+    //             'Unfortunately we\'ve encountered an issue while attempting to install Java. You will need to manually install a copy. Please check out our <a href="https://github.com/dscalzi/HeliosLauncher/wiki">Troubleshooting Guide</a> for more details and instructions.',
+    //             'I Understand'
+    //         )
+    //         setOverlayHandler(() => {
+    //             toggleOverlay(false)
+    //             toggleLaunchArea(false)
+    //         })
+    //         toggleOverlay(true)
+    //         sysAEx.disconnect()
+
+    //     }
+
+    // } else if(m.context === 'progress'){
+
+    //     switch(m.data){
+    //         case 'download':
+    //             // Downloading..
+    //             setDownloadPercentage(m.value, m.total, m.percent)
+    //             break
+    //     }
+
+    // } else if(m.context === 'complete'){
+
+    //     switch(m.data){
+    //         case 'download': {
+    //             // Show installing progress bar.
+    //             remote.getCurrentWindow().setProgressBar(2)
+
+    //             // Wait for extration to complete.
+    //             const eLStr = 'Extracting'
+    //             let dotStr = ''
+    //             setLaunchDetails(eLStr)
+    //             extractListener = setInterval(() => {
+    //                 if(dotStr.length >= 3){
+    //                     dotStr = ''
+    //                 } else {
+    //                     dotStr += '.'
+    //                 }
+    //                 setLaunchDetails(eLStr + dotStr)
+    //             }, 750)
+    //             break
+    //         }
+    //         case 'java':
+    //         // Download & extraction complete, remove the loading from the OS progress bar.
+    //             remote.getCurrentWindow().setProgressBar(-1)
+
+    //             // Extraction completed successfully.
+    //             ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), m.args[0])
+    //             ConfigManager.save()
+
+    //             if(extractListener != null){
+    //                 clearInterval(extractListener)
+    //                 extractListener = null
+    //             }
+
+    //             setLaunchDetails('Java Installed!')
+
+    //             if(launchAfter){
+    //                 await dlAsync()
+    //             }
+
+    //             sysAEx.disconnect()
+    //             break
+    //     }
+
+    // } else if(m.context === 'error'){
+    //     console.log(m.error)
+    // }
 
 }
 
@@ -568,7 +552,6 @@ async function dlAsync(login = true) {
         serv.rawServer.id
     )
 
-    // TODO need to load these.
     const forgeData = await distributionIndexProcessor.loadForgeVersionJson(serv)
     const versionData = await mojangIndexProcessor.getVersionJson()
 
