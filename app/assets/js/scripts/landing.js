@@ -376,8 +376,8 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
     let received = 0
     await downloadFile(asset.url, asset.path, ({ transferred }) => {
-        received += transferred
-        setDownloadPercentage(transferred/asset.size)
+        received = transferred
+        setDownloadPercentage(Math.trunc((transferred/asset.size)*100))
     })
     setDownloadPercentage(100)
 
@@ -395,10 +395,8 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
     // Show installing progress bar.
     remote.getCurrentWindow().setProgressBar(2)
 
-    const newJavaExec = await extractJdk(asset.path)
-
     // Wait for extration to complete.
-    const eLStr = 'Extracting'
+    const eLStr = 'Extracting Java'
     let dotStr = ''
     setLaunchDetails(eLStr)
     const extractListener = setInterval(() => {
@@ -409,6 +407,8 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
         }
         setLaunchDetails(eLStr + dotStr)
     }, 750)
+
+    const newJavaExec = await extractJdk(asset.path)
 
     // Extraction complete, remove the loading from the OS progress bar.
     remote.getCurrentWindow().setProgressBar(-1)
