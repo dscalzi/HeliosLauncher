@@ -1349,13 +1349,12 @@ function populateMemoryStatus(){
  * @param {string} execPath The executable path to populate against.
  */
 async function populateJavaExecDetails(execPath){
-    const mcVer = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer()).rawServer.minecraftVersion
+    const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
 
-    // TODO Update to use semver range
-    const details = await validateSelectedJvm(ensureJavaDirIsRoot(execPath), getDefaultSemverRange(mcVer))
+    const details = await validateSelectedJvm(ensureJavaDirIsRoot(execPath), server.effectiveJavaOptions.supported)
 
     if(details != null) {
-        settingsJavaExecDetails.innerHTML = `Selected: Java ${details.semverStr} (${vendor})`
+        settingsJavaExecDetails.innerHTML = `Selected: Java ${details.semverStr} (${details.vendor})`
     } else {
         settingsJavaExecDetails.innerHTML = 'Invalid Selection'
     }
@@ -1363,23 +1362,26 @@ async function populateJavaExecDetails(execPath){
 
 // TODO Update to use semver range
 async function populateJavaReqDesc() {
-    const mcVer = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer()).rawServer.minecraftVersion
-    if(mcVersionAtLeast('1.17', mcVer)) {
-        settingsJavaReqDesc.innerHTML = 'Requires Java 17 x64.'
-    } else {
-        settingsJavaReqDesc.innerHTML = 'Requires Java 8 x64.'
-    }
+    const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+    settingsJavaReqDesc.innerHTML = `Requires Java ${server.effectiveJavaOptions.suggestedMajor} x64.`
 }
 
 // TODO Update to use semver range
 async function populateJvmOptsLink() {
-    const mcVer = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer()).rawServer.minecraftVersion
-    if(mcVersionAtLeast('1.17', mcVer)) {
-        settingsJvmOptsLink.innerHTML = 'Available Options for Java 17 (HotSpot VM)'
-        settingsJvmOptsLink.href = 'https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html#extra-options-for-java'
-    } else {
-        settingsJvmOptsLink.innerHTML = 'Available Options for Java 8 (HotSpot VM)'
-        settingsJvmOptsLink.href = `https://docs.oracle.com/javase/8/docs/technotes/tools/${process.platform === 'win32' ? 'windows' : 'unix'}/java.html`
+    const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+    const major = server.effectiveJavaOptions.suggestedMajor
+    settingsJvmOptsLink.innerHTML = `Available Options for Java ${major} (HotSpot VM)`
+    if(major >= 12) {
+        settingsJvmOptsLink.href = `https://docs.oracle.com/en/java/javase/${major}/docs/specs/man/java.html#extra-options-for-java`
+    }
+    else if(major >= 11) {
+        settingsJvmOptsLink.href = 'https://docs.oracle.com/en/java/javase/11/tools/java.html#GUID-3B1CE181-CD30-4178-9602-230B800D4FAE'
+    }
+    else if(major >= 9) {
+        settingsJvmOptsLink.href = `https://docs.oracle.com/javase/${major}/tools/java.htm`
+    }
+    else {
+        settingsJvmOptsLink.href = `https://docs.oracle.com/javase/${major}/docs/technotes/tools/${process.platform === 'win32' ? 'windows' : 'unix'}/java.html`
     }
 }
 

@@ -36,10 +36,7 @@
     "helios-core": "~0.2.0-pre.1",
     "helios-distribution-types": "^1.1.0",
     "jquery": "^3.6.1",
-    "node-stream-zip": "^1.15.0",
-    "request": "^2.88.2",
-    "semver": "^7.3.8",
-    "tar-fs": "^2.1.1"
+    "semver": "^7.3.8"
   },
   "devDependencies": {
     "electron": "^23.0.0",

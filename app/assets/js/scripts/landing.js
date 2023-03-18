@@ -12,19 +12,21 @@ const {
 const {
     RestResponseStatus,
     isDisplayableError,
-    mcVersionAtLeast
+    validateLocalFile
 }                             = require('helios-core/common')
 const {
     FullRepair,
     DistributionIndexProcessor,
-    MojangIndexProcessor
+    MojangIndexProcessor,
+    downloadFile
 }                             = require('helios-core/dl')
 const {
-    getDefaultSemverRange,
     validateSelectedJvm,
     ensureJavaDirIsRoot,
     javaExecFromRoot,
-    discoverBestJvmInstallation
+    discoverBestJvmInstallation,
+    latestOpenJDK,
+    extractJdk
 }                             = require('helios-core/java')
 
 // Internal Requirements
@@ -99,25 +101,25 @@ function setLaunchEnabled(val){
 }
 
 // Bind launch button
-document.getElementById('launch_button').addEventListener('click', async (e) => {
+document.getElementById('launch_button').addEventListener('click', async e => {
     loggerLanding.info('Launching game..')
-    const mcVersion = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer()).rawServer.minecraftVersion
+    const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+    const mcVersion = server.rawServer.minecraftVersion
     const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
     if(jExe == null){
-        await asyncSystemScan(mcVersion)
+        await asyncSystemScan(server.effectiveJavaOptions)
     } else {
 
         setLaunchDetails(Lang.queryJS('landing.launch.pleaseWait'))
         toggleLaunchArea(true)
         setLaunchPercentage(0, 100)
 
-        // TODO Update to use semver range
-        const details = await validateSelectedJvm(ensureJavaDirIsRoot(execPath), getDefaultSemverRange(mcVer))
+        const details = await validateSelectedJvm(ensureJavaDirIsRoot(jExe), server.effectiveJavaOptions.supported)
         if(details != null){
             loggerLanding.info('Jvm Details', details)
             await dlAsync()
         } else {
-            await asyncSystemScan(mcVersion)
+            await asyncSystemScan(server.effectiveJavaOptions)
         }
     }
 })
@@ -290,25 +292,20 @@ function showLaunchFailure(title, desc){
 
 /* System (Java) Scan */
 
-let extractListener
-
 /**
  * Asynchronously scan the system for valid Java installations.
  * 
- * @param {string} mcVersion The Minecraft version we are scanning for.
  * @param {boolean} launchAfter Whether we should begin to launch after scanning. 
  */
-async function asyncSystemScan(mcVersion, launchAfter = true){
+async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
 
     setLaunchDetails('Checking system info..')
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
-    const javaVer = mcVersionAtLeast('1.17', mcVersion) ? '17' : '8'
-
     const jvmDetails = await discoverBestJvmInstallation(
         ConfigManager.getDataDirectory(),
-        getDefaultSemverRange(mcVersion)
+        effectiveJavaOptions.supported
     )
 
     if(jvmDetails == null) {
@@ -316,15 +313,14 @@ async function asyncSystemScan(mcVersion, launchAfter = true){
         // Show this information to the user.
         setOverlayContent(
             'No Compatible<br>Java Installation Found',
-            `In order to join WesterosCraft, you need a 64-bit installation of Java ${javaVer}. Would you like us to install a copy?`,
+            `In order to join WesterosCraft, you need a 64-bit installation of Java ${effectiveJavaOptions.suggestedMajor}. Would you like us to install a copy?`,
             'Install Java',
             'Install Manually'
         )
         setOverlayHandler(() => {
             setLaunchDetails('Preparing Java Download..')
             
-            // TODO Kick off JDK download.
-
+            downloadJava(effectiveJavaOptions, launchAfter)
             toggleOverlay(false)
         })
         setDismissHandler(() => {
@@ -332,7 +328,7 @@ async function asyncSystemScan(mcVersion, launchAfter = true){
                 //$('#overlayDismiss').toggle(false)
                 setOverlayContent(
                     'Java is Required<br>to Launch',
-                    `A valid x64 installation of Java ${javaVer} is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.`,
+                    `A valid x64 installation of Java ${effectiveJavaOptions.suggestedMajor} is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.`,
                     'I Understand',
                     'Go Back'
                 )
@@ -343,9 +339,7 @@ async function asyncSystemScan(mcVersion, launchAfter = true){
                 setDismissHandler(() => {
                     toggleOverlay(false, true)
 
-                    // TODO Change this flow
-                    // Should be a separate function probably.
-                    asyncSystemScan()
+                    asyncSystemScan(effectiveJavaOptions, launchAfter)
                 })
                 $('#overlayContent').fadeIn(250)
             })
@@ -362,95 +356,73 @@ async function asyncSystemScan(mcVersion, launchAfter = true){
         settingsJavaExecVal.value = javaExec
         await populateJavaExecDetails(settingsJavaExecVal.value)
 
+        // TODO Callback hell, refactor
         // TODO Move this out, separate concerns.
         if(launchAfter){
             await dlAsync()
         }
     }
-    
-    // TODO Integrate into assetguard 2.
-    // if(m.context === '_enqueueOpenJDK'){
 
-    //     if(m.result === true){
+}
 
-    //         // Oracle JRE enqueued successfully, begin download.
-    //         setLaunchDetails('Downloading Java..')
-    //         sysAEx.send({task: 'execute', function: 'processDlQueues', argsArr: [[{id:'java', limit:1}]]})
+async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
-    //     } else {
+    // TODO Error handling.
+    // asset can be null.
+    const asset = await latestOpenJDK(
+        effectiveJavaOptions.suggestedMajor,
+        ConfigManager.getDataDirectory(),
+        effectiveJavaOptions.distribution)
 
-    //         // Oracle JRE enqueue failed. Probably due to a change in their website format.
-    //         // User will have to follow the guide to install Java.
-    //         setOverlayContent(
-    //             'Unexpected Issue:<br>Java Download Failed',
-    //             'Unfortunately we\'ve encountered an issue while attempting to install Java. You will need to manually install a copy. Please check out our <a href="https://github.com/dscalzi/HeliosLauncher/wiki">Troubleshooting Guide</a> for more details and instructions.',
-    //             'I Understand'
-    //         )
-    //         setOverlayHandler(() => {
-    //             toggleOverlay(false)
-    //             toggleLaunchArea(false)
-    //         })
-    //         toggleOverlay(true)
-    //         sysAEx.disconnect()
+    let received = 0
+    await downloadFile(asset.url, asset.path, ({ transferred }) => {
+        received += transferred
+        setDownloadPercentage(transferred/asset.size)
+    })
+    setDownloadPercentage(100)
 
-    //     }
+    if(received != asset.size) {
+        loggerLanding.warn(`Java Download: Expected ${asset.size} bytes but received ${received}`)
+        if(!await validateLocalFile(asset.path, asset.algo, asset.hash)) {
+            log.error(`Hashes do not match, ${asset.id} may be corrupted.`)
 
-    // } else if(m.context === 'progress'){
+            // TODO Make error handling graceful.
+            throw new Error('JDK download had problems')
+        }
+    }
 
-    //     switch(m.data){
-    //         case 'download':
-    //             // Downloading..
-    //             setDownloadPercentage(m.value, m.total, m.percent)
-    //             break
-    //     }
+    // Extract
+    // Show installing progress bar.
+    remote.getCurrentWindow().setProgressBar(2)
 
-    // } else if(m.context === 'complete'){
+    const newJavaExec = await extractJdk(asset.path)
 
-    //     switch(m.data){
-    //         case 'download': {
-    //             // Show installing progress bar.
-    //             remote.getCurrentWindow().setProgressBar(2)
+    // Wait for extration to complete.
+    const eLStr = 'Extracting'
+    let dotStr = ''
+    setLaunchDetails(eLStr)
+    const extractListener = setInterval(() => {
+        if(dotStr.length >= 3){
+            dotStr = ''
+        } else {
+            dotStr += '.'
+        }
+        setLaunchDetails(eLStr + dotStr)
+    }, 750)
 
-    //             // Wait for extration to complete.
-    //             const eLStr = 'Extracting'
-    //             let dotStr = ''
-    //             setLaunchDetails(eLStr)
-    //             extractListener = setInterval(() => {
-    //                 if(dotStr.length >= 3){
-    //                     dotStr = ''
-    //                 } else {
-    //                     dotStr += '.'
-    //                 }
-    //                 setLaunchDetails(eLStr + dotStr)
-    //             }, 750)
-    //             break
-    //         }
-    //         case 'java':
-    //         // Download & extraction complete, remove the loading from the OS progress bar.
-    //             remote.getCurrentWindow().setProgressBar(-1)
+    // Extraction complete, remove the loading from the OS progress bar.
+    remote.getCurrentWindow().setProgressBar(-1)
 
-    //             // Extraction completed successfully.
-    //             ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), m.args[0])
-    //             ConfigManager.save()
+    // Extraction completed successfully.
+    ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), newJavaExec)
+    ConfigManager.save()
 
-    //             if(extractListener != null){
-    //                 clearInterval(extractListener)
-    //                 extractListener = null
-    //             }
+    clearInterval(extractListener)
+    setLaunchDetails('Java Installed!')
 
-    //             setLaunchDetails('Java Installed!')
-
-    //             if(launchAfter){
-    //                 await dlAsync()
-    //             }
-
-    //             sysAEx.disconnect()
-    //             break
-    //     }
-
-    // } else if(m.context === 'error'){
-    //     console.log(m.error)
-    // }
+    // TODO Callback hell
+    // Refactor the launch functions
+    asyncSystemScan(effectiveJavaOptions, launchAfter)
 
 }
 
@@ -513,7 +485,7 @@ async function dlAsync(login = true) {
     })
     fullRepairModule.childProcess.on('close', (code, _signal) => {
         if(code !== 0){
-            loggerLaunchSuite.error(`AssetExec exited with code ${code}, assuming error.`)
+            loggerLaunchSuite.error(`Full Repair Module exited with code ${code}, assuming error.`)
             showLaunchFailure('Error During Launch', 'See console (CTRL + Shift + i) for more details.')
         }
     })
