@@ -458,8 +458,8 @@ ipcRenderer.on('distributionIndexDone', async (event, res) => {
 // Util for development
 async function devModeToggle() {
     DistroAPI.toggleDevMode(true)
-    const data = await DistroAPI.getDistributionLocalLoadOnly()
+    const data = await DistroAPI.refreshDistributionOrFallback()
     ensureJavaSettings(data)
-    updateSelectedServer(data.getServers()[0])
+    updateSelectedServer(data.servers[0])
     syncModConfigurations(data)
 }

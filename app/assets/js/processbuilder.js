@@ -174,11 +174,11 @@ class ProcessBuilder {
                         const v = this.resolveModConfiguration(modCfg[mdl.getVersionlessMavenIdentifier()].mods, mdl.subModules)
                         fMods = fMods.concat(v.fMods)
                         lMods = lMods.concat(v.lMods)
-                        if(mdl.type === Type.LiteLoader){
+                        if(type === Type.LiteLoader){
                             continue
                         }
                     }
-                    if(mdl.type === Type.ForgeMod){
+                    if(type === Type.ForgeMod){
                         fMods.push(mdl)
                     } else {
                         lMods.push(mdl)
@@ -241,11 +241,11 @@ class ProcessBuilder {
         const ids = []
         if(type === 'forge'){
             for(let mod of mods){
-                ids.push(mod.getExtensionlessID())
+                ids.push(mod.getExtensionlessMavenIdentifier())
             }
         } else {
             for(let mod of mods){
-                ids.push(mod.getExtensionlessID() + '@' + mod.getExtension())
+                ids.push(mod.getMavenIdentifier())
             }
         }
         modList.modRef = ids
@@ -265,7 +265,7 @@ class ProcessBuilder {
     //  */
     // constructModArguments(mods){
     //     const argStr = mods.map(mod => {
-    //         return mod.getExtensionlessID()
+    //         return mod.getExtensionlessMavenIdentifier()
     //     }).join(',')
 
     //     if(argStr){
@@ -288,7 +288,7 @@ class ProcessBuilder {
      */
     constructModList(mods) {
         const writeBuffer = mods.map(mod => {
-            return mod.getExtensionlessID()
+            return mod.getExtensionlessMavenIdentifier()
         }).join('\n')
 
         if(writeBuffer) {
