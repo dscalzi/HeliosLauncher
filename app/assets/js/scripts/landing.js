@@ -540,8 +540,8 @@ async function dlAsync(login = true) {
             toggleLaunchArea(false)
             if(hasRPC){
                 DiscordWrapper.updateDetails('Loading game..')
+                proc.stdout.on('data', gameStateChange)
             }
-            proc.stdout.on('data', gameStateChange)
             proc.stdout.removeListener('data', tempListener)
             proc.stderr.removeListener('data', gameErrorListener)
         }
@@ -789,7 +789,7 @@ function initNews(){
         let news = {}
         loadNews().then(news => {
 
-            newsArr = news.articles || null
+            newsArr = news?.articles || null
 
             if(newsArr == null){
                 // News Loading Failed
@@ -938,6 +938,10 @@ function displayArticle(articleObject, index){
 async function loadNews(){
 
     const distroData = await DistroAPI.getDistribution()
+    if(!distroData.rawDistribution.rss) {
+        loggerLanding.debug('No RSS feed provided.')
+        return null
+    }
 
     const promise = new Promise((resolve, reject) => {
         

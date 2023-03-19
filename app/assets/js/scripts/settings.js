@@ -1354,7 +1354,6 @@ function populateJavaReqDesc(server) {
     settingsJavaReqDesc.innerHTML = `Requires Java ${server.effectiveJavaOptions.suggestedMajor} x64.`
 }
 
-// TODO Update to use semver range
 function populateJvmOptsLink(server) {
     const major = server.effectiveJavaOptions.suggestedMajor
     settingsJvmOptsLink.innerHTML = `Available Options for Java ${major} (HotSpot VM)`
