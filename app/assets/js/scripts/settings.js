@@ -156,7 +156,7 @@ async function initSettingsValues(){
                     if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
                         let val = gFn.apply(null, gFnOpts)
                         if(val.endsWith('M')){
-                            val = Number(val.substring(0, val.length-1))/1000
+                            val = Number(val.substring(0, val.length-1))/1024
                         } else {
                             val = Number.parseFloat(val)
                         }
@@ -1158,16 +1158,6 @@ const settingsJavaExecDetails = document.getElementById('settingsJavaExecDetails
 const settingsJavaReqDesc     = document.getElementById('settingsJavaReqDesc')
 const settingsJvmOptsLink     = document.getElementById('settingsJvmOptsLink')
 
-// Store maximum memory values.
-const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM()
-const SETTINGS_MIN_MEMORY = ConfigManager.getAbsoluteMinRAM()
-
-// Set the max and min values for the ranged sliders.
-settingsMaxRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY)
-settingsMaxRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY)
-settingsMinRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY)
-settingsMinRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY )
-
 // Bind on change event for min memory container.
 settingsMinRAMRange.onchange = (e) => {
 
@@ -1178,7 +1168,7 @@ settingsMinRAMRange.onchange = (e) => {
     // Get reference to range bar.
     const bar = e.target.getElementsByClassName('rangeSliderBar')[0]
     // Calculate effective total memory.
-    const max = (os.totalmem()-1000000000)/1000000000
+    const max = os.totalmem()/1073741824
 
     // Change range bar color based on the selected value.
     if(sMinV >= max/2){
@@ -1210,7 +1200,7 @@ settingsMaxRAMRange.onchange = (e) => {
     // Get reference to range bar.
     const bar = e.target.getElementsByClassName('rangeSliderBar')[0]
     // Calculate effective total memory.
-    const max = (os.totalmem()-1000000000)/1000000000
+    const max = os.totalmem()/1073741824
 
     // Change range bar color based on the selected value.
     if(sMaxV >= max/2){
@@ -1338,8 +1328,8 @@ function updateRangedSlider(element, value, notch){
  * Display the total and available RAM.
  */
 function populateMemoryStatus(){
-    settingsMemoryTotal.innerHTML = Number((os.totalmem()-1000000000)/1000000000).toFixed(1) + 'G'
-    settingsMemoryAvail.innerHTML = Number(os.freemem()/1000000000).toFixed(1) + 'G'
+    settingsMemoryTotal.innerHTML = Number((os.totalmem()-1073741824)/1073741824).toFixed(1) + 'G'
+    settingsMemoryAvail.innerHTML = Number(os.freemem()/1073741824).toFixed(1) + 'G'
 }
 
 /**
@@ -1360,15 +1350,12 @@ async function populateJavaExecDetails(execPath){
     }
 }
 
-// TODO Update to use semver range
-async function populateJavaReqDesc() {
-    const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+function populateJavaReqDesc(server) {
     settingsJavaReqDesc.innerHTML = `Requires Java ${server.effectiveJavaOptions.suggestedMajor} x64.`
 }
 
 // TODO Update to use semver range
-async function populateJvmOptsLink() {
-    const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+function populateJvmOptsLink(server) {
     const major = server.effectiveJavaOptions.suggestedMajor
     settingsJvmOptsLink.innerHTML = `Available Options for Java ${major} (HotSpot VM)`
     if(major >= 12) {
@@ -1385,14 +1372,28 @@ async function populateJvmOptsLink() {
     }
 }
 
+function bindMinMaxRam(server) {
+    // Store maximum memory values.
+    const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM(server.rawServer.javaOptions?.ram)
+    const SETTINGS_MIN_MEMORY = ConfigManager.getAbsoluteMinRAM(server.rawServer.javaOptions?.ram)
+
+    // Set the max and min values for the ranged sliders.
+    settingsMaxRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY)
+    settingsMaxRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY)
+    settingsMinRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY)
+    settingsMinRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY)
+}
+
 /**
  * Prepare the Java tab for display.
  */
 async function prepareJavaTab(){
-    bindRangeSlider()
+    const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+    bindMinMaxRam(server)
+    bindRangeSlider(server)
     populateMemoryStatus()
-    await populateJavaReqDesc()
-    await populateJvmOptsLink()
+    populateJavaReqDesc(server)
+    populateJvmOptsLink(server)
 }
 
 /**

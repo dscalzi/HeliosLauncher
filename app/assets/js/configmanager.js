@@ -1,6 +1,5 @@
 const fs   = require('fs-extra')
 const { LoggerUtil } = require('helios-core')
-const { mcVersionAtLeast } = require('helios-core/common')
 const os   = require('os')
 const path = require('path')
 
@@ -45,24 +44,30 @@ const configPath = path.join(exports.getLauncherDirectory(), 'config.json')
 const configPathLEGACY = path.join(dataPath, 'config.json')
 const firstLaunch = !fs.existsSync(configPath) && !fs.existsSync(configPathLEGACY)
 
-exports.getAbsoluteMinRAM = function(){
-    const mem = os.totalmem()
-    return mem >= 6000000000 ? 3 : 2
+exports.getAbsoluteMinRAM = function(ram){
+    if(ram?.minimum != null) {
+        return ram.minimum/1024
+    } else {
+        // Legacy behavior
+        const mem = os.totalmem()
+        return mem >= (6*1073741824) ? 3 : 2
+    }
 }
 
-exports.getAbsoluteMaxRAM = function(){
+exports.getAbsoluteMaxRAM = function(ram){
     const mem = os.totalmem()
-    const gT16 = mem-16000000000
-    return Math.floor((mem-1000000000-(gT16 > 0 ? (Number.parseInt(gT16/8) + 16000000000/4) : mem/4))/1000000000)
+    const gT16 = mem-(16*1073741824)
+    return Math.floor((mem-(gT16 > 0 ? (Number.parseInt(gT16/8) + (16*1073741824)/4) : mem/4))/1073741824)
 }
 
-function resolveMaxRAM(){
-    const mem = os.totalmem()
-    return mem >= 8000000000 ? '4G' : (mem >= 6000000000 ? '3G' : '2G')
-}
-
-function resolveMinRAM(){
-    return resolveMaxRAM()
+function resolveSelectedRAM(ram) {
+    if(ram?.recommended != null) {
+        return `${ram.recommended}M`
+    } else {
+        // Legacy behavior
+        const mem = os.totalmem()
+        return mem >= (8*1073741824) ? '4G' : (mem >= (6*1073741824) ? '3G' : '2G')
+    }
 }
 
 /**
@@ -503,18 +508,18 @@ exports.setModConfiguration = function(serverid, configuration){
 
 // Java Settings
 
-function defaultJavaConfig(mcVersion) {
-    if(mcVersionAtLeast('1.17', mcVersion)) {
-        return defaultJavaConfig117()
+function defaultJavaConfig(effectiveJavaOptions, ram) {
+    if(effectiveJavaOptions.suggestedMajor > 8) {
+        return defaultJavaConfig17(ram)
     } else {
-        return defaultJavaConfigBelow117()
+        return defaultJavaConfig8(ram)
     }
 }
 
-function defaultJavaConfigBelow117() {
+function defaultJavaConfig17(ram) {
     return {
-        minRAM: resolveMinRAM(),
-        maxRAM: resolveMaxRAM(), // Dynamic
+        minRAM: resolveSelectedRAM(ram),
+        maxRAM: resolveSelectedRAM(ram),
         executable: null,
         jvmOptions: [
             '-XX:+UseConcMarkSweepGC',
@@ -525,10 +530,10 @@ function defaultJavaConfigBelow117() {
     }
 }
 
-function defaultJavaConfig117() {
+function defaultJavaConfig8(ram) {
     return {
-        minRAM: resolveMinRAM(),
-        maxRAM: resolveMaxRAM(), // Dynamic
+        minRAM: resolveSelectedRAM(ram),
+        maxRAM: resolveSelectedRAM(ram),
         executable: null,
         jvmOptions: [
             '-XX:+UnlockExperimentalVMOptions',
@@ -547,9 +552,9 @@ function defaultJavaConfig117() {
  * @param {string} serverid The server id.
  * @param {*} mcVersion The minecraft version of the server.
  */
-exports.ensureJavaConfig = function(serverid, mcVersion) {
+exports.ensureJavaConfig = function(serverid, effectiveJavaOptions, ram) {
     if(!Object.prototype.hasOwnProperty.call(config.javaConfig, serverid)) {
-        config.javaConfig[serverid] = defaultJavaConfig(mcVersion)
+        config.javaConfig[serverid] = defaultJavaConfig(effectiveJavaOptions, ram)
     }
 }
 

@@ -234,7 +234,7 @@ function ensureJavaSettings(data) {
 
     // Nothing too fancy for now.
     for(const serv of data.servers){
-        ConfigManager.ensureJavaConfig(serv.rawServer.id, serv.rawServer.minecraftVersion)
+        ConfigManager.ensureJavaConfig(serv.rawServer.id, serv.effectiveJavaOptions, serv.rawServer.javaOptions?.ram)
     }
 
     ConfigManager.save()
