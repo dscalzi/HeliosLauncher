@@ -27,21 +27,21 @@
     "adm-zip": "^0.5.9",
     "async": "^3.2.4",
     "discord-rpc-patch": "^4.0.1",
-    "ejs": "^3.1.8",
+    "ejs": "^3.1.9",
     "ejs-electron": "^2.1.1",
     "electron-updater": "^5.3.0",
     "fs-extra": "^11.1.0",
     "github-syntax-dark": "^0.5.0",
     "got": "^11.8.5",
     "helios-core": "~0.2.0-pre.2",
-    "helios-distribution-types": "^1.2.0-pre.1",
-    "jquery": "^3.6.1",
+    "helios-distribution-types": "^1.2.0",
+    "jquery": "^3.6.4",
     "semver": "^7.3.8"
   },
   "devDependencies": {
-    "electron": "^23.0.0",
+    "electron": "^23.1.4",
     "electron-builder": "^23.6.0",
-    "eslint": "^8.34.0"
+    "eslint": "^8.36.0"
   },
   "repository": {
     "type": "git",
