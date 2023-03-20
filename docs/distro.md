@@ -2,6 +2,8 @@
 
 You can use [Nebula](https://github.com/dscalzi/Nebula) to automate the generation of a distribution index.
 
+The most up to date and accurate descriptions of the distribution spec can be viewed in [helios-distribution-types](https://github.com/dscalzi/helios-distribution-types).
+
 The distribution index is written in JSON. The general format of the index is as posted below.
 
 ```json
@@ -143,9 +145,119 @@ Only one server in the array should have the `mainServer` property enabled. This
 
 Whether or not the server can be autoconnected to. If false, the server will not be autoconnected to even when the user has the autoconnect setting enabled.
 
+### `Server.javaOptions: JavaOptions`
+
+**OPTIONAL**
+
+Sever-specific Java options. If not provided, defaults are used by the client.
+
 ### `Server.modules: Module[]`
 
 An array of module objects.
+
+---
+
+## JavaOptions Object
+
+Server-specific Java options.
+
+#### Example
+```JSON
+{
+    "supported": ">=17",
+    "suggestedMajor": 17,
+    "platformOptions": [
+      {
+        "platform": "darwin",
+        "architecture": "arm64",
+        "distribution": "CORRETTO"
+      }
+    ],
+    "ram": {
+      "recommended": 3072,
+      "minimum": 2048
+    }
+}
+```
+
+### `JavaOptions.platformOptions: JavaPlatformOptions[]`
+
+**OPTIONAL**
+
+Platform-specific java rules for this server configuration. Validation rules will be delegated to the client for any undefined properties. Java validation can be configured for specific platforms and architectures. The most specific ruleset will be applied.
+
+Maxtrix Precedence (Highest - Lowest)
+  - Current platform, current architecture (ex. win32 x64).
+  - Current platform, any architecture (ex. win32).
+  - Java Options base properties.
+  - Client logic (default logic in the client).
+
+Properties:
+
+  - `platformOptions.platform: string` - The platform that this validation matrix applies to.
+  - `platformOptions.architecture: string` - Optional. The architecture that this validation matrix applies to. If omitted, applies to all architectures.
+  - `platformOptions.distribution: string` - Optional. See `JavaOptions.distribution`.
+  - `platformOptions.supported: string` - Optional. See `JavaOptions.supported`.
+  - `platformOptions.suggestedMajor: number` - Optional. See `JavaOptions.suggestedMajor`.
+
+### `JavaOptions.ram: object`
+
+**OPTIONAL**
+
+This allows you to require a minimum and recommended amount of RAM per server instance. The minimum is the smallest value the user can select in the settings slider. The recommended value will be the default value selected for that server. These values are specified in megabytes and must be an interval of 512. This allows configuration in intervals of half gigabytes. In the above example, the recommended ram value is 3 GB (3072 MB) and the minimum is 2 GB (2048 MB).
+
+  - `ram.recommended: number` - The recommended amount of RAM in megabytes. Must be an interval of 512.
+  - `ram.minimum: number` - The absolute minimum amount of RAM in megabytes. Must be an interval of 512.
+
+### `JavaOptions.distribution: string`
+
+**OPTIONAL**
+
+Preferred JDK distribution to download if no applicable installation could be found. If omitted, the client will decide (decision may be platform-specific).
+
+### `JavaOptions.supported: string`
+
+**OPTIONAL**
+
+A semver range of supported JDK versions.
+
+Java version syntax is platform dependent.
+
+JDK 8 and prior
+```
+1.{major}.{minor}_{patch}-b{build}
+Ex. 1.8.0_152-b16
+```
+
+JDK 9+
+```
+{major}.{minor}.{patch}+{build}
+Ex. 11.0.12+7
+```
+
+For processing, all versions will be translated into a semver compliant string. JDK 9+ is already semver. For versions 8 and below, `1.{major}.{minor}_{patch}-b{build}` will be translated to `{major}.{minor}.{patch}+{build}`.
+
+If specified, you must also specify suggestedMajor.
+
+If omitted, the client will decide based on the game version.
+
+### `JavaOptions.suggestedMajor: number`
+
+**OPTIONAL**
+
+The suggested major Java version. The suggested major should comply with the version range specified by supported, if defined. This will be used in messages displayed to the end user, and to automatically fetch a Java version.
+
+NOTE If supported is specified, suggestedMajor must be set. The launcher's default value may not comply with your custom major supported range.
+
+Common use case:
+  - supported: '>=17.x'
+  - suggestedMajor: 17
+
+More involved:
+  - supported: '>=16 <20'
+  - suggestedMajor: 17
+
+Given a wider support range, it becomes necessary to specify which major version in the range is the suggested.
 
 ---
 
