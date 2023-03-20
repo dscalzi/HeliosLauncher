@@ -1,6 +1,6 @@
 {
   "name": "helioslauncher",
-  "version": "1.9.0",
+  "version": "2.0.0-rc.1",
   "productName": "Helios Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
@@ -33,7 +33,7 @@
     "fs-extra": "^11.1.0",
     "github-syntax-dark": "^0.5.0",
     "got": "^11.8.5",
-    "helios-core": "~0.2.0-pre.2",
+    "helios-core": "~2.0.0-rc.1",
     "helios-distribution-types": "^1.2.0",
     "jquery": "^3.6.4",
     "semver": "^7.3.8"
