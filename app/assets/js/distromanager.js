@@ -1,9 +1,11 @@
 const fs = require('fs')
 const path = require('path')
 const request = require('request')
+const { LoggerUtil } = require('helios-core')
 
 const ConfigManager = require('./configmanager')
-const logger        = require('./loggerutil')('%c[DistroManager]', 'color: #a02d2a; font-weight: bold')
+
+const logger = LoggerUtil.getLogger('DistroManager')
 
 /**
  * Represents the download information
@@ -118,7 +120,7 @@ class Module {
      * @returns {Module} The parsed Module.
      */
     static fromJSON(json, serverid){
-        return new Module(json.id, json.name, json.type, json.required, json.artifact, json.subModules, serverid)
+        return new Module(json.id, json.name, json.type, json.classpath, json.required, json.artifact, json.subModules, serverid)
     }
 
     /**
@@ -143,9 +145,10 @@ class Module {
         }
     }
 
-    constructor(id, name, type, required, artifact, subModules, serverid) {
+    constructor(id, name, type, classpath, required, artifact, subModules, serverid) {
         this.identifier = id
         this.type = type
+        this.classpath = classpath
         this._resolveMetaData()
         this.name = name
         this.required = Required.fromJSON(required)
@@ -304,6 +307,13 @@ class Module {
      */
     getType(){
         return this.type
+    }
+
+    /**
+     * @returns {boolean} Whether or not this library should be on the classpath.
+     */
+    getClasspath(){
+        return this.classpath ?? true
     }
 
 }
@@ -591,10 +601,10 @@ exports.pullLocal = function(){
 
 exports.setDevMode = function(value){
     if(value){
-        logger.log('Developer mode enabled.')
-        logger.log('If you don\'t know what that means, revert immediately.')
+        logger.info('Developer mode enabled.')
+        logger.info('If you don\'t know what that means, revert immediately.')
     } else {
-        logger.log('Developer mode disabled.')
+        logger.info('Developer mode disabled.')
     }
     DEV_MODE = value
 }

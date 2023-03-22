@@ -2,6 +2,7 @@ const AdmZip                = require('adm-zip')
 const child_process         = require('child_process')
 const crypto                = require('crypto')
 const fs                    = require('fs-extra')
+const { LoggerUtil }        = require('helios-core')
 const os                    = require('os')
 const path                  = require('path')
 const { URL }               = require('url')
@@ -9,9 +10,8 @@ const { URL }               = require('url')
 const { Util, Library }  = require('./assetguard')
 const ConfigManager            = require('./configmanager')
 const DistroManager            = require('./distromanager')
-const LoggerUtil               = require('./loggerutil')
 
-const logger = LoggerUtil('%c[ProcessBuilder]', 'color: #003996; font-weight: bold')
+const logger = LoggerUtil.getLogger('ProcessBuilder')
 
 class ProcessBuilder {
 
@@ -40,7 +40,7 @@ class ProcessBuilder {
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         this.setupLiteLoader()
-        logger.log('Using liteloader:', this.usingLiteLoader)
+        logger.info('Using liteloader:', this.usingLiteLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
         
         // Mod list below 1.13
@@ -59,9 +59,9 @@ class ProcessBuilder {
             args = args.concat(this.constructModList(modObj.fMods))
         }
 
-        logger.log('Launch Arguments:', args)
+        logger.info('Launch Arguments:', args)
 
-        const child = child_process.spawn(ConfigManager.getJavaExecutable(), args, {
+        const child = child_process.spawn(ConfigManager.getJavaExecutable(this.server.getID()), args, {
             cwd: this.gameDir,
             detached: ConfigManager.getLaunchDetached()
         })
@@ -73,27 +73,35 @@ class ProcessBuilder {
         child.stdout.setEncoding('utf8')
         child.stderr.setEncoding('utf8')
 
-        const loggerMCstdout = LoggerUtil('%c[Minecraft]', 'color: #36b030; font-weight: bold')
-        const loggerMCstderr = LoggerUtil('%c[Minecraft]', 'color: #b03030; font-weight: bold')
-
         child.stdout.on('data', (data) => {
-            loggerMCstdout.log(data)
+            data.trim().split('\n').forEach(x => console.log(`\x1b[32m[Minecraft]\x1b[0m ${x}`))
+            
         })
         child.stderr.on('data', (data) => {
-            loggerMCstderr.log(data)
+            data.trim().split('\n').forEach(x => console.log(`\x1b[31m[Minecraft]\x1b[0m ${x}`))
         })
         child.on('close', (code, signal) => {
-            logger.log('Exited with code', code)
+            logger.info('Exited with code', code)
             fs.remove(tempNativePath, (err) => {
                 if(err){
                     logger.warn('Error while deleting temp dir', err)
                 } else {
-                    logger.log('Temp dir deleted successfully.')
+                    logger.info('Temp dir deleted successfully.')
                 }
             })
         })
 
         return child
+    }
+
+    /**
+     * Get the platform specific classpath separator. On windows, this is a semicolon.
+     * On Unix, this is a colon.
+     * 
+     * @returns {string} The classpath separator for the current operating system.
+     */
+    static getClasspathSeparator() {
+        return process.platform === 'win32' ? ';' : ':'
     }
 
     /**
@@ -339,16 +347,16 @@ class ProcessBuilder {
 
         // Classpath Argument
         args.push('-cp')
-        args.push(this.classpathArg(mods, tempNativePath).join(process.platform === 'win32' ? ';' : ':'))
+        args.push(this.classpathArg(mods, tempNativePath).join(ProcessBuilder.getClasspathSeparator()))
 
         // Java Arguments
         if(process.platform === 'darwin'){
             args.push('-Xdock:name=HeliosLauncher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
-        args.push('-Xmx' + ConfigManager.getMaxRAM())
-        args.push('-Xms' + ConfigManager.getMinRAM())
-        args = args.concat(ConfigManager.getJVMOptions())
+        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.getID()))
+        args.push('-Xms' + ConfigManager.getMinRAM(this.server.getID()))
+        args = args.concat(ConfigManager.getJVMOptions(this.server.getID()))
         args.push('-Djava.library.path=' + tempNativePath)
 
         // Main Java Class
@@ -377,6 +385,19 @@ class ProcessBuilder {
         // JVM Arguments First
         let args = this.versionData.arguments.jvm
 
+        // Debug securejarhandler
+        // args.push('-Dbsl.debug=true')
+
+        if(this.forgeData.arguments.jvm != null) {
+            for(const argStr of this.forgeData.arguments.jvm) {
+                args.push(argStr
+                    .replaceAll('${library_directory}', this.libPath)
+                    .replaceAll('${classpath_separator}', ProcessBuilder.getClasspathSeparator())
+                    .replaceAll('${version_name}', this.forgeData.id)
+                )
+            }
+        }
+
         //args.push('-Dlog4j.configurationFile=D:\\WesterosCraft\\game\\common\\assets\\log_configs\\client-1.12.xml')
 
         // Java Arguments
@@ -384,9 +405,9 @@ class ProcessBuilder {
             args.push('-Xdock:name=HeliosLauncher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
-        args.push('-Xmx' + ConfigManager.getMaxRAM())
-        args.push('-Xms' + ConfigManager.getMinRAM())
-        args = args.concat(ConfigManager.getJVMOptions())
+        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.getID()))
+        args.push('-Xms' + ConfigManager.getMinRAM(this.server.getID()))
+        args = args.concat(ConfigManager.getJVMOptions(this.server.getID()))
 
         // Main Java Class
         args.push(this.forgeData.mainClass)
@@ -489,7 +510,7 @@ class ProcessBuilder {
                             val = args[i].replace(argDiscovery, this.launcherVersion)
                             break
                         case 'classpath':
-                            val = this.classpathArg(mods, tempNativePath).join(process.platform === 'win32' ? ';' : ':')
+                            val = this.classpathArg(mods, tempNativePath).join(ProcessBuilder.getClasspathSeparator())
                             break
                     }
                     if(val != null){
@@ -647,9 +668,13 @@ class ProcessBuilder {
     classpathArg(mods, tempNativePath){
         let cpArgs = []
 
-        // Add the version.jar to the classpath.
-        const version = this.versionData.id
-        cpArgs.push(path.join(this.commonDir, 'versions', version, version + '.jar'))
+        if(!Util.mcVersionAtLeast('1.17', this.server.getMinecraftVersion())) {
+            // Add the version.jar to the classpath.
+            // Must not be added to the classpath for Forge 1.17+.
+            const version = this.versionData.id
+            cpArgs.push(path.join(this.commonDir, 'versions', version, version + '.jar'))
+        }
+        
 
         if(this.usingLiteLoader){
             cpArgs.push(this.llPath)
@@ -682,6 +707,7 @@ class ProcessBuilder {
      * @returns {{[id: string]: string}} An object containing the paths of each library mojang declares.
      */
     _resolveMojangLibraries(tempNativePath){
+        const nativesRegex = /.+:natives-([^-]+)(?:-(.+))?/
         const libs = {}
 
         const libArr = this.versionData.libraries
@@ -689,27 +715,23 @@ class ProcessBuilder {
         for(let i=0; i<libArr.length; i++){
             const lib = libArr[i]
             if(Library.validateRules(lib.rules, lib.natives)){
-                if(lib.natives == null){
-                    const dlInfo = lib.downloads
-                    const artifact = dlInfo.artifact
-                    const to = path.join(this.libPath, artifact.path)
-                    const versionIndependentId = lib.name.substring(0, lib.name.lastIndexOf(':'))
-                    libs[versionIndependentId] = to
-                } else {
+
+                // Pre-1.19 has a natives object.
+                if(lib.natives != null) {
                     // Extract the native library.
                     const exclusionArr = lib.extract != null ? lib.extract.exclude : ['META-INF/']
                     const artifact = lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()].replace('${arch}', process.arch.replace('x', ''))]
-    
+
                     // Location of native zip.
                     const to = path.join(this.libPath, artifact.path)
-    
+
                     let zip = new AdmZip(to)
                     let zipEntries = zip.getEntries()
-    
+
                     // Unzip the native zip.
                     for(let i=0; i<zipEntries.length; i++){
                         const fileName = zipEntries[i].entryName
-    
+
                         let shouldExclude = false
 
                         // Exclude noted files.
@@ -727,8 +749,67 @@ class ProcessBuilder {
                                 }
                             })
                         }
-    
+
                     }
+                }
+                // 1.19+ logic
+                else if(lib.name.includes('natives-')) {
+
+                    const regexTest = nativesRegex.exec(lib.name)
+                    // const os = regexTest[1]
+                    const arch = regexTest[2] ?? 'x64'
+
+                    if(arch != process.arch) {
+                        continue
+                    }
+
+                    // Extract the native library.
+                    const exclusionArr = lib.extract != null ? lib.extract.exclude : ['META-INF/', '.git', '.sha1']
+                    const artifact = lib.downloads.artifact
+
+                    // Location of native zip.
+                    const to = path.join(this.libPath, artifact.path)
+
+                    let zip = new AdmZip(to)
+                    let zipEntries = zip.getEntries()
+
+                    // Unzip the native zip.
+                    for(let i=0; i<zipEntries.length; i++){
+                        if(zipEntries[i].isDirectory) {
+                            continue
+                        }
+
+                        const fileName = zipEntries[i].entryName
+
+                        let shouldExclude = false
+
+                        // Exclude noted files.
+                        exclusionArr.forEach(function(exclusion){
+                            if(fileName.indexOf(exclusion) > -1){
+                                shouldExclude = true
+                            }
+                        })
+
+                        const extractName = fileName.includes('/') ? fileName.substring(fileName.lastIndexOf('/')) : fileName
+
+                        // Extract the file.
+                        if(!shouldExclude){
+                            fs.writeFile(path.join(tempNativePath, extractName), zipEntries[i].getData(), (err) => {
+                                if(err){
+                                    logger.error('Error while extracting native library:', err)
+                                }
+                            })
+                        }
+
+                    }
+                }
+                // No natives
+                else {
+                    const dlInfo = lib.downloads
+                    const artifact = dlInfo.artifact
+                    const to = path.join(this.libPath, artifact.path)
+                    const versionIndependentId = lib.name.substring(0, lib.name.lastIndexOf(':'))
+                    libs[versionIndependentId] = to
                 }
             }
         }
@@ -788,7 +869,10 @@ class ProcessBuilder {
         let libs = []
         for(let sm of mdl.getSubModules()){
             if(sm.getType() === DistroManager.Types.Library){
-                libs.push(sm.getArtifact().getPath())
+
+                if(sm.getClasspath()) {
+                    libs.push(sm.getArtifact().getPath())
+                }
             }
             // If this module has submodules, we need to resolve the libraries for those.
             // To avoid unnecessary recursive calls, base case is checked here.

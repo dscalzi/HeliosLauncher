@@ -10,7 +10,9 @@ const { MojangRestAPI, getServerStatus }     = require('helios-core/mojang')
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
+const { Util } = require('./assets/js/assetguard')
 const { RestResponseStatus, isDisplayableError } = require('helios-core/common')
+const { stdout } = require('process')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -21,7 +23,7 @@ const launch_details_text     = document.getElementById('launch_details_text')
 const server_selection_button = document.getElementById('server_selection_button')
 const user_text               = document.getElementById('user_text')
 
-const loggerLanding = LoggerUtil1('%c[Landing]', 'color: #000668; font-weight: bold')
+const loggerLanding = LoggerUtil.getLogger('Landing')
 
 /* Launch Progress Wrapper Functions */
 
@@ -85,9 +87,9 @@ function setLaunchEnabled(val){
 
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', function(e){
-    loggerLanding.log('Launching game..')
+    loggerLanding.info('Launching game..')
     const mcVersion = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer()).getMinecraftVersion()
-    const jExe = ConfigManager.getJavaExecutable()
+    const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
     if(jExe == null){
         asyncSystemScan(mcVersion)
     } else {
@@ -98,7 +100,7 @@ document.getElementById('launch_button').addEventListener('click', function(e){
 
         const jg = new JavaGuard(mcVersion)
         jg._validateJavaBinary(jExe).then((v) => {
-            loggerLanding.log('Java version meta', v)
+            loggerLanding.info('Java version meta', v)
             if(v.valid){
                 dlAsync()
             } else {
@@ -140,13 +142,13 @@ updateSelectedAccount(ConfigManager.getSelectedAccount())
 // Bind selected server
 function updateSelectedServer(serv){
     if(getCurrentView() === VIEWS.settings){
-        saveAllModConfigurations()
+        fullSettingsSave()
     }
     ConfigManager.setSelectedServer(serv != null ? serv.getID() : null)
     ConfigManager.save()
     server_selection_button.innerHTML = '\u2022 ' + (serv != null ? serv.getName() : 'No Server Selected')
     if(getCurrentView() === VIEWS.settings){
-        animateModsTabRefresh()
+        animateSettingsTabRefresh()
     }
     setLaunchEnabled(serv != null)
 }
@@ -159,7 +161,7 @@ server_selection_button.onclick = (e) => {
 
 // Update Mojang Status Color
 const refreshMojangStatuses = async function(){
-    loggerLanding.log('Refreshing Mojang Statuses..')
+    loggerLanding.info('Refreshing Mojang Statuses..')
 
     let status = 'grey'
     let tooltipEssentialHTML = ''
@@ -219,7 +221,7 @@ const refreshMojangStatuses = async function(){
 }
 
 const refreshServerStatus = async function(fade = false){
-    loggerLanding.log('Refreshing Server Status')
+    loggerLanding.info('Refreshing Server Status')
     const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
 
     let pLabel = 'SERVER'
@@ -253,8 +255,9 @@ const refreshServerStatus = async function(fade = false){
 refreshMojangStatuses()
 // Server Status is refreshed in uibinder.js on distributionIndexDone.
 
+// Refresh statuses every hour. The status page itself refreshes every day so...
+let mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 60*60*1000)
 // Set refresh rate to once every 5 minutes.
-let mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 300000)
 let serverStatusListener = setInterval(() => refreshServerStatus(true), 300000)
 
 /**
@@ -293,8 +296,6 @@ function asyncSystemScan(mcVersion, launchAfter = true){
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
-    const loggerSysAEx = LoggerUtil1('%c[SysAEx]', 'color: #353232; font-weight: bold')
-
     const forkEnv = JSON.parse(JSON.stringify(process.env))
     forkEnv.CONFIG_DIRECT_PATH = ConfigManager.getLauncherDirectory()
 
@@ -309,13 +310,15 @@ function asyncSystemScan(mcVersion, launchAfter = true){
     // Stdout
     sysAEx.stdio[1].setEncoding('utf8')
     sysAEx.stdio[1].on('data', (data) => {
-        loggerSysAEx.log(data)
+        console.log(`\x1b[32m[SysAEx]\x1b[0m ${data}`)
     })
     // Stderr
     sysAEx.stdio[2].setEncoding('utf8')
     sysAEx.stdio[2].on('data', (data) => {
-        loggerSysAEx.log(data)
+        console.log(`\x1b[31m[SysAEx]\x1b[0m ${data}`)
     })
+
+    const javaVer = Util.mcVersionAtLeast('1.17', mcVersion) ? '17' : '8'
     
     sysAEx.on('message', (m) => {
 
@@ -325,14 +328,14 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                 // Show this information to the user.
                 setOverlayContent(
                     'No Compatible<br>Java Installation Found',
-                    'In order to join WesterosCraft, you need a 64-bit installation of Java 8. Would you like us to install a copy?',
+                    `In order to join WesterosCraft, you need a 64-bit installation of Java ${javaVer}. Would you like us to install a copy?`,
                     'Install Java',
                     'Install Manually'
                 )
                 setOverlayHandler(() => {
                     setLaunchDetails('Preparing Java Download..')
-                    sysAEx.send({task: 'changeContext', class: 'AssetGuard', args: [ConfigManager.getCommonDirectory(),ConfigManager.getJavaExecutable()]})
-                    sysAEx.send({task: 'execute', function: '_enqueueOpenJDK', argsArr: [ConfigManager.getDataDirectory()]})
+                    sysAEx.send({task: 'changeContext', class: 'AssetGuard', args: [ConfigManager.getCommonDirectory(),ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())]})
+                    sysAEx.send({task: 'execute', function: '_enqueueOpenJDK', argsArr: [ConfigManager.getDataDirectory(), mcVersion]})
                     toggleOverlay(false)
                 })
                 setDismissHandler(() => {
@@ -340,7 +343,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                         //$('#overlayDismiss').toggle(false)
                         setOverlayContent(
                             'Java is Required<br>to Launch',
-                            'A valid x64 installation of Java 8 is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.',
+                            `A valid x64 installation of Java ${javaVer} is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.`,
                             'I Understand',
                             'Go Back'
                         )
@@ -359,7 +362,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
 
             } else {
                 // Java installation found, use this to launch the game.
-                ConfigManager.setJavaExecutable(m.result)
+                ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), m.result)
                 ConfigManager.save()
 
                 // We need to make sure that the updated value is on the settings UI.
@@ -433,7 +436,7 @@ function asyncSystemScan(mcVersion, launchAfter = true){
                     remote.getCurrentWindow().setProgressBar(-1)
 
                     // Extraction completed successfully.
-                    ConfigManager.setJavaExecutable(m.args[0])
+                    ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), m.args[0])
                     ConfigManager.save()
 
                     if(extractListener != null){
@@ -495,8 +498,7 @@ function dlAsync(login = true){
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
-    const loggerAEx = LoggerUtil1('%c[AEx]', 'color: #353232; font-weight: bold')
-    const loggerLaunchSuite = LoggerUtil1('%c[LaunchSuite]', 'color: #000668; font-weight: bold')
+    const loggerLaunchSuite = LoggerUtil.getLogger('LaunchSuite')
 
     const forkEnv = JSON.parse(JSON.stringify(process.env))
     forkEnv.CONFIG_DIRECT_PATH = ConfigManager.getLauncherDirectory()
@@ -505,7 +507,7 @@ function dlAsync(login = true){
     aEx = cp.fork(path.join(__dirname, 'assets', 'js', 'assetexec.js'), [
         'AssetGuard',
         ConfigManager.getCommonDirectory(),
-        ConfigManager.getJavaExecutable()
+        ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
     ], {
         env: forkEnv,
         stdio: 'pipe'
@@ -513,12 +515,12 @@ function dlAsync(login = true){
     // Stdout
     aEx.stdio[1].setEncoding('utf8')
     aEx.stdio[1].on('data', (data) => {
-        loggerAEx.log(data)
+        console.log(`\x1b[32m[AEx]\x1b[0m ${data}`)
     })
     // Stderr
     aEx.stdio[2].setEncoding('utf8')
     aEx.stdio[2].on('data', (data) => {
-        loggerAEx.log(data)
+        console.log(`\x1b[31m[AEx]\x1b[0m ${data}`)
     })
     aEx.on('error', (err) => {
         loggerLaunchSuite.error('Error during launch', err)
@@ -538,27 +540,27 @@ function dlAsync(login = true){
             switch(m.data){
                 case 'distribution':
                     setLaunchPercentage(20, 100)
-                    loggerLaunchSuite.log('Validated distibution index.')
+                    loggerLaunchSuite.info('Validated distibution index.')
                     setLaunchDetails('Loading version information..')
                     break
                 case 'version':
                     setLaunchPercentage(40, 100)
-                    loggerLaunchSuite.log('Version data loaded.')
+                    loggerLaunchSuite.info('Version data loaded.')
                     setLaunchDetails('Validating asset integrity..')
                     break
                 case 'assets':
                     setLaunchPercentage(60, 100)
-                    loggerLaunchSuite.log('Asset Validation Complete')
+                    loggerLaunchSuite.info('Asset Validation Complete')
                     setLaunchDetails('Validating library integrity..')
                     break
                 case 'libraries':
                     setLaunchPercentage(80, 100)
-                    loggerLaunchSuite.log('Library validation complete.')
+                    loggerLaunchSuite.info('Library validation complete.')
                     setLaunchDetails('Validating miscellaneous file integrity..')
                     break
                 case 'files':
                     setLaunchPercentage(100, 100)
-                    loggerLaunchSuite.log('File validation complete.')
+                    loggerLaunchSuite.info('File validation complete.')
                     setLaunchDetails('Downloading files..')
                     break
             }
@@ -646,7 +648,7 @@ function dlAsync(login = true){
 
             if(login && allGood) {
                 const authUser = ConfigManager.getSelectedAccount()
-                loggerLaunchSuite.log(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
+                loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
                 let pb = new ProcessBuilder(serv, versionData, forgeData, authUser, remote.app.getVersion())
                 setLaunchDetails('Launching game..')
 
@@ -713,7 +715,7 @@ function dlAsync(login = true){
                         DiscordWrapper.initRPC(distro.discord, serv.discord)
                         hasRPC = true
                         proc.on('close', (code, signal) => {
-                            loggerLaunchSuite.log('Shutting down Discord Rich Presence..')
+                            loggerLaunchSuite.info('Shutting down Discord Rich Presence..')
                             DiscordWrapper.shutdownRPC()
                             hasRPC = false
                             proc = null
@@ -744,7 +746,7 @@ function dlAsync(login = true){
         serv = data.getServer(ConfigManager.getSelectedServer())
         aEx.send({task: 'execute', function: 'validateEverything', argsArr: [ConfigManager.getSelectedServer(), DistroManager.isDevMode()]})
     }, (err) => {
-        loggerLaunchSuite.log('Error while fetching a fresh copy of the distribution index.', err)
+        loggerLaunchSuite.info('Error while fetching a fresh copy of the distribution index.', err)
         refreshDistributionIndex(false, (data) => {
             onDistroRefresh(data)
             serv = data.getServer(ConfigManager.getSelectedServer())
