@@ -515,7 +515,7 @@ function defaultJavaConfig(effectiveJavaOptions, ram) {
     }
 }
 
-function defaultJavaConfig17(ram) {
+function defaultJavaConfig8(ram) {
     return {
         minRAM: resolveSelectedRAM(ram),
         maxRAM: resolveSelectedRAM(ram),
@@ -529,7 +529,7 @@ function defaultJavaConfig17(ram) {
     }
 }
 
-function defaultJavaConfig8(ram) {
+function defaultJavaConfig17(ram) {
     return {
         minRAM: resolveSelectedRAM(ram),
         maxRAM: resolveSelectedRAM(ram),
