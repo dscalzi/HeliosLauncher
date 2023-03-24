@@ -521,6 +521,7 @@ async function dlAsync(login = true) {
     if(invalidFileCount > 0) {
         loggerLaunchSuite.info('Downloading files.')
         setLaunchDetails('Downloading files..')
+        setLaunchPercentage(0)
         try {
             await fullRepairModule.download(percent => {
                 setDownloadPercentage(percent)
