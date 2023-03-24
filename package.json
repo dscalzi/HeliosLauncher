@@ -32,7 +32,7 @@
     "fs-extra": "^11.1.1",
     "github-syntax-dark": "^0.5.0",
     "got": "^11.8.5",
-    "helios-core": "~2.0.0-rc.3",
+    "helios-core": "~2.0.0",
     "helios-distribution-types": "^1.2.0",
     "jquery": "^3.6.4",
     "semver": "^7.3.8"
