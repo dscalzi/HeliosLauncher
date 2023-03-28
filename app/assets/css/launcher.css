@@ -936,10 +936,10 @@ body, button {
 
 @keyframes rotateBefore {
     from {
-      transform: rotateX(60deg) rotateY(45deg) rotateZ(0deg);
+    transform: rotateX(60deg) rotateY(45deg) rotateZ(0deg);
     }
     to {
-      transform: rotateX(60deg) rotateY(45deg) rotateZ(-360deg);
+    transform: rotateX(60deg) rotateY(45deg) rotateZ(-360deg);
     }
 }
 
