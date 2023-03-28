@@ -543,9 +543,10 @@ let data = null
  * @returns {Promise.<DistroIndex>}
  */
 exports.pullRemote = function(){
-    if(DEV_MODE){
+    //TODO Provisoire
+    /*if(DEV_MODE){
         return exports.pullLocal()
-    }
+    }*/
     return new Promise((resolve, reject) => {
         const distroURL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/distribution.json'
         //const distroURL = 'https://gist.githubusercontent.com/dscalzi/53b1ba7a11d26a5c353f9d5ae484b71b/raw/'

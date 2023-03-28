@@ -33,8 +33,10 @@ const log                               = LoggerUtil.getLogger('AuthManager')
  * @returns {Promise.<Object>} Promise which resolves the resolved authenticated account object.
  */
 exports.addMojangAccount = async function(email, password, a2f) {
+    // Site pas encore dispo
+    //const auth = new azAuth.AuthClient('https://zone-delta.xyz')
     const auth = new azAuth.AuthClient('https://site-33.net')
-
+    
     let result
 
     if (a2f === null) result = await auth.login(email, password)

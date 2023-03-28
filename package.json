@@ -1,13 +1,13 @@
 {
-  "name": "Site-33-Launcher",
+  "name": "Zone_Delta_Launcher",
   "version": "0.0.2",
-  "productName": "Site-33-Launcher",
+  "productName": "Zone_Delta_Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Site-33 (Fork of Daniel Scalzi (https://github.com/dscalzi/))",
+  "author": "Zone-Delta (Fork of Daniel Scalzi (https://github.com/dscalzi/))",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/project-site-33/Site-33-Launcher",
+  "homepage": "https://github.com/project-site-33/Zone_Delta_Launcher",
   "bugs": {
-    "url": "https://github.com/project-site-33/Site-33-Launcher/issues"
+    "url": "https://github.com/project-site-33/Zone_Delta_Launcher/issues"
   },
   "private": true,
   "main": "index.js",
