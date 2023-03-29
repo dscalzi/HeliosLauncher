@@ -1,6 +1,6 @@
 {
   "name": "helioslauncher",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "productName": "Helios Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
@@ -32,7 +32,7 @@
     "fs-extra": "^11.1.1",
     "github-syntax-dark": "^0.5.0",
     "got": "^11.8.5",
-    "helios-core": "~2.0.1",
+    "helios-core": "~2.0.2",
     "helios-distribution-types": "^1.2.0",
     "jquery": "^3.6.4",
     "semver": "^7.3.8"
@@ -40,7 +40,7 @@
   "devDependencies": {
     "electron": "^23.2.0",
     "electron-builder": "^23.6.0",
-    "eslint": "^8.36.0"
+    "eslint": "^8.37.0"
   },
   "repository": {
     "type": "git",
