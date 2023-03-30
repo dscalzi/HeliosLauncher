@@ -1,4 +1,4 @@
-const remoteMain = require('@electron/remote/main')
+const remoteMain = require('@electron/remote/main');
 remoteMain.initialize()
 
 // Requirements
