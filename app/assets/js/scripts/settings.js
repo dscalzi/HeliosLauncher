@@ -215,7 +215,7 @@ function saveSettingsValues(){
                     if(cVal === 'MinRAM' || cVal === 'MaxRAM'){
                         let val = Number(v.getAttribute('value'))
                         if(val%1 > 0){
-                            val = val*1000 + 'M'
+                            val = val*1024 + 'M'
                         } else {
                             val = val + 'G'
                         }
