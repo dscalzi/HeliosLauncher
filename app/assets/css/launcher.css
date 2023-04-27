@@ -2858,9 +2858,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 70px;
     width: auto;
     position: relative;
-    border: 2px solid white;
     box-sizing: border-box;
-    border-radius: 50%;
 }
 
 /* Logo container styles. */
@@ -3962,7 +3960,138 @@ input:checked + .toggleSwitchSlider:before {
     }
 }
 
-/* Class which is applied when the spinner image is spinning. */
-.rotating {
-    animation: rotating 10s linear infinite;
+.loader-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.loader-container:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: #2ec079;
+    z-index: -1;
+    transition: top 1.2s linear 3.1s;
+}
+.loader-container:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: #2ec079;
+    z-index: -1;
+    transition: bottom 1.2s linear 3.1s;
+}
+.loader-container.done:before {
+    top: -50%;
+}
+.loader-container.done:after {
+    bottom: -50%;
+}
+
+.progress {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    transform-origin: center;
+}
+.progress.float .progress__item:before {
+    border-top-width: 2px;
+    margin-top: 0px;
+    height: 50px;
+}
+.progress.float.shadow:before {
+    border-top-width: 2px;
+    margin-top: -41px;
+    height: 50px;
+}
+.progress.shadow:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -43px 0 0 12px;
+    width: 45px;
+    height: 45px;
+    border-top: solid 10px #F5BA01;
+    border-right: solid 10px #F5BA01;
+    border-top-right-radius: 100%;
+    z-index: -1;
+    transform-origin: left bottom;
+    -webkit-animation: spin 3s linear infinite;
+}
+.progress.shadow:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    color: #F5BA01;
+    text-align: center;
+    line-height: 100px;
+    border: 2px solid #F5BA01;
+    border-radius: 50%;
+    margin: -40px 0 0 -40px;
+    z-index: -1;
+    transform-origin: center;
+}
+.progress.done .progress__item {
+    opacity: 0;
+    -webkit-animation: done 3.1s;
+    transition: opacity 0.3s linear 3.1s;
+}
+.progress.done .progress__item:before {
+    display: none;
+}
+.progress.done:before {
+    display: none;
+}
+.progress.done:after {
+    opacity: 0;
+    -webkit-animation: done 3.1s;
+    transition: opacity 0.15s linear 3.1s;
+}
+
+@-webkit-keyframes done {
+    10% {
+        transform: scale(1.1);
+    }
+    20% {
+        transform: scale(0.9);
+    }
+    30% {
+        transform: scale(1.07);
+    }
+    40% {
+        transform: scale(0.93);
+    }
+    50% {
+        transform: scale(1.04);
+    }
+    60% {
+        transform: scale(0.97);
+    }
+    80% {
+        transform: scale(1.01);
+    }
+    90% {
+        transform: scale(0.99);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+@-webkit-keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
 }
