@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c7fc7215-5a14-4d6e-8a38-d34bcd9137f5" name="Changes" comment="Editing ico">
-      <change afterPath="$PROJECT_DIR$/build/logo.png" afterDir="false" />
+    <list default="true" id="c7fc7215-5a14-4d6e-8a38-d34bcd9137f5" name="Changes" comment="Update logo and loading screen">
+      <change afterPath="$PROJECT_DIR$/app/assets/lang/fr_FR.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.ejs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/css/launcher.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/css/launcher.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/images/SealCircle.ico" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/images/SealCircle.ico" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/images/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/images/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/assets/js/preloader.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/js/preloader.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/frame.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/app/frame.ejs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +81,7 @@
       <workItem from="1682597151301" duration="1539000" />
       <workItem from="1682599215708" duration="3000" />
       <workItem from="1682599222418" duration="3037000" />
-      <workItem from="1682604704565" duration="1274000" />
+      <workItem from="1682604704565" duration="2270000" />
     </task>
     <task id="LOCAL-00001" summary="Editing ico">
       <created>1682604080148</created>
@@ -91,7 +90,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682604080148</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Update logo and loading screen">
+      <created>1682606030929</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1682606030929</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -100,6 +106,7 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Editing ico" />
-    <option name="LAST_COMMIT_MESSAGE" value="Editing ico" />
+    <MESSAGE value="Update logo and loading screen" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update logo and loading screen" />
   </component>
 </project>
