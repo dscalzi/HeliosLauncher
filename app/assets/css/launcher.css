@@ -64,7 +64,7 @@ body, button {
     display: flex;
     flex-direction: column;
     transition: background-color 1s ease;
-    /*background-color: rgba(0, 0, 0, 0.5);*/
+    background-color: rgba(0, 0, 0, 0);
     -webkit-user-select: none;
 }
 
@@ -2858,9 +2858,6 @@ input:checked + .toggleSwitchSlider:before {
     height: 70px;
     width: auto;
     position: relative;
-    border: 2px solid white;
-    box-sizing: border-box;
-    border-radius: 50%;
 }
 
 /* Logo container styles. */
@@ -3965,4 +3962,31 @@ input:checked + .toggleSwitchSlider:before {
 /* Class which is applied when the spinner image is spinning. */
 .rotating {
     animation: rotating 10s linear infinite;
+}
+
+#test {
+    background-color: #04AA6D;
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 15px;
+}
+
+#container {
+    height: 200px;
+    position: relative;
+    border: 3px solid green;
+}
+
+#vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }

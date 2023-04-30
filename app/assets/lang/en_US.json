@@ -1,7 +1,4 @@
 {
-    "html": {
-        "avatarOverlay": "Edit"
-    },
     "js": {
         "login": {
             "error": {

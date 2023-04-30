@@ -151,7 +151,7 @@ function updateSelectedAccount(authUser){
             username = authUser.displayName
         }
         if(authUser.uuid != null){
-            document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/body/${authUser.uuid}/right')`
+            document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/head/${authUser.uuid}')`
         }
     }
     user_text.innerHTML = username
@@ -243,14 +243,14 @@ const refreshServerStatus = async (fade = false) => {
     loggerLanding.info('Refreshing Server Status')
     const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
 
-    let pLabel = 'SERVER'
-    let pVal = 'OFFLINE'
+    let pLabel = 'SERVEUR'
+    let pVal = 'HORS LIGNE'
 
     try {
 
         const servStat = await getServerStatus(47, serv.hostname, serv.port)
         console.log(servStat)
-        pLabel = 'PLAYERS'
+        pLabel = 'JOUEURS'
         pVal = servStat.players.online + '/' + servStat.players.max
 
     } catch (err) {
