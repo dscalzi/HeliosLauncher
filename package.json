@@ -43,21 +43,6 @@
     "electron-builder": "^23.6.0",
     "eslint": "^8.38.0"
   },
-  "config": {
-    "forge": {
-      "publishers": [
-        {
-          "name": "@electron-forge/publisher-github",
-          "config": {
-            "repository": {
-              "owner": "tomarok",
-              "name": "BTCV-Launcher"
-            }
-          }
-        }
-      ]
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Tomarok/BTCV-Launcher.git"

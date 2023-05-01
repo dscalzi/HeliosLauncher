@@ -1,49 +1,82 @@
-name: Release
+name: Build and Deploy Electron App
+
 on:
-  release:
-    types:
-      - created
+  push:
+    branches:
+      - main
 
 jobs:
-
-  publish_on_linux:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
-        with:
-          node-version: 14
-      - name: install dependencies
-        run: npm install
-      - name: publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run publish
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  publish_on_mac:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: 14
-      - name: install dependencies
-        run: npm install
-      - name: publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run publish
+          node-version: '18'
 
-  publish_on_win:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
-        with:
-          node-version: 14
-      - name: install dependencies
+      - name: Install dependencies
         run: npm install
-      - name: publish
+
+      - name: Build Electron app
+        run: npm run build
+
+      - name: Archive built files
+        uses: actions/upload-artifact@v2
+        with:
+          name: electron-build
+          path: dist/
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download built files
+        uses: actions/download-artifact@v2
+        with:
+          name: electron-build
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Deploy release to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*
+          tag_name: v${{ github.ref }}
+          title: Release ${{ github.ref }}
+          body: Release of ${{ github.sha }}
+
+      - name: Publish to GitHub Packages
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+          repository: ${{ github.repository }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run publish
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Dependencies
+        run: |
+          cd src
+          npm install
+      - name: Build the Electron App
+        run: |
+          cd src
+          npm run build
+      - name: Build and Publish the Electron App to GitHub Packages
+        uses: samuelmeuli/action-electron-builder@v2
+        with:
+          publish: always
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
