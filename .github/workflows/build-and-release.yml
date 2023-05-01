@@ -62,7 +62,7 @@ jobs:
           ref: ${{ github.ref }}
           repository: ${{ github.repository }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: Install Dependencies
         run: |
           cd src
@@ -77,4 +77,4 @@ jobs:
           publish: always
           draft: true
           prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
