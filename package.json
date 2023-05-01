@@ -9,7 +9,7 @@
   "bugs": {
     "url": "https://github.com/Tomarok/BTCV-Launcher/issues"
   },
-  "private": true,
+  "private": false,
   "main": "index.js",
   "scripts": {
     "start": "electron .",
@@ -38,9 +38,25 @@
     "semver": "^7.4.0"
   },
   "devDependencies": {
+    "@electron-forge/publisher-github": "^6.1.1",
     "electron": "^24.1.1",
     "electron-builder": "^23.6.0",
     "eslint": "^8.38.0"
+  },
+  "config": {
+    "forge": {
+      "publishers": [
+        {
+          "name": "@electron-forge/publisher-github",
+          "config": {
+            "repository": {
+              "owner": "tomarok",
+              "name": "BTCV-Launcher"
+            }
+          }
+        }
+      ]
+    }
   },
   "repository": {
     "type": "git",
