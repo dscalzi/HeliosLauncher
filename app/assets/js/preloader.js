@@ -23,7 +23,7 @@ DistroAPI['commonDir'] = ConfigManager.getCommonDirectory()
 DistroAPI['instanceDir'] = ConfigManager.getInstanceDirectory()
 
 // Load Strings
-LangLoader.loadLanguage('fr_FR')
+LangLoader.loadLanguage('en_US')
 
 /**
  * 
