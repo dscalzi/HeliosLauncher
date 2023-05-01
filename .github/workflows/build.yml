@@ -36,3 +36,28 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run dist
         shell: bash
+
+      - name: Deploy release to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*
+          tag_name: v${{ github.ref }}
+          title: Release ${{ github.ref }}
+          body: Release of ${{ github.sha }}
+
+      - name: Publish to GitHub Packages
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+          repository: ${{ github.repository }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Build and Publish the Electron App to GitHub Packages
+        uses: samuelmeuli/action-electron-builder@v2
+        with:
+          publish: always
+          draft: true
+          prerelease: false
+          token: ${{ secrets.GH_TOKEN }}
