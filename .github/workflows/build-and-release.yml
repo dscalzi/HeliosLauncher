@@ -67,10 +67,13 @@ jobs:
         run: |
           cd src
           npm install
-      - name: Build the Electron App
-        run: |
-          cd src
-          npm run dist
+
+      - name: Build
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npm run dist
+        shell: bash
+
       - name: Build and Publish the Electron App to GitHub Packages
         uses: samuelmeuli/action-electron-builder@v2
         with:
