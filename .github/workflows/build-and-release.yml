@@ -1,9 +1,7 @@
 name: Build and Deploy Electron App
 
-on:
-  push:
-    branches:
-      - main
+on: push
+
 
 jobs:
   build:
@@ -77,6 +75,6 @@ jobs:
         uses: samuelmeuli/action-electron-builder@v2
         with:
           publish: always
-          draft: false
+          draft: true
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
