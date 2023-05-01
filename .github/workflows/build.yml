@@ -55,7 +55,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build and Publish the Electron App to GitHub Packages
-        uses: samuelmeuli/action-electron-builder@v2
+        uses: samuelmeuli/action-electron-builder
         with:
           publish: always
           draft: true
