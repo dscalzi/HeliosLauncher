@@ -58,15 +58,16 @@
                 </div>
             </div>
             <div class="flex items-center justify-center">
+                <div id="launch_content">
+                    <div class="rounded-full bg-bat px-7 py-1.5 font-bold text-xl w-max cursor-pointer hover:transform hover:scale-110 transition-all" id="launch_button">Jouer</div>
+                </div>
 
-                <div class="rounded-full bg-bat px-7 py-1.5 font-bold text-xl w-max cursor-pointer hover:transform hover:scale-110 transition-all" id="launch_button">Jouer</div>
-
-                <div id="launch_details" class="w-40">
+                <div id="launch_details" class="w-40 flex-col">
                     <div id="launch_details_left">
                         <span id="launch_progress_label">0%</span>
                     </div>
                     <div id="launch_details_right">
-                        <div class="h-1 rounded-full bg-bat" style="width:25%"></div>
+                        <div class="h-1 rounded-full bg-bat" id="launch_progress" style="width:25%"></div>
                         <!-- <progress id="launch_progress" value="22" max="100"></progress> -->
                         <span id="launch_details_text" class="bot_label mt-1">Please wait..</span>
                     </div>
