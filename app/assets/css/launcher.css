@@ -64,7 +64,7 @@ body, button {
     display: flex;
     flex-direction: column;
     transition: background-color 1s ease;
-    background-color: rgba(0, 0, 0, 0);
+    /*background-color: rgba(0, 0, 0, 0.5);*/
     -webkit-user-select: none;
 }
 
@@ -273,8 +273,12 @@ body, button {
 */
 
 #welcomeImageSeal {
+    border-radius: 50%;
+    border: 2px solid #cad7e1;
+    background: rgba(1, 2, 1, 0.5);
     height: 125px;
     width: 125px;
+    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
     margin-bottom: 5%;
     margin-top: 10%;
 }
@@ -2854,6 +2858,9 @@ input:checked + .toggleSwitchSlider:before {
     height: 70px;
     width: auto;
     position: relative;
+    border: 2px solid white;
+    box-sizing: border-box;
+    border-radius: 50%;
 }
 
 /* Logo container styles. */
@@ -3173,12 +3180,6 @@ input:checked + .toggleSwitchSlider:before {
  ******************************************************************************/
 
 /* Style for a general label on the bottom of the landing view. */
-.bot_label {
-    font-size: 9px;
-    letter-spacing: 1px;
-    font-weight: bold;
-    text-shadow: 0px 0px 0px #bebcbb;
-}
 
 /* Divider used on the bottom of the landing view. */
 .bot_divider {
@@ -3195,32 +3196,19 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Maintains maximum width on the status bar. */
 #server_status_wrapper {
-    display: inline-flex;
-    width: 75px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 /* Span which displays the player count of the selected server. */
-#player_count {
-    color: #949494;
-    font-size: 8px;
-    font-weight: 900;
-    text-shadow: 0px 0px 20px #949494;
-    margin-left: 10px;
-}
+
 
 /* Wrapper container for the mojang status bar. */
 #mojangStatusWrapper {
     position: relative;
     display: flex;
     cursor: pointer;
-}
-
-/* Icon which displays the status of the mojang services. */
-#mojang_status_icon {
-    font-size: 30px;
-    color: #848484;
-    margin-left: 15px;
-    font-family: 'sans-serif';
 }
 
 /* Tooltip which displays more details about the mojang statuses. */
@@ -3387,42 +3375,19 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* The launch button. */
-#launch_button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-weight: 900;
-    letter-spacing: 2px;
-    text-shadow: 0px 0px 0px #bebcbb;
-    font-size: 20px;
-    padding: 0px;
-    transition: 0.25s ease;
-    outline: none;
-}
-#launch_button:hover,
-#launch_button:focus {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
-}
-#launch_button:active {
-    color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
-}
-#launch_button:disabled {
-    color: #c7c7c7;
-    cursor: default;
-    pointer-events: none;
-}
+
 
 /* Launch details main container, hidden until launch processing begins. */
 #launch_details {
     position: relative;
-    top: 25px;
     display: none;
 }
  
 /* Left side of launch details container, displays percentage and a divider. */
 #launch_details_left {
-    display: flex;
+    display: block;
+    width: 100%;
+    text-align: center;
 }
 
 /* Span which displays percentage complete. */
@@ -3441,26 +3406,11 @@ input:checked + .toggleSwitchSlider:before {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
 /* Button which opens the server selection view. */
-#server_selection_button {
-    background: none;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    line-height: 24px;
-    padding: 0px;
-    transition: 0.25s ease;
-}
-#server_selection_button:hover,
-#server_selection_button:focus {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff, 0px 0px 20px #fff;
-}
-#server_selection_button:active {
-    color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
-}
+
 
 /* Progress bar styles. */
 #launch_progress[value] {
@@ -3958,31 +3908,4 @@ input:checked + .toggleSwitchSlider:before {
 /* Class which is applied when the spinner image is spinning. */
 .rotating {
     animation: rotating 10s linear infinite;
-}
-
-#test {
-    background-color: #04AA6D;
-    border: none;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    border-radius: 15px;
-}
-
-#container {
-    height: 200px;
-    position: relative;
-    border: 3px solid green;
-}
-
-#vertical-center {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
 }

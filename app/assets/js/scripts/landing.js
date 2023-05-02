@@ -76,8 +76,9 @@ function setLaunchDetails(details){
  * @param {number} percent Percentage (0-100)
  */
 function setLaunchPercentage(percent){
-    launch_progress.setAttribute('max', 100)
-    launch_progress.setAttribute('value', percent)
+    // launch_progress.setAttribute('max', 100)
+    // launch_progress.setAttribute('value', percent)
+    launch_progress.style.width = percent+'%'
     launch_progress_label.innerHTML = percent + '%'
 }
 
@@ -151,7 +152,7 @@ function updateSelectedAccount(authUser){
             username = authUser.displayName
         }
         if(authUser.uuid != null){
-            document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/head/${authUser.uuid}')`
+            document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/body/${authUser.uuid}/right')`
         }
     }
     user_text.innerHTML = username
@@ -165,14 +166,14 @@ function updateSelectedServer(serv){
     }
     ConfigManager.setSelectedServer(serv != null ? serv.rawServer.id : null)
     ConfigManager.save()
-    server_selection_button.innerHTML = '\u2022 ' + (serv != null ? serv.rawServer.name : 'No Server Selected')
+    server_selection_button.innerHTML = (serv != null ? serv.rawServer.name : 'No Server Selected')
     if(getCurrentView() === VIEWS.settings){
         animateSettingsTabRefresh()
     }
     setLaunchEnabled(serv != null)
 }
 // Real text is set in uibinder.js on distributionIndexDone.
-server_selection_button.innerHTML = '\u2022 Loading..'
+server_selection_button.innerHTML = 'Loading..'
 server_selection_button.onclick = async e => {
     e.target.blur()
     await toggleServerSelection(true)
@@ -203,12 +204,12 @@ const refreshMojangStatuses = async function(){
 
         if(service.essential){
             tooltipEssentialHTML += `<div class="mojangStatusContainer">
-                <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">&#8226;</span>
+                <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status).replace('#a5c325','#16a34a')};">&#8226;</span>
                 <span class="mojangStatusName">${service.name}</span>
             </div>`
         } else {
             tooltipNonEssentialHTML += `<div class="mojangStatusContainer">
-                <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">&#8226;</span>
+                <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status).replace('#a5c325','#16a34a')};">&#8226;</span>
                 <span class="mojangStatusName">${service.name}</span>
             </div>`
         }
@@ -236,22 +237,27 @@ const refreshMojangStatuses = async function(){
     
     document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML
     document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML
-    document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
+    document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status).replace('#a5c325','#16a34a')
 }
 
 const refreshServerStatus = async (fade = false) => {
     loggerLanding.info('Refreshing Server Status')
     const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
 
-    let pLabel = 'SERVEUR'
-    let pVal = 'HORS LIGNE'
+    let pLabel = ''
+    let pVal = '<span class="text-red-600">Serveur hors ligne</span>'
 
     try {
 
         const servStat = await getServerStatus(47, serv.hostname, serv.port)
         console.log(servStat)
-        pLabel = 'JOUEURS'
-        pVal = servStat.players.online + '/' + servStat.players.max
+        pLabel = 'Sac a crottes connectés'
+        if(!servStat.players.online){
+            pVal = 'Pas de sacs à crottes connectés'
+        }
+        else{
+            pVal = servStat.players.online +' sac'+(servStat.players.online>1 ? 's' : '')+' à crottes connecté'+(servStat.players.online>1 ? 's' : '')
+        }
 
     } catch (err) {
         loggerLanding.warn('Unable to refresh server status, assuming offline.')

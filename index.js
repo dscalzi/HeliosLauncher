@@ -227,6 +227,7 @@ function createWindow() {
         height: 552,
         icon: getPlatformIcon('SealCircle'),
         frame: false,
+        resizable: false,
         webPreferences: {
             preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js'),
             nodeIntegration: true,
@@ -246,7 +247,19 @@ function createWindow() {
 
     win.removeMenu()
 
-    win.resizable = true
+    console.log(process.argv)
+    if(process.argv.includes('--dev')){
+        win.webContents.on('before-input-event', (event, input) => {
+            if (input['type'] == 'keyUp' && input['key'] == 'F5') {
+                win.reload()
+                event.preventDefault()
+            }
+        })
+        win.webContents.openDevTools()
+    }
+
+
+    win.resizable = false
 
     win.on('closed', () => {
         win = null

@@ -1,0 +1,72 @@
+.text-bat{
+    color : #e7ba1f !important;
+}
+
+.hover\:text-bat{
+    transition: all ease .15s;
+}
+
+.hover\:text-bat:hover{
+    color : #e7ba1f !important;
+}
+
+.bg-bat{
+    background-color : #e7ba1f !important;
+}
+
+#image_seal_container,
+#image_seal,
+#avatarContainer
+{
+    margin: 0;
+    width: 50px;
+    height : 50px;
+    box-shadow:none;
+}
+
+#user_text{
+    position: relative;
+    right: 0;
+    text-shadow: none;
+}
+
+#user_content{
+    gap : 10px;
+}
+
+#mediaContent{
+    display: none;
+}
+
+#server_selection_button{
+    text-shadow: none !important;
+    /* width: 100%;
+    text-align: center; */
+}
+
+#mojang_status_icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+#mojang_status_icon::after{
+    content : '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: block;
+    background-color: currentColor;
+}
+
+
+.frameButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#image_seal{
+    border: none !important;
+}

@@ -1,0 +1,306 @@
+.animation {
+	width: 200px;
+	height: 200px;
+}
+
+@charset "UTF-8";
+
+@-webkit-keyframes rotateCube {
+	0% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	}
+	5.55% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	}
+	11.1% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(90deg);
+	}
+	16.55% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(90deg);
+	}
+	22.22% {
+		transform: translateZ(-200px) rotateY(90deg) rotateX(90deg);
+	}
+	27.75% {
+		transform: translateZ(-200px) rotateY(90deg) rotateX(90deg);
+	}
+	33.3% {
+		transform: translateZ(-200px) rotateY(180deg) rotateX(90deg);
+	}
+	38.85% {
+		transform: translateZ(-200px) rotateY(180deg) rotateX(90deg);
+	}
+	44.4% {
+		transform: translateZ(-200px) rotateY(270deg) rotateX(90deg);
+	}
+	49.95% {
+		transform: translateZ(-200px) rotateY(270deg) rotateX(90deg);
+	}
+	55.5% {
+		transform: translateZ(-200px) rotateY(360deg) rotateX(90deg);
+	}
+	61.05% {
+		transform: translateZ(-200px) rotateY(360deg) rotateX(90deg);
+	}
+	61.055% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(90deg);
+	}
+	66.6% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(180deg);
+	}
+	72.15% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(180deg);
+	}
+	77.7% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(270deg);
+	}
+	83.25% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(270deg);
+	}
+	88.8% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(360deg);
+	}
+	94.35% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(360deg);
+	}
+	94.355% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	}
+	99.9% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	}
+}
+@keyframes rotateCube {
+	0% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	}
+	5.55% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	}
+	11.1% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(90deg);
+	}
+	16.55% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(90deg);
+	}
+	22.22% {
+		transform: translateZ(-200px) rotateY(90deg) rotateX(90deg);
+	}
+	27.75% {
+		transform: translateZ(-200px) rotateY(90deg) rotateX(90deg);
+	}
+	33.3% {
+		transform: translateZ(-200px) rotateY(180deg) rotateX(90deg);
+	}
+	38.85% {
+		transform: translateZ(-200px) rotateY(180deg) rotateX(90deg);
+	}
+	44.4% {
+		transform: translateZ(-200px) rotateY(270deg) rotateX(90deg);
+	}
+	49.95% {
+		transform: translateZ(-200px) rotateY(270deg) rotateX(90deg);
+	}
+	55.5% {
+		transform: translateZ(-200px) rotateY(360deg) rotateX(90deg);
+	}
+	61.05% {
+		transform: translateZ(-200px) rotateY(360deg) rotateX(90deg);
+	}
+	61.055% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(90deg);
+	}
+	66.6% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(180deg);
+	}
+	72.15% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(180deg);
+	}
+	77.7% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(270deg);
+	}
+	83.25% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(270deg);
+	}
+	88.8% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(360deg);
+	}
+	94.35% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(360deg);
+	}
+	94.355% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	}
+	99.9% {
+		transform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	}
+}
+@font-face {
+	font-family: minecrafft;
+	src: url(https://assets.codepen.io/751678/MinecraftFont.ttf);
+}
+
+.animation section {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.animation .container {
+	width: 200px;
+	height: 200px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: auto;
+	perspective: 600px;
+	margin: 0;
+}
+
+.animation .container h1 {
+	position: absolute;
+	width: 200%;
+	bottom: 0;
+	left: 100%;
+	right: auto;
+	transform: translateX(25px) translatey(0px);
+	transform-origin: bottom left;
+	margin: 0;
+	color: #dddddd;
+	font-size: 16px;
+}
+@media all and (min-width: 768px) {
+	.animation .container h1 {
+		width: 300%;
+		font-size: 24px;
+	}
+}
+.animation .container #cube {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	transform-style: preserve-3d;
+	transform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	-webkit-transform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	-moz-transform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	-ms-trasform: translateZ(-200px) rotateY(0deg) rotateX(0deg);
+	transition: transform 1s;
+	-webkit-transition: transform 1s;
+	-moz-transition: transform 1s;
+	-ms-transition: transform 1s;
+}
+.animation .container #cube.animate {
+	-webkit-animation: rotateCube 8s linear 0s infinite forwards;
+	animation: rotateCube 8s linear 0s infinite forwards;
+}
+.animation .container #cube.hover {
+	-webkit-animation: rotateCube 6s linear 0s infinite forwards;
+	animation: rotateCube 6s linear 0s infinite forwards;
+}
+.animation .container #cube.hover figure.front {
+	transform: rotateY(0deg) translateZ(75px);
+	-webkit-transform: rotateY(0deg) translateZ(75px);
+	-moz-transform: rotateY(0deg) translateZ(75px);
+	-ms-trasform: rotateY(0deg) translateZ(75px);
+}
+.animation .container #cube.hover figure.back {
+	transform: rotateX(180deg) translateZ(75px);
+	-webkit-transform: rotateX(180deg) translateZ(75px);
+	-moz-transform: rotateX(180deg) translateZ(75px);
+	-ms-trasform: rotateX(180deg) translateZ(75px);
+}
+.animation .container #cube.hover figure.right {
+	transform: rotateY(90deg) translateZ(75px);
+	-webkit-transform: rotateY(90deg) translateZ(75px);
+	-moz-transform: rotateY(90deg) translateZ(75px);
+	-ms-trasform: rotateY(90deg) translateZ(75px);
+}
+.animation .container #cube.hover figure.left {
+	transform: rotateY(-90deg) translateZ(75px);
+	-webkit-transform: rotateY(-90deg) translateZ(75px);
+	-moz-transform: rotateY(-90deg) translateZ(75px);
+	-ms-trasform: rotateY(-90deg) translateZ(75px);
+}
+.animation .container #cube.hover figure.top {
+	transform: rotateX(90deg) translateZ(75px);
+	-webkit-transform: rotateX(90deg) translateZ(75px);
+	-moz-transform: rotateX(90deg) translateZ(75px);
+	-ms-trasform: rotateX(90deg) translateZ(75px);
+}
+.animation .container #cube.hover figure.bottom {
+	transform: rotateX(-90deg) translateZ(75px);
+	-webkit-transform: rotateX(-90deg) translateZ(75px);
+	-moz-transform: rotateX(-90deg) translateZ(75px);
+	-ms-trasform: rotateX(-90deg) translateZ(75px);
+}
+.animation .container #cube figure {
+	margin: 0;
+	width: 200px;
+	height: 200px;
+	display: block;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.05);
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	transition: transform 0.6s ease-in-out;
+	-webkit-transition: transform 0.6s ease-in-out;
+	-moz-transition: transform 0.6s ease-in-out;
+	-ms-transition: transform 0.6s ease-in-out;
+}
+.animation .container #cube figure.front {
+	transform: rotateY(0deg) translateZ(100px);
+	-webkit-transform: rotateY(0deg) translateZ(100px);
+	-moz-transform: rotateY(0deg) translateZ(100px);
+	-ms-trasform: rotateY(0deg) translateZ(100px);
+}
+.animation .container #cube figure.back {
+	transform: rotateX(180deg) translateZ(100px);
+	-webkit-transform: rotateX(180deg) translateZ(100px);
+	-moz-transform: rotateX(180deg) translateZ(100px);
+	-ms-trasform: rotateX(180deg) translateZ(100px);
+}
+.animation .container #cube figure.right {
+	transform: rotateY(90deg) translateZ(100px);
+	-webkit-transform: rotateY(90deg) translateZ(100px);
+	-moz-transform: rotateY(90deg) translateZ(100px);
+	-ms-trasform: rotateY(90deg) translateZ(100px);
+}
+.animation .container #cube figure.left {
+	transform: rotateY(-90deg) translateZ(100px);
+	-webkit-transform: rotateY(-90deg) translateZ(100px);
+	-moz-transform: rotateY(-90deg) translateZ(100px);
+	-ms-trasform: rotateY(-90deg) translateZ(100px);
+}
+.animation .container #cube figure.top {
+	transform: rotateX(90deg) translateZ(100px);
+	-webkit-transform: rotateX(90deg) translateZ(100px);
+	-moz-transform: rotateX(90deg) translateZ(100px);
+	-ms-trasform: rotateX(90deg) translateZ(100px);
+}
+.animation .container #cube figure.bottom {
+	transform: rotateX(-90deg) translateZ(100px);
+	-webkit-transform: rotateX(-90deg) translateZ(100px);
+	-moz-transform: rotateX(-90deg) translateZ(100px);
+	-ms-trasform: rotateX(-90deg) translateZ(100px);
+}
+
+.animation .container #cube figure.front {
+	background-image: url('../images/fifes/demzer.jpg');
+}
+.animation .container #cube figure.back {
+	background-image: url('../images/fifes/tantan.jpg');
+}
+.animation .container #cube figure.right {
+	background-image: url('../images/fifes/toto.jpg');
+}
+.animation .container #cube figure.left {
+	background-image: url('../images/fifes/demeyann.jpg');
+}
+.animation .container #cube figure.top {
+	background-image: url('../images/fifes/hugzer.jpg');
+}
+.animation .container #cube figure.bottom {
+	background-image: url('../images/fifes/znacks.jpg');
+}

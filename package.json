@@ -12,7 +12,7 @@
   "private": false,
   "main": "index.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron . --dev",
     "dist": "electron-builder build",
     "dist:win": "npm run dist -- -w",
     "dist:mac": "npm run dist -- -m",
