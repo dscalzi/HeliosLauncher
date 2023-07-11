@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
-  "version": "2.0.4",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
-  "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "name": "crafted-launcher-legacy",
+  "version": "2.0.5",
+  "productName": "Crafted Launcher Legacy",
+  "description": "Offline and online laucher for Raft's Modpacks",
+  "author": "Daniel Scalzi, RaftDev",
+  "license": "MIT",
+  "homepage": "https://github.com/Raft08/Crafted-Launcher-legacy/",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://discord.gg/m8ZzTEqeDN"
   },
   "private": true,
   "main": "index.js",
@@ -35,7 +35,8 @@
     "helios-core": "~2.0.4",
     "helios-distribution-types": "^1.2.0",
     "jquery": "^3.6.4",
-    "semver": "^7.4.0"
+    "semver": "^7.4.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "electron": "^24.1.1",
@@ -44,6 +45,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/Raft08/Crafted-Launcher-legacy.git"
   }
 }

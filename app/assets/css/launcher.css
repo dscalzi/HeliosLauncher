@@ -3095,7 +3095,13 @@ input:checked + .toggleSwitchSlider:before {
 #settingsSVG {
     stroke: #ffffff;
     height: 15px;
+    transition: 0.25s all;
 }
+#settingsSVG:hover {
+    transform: rotate(45deg);
+}
+
+
 .mediaButton:hover #settingsSVG,
 .mediaButton:focus #settingsSVG,
 .mediaButton:active #settingsSVG {
@@ -3966,3 +3972,4 @@ input:checked + .toggleSwitchSlider:before {
 .rotating {
     animation: rotating 10s linear infinite;
 }
+
