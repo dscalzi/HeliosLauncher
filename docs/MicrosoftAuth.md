@@ -23,7 +23,7 @@ Authenticating with Microsoft is fully supported by Helios Launcher.
     - Click **New client secret**.
     - Set a description.
     - Click **Add**.
-    - Don't copy the client secret, adding one is just a requirement from Microsoft, for some reason.
+    - Don't copy the client secret, adding one is just a requirement from Microsoft.
 8. Navigate back to **Overview**.
 9. Copy **Application (client) ID**.
 
