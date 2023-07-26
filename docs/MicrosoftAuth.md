@@ -34,7 +34,7 @@ In `app/assets/js/ipcconstants.js` you'll find **`AZURE_CLIENT_ID`**. Set it to 
 
 Note: Azure Client ID is NOT a secret value and **can** be stored in git. Reference: https://stackoverflow.com/questions/57306964/are-azure-active-directorys-tenantid-and-clientid-considered-secrets
 
-Then relaunch your app, and login. You'll be greeted with an error message, because the app isn't whitelisted yet. And for some reason, Microsoft needs some activity on the app before whitelisting it. __Trying to log in before requesting whitelist is mandatory.__
+Then relaunch your app, and login. You'll be greeted with an error message, because the app isn't whitelisted yet. Microsoft needs some activity on the app before whitelisting it. __Trying to log in before requesting whitelist is mandatory.__
 
 ## Requesting whitelisting from Microsoft
 
