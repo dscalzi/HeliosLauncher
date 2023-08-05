@@ -19,3 +19,7 @@ exports.query = function(id){
 exports.queryJS = function(id){
     return exports.query(`js.${id}`)
 }
+
+exports.queryEJS = function(id){
+    return exports.query(`ejs.${id}`)
+}

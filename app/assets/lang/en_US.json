@@ -2,6 +2,11 @@
     "html": {
         "avatarOverlay": "Edit"
     },
+    "ejs": {
+        "landing": {
+            "news": "NEWS"
+        }
+    },
     "js": {
         "login": {
             "error": {

@@ -12,6 +12,10 @@ const semver                            = require('semver')
 const { pathToFileURL }                 = require('url')
 const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
 
+// Setup Lang
+const LangLoader = require('./app/assets/js/langloader')
+LangLoader.loadLanguage('en_US')
+
 // Setup auto updater.
 function initAutoUpdater(event, data) {
 
@@ -237,6 +241,8 @@ function createWindow() {
     remoteMain.enable(win.webContents)
 
     ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))
+    ejse.data('Lang', LangLoader)
+    ejse.data('lang', LangLoader.queryEJS)
 
     win.loadURL(pathToFileURL(path.join(__dirname, 'app', 'app.ejs')).toString())
 
