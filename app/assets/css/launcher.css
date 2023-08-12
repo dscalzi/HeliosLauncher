@@ -2855,12 +2855,11 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Logo image. */
 #image_seal {
-    height: 70px;
+    height: 120px;
     width: auto;
     position: relative;
-    border: 2px solid white;
+    border: 0;
     box-sizing: border-box;
-    border-radius: 50%;
 }
 
 /* Logo container styles. */
@@ -3919,6 +3918,7 @@ input:checked + .toggleSwitchSlider:before {
     justify-content: center;
     width: 100%;
     height: calc(100% - 22px);
+    overflow: hidden;
 }
 
 /* Loading content container. */
@@ -3932,7 +3932,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Spinner container. */
 #loadSpinnerContainer {
-    position: relative;
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3941,15 +3941,16 @@ input:checked + .toggleSwitchSlider:before {
 /* Stationary image for the spinner. */
 #loadCenterImage {
     position: absolute;
-    width: 277px;
+    width: 577px;
     height: auto;
+    z-index: 600;
 }
 
 /* Rotating image for the spinner. */
 #loadSpinnerImage {
-    width: 280px;
+    width: 2160px;
     height: auto;
-    z-index: 400;
+    z-index: 500;
 }
 
 /* Rotating animation for the spinner. */
@@ -3964,5 +3965,5 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Class which is applied when the spinner image is spinning. */
 .rotating {
-    animation: rotating 10s linear infinite;
+    animation: rotating 20s linear infinite;
 }

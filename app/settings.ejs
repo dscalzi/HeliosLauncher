@@ -2,21 +2,21 @@
     <div id="settingsContainerLeft">
         <div id="settingsNavContainer">
             <div id="settingsNavHeader">
-                <span id="settingsNavHeaderText"><%- lang('settings.navHeaderText') %></span>
+                <span id="settingsNavHeaderText">Paramètres</span>
             </div>
             <div id="settingsNavItemsContainer">
                 <div id="settingsNavItemsContent">
-                    <button class="settingsNavItem" rSc="settingsTabAccount" id="settingsNavAccount" selected><%- lang('settings.navAccount') %></button>
-                    <button class="settingsNavItem" rSc="settingsTabMinecraft"><%- lang('settings.navMinecraft') %></button>
-                    <button class="settingsNavItem" rSc="settingsTabMods"><%- lang('settings.navMods') %></button>
-                    <button class="settingsNavItem" rSc="settingsTabJava"><%- lang('settings.navJava') %></button>
-                    <button class="settingsNavItem" rSc="settingsTabLauncher"><%- lang('settings.navLauncher') %></button>
+                    <button class="settingsNavItem" rSc="settingsTabAccount" id="settingsNavAccount" selected>Comptes</button>
+                    <button class="settingsNavItem" rSc="settingsTabMinecraft">Minecraft</button>
+                    <button class="settingsNavItem" rSc="settingsTabMods">Mods</button>
+                    <button class="settingsNavItem" rSc="settingsTabJava">Java</button>
+                    <button class="settingsNavItem" rSc="settingsTabLauncher">Launcher</button>
                     <div class="settingsNavSpacer"></div>
-                    <button class="settingsNavItem" rSc="settingsTabAbout"><%- lang('settings.navAbout') %></button>
-                    <button class="settingsNavItem" rSc="settingsTabUpdate" id="settingsNavUpdate"><%- lang('settings.navUpdates') %></button>
+                    <button class="settingsNavItem" rSc="settingsTabAbout">À propos</button>
+                    <button class="settingsNavItem" rSc="settingsTabUpdate" id="settingsNavUpdate">Mises à jour</button>
                     <div id="settingsNavContentBottom">
                         <div class="settingsNavDivider"></div>
-                        <button id="settingsNavDone"><%- lang('settings.navDone') %></button>
+                        <button id="settingsNavDone">Terminé</button>
                     </div>
                 </div>
             </div>
@@ -25,8 +25,8 @@
     <div id="settingsContainerRight">
         <div id="settingsTabAccount" class="settingsTab">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText"><%- lang('settings.tabAccountHeaderText') %></span>
-                <span class="settingsTabHeaderDesc"><%- lang('settings.tabAccountHeaderDesc') %></span>
+                <span class="settingsTabHeaderText">Paramètres du compte</span>
+                <span class="settingsTabHeaderDesc">Ajouter de nouveaux comptes et gérer les existants.</span>
             </div>
             <div class="settingsAuthAccountTypeContainer">
                 <div class="settingsAuthAccountTypeHeader">
@@ -40,7 +40,7 @@
                         <span><%- lang('settings.microsoftAccount') %></span>
                     </div>
                     <div class="settingsAuthAccountTypeHeaderRight">
-                        <button class="settingsAddAuthAccount" id="settingsAddMicrosoftAccount"><%- lang('settings.addMicrosoftAccount') %></button>
+                        <button class="settingsAddAuthAccount" id="settingsAddMicrosoftAccount">+ Ajouter un compte Microsoft</button>
                     </div>
                 </div>
                 
@@ -60,7 +60,7 @@
                         <span><%- lang('settings.mojangAccount') %></span>
                     </div>
                     <div class="settingsAuthAccountTypeHeaderRight">
-                        <button class="settingsAddAuthAccount" id="settingsAddMojangAccount"><%- lang('settings.addMojangAccount') %></button>
+                        <button class="settingsAddAuthAccount" id="settingsAddMojangAccount">+ Ajouter un compte Mojang</button>
                     </div>
                 </div>
                 
@@ -71,11 +71,11 @@
         </div>
         <div id="settingsTabMinecraft" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText"><%- lang('settings.minecraftTabHeaderText') %></span>
-                <span class="settingsTabHeaderDesc"><%- lang('settings.minecraftTabHeaderDesc') %></span>
+                <span class="settingsTabHeaderText">Paramètres Minecraft</span>
+                <span class="settingsTabHeaderDesc">Options de lancement du jeu.</span>
             </div>
             <div id="settingsGameResolutionContainer">
-                <span class="settingsFieldTitle"><%- lang('settings.gameResolutionTitle') %></span>
+                <span class="settingsFieldTitle">Résolution</span>
                 <div id="settingsGameResolutionContent">
                     <input type="number" id="settingsGameWidth" min="0" cValue="GameWidth">
                     <div id="settingsGameResolutionCross">&#10006;</div>
@@ -84,7 +84,7 @@
             </div>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
-                    <span class="settingsFieldTitle"><%- lang('settings.launchFullscreenTitle') %></span>
+                    <span class="settingsFieldTitle">Lancer en plein écran</span>
                 </div>
                 <div class="settingsFieldRight">
                     <label class="toggleSwitch">
@@ -95,7 +95,7 @@
             </div>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
-                    <span class="settingsFieldTitle"><%- lang('settings.autoConnectTitle') %></span>
+                    <span class="settingsFieldTitle">Se connecter directement au serveur.</span>
                 </div>
                 <div class="settingsFieldRight">
                     <label class="toggleSwitch">
@@ -106,8 +106,8 @@
             </div>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
-                    <span class="settingsFieldTitle"><%- lang('settings.launchDetachedTitle') %></span>
-                    <span class="settingsFieldDesc"><%- lang('settings.launchDetachedDesc') %></span>
+                    <span class="settingsFieldTitle">Détacher le processus du jeu de celui du launcher.</span>
+                    <span class="settingsFieldDesc">Si le jeu n'est pas détaché, fermer le launcher fermera le jeu.</span>
                 </div>
                 <div class="settingsFieldRight">
                     <label class="toggleSwitch">
@@ -119,8 +119,8 @@
         </div>
         <div id="settingsTabMods" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText"><%- lang('settings.tabModsHeaderText') %></span>
-                <span class="settingsTabHeaderDesc"><%- lang('settings.tabModsHeaderDesc') %></span>
+                <span class="settingsTabHeaderText">Paramètres des Mods</span>
+                <span class="settingsTabHeaderDesc">Activer ou desactiver des mods.</span>
             </div>
             <div class="settingsSelServContainer">
                 <div class="settingsSelServContent">
@@ -128,37 +128,37 @@
                 </div>
                 <div class="settingsSwitchServerContainer">
                     <div class="settingsSwitchServerContent">
-                        <button class="settingsSwitchServerButton"><%- lang('settings.switchServerButton') %></button>
+                        <button class="settingsSwitchServerButton">Utiliser ce serveur</button>
                     </div>
                 </div>
             </div>
             <div id="settingsModsContainer">
                 <div id="settingsReqModsContainer">
-                    <div class="settingsModsHeader"><%- lang('settings.requiredMods') %></div>
+                    <div class="settingsModsHeader">Mods requis</div>
                     <div id="settingsReqModsContent">
 
                     </div>
                 </div>
                 <div id="settingsOptModsContainer">
-                    <div class="settingsModsHeader"><%- lang('settings.optionalMods') %></div>
+                    <div class="settingsModsHeader">Mods optionnels</div>
                     <div id="settingsOptModsContent">
                         
                     </div>
                 </div>
                 <div id="settingsDropinModsContainer">
-                    <div class="settingsModsHeader"><%- lang('settings.dropinMods') %></div>
-                    <button id="settingsDropinFileSystemButton"><%- lang('settings.addMods') %> <span id="settingsDropinRefreshNote"><%- lang('settings.dropinRefreshNote') %></span></button>
+                    <div class="settingsModsHeader">Mods installés localement</div>
+                    <button id="settingsDropinFileSystemButton">+ Ajouter un mod <span id="settingsDropinRefreshNote">(F5 pour réactualiser)</span></button>
                     <div id="settingsDropinModsContent">
                         
                     </div>
                 </div>
                 <div id="settingsShadersContainer">
-                    <div class="settingsModsHeader"><%- lang('settings.shaderpacks') %></div>
-                    <div id="settingsShaderpackDesc"><%- lang('settings.shaderpackDesc') %></div>
+                    <div class="settingsModsHeader">Shaderpacks</div>
+                    <div id="settingsShaderpackDesc">Activer ou desactiver un shaderpack. Desactiver si la configuration n'est pas suffisante. Vous pouvez ajouter d'autres packs ici.</div>
                     <div id="settingsShaderpackWrapper">
                         <button id="settingsShaderpackButton"> + </button>
                         <div class="settingsSelectContainer">
-                            <div class="settingsSelectSelected" id="settingsShadersSelected"><%- lang('settings.selectShaderpack') %></div>
+                            <div class="settingsSelectSelected" id="settingsShadersSelected">Selectionner le shaderpack</div>
                             <div class="settingsSelectOptions" id="settingsShadersOptions" hidden>
 
                             </div>
@@ -169,8 +169,8 @@
         </div>
         <div id="settingsTabJava" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText"><%- lang('settings.tabJavaHeaderText') %></span>
-                <span class="settingsTabHeaderDesc"><%- lang('settings.tabJavaHeaderDesc') %></span>
+                <span class="settingsTabHeaderText">Paramètres Java</span>
+                <span class="settingsTabHeaderDesc">Gérer la configuration Java (avancé).</span>
             </div>
             <div class="settingsSelServContainer">
                 <div class="settingsSelServContent">
@@ -178,16 +178,16 @@
                 </div>
                 <div class="settingsSwitchServerContainer">
                     <div class="settingsSwitchServerContent">
-                        <button class="settingsSwitchServerButton"><%- lang('settings.switchServerButton') %></button>
+                        <button class="settingsSwitchServerButton">Basculer</button>
                     </div>
                 </div>
             </div>
             <div id="settingsMemoryContainer">
-                <div id="settingsMemoryTitle"><%- lang('settings.memoryTitle') %></div>
+                <div id="settingsMemoryTitle">Mémoire</div>
                 <div id="settingsMemoryContent">
                     <div id="settingsMemoryContentLeft">
                         <div class="settingsMemoryContentItem">
-                            <span class="settingsMemoryHeader"><%- lang('settings.maxRAM') %></span>
+                            <span class="settingsMemoryHeader">RAM Maximum</span>
                             <div class="settingsMemoryActionContainer">
                                 <div id="settingsMaxRAMRange" class="rangeSlider" cValue="MaxRAM" serverDependent min="3" max="8" value="3" step="0.5">
                                     <div class="rangeSliderBar"></div>
@@ -197,7 +197,7 @@
                             </div>
                         </div>
                         <div class="settingsMemoryContentItem">
-                            <span class="settingsMemoryHeader"><%- lang('settings.minRAM') %></span>
+                            <span class="settingsMemoryHeader">RAM Minimum</span>
                             <div class="settingsMemoryActionContainer">
                                 <div id="settingsMinRAMRange" class="rangeSlider" cValue="MinRAM" serverDependent min="3" max="8" value="3" step="0.5">
                                     <div class="rangeSliderBar"></div>
@@ -206,7 +206,7 @@
                                 <span id="settingsMinRAMLabel" class="settingsMemoryLabel">3G</span>
                             </div>
                         </div>
-                        <div id="settingsMemoryDesc"><%- lang('settings.memoryDesc') %></div>
+                        <div id="settingsMemoryDesc">La RAM minimale recommandée est de 3Go. Mettre la même valeur pour le minimum et le maximum peut réduire le lag.</div>
                     </div>
                     <div id="settingsMemoryContentRight">
                         <div id="settingsMemoryStatus">
@@ -215,7 +215,7 @@
                                 <span id="settingsMemoryTotal" class="settingsMemoryStatusValue">16G</span>
                             </div>
                             <div class="settingsMemoryStatusContainer">
-                                <span class="settingsMemoryStatusTitle"><%- lang('settings.memoryAvailableTitle') %></span>
+                                <span class="settingsMemoryStatusTitle">Disponible</span>
                                 <span id="settingsMemoryAvail" class="settingsMemoryStatusValue">7.3G</span>
                             </div>
                         </div>
@@ -223,7 +223,7 @@
                 </div>
             </div>
             <div class="settingsFileSelContainer">
-                <div class="settingsFileSelTitle"><%- lang('settings.javaExecutableTitle') %></div>
+                <div class="settingsFileSelTitle">Executable Java</div>
                 <div class="settingsFileSelContent">
                     <div id="settingsJavaExecDetails"><!-- Invalid Selection --></div>
                     <div class="settingsFileSelActions">
@@ -248,7 +248,7 @@
                 <div class="settingsFileSelDesc"><%- lang('settings.javaExecDesc') %> <strong id="settingsJavaReqDesc"><!-- Requires Java 8 x64. --></strong><br><%- lang('settings.javaPathDesc', {'pathSuffix': `bin${process.platform === 'win32' ? '\\javaw.exe' : '/java'}`}) %></div>
             </div>
             <div id="settingsJVMOptsContainer">
-                <div id="settingsJVMOptsTitle"><%- lang('settings.jvmOptsTitle') %></div>
+                <div id="settingsJVMOptsTitle">Paramètres additionnels JVM</div>
                 <div id="settingsJVMOptsContent">
                     <div class="settingsFileSelIcon">
                         <svg class="settingsFileSelSVG" x="0px" y="0px" viewBox="0 0 305.001 305.001">
@@ -266,13 +266,13 @@
                     </div>
                     <input id="settingsJVMOptsVal" cValue="JVMOptions" serverDependent type="text">
                 </div>
-                <div id="settingsJVMOptsDesc"><%- lang('settings.jvmOptsDesc') %><br><a href="#" id="settingsJvmOptsLink"><!-- Available Options --></a></div>
+                <div id="settingsJVMOptsDesc">Paramètres qui seront fournis à Java. <em>-Xms</em> et <em>-Xmx</em> ne doivent pas être inclus ici.<br><a href="https://docs.oracle.com/javase/8/docs/technotes/tools/<%= process.platform === 'win32' ? 'windows' : 'unix' %>/java.html" id="settingsJvmOptsLink">Liste des options Java disponibles</a>.</div>
             </div>
         </div>
         <div id="settingsTabLauncher" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText"><%- lang('settings.launcherTabHeaderText') %></span>
-                <span class="settingsTabHeaderDesc"><%- lang('settings.launcherTabHeaderDesc') %></span>
+                <span class="settingsTabHeaderText">Paramètres du Launcher</span>
+                <span class="settingsTabHeaderDesc">Les options relatives au launcher lui même.</span>
             </div>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
@@ -288,7 +288,7 @@
             </div>
             <div class="settingsFileSelContainer">
                 <div class="settingsFileSelContent">
-                    <div class="settingsFieldTitle" id="settingsDataDirTitle"><%- lang('settings.dataDirectoryTitle') %></div>
+                    <div class="settingsFieldTitle" id="settingsDataDirTitle">Dossier des données</div>
                     <div class="settingsFileSelActions">
                         <div class="settingsFileSelIcon">
                             <svg class="settingsFileSelSVG">
@@ -300,22 +300,22 @@
                             </svg>
                         </div>
                         <input class="settingsFileSelVal" type="text" value="null" cValue="DataDirectory" disabled>
-                        <button class="settingsFileSelButton" dialogTitle="<%- lang('settings.selectDataDirectory') %>" dialogDirectory="true"><%- lang('settings.chooseFolder') %></button>
+                        <button class="settingsFileSelButton" dialogTitle="Select Data Directory" dialogDirectory="true">Choisir le dossier</button>
                     </div>
                 </div>
-                <div class="settingsFileSelDesc"><%- lang('settings.dataDirectoryDesc') %></div>
+                <div class="settingsFileSelDesc">Tous les fichiers du jeu et les installations locales de Java seront stockées dans le dossier de données.<br>Les captures d'écran et les sauvegardes sont stockées dans le sous dossier de l'instance.</div>
             </div>
         </div>
         <div id="settingsTabAbout" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">
-                <span class="settingsTabHeaderText"><%- lang('settings.aboutTabHeaderText') %></span>
-                <span class="settingsTabHeaderDesc"><%- lang('settings.aboutTabHeaderDesc') %></span>
+                <span class="settingsTabHeaderText">A Propos</span>
+                <span class="settingsTabHeaderDesc">Informations et notes de version.</span>
             </div>
             <div id="settingsAboutCurrentContainer">
                 <div id="settingsAboutCurrentContent">
                     <div id="settingsAboutCurrentHeadline">
                         <img id="settingsAboutLogo" src="./assets/images/SealCircle.png">
-                        <span id="settingsAboutTitle"><%- lang('settings.aboutTitle', { appName: lang('app.title') }) %></span>
+                        <span id="settingsAboutTitle">Bigzbeul Launcher</span>
                     </div>
                     <div id="settingsAboutCurrentVersion">
                         <div id="settingsAboutCurrentVersionCheck">&#10003;</div>
