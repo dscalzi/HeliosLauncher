@@ -1,7 +1,7 @@
 {
-  "name": "helioslauncher",
+  "name": "Fromagerie Launcher",
   "version": "2.0.5",
-  "productName": "Helios Launcher",
+  "productName": "Fromagerie Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
   "license": "UNLICENSED",
@@ -44,6 +44,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/xbon60/HeliosLauncherFork.git"
   }
 }
