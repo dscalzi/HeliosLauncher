@@ -4,6 +4,7 @@ remoteMain.initialize()
 // Requirements
 const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
 const autoUpdater                       = require('electron-updater').autoUpdater
+const ejs                               = require('ejs')
 const ejse                              = require('ejs-electron')
 const fs                                = require('fs')
 const isDev                             = require('./app/assets/js/isdev')
@@ -240,9 +241,12 @@ function createWindow() {
     })
     remoteMain.enable(win.webContents)
 
-    ejse.data('bkid', Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)))
-    ejse.data('Lang', LangLoader)
-    ejse.data('lang', LangLoader.queryEJS)
+    const data = {
+        bkid: Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)),
+        lang: LangLoader.queryEJS,
+        evalEjs: (str) => ejs.render(str, data)
+    }
+    Object.entries(data).forEach(([key, val]) => ejse.data(key, val))
 
     win.loadURL(pathToFileURL(path.join(__dirname, 'app', 'app.ejs')).toString())
 
