@@ -50,6 +50,12 @@
             "loginNeedAccountText": "Need an Account?",
             "loginPasswordDisclaimer1": "Your password is sent directly to mojang and never stored.",
             "loginPasswordDisclaimer2": "Helios Launcher is not affiliated with Mojang AB."
+        },
+        "loginOptions": {
+            "loginOptionsTitle": "Login Options",
+            "loginWithMicrosoft": "Login with Microsoft",
+            "loginWithMojang": "Login with Mojang",
+            "cancelButton": "Cancel"
         }
     },
     "js": {
