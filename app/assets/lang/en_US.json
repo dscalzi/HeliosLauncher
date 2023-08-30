@@ -56,6 +56,18 @@
             "loginWithMicrosoft": "Login with Microsoft",
             "loginWithMojang": "Login with Mojang",
             "cancelButton": "Cancel"
+        },
+        "overlay": {
+            "serverSelectHeader": "Available Servers",
+            "serverSelectConfirm": "Select",
+            "serverSelectCancel": "Cancel",
+            "accountSelectHeader": "Select an Account",
+            "accountSelectConfirm": "Select",
+            "accountSelectCancel": "Cancel",
+            "overlayTitle": "Lorem Ipsum:<br>Finis Illud",
+            "overlayDesc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud..",
+            "overlayAcknowledge": "Conare Iterum",
+            "overlayDismiss": "Dismiss"
         }
     },
     "js": {
