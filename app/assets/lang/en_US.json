@@ -4,7 +4,35 @@
     },
     "ejs": {
         "landing": {
-            "news": "NEWS"
+            "updateAvailableTooltip": "Update Available",
+            "usernamePlaceholder": "Username",
+            "usernameEditButton": "Edit",
+            "settingsTooltip": "Settings",
+            "mediaGitHubURL": "https://github.com/dscalzi/HeliosLauncher",
+            "mediaTwitterURL": "#",
+            "mediaInstagramURL": "#",
+            "mediaYouTubeURL": "#",
+            "mediaDiscordURL": "https://discord.gg/zNWUXdt",
+            "serverStatus": "SERVER",
+            "serverStatusPlaceholder": "OFFLINE",
+            "mojangStatus": "MOJANG STATUS",
+            "mojangStatusIcon": "&#8226;",
+            "mojangStatusTooltipTitle": "Services",
+            "mojangStatusNETitle": "Non&nbsp;Essential",
+            "newsButton": "NEWS",
+            "launchButton": "PLAY",
+            "launchButtonPlaceholder": "&#8226; No Server Selected",
+            "launchProgressLabel": "0%",
+            "launchDetails": "Please wait..",
+            "newsArticleTitle": "Lorem Ipsum",
+            "newsArticleDate": "Mar 15, 44 BC, 9:14 AM",
+            "newsArticleAuthor": "by Cicero",
+            "newsArticleComments": "0 Comments",
+            "newsNavigationStatus": "1 of 1",
+            "newsErrorLoadSpan": "Checking for News..",
+            "newsErrorFailedSpan": "Failed to Load News",
+            "newsErrorRetryButton": "Try Again",
+            "newsErrorNoneSpan": "No News"
         }
     },
     "js": {
