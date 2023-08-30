@@ -33,6 +33,23 @@
             "newsErrorFailedSpan": "Failed to Load News",
             "newsErrorRetryButton": "Try Again",
             "newsErrorNoneSpan": "No News"
+        },
+        "login": {
+            "loginCancelIcon": "X",
+            "loginCancelText": "Cancel",
+            "loginSubheader": "MINECRAFT LOGIN",
+            "loginEmailError": "* Invalid Value",
+            "loginEmailPlaceholder": "EMAIL OR USERNAME",
+            "loginPasswordError": "* Required",
+            "loginPasswordPlaceholder": "PASSWORD",
+            "loginForgotPasswordLink": "https://minecraft.net/password/forgot/",
+            "loginForgotPasswordText": "forgot password?",
+            "loginRememberMeText": "remember me?",
+            "loginButtonText": "LOGIN",
+            "loginNeedAccountLink": "https://minecraft.net/store/minecraft-java-edition/",
+            "loginNeedAccountText": "Need an Account?",
+            "loginPasswordDisclaimer1": "Your password is sent directly to mojang and never stored.",
+            "loginPasswordDisclaimer2": "Helios Launcher is not affiliated with Mojang AB."
         }
     },
     "js": {
