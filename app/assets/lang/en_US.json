@@ -158,6 +158,9 @@
             "checkForUpdates": "Check for Updates",
             "whatsNew": "What's New",
             "updateReleaseNotes": "Update Release Notes"
+        },
+        "waiting": {
+            "waitingText": "Waiting for Microsoft.."
         }
     },
     "js": {
