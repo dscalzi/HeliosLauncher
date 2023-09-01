@@ -122,7 +122,7 @@
             "javaExecSelButtonText": "Choose File",
             "javaExecDesc": "The Java executable is validated before game launch.",
             "javaReqDesc": "Requires Java 8 x64.",
-            "javaPathDesc": "The path should end with <strong>bin<%= process.platform === 'win32' ? '\\\\javaw.exe' : '/java' %></strong>.",
+            "javaPathDesc": "The path should end with <strong>{pathSuffix}</strong>.",
             "jvmOptsTitle": "Additional JVM Options",
             "jvmOptsDesc": "Options to be provided to the JVM at runtime. <em>-Xms</em> and <em>-Xmx</em> should not be included.",
             "jvmOptsLink": "https://docs.oracle.com/javase/8/docs/technotes/tools/<%= process.platform === 'win32' ? 'windows' : 'unix' %>/java.html",
