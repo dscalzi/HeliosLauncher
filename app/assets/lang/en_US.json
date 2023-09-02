@@ -248,6 +248,9 @@
             "news": {
                 "checking": "Checking for News"
             }
+        },
+        "overlay": {
+            "mainServer": "Main Server"
         }
     }
 }
