@@ -209,7 +209,67 @@
         },
         "landing": {
             "launch": {
-                "pleaseWait": "Please wait.."
+                "pleaseWait": "Please wait..",
+                "failureTitle": "Error During Launch",
+                "failureText": "See console (CTRL + Shift + i) for more details.",
+                "okay": "Okay"
+            },
+            "selectedAccount": {
+                "noAccountSelected": "No Account Selected"
+            },
+            "selectedServer": {
+                "icon": "\u2022 ",
+                "noSelection": "No Server Selected",
+                "loading": "Loading.."
+            },
+            "mojangStatus": {
+                "icon": "&#8226;"
+            },
+            "serverStatus": {
+                "server": "SERVER",
+                "offline": "OFFLINE",
+                "players": "PLAYERS"
+            },
+            "systemScan": {
+                "checking": "Checking system info..",
+                "noCompatibleJava": "No Compatible<br>Java Installation Found",
+                "installJavaMessage": "In order to join WesterosCraft, you need a 64-bit installation of Java {suggestedMajor}. Would you like us to install a copy?",
+                "installJava": "Install Java",
+                "installJavaManually": "Install Manually",
+                "javaDownloadPrepare": "Preparing Java Download..",
+                "javaDownloadFailureTitle": "Error During Java Download",
+                "javaDownloadFailureText": "See console (CTRL + Shift + i) for more details.",
+                "javaRequired": "Java is Required<br>to Launch",
+                "javaRequiredMessage": "A valid x64 installation of Java {suggestedMajor} is required to launch.<br><br>Please refer to our <a href=\"https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java\">Java Management Guide</a> for instructions on how to manually install Java.",
+                "javaRequiredDismiss": "I Understand",
+                "javaRequiredCancel": "Go Back"
+            },
+            "downloadJava": {
+                "findJdkFailure": "Failed to find OpenJDK distribution.",
+                "javaDownloadCorruptedError": "Downloaded JDK has a bad hash, the file may be corrupted.",
+                "extractingJava": "Extracting Java",
+                "javaInstalled": "Java Installed!"
+            },
+            "dlAsync": {
+                "loadingServerInfo": "Loading server information..",
+                "fatalError": "Fatal Error",
+                "unableToLoadDistributionIndex": "Could not load a copy of the distribution index. See the console (CTRL + Shift + i) for more details.",
+                "pleaseWait": "Please wait..",
+                "errorDuringLaunchTitle": "Error During Launch",
+                "seeConsoleForDetails": "See console (CTRL + Shift + i) for more details.",
+                "validatingFileIntegrity": "Validating file integrity..",
+                "errorDuringFileVerificationTitle": "Error During File Verification",
+                "downloadingFiles": "Downloading files..",
+                "errorDuringFileDownloadTitle": "Error During File Download",
+                "preparingToLaunch": "Preparing to launch..",
+                "launchingGame": "Launching game..",
+                "launchWrapperNotDownloaded": "The main file, LaunchWrapper, failed to download properly. As a result, the game cannot launch.<br><br>To fix this issue, temporarily turn off your antivirus software and launch the game again.<br><br>If you have time, please <a href=\"https://github.com/dscalzi/HeliosLauncher/issues\">submit an issue</a> and let us know what antivirus software you use. We'll contact them and try to straighten things out.",
+                "doneEnjoyServer": "Done. Enjoy the server!",
+                "shuttingDownRPC": "Shutting down Discord Rich Presence..",
+                "checkConsoleForDetails": "Please check the console (CTRL + Shift + i) for more details."
+            },
+            "news": {
+                "checking": "Checking for News"
             }
         }
     }
