@@ -35,7 +35,8 @@
     "helios-core": "~2.0.5",
     "helios-distribution-types": "^1.2.0",
     "jquery": "^3.7.0",
-    "semver": "^7.5.4"
+    "semver": "^7.5.4",
+    "toml": "^3.0.0"
   },
   "devDependencies": {
     "electron": "^26.0.0",

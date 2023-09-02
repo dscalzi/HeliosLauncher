@@ -1,10 +1,11 @@
 const fs = require('fs-extra')
 const path = require('path')
+const toml = require('toml')
 
 let lang
 
 exports.loadLanguage = function(id){
-    lang = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'lang', `${id}.json`))) || {}
+    lang = toml.parse(fs.readFileSync(path.join(__dirname, '..', 'lang', `${id}.toml`))) || {}
 }
 
 exports.query = function(id, placeHolders){
