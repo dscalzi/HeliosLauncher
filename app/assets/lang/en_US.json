@@ -311,6 +311,20 @@
                 "checkForUpdatesButton": "Check for Updates",
                 "checkingForUpdatesButton": "Checking for Updates.."
             }
+        },
+        "uibinder": {
+            "startup": {
+                "fatalErrorTitle": "Fatal Error: Unable to Load Distribution Index",
+                "fatalErrorMessage": "A connection could not be established to our servers to download the distribution index. No local copies were available to load. <br><br>The distribution index is an essential file which provides the latest server information. The launcher is unable to start without it. Ensure you are connected to the internet and relaunch the application.",
+                "closeButton": "Close"
+            },
+            "validateAccount": {
+                "failedMessageTitle": "Failed to Refresh Login",
+                "failedMessage": "We were unable to refresh the login for <strong>{account}</strong>. Please select another account or login again.",
+                "failedMessageSelectAnotherAccount": "We were unable to refresh the login for <strong>{account}</strong>. Please login again.",
+                "loginButton": "Login",
+                "selectAnotherAccountButton": "Select Another Account"
+            }
         }
     }
 }
