@@ -326,5 +326,12 @@
                 "selectAnotherAccountButton": "Select Another Account"
             }
         }
+    },
+    "uicore": {
+        "autoUpdate": {
+            "checkingForUpdateButton": "Checking for Updates...",
+            "installNowButton": "Install Now",
+            "checkForUpdatesButton": "Check for Updates"
+        }
     }
 }
