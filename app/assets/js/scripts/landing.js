@@ -316,7 +316,7 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
         // Show this information to the user.
         setOverlayContent(
             Lang.queryJS('landing.systemScan.noCompatibleJava'),
-            Lang.queryJS('landing.systemScan.installJavaMessage', { 'suggestedMajor': effectiveJavaOptions.suggestedMajor }),
+            Lang.queryJS('landing.systemScan.installJavaMessage', { 'major': effectiveJavaOptions.suggestedMajor }),
             Lang.queryJS('landing.systemScan.installJava'),
             Lang.queryJS('landing.systemScan.installJavaManually')
         )
@@ -336,7 +336,7 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
                 //$('#overlayDismiss').toggle(false)
                 setOverlayContent(
                     Lang.queryJS('landing.systemScan.javaRequired'),
-                    Lang.queryJS('landing.systemScan.javaRequiredMessage', { 'suggestedMajor': effectiveJavaOptions.suggestedMajor }),
+                    Lang.queryJS('landing.systemScan.javaRequiredMessage', { 'major': effectiveJavaOptions.suggestedMajor }),
                     Lang.queryJS('landing.systemScan.javaRequiredDismiss'),
                     Lang.queryJS('landing.systemScan.javaRequiredCancel')
                 )
