@@ -1,7 +1,4 @@
 {
-    "html": {
-        "avatarOverlay": "Edit"
-    },
     "ejs": {
         "landing": {
             "updateAvailableTooltip": "Update Available",
