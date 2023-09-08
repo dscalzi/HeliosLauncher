@@ -245,10 +245,10 @@ const refreshServerStatus = async (fade = false) => {
 
     let pLabel = 'SERVER'
     let pVal = 'OFFLINE'
-
+    
     try {
 
-        const servStat = await getServerStatus(47, serv.hostname, serv.port)
+        const servStat = await getServerStatus(47, serv.address, serv.port)
         console.log(servStat)
         pLabel = 'PLAYERS'
         pVal = servStat.players.online + '/' + servStat.players.max
