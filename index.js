@@ -243,7 +243,7 @@ function createWindow() {
 
     const data = {
         bkid: Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)),
-        lang: LangLoader.queryEJS,
+        lang: (str) => ejs.render(LangLoader.queryEJS(str), data),
         evalEjs: (str) => ejs.render(str, data)
     }
     Object.entries(data).forEach(([key, val]) => ejse.data(key, val))

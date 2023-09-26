@@ -1,0 +1,13 @@
+# Placeholder Language File for texts that do not require translation
+
+[ejs.landing]
+newsArticleTitle = "Lorem Ipsum"
+newsArticleDate = "Mar 15, 44 BC, 9:14 AM"
+newsArticleAuthor = "by Cicero"
+newsArticleComments = "0 Comments"
+
+[ejs.overlay]
+overlayTitle = "Lorem Ipsum:<br>Finis Illud"
+overlayDesc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.."
+overlayAcknowledge = "Conare Iterum"
+overlayDismiss = "Dismiss"
