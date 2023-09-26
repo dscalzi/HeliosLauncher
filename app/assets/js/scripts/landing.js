@@ -202,7 +202,7 @@ const refreshMojangStatuses = async function(){
         const service = statuses[i]
 
         const tooltipHTML = `<div class="mojangStatusContainer">
-            <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">${Lang.queryEJS('landing.mojangStatus.icon')}</span>
+            <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">${Lang.queryJS('landing.mojangStatus.icon')}</span>
             <span class="mojangStatusName">${service.name}</span>
         </div>`
         if(service.essential){
@@ -335,7 +335,7 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
             $('#overlayContent').fadeOut(250, () => {
                 //$('#overlayDismiss').toggle(false)
                 setOverlayContent(
-                    Lang.queryJS('landing.systemScan.javaRequired'),
+                    Lang.queryJS('landing.systemScan.javaRequired', { 'major': effectiveJavaOptions.suggestedMajor }),
                     Lang.queryJS('landing.systemScan.javaRequiredMessage', { 'major': effectiveJavaOptions.suggestedMajor }),
                     Lang.queryJS('landing.systemScan.javaRequiredDismiss'),
                     Lang.queryJS('landing.systemScan.javaRequiredCancel')
@@ -621,7 +621,7 @@ async function dlAsync(login = true) {
                 DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.rawServer.discord)
                 hasRPC = true
                 proc.on('close', (code, signal) => {
-                    loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.shuttingDownRPC'))
+                    loggerLaunchSuite.info('Shutting down Discord Rich Presence..')
                     DiscordWrapper.shutdownRPC()
                     hasRPC = false
                     proc = null
