@@ -11,3 +11,9 @@ overlayTitle = "Lorem Ipsum:<br>Finis Illud"
 overlayDesc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.."
 overlayAcknowledge = "Conare Iterum"
 overlayDismiss = "Dismiss"
+
+[ejs.settings]
+versionValue = "0.0.1-alpha.18"
+memoryTotalValue = "16G"
+memoryAvailableValue = "7.3G"
+javaExecVal = "null"
