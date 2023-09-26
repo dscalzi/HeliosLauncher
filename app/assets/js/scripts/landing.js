@@ -738,7 +738,7 @@ let newsLoadingListener = null
  */
 function setNewsLoading(val){
     if(val){
-        const nLStr = Lang.queryJS('landing.news.loading')
+        const nLStr = Lang.queryJS('landing.news.checking')
         let dotStr = '..'
         nELoadSpan.innerHTML = nLStr + dotStr
         newsLoadingListener = setInterval(() => {
