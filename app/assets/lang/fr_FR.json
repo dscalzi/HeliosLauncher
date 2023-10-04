@@ -1,0 +1,49 @@
+{
+    "html": {
+        "avatarOverlay": "Éditer"
+    },
+    "js": {
+        "login": {
+            "error": {
+                "invalidValue": "* Valeur invalide",
+                "requiredValue": "* Requis",
+                "userMigrated": {
+                    "title": "Erreur pendant la connexion :<br>Identifiants invalides",
+                    "desc": "Vous avez tenté de vous connecter avec un compte migré. Essayez à nouveau en utilisant l'email du compte comme nom d'utilisateur."
+                },
+                "invalidCredentials": {
+                    "title": "Erreur pendant la connexion :<br>Identifiants invalides",
+                    "desc": "L'email ou le mot de passe que vous avez saisi est incorrect. Veuillez réessayer."
+                },
+                "rateLimit": {
+                    "title": "Erreur pendant la connexion :<br>Trop de tentatives",
+                    "desc": "Il y a eu trop de tentatives de connexion avec ce compte récemment. Veuillez réessayer plus tard."
+                },
+                "noInternet": {
+                    "title": "Erreur pendant la connexion :<br>Pas de connexion Internet",
+                    "desc": "Vous devez être connecté à Internet pour vous connecter. Veuillez vous connecter et réessayer."
+                },
+                "authDown": {
+                    "title": "Erreur pendant la connexion :<br>Serveur d'authentification hors ligne",
+                    "desc": "Le serveur d'authentification de Mojang est actuellement hors ligne ou injoignable. Veuillez attendre un moment et réessayer. Vous pouvez vérifier l'état du serveur sur <a href=\"https://help.mojang.com/\">le portail d'aide de Mojang</a>."
+                },
+                "notPaid": {
+                    "title": "Erreur pendant la connexion :<br>Jeu non acheté",
+                    "desc": "Le compte avec lequel vous essayez de vous connecter n'a pas acheté une copie de Minecraft.<br>Vous pouvez acheter une copie sur <a href=\"https://minecraft.net/\">Minecraft.net</a>"
+                },
+                "unknown": {
+                    "title": "Erreur pendant la connexion :<br>Erreur inconnue"
+                }
+            },
+            "login": "CONNEXION",
+            "loggingIn": "CONNEXION EN COURS",
+            "success": "SUCCÈS",
+            "tryAgain": "Essayer à nouveau"
+        },
+        "landing": {
+            "launch": {
+                "pleaseWait": "Veuillez patienter.."
+            }
+        }
+    }
+}

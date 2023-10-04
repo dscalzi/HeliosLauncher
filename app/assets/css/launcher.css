@@ -119,8 +119,10 @@ body, button {
     -webkit-app-region: no-drag !important;
     position: relative;
     top: -2px;
-    right: -2px;
+    right: -900px;
     height: 22px;
+    display: flex;
+    justify-content: flex-end;
 }
 #frameButtonDockWin > .frameButton:not(:first-child) {
     margin-left: -4px;
