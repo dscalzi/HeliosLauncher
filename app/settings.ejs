@@ -78,7 +78,7 @@
                 <span class="settingsFieldTitle"><%- lang('settings.gameResolutionTitle') %></span>
                 <div id="settingsGameResolutionContent">
                     <input type="number" id="settingsGameWidth" min="0" cValue="GameWidth">
-                    <div id="settingsGameResolutionCross"><%- lang('settings.gameResolutionCross') %></div>
+                    <div id="settingsGameResolutionCross">&#10006;</div>
                     <input type="number" id="settingsGameHeight" min="0" cValue="GameHeight">
                 </div>
             </div>
@@ -156,7 +156,7 @@
                     <div class="settingsModsHeader"><%- lang('settings.shaderpacks') %></div>
                     <div id="settingsShaderpackDesc"><%- lang('settings.shaderpackDesc') %></div>
                     <div id="settingsShaderpackWrapper">
-                        <button id="settingsShaderpackButton"><%- lang('settings.shaderpackButton') %></button>
+                        <button id="settingsShaderpackButton"> + </button>
                         <div class="settingsSelectContainer">
                             <div class="settingsSelectSelected" id="settingsShadersSelected"><%- lang('settings.selectShaderpack') %></div>
                             <div class="settingsSelectOptions" id="settingsShadersOptions" hidden>
@@ -225,7 +225,7 @@
             <div class="settingsFileSelContainer">
                 <div class="settingsFileSelTitle"><%- lang('settings.javaExecutableTitle') %></div>
                 <div class="settingsFileSelContent">
-                    <div id="settingsJavaExecDetails"><%- lang('settings.javaExecDetails') %></div>
+                    <div id="settingsJavaExecDetails"><!-- Invalid Selection --></div>
                     <div class="settingsFileSelActions">
                         <div class="settingsFileSelIcon">
                             <svg class="settingsFileSelSVG" x="0px" y="0px" viewBox="0 0 305.001 305.001">
@@ -359,7 +359,7 @@
             <div id="settingsUpdateStatusContainer">
                 <div id="settingsUpdateStatusContent">
                     <div id="settingsUpdateStatusHeadline">
-                        <span id="settingsUpdateTitle"><%- lang('settings.latestVersion') %></span>
+                        <span id="settingsUpdateTitle"><!-- You Are Running the Latest Version --></span>
                     </div>
                     <div id="settingsUpdateVersion">
                         <div id="settingsUpdateVersionCheck">&#10003;</div>
