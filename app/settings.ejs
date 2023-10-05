@@ -266,7 +266,7 @@
                     </div>
                     <input id="settingsJVMOptsVal" cValue="JVMOptions" serverDependent type="text">
                 </div>
-                <div id="settingsJVMOptsDesc"><%- lang('settings.jvmOptsDesc') %><br><a href="<%- lang('settings.jvmOptsLink') %>" id="settingsJvmOptsLink"><%- lang('settings.jvmOptsLinkText') %></a></div>
+                <div id="settingsJVMOptsDesc"><%- lang('settings.jvmOptsDesc') %><br><a href="#" id="settingsJvmOptsLink"><!-- Available Options --></a></div>
             </div>
         </div>
         <div id="settingsTabLauncher" class="settingsTab" style="display: none;">
@@ -315,7 +315,7 @@
                 <div id="settingsAboutCurrentContent">
                     <div id="settingsAboutCurrentHeadline">
                         <img id="settingsAboutLogo" src="./assets/images/SealCircle.png">
-                        <span id="settingsAboutTitle"><%- lang('settings.aboutTitle') %></span>
+                        <span id="settingsAboutTitle"><%- lang('settings.aboutTitle', { appName: lang('app.title') }) %></span>
                     </div>
                     <div id="settingsAboutCurrentVersion">
                         <div id="settingsAboutCurrentVersionCheck"><%- lang('settings.versionCheck') %></div>
