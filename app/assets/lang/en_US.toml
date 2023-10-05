@@ -6,7 +6,6 @@ settingsTooltip = "Settings"
 serverStatus = "SERVER"
 serverStatusPlaceholder = "OFFLINE"
 mojangStatus = "MOJANG STATUS"
-mojangStatusIcon = "&#8226;"
 mojangStatusTooltipTitle = "Services"
 mojangStatusNETitle = "Non&nbsp;Essential"
 newsButton = "NEWS"
@@ -21,7 +20,6 @@ newsErrorRetryButton = "Try Again"
 newsErrorNoneSpan = "No News"
 
 [ejs.login]
-loginCancelIcon = "X"
 loginCancelText = "Cancel"
 loginSubheader = "MINECRAFT LOGIN"
 loginEmailError = "* Invalid Value"
@@ -161,12 +159,8 @@ okay = "Okay"
 noAccountSelected = "No Account Selected"
 
 [js.landing.selectedServer]
-icon = "• "
 noSelection = "No Server Selected"
 loading = "Loading.."
-
-[js.landing.mojangStatus]
-icon = "&#8226;"
 
 [js.landing.serverStatus]
 server = "SERVER"

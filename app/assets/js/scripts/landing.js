@@ -165,14 +165,14 @@ function updateSelectedServer(serv){
     }
     ConfigManager.setSelectedServer(serv != null ? serv.rawServer.id : null)
     ConfigManager.save()
-    server_selection_button.innerHTML = Lang.queryJS('landing.selectedServer.icon') + (serv != null ? serv.rawServer.name : Lang.queryJS('landing.noSelection'))
+    server_selection_button.innerHTML = '&#8226; ' + (serv != null ? serv.rawServer.name : Lang.queryJS('landing.noSelection'))
     if(getCurrentView() === VIEWS.settings){
         animateSettingsTabRefresh()
     }
     setLaunchEnabled(serv != null)
 }
 // Real text is set in uibinder.js on distributionIndexDone.
-server_selection_button.innerHTML = Lang.queryJS('landing.selectedServer.icon') + Lang.queryJS('landing.selectedServer.loading')
+server_selection_button.innerHTML = '&#8226; ' + Lang.queryJS('landing.selectedServer.loading')
 server_selection_button.onclick = async e => {
     e.target.blur()
     await toggleServerSelection(true)
@@ -202,7 +202,7 @@ const refreshMojangStatuses = async function(){
         const service = statuses[i]
 
         const tooltipHTML = `<div class="mojangStatusContainer">
-            <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">${Lang.queryJS('landing.mojangStatus.icon')}</span>
+            <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">&#8226;</span>
             <span class="mojangStatusName">${service.name}</span>
         </div>`
         if(service.essential){
