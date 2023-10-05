@@ -23,26 +23,26 @@
     "node": "18.x.x"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.10",
+    "@electron/remote": "^2.0.11",
     "adm-zip": "^0.5.9",
     "discord-rpc-patch": "^4.0.1",
     "ejs": "^3.1.9",
     "ejs-electron": "^2.1.1",
-    "electron-updater": "^6.1.1",
+    "electron-updater": "^6.1.4",
     "fs-extra": "^11.1.1",
     "github-syntax-dark": "^0.5.0",
     "got": "^11.8.5",
     "helios-core": "~2.0.5",
     "helios-distribution-types": "^1.2.0",
-    "jquery": "^3.7.0",
+    "jquery": "^3.7.1",
     "lodash.merge": "^4.6.2",
     "semver": "^7.5.4",
     "toml": "^3.0.0"
   },
   "devDependencies": {
-    "electron": "^26.0.0",
-    "electron-builder": "^24.6.3",
-    "eslint": "^8.47.0"
+    "electron": "^26.3.0",
+    "electron-builder": "^24.6.4",
+    "eslint": "^8.50.0"
   },
   "repository": {
     "type": "git",
