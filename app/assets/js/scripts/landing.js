@@ -558,10 +558,11 @@ async function dlAsync(login = true) {
     if(isDev) {
         wrapperPath = join(process.cwd(), 'libraries', 'java', 'ForgeInstallerCLI.jar')
     } else {
+        const exePath = remote.app.getPath('exe')
         if(process.platform === 'darwin'){
-            wrapperPath = join(process.cwd(), 'Contents', 'Resources', 'libraries', 'java', 'ForgeInstallerCLI.jar')
+            wrapperPath = join(exePath, '..', '..', 'Contents', 'Resources', 'libraries', 'java', 'ForgeInstallerCLI.jar')
         } else {
-            wrapperPath = join(process.cwd(), 'resources', 'libraries', 'java', 'ForgeInstallerCLI.jar')
+            wrapperPath = join(exePath, '..', 'resources', 'libraries', 'java', 'ForgeInstallerCLI.jar')
         }
     }
 
