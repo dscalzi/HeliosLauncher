@@ -260,7 +260,7 @@ failedMessageSelectAnotherAccount = "<strong>{account}</strong> のログイン�
 loginButton = "ログイン"
 selectAnotherAccountButton = "別のアカウントを選択"
 
-[uicore.autoUpdate]
+[js.uicore.autoUpdate]
 checkingForUpdateButton = "アップデートをチェック中..."
 installNowButton = "今すぐインストール"
 checkForUpdatesButton = "アップデートを確認"
