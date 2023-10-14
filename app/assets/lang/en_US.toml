@@ -275,7 +275,7 @@ failedMessageSelectAnotherAccount = "We were unable to refresh the login for <st
 loginButton = "Login"
 selectAnotherAccountButton = "Select Another Account"
 
-[uicore.autoUpdate]
+[js.uicore.autoUpdate]
 checkingForUpdateButton = "Checking for Updates..."
 installNowButton = "Install Now"
 checkForUpdatesButton = "Check for Updates"
