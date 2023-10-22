@@ -153,7 +153,7 @@ players = "プレイヤー"
 [js.landing.systemScan]
 checking = "システム情報を確認中..."
 noCompatibleJava = "互換性のある<br>Javaインストールが見つかりません"
-installJavaMessage = "WesterosCraftに参加するには、Java {major} の64ビットインストールが必要です。Javaをインストールしますか？"
+installJavaMessage = "Minecraftを起動するには、Java {major} の64ビットインストールが必要です。Javaをインストールしますか？"
 installJava = "Javaをインストール"
 installJavaManually = "手動でインストール"
 javaDownloadPrepare = "Javaのダウンロードを準備中.."
