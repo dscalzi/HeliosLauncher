@@ -2,8 +2,6 @@
  * Script for landing.ejs
  */
 // Requirements
-const cp                      = require('child_process')
-const crypto                  = require('crypto')
 const { URL }                 = require('url')
 const {
     MojangRestAPI,
@@ -800,6 +798,16 @@ function showNewsAlert(){
     $(newsButtonAlert).fadeIn(250)
 }
 
+async function digestMessage(str) {
+    const msgUint8 = new TextEncoder().encode(str)
+    const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    const hashHex = hashArray
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('')
+    return hashHex
+}
+
 /**
  * Initialize News UI. This will load the news and prepare
  * the UI accordingly.
@@ -807,106 +815,93 @@ function showNewsAlert(){
  * @returns {Promise.<void>} A promise which resolves when the news
  * content has finished loading and transitioning.
  */
-function initNews(){
+async function initNews(){
 
-    return new Promise((resolve, reject) => {
-        setNewsLoading(true)
+    setNewsLoading(true)
 
-        let news = {}
-        loadNews().then(news => {
+    const news = await loadNews()
 
-            newsArr = news?.articles || null
+    newsArr = news?.articles || null
 
-            if(newsArr == null){
-                // News Loading Failed
-                setNewsLoading(false)
+    if(newsArr == null){
+        // News Loading Failed
+        setNewsLoading(false)
 
-                $('#newsErrorLoading').fadeOut(250, () => {
-                    $('#newsErrorFailed').fadeIn(250, () => {
-                        resolve()
-                    })
-                })
-            } else if(newsArr.length === 0) {
-                // No News Articles
-                setNewsLoading(false)
+        await $('#newsErrorLoading').fadeOut(250).promise()
+        await $('#newsErrorFailed').fadeIn(250).promise()
 
-                ConfigManager.setNewsCache({
-                    date: null,
-                    content: null,
-                    dismissed: false
-                })
-                ConfigManager.save()
+    } else if(newsArr.length === 0) {
+        // No News Articles
+        setNewsLoading(false)
 
-                $('#newsErrorLoading').fadeOut(250, () => {
-                    $('#newsErrorNone').fadeIn(250, () => {
-                        resolve()
-                    })
-                })
-            } else {
-                // Success
-                setNewsLoading(false)
+        ConfigManager.setNewsCache({
+            date: null,
+            content: null,
+            dismissed: false
+        })
+        ConfigManager.save()
 
-                const lN = newsArr[0]
-                const cached = ConfigManager.getNewsCache()
-                let newHash = crypto.createHash('sha1').update(lN.content).digest('hex')
-                let newDate = new Date(lN.date)
-                let isNew = false
+        await $('#newsErrorLoading').fadeOut(250).promise()
+        await $('#newsErrorNone').fadeIn(250).promise()
+    } else {
+        // Success
+        setNewsLoading(false)
 
-                if(cached.date != null && cached.content != null){
+        const lN = newsArr[0]
+        const cached = ConfigManager.getNewsCache()
+        let newHash = await digestMessage(lN.content)
+        let newDate = new Date(lN.date)
+        let isNew = false
 
-                    if(new Date(cached.date) >= newDate){
+        if(cached.date != null && cached.content != null){
 
-                        // Compare Content
-                        if(cached.content !== newHash){
-                            isNew = true
-                            showNewsAlert()
-                        } else {
-                            if(!cached.dismissed){
-                                isNew = true
-                                showNewsAlert()
-                            }
-                        }
+            if(new Date(cached.date) >= newDate){
 
-                    } else {
+                // Compare Content
+                if(cached.content !== newHash){
+                    isNew = true
+                    showNewsAlert()
+                } else {
+                    if(!cached.dismissed){
                         isNew = true
                         showNewsAlert()
                     }
-
-                } else {
-                    isNew = true
-                    showNewsAlert()
                 }
 
-                if(isNew){
-                    ConfigManager.setNewsCache({
-                        date: newDate.getTime(),
-                        content: newHash,
-                        dismissed: false
-                    })
-                    ConfigManager.save()
-                }
-
-                const switchHandler = (forward) => {
-                    let cArt = parseInt(newsContent.getAttribute('article'))
-                    let nxtArt = forward ? (cArt >= newsArr.length-1 ? 0 : cArt + 1) : (cArt <= 0 ? newsArr.length-1 : cArt - 1)
-            
-                    displayArticle(newsArr[nxtArt], nxtArt+1)
-                }
-
-                document.getElementById('newsNavigateRight').onclick = () => { switchHandler(true) }
-                document.getElementById('newsNavigateLeft').onclick = () => { switchHandler(false) }
-
-                $('#newsErrorContainer').fadeOut(250, () => {
-                    displayArticle(newsArr[0], 1)
-                    $('#newsContent').fadeIn(250, () => {
-                        resolve()
-                    })
-                })
+            } else {
+                isNew = true
+                showNewsAlert()
             }
 
-        })
-        
-    })
+        } else {
+            isNew = true
+            showNewsAlert()
+        }
+
+        if(isNew){
+            ConfigManager.setNewsCache({
+                date: newDate.getTime(),
+                content: newHash,
+                dismissed: false
+            })
+            ConfigManager.save()
+        }
+
+        const switchHandler = (forward) => {
+            let cArt = parseInt(newsContent.getAttribute('article'))
+            let nxtArt = forward ? (cArt >= newsArr.length-1 ? 0 : cArt + 1) : (cArt <= 0 ? newsArr.length-1 : cArt - 1)
+    
+            displayArticle(newsArr[nxtArt], nxtArt+1)
+        }
+
+        document.getElementById('newsNavigateRight').onclick = () => { switchHandler(true) }
+        document.getElementById('newsNavigateLeft').onclick = () => { switchHandler(false) }
+        await $('#newsErrorContainer').fadeOut(250).promise()
+        displayArticle(newsArr[0], 1)
+        await $('#newsContent').fadeIn(250).promise()
+    }
+
+
 }
 
 /**
