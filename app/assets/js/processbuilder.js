@@ -28,6 +28,7 @@ class ProcessBuilder {
         this.libPath = path.join(this.commonDir, 'libraries')
 
         this.usingLiteLoader = false
+        this.usingFabricLoader = false
         this.llPath = null
     }
     
@@ -40,9 +41,12 @@ class ProcessBuilder {
         process.throwDeprecation = true
         this.setupLiteLoader()
         logger.info('Using liteloader:', this.usingLiteLoader)
+        this.usingFabricLoader = this.server.modules.some(mdl => mdl.rawModule.type === Type.Fabric)
+        logger.info('Using fabric loader:', this.usingFabricLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.rawServer.id).mods, this.server.modules)
         
         // Mod list below 1.13
+        // Fabric only supports 1.14+
         if(!mcVersionAtLeast('1.13', this.server.rawServer.minecraftVersion)){
             this.constructJSONModList('forge', modObj.fMods, true)
             if(this.usingLiteLoader){
@@ -166,7 +170,7 @@ class ProcessBuilder {
 
         for(let mdl of mdls){
             const type = mdl.rawModule.type
-            if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader){
+            if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader || type === Type.FabricMod){
                 const o = !mdl.getRequired().value
                 const e = ProcessBuilder.isModEnabled(modCfg[mdl.getVersionlessMavenIdentifier()], mdl.getRequired())
                 if(!o || (o && e)){
@@ -178,7 +182,7 @@ class ProcessBuilder {
                             continue
                         }
                     }
-                    if(type === Type.ForgeMod){
+                    if(type === Type.ForgeMod || type === Type.FabricMod){
                         fMods.push(mdl)
                     } else {
                         lMods.push(mdl)
@@ -282,18 +286,21 @@ class ProcessBuilder {
     // }
 
     /**
-     * Construct the mod argument list for forge 1.13
+     * Construct the mod argument list for forge 1.13 and Fabric
      * 
      * @param {Array.<Object>} mods An array of mods to add to the mod list.
      */
     constructModList(mods) {
         const writeBuffer = mods.map(mod => {
-            return mod.getExtensionlessMavenIdentifier()
+            return this.usingFabricLoader ? mod.getPath() : mod.getExtensionlessMavenIdentifier()
         }).join('\n')
 
         if(writeBuffer) {
             fs.writeFileSync(this.forgeModListFile, writeBuffer, 'UTF-8')
-            return [
+            return this.usingFabricLoader ? [
+                '--fabric.addMods',
+                `@${this.forgeModListFile}`
+            ] : [
                 '--fml.mavenRoots',
                 path.join('..', '..', 'common', 'modstore'),
                 '--fml.modLists',
@@ -669,7 +676,7 @@ class ProcessBuilder {
     classpathArg(mods, tempNativePath){
         let cpArgs = []
 
-        if(!mcVersionAtLeast('1.17', this.server.rawServer.minecraftVersion)) {
+        if(!mcVersionAtLeast('1.17', this.server.rawServer.minecraftVersion) || this.usingFabricLoader) {
             // Add the version.jar to the classpath.
             // Must not be added to the classpath for Forge 1.17+.
             const version = this.versionData.id
@@ -830,10 +837,10 @@ class ProcessBuilder {
         const mdls = this.server.modules
         let libs = {}
 
-        // Locate Forge/Libraries
+        // Locate Forge/Fabric/Libraries
         for(let mdl of mdls){
             const type = mdl.rawModule.type
-            if(type === Type.ForgeHosted || type === Type.Library){
+            if(type === Type.ForgeHosted || type === Type.Fabric || type === Type.Library){
                 libs[mdl.getVersionlessMavenIdentifier()] = mdl.getPath()
                 if(mdl.subModules.length > 0){
                     const res = this._resolveModuleLibraries(mdl)
