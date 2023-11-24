@@ -5,15 +5,17 @@ const logger = LoggerUtil.getLogger('DiscordWrapper')
 
 const { Client } = require('discord-rpc-patch')
 
+const Lang = require('./langloader')
+
 let client
 let activity
 
-exports.initRPC = function(genSettings, servSettings, initialDetails = 'Waiting for Client..'){
+exports.initRPC = function(genSettings, servSettings, initialDetails = Lang.queryJS('discord.waiting')){
     client = new Client({ transport: 'ipc' })
 
     activity = {
         details: initialDetails,
-        state: 'Server: ' + servSettings.shortId,
+        state: Lang.queryJS('discord.state', {shortId: servSettings.shortId}),
         largeImageKey: servSettings.largeImageKey,
         largeImageText: servSettings.largeImageText,
         smallImageKey: genSettings.smallImageKey,

@@ -563,7 +563,7 @@ async function dlAsync(login = true) {
         const onLoadComplete = () => {
             toggleLaunchArea(false)
             if(hasRPC){
-                DiscordWrapper.updateDetails('Loading game..')
+                DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.loading'))
                 proc.stdout.on('data', gameStateChange)
             }
             proc.stdout.removeListener('data', tempListener)
@@ -590,9 +590,9 @@ async function dlAsync(login = true) {
         const gameStateChange = function(data){
             data = data.trim()
             if(SERVER_JOINED_REGEX.test(data)){
-                DiscordWrapper.updateDetails('Exploring the Realm!')
+                DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.joined'))
             } else if(GAME_JOINED_REGEX.test(data)){
-                DiscordWrapper.updateDetails('Sailing to Westeros!')
+                DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.joining'))
             }
         }
 

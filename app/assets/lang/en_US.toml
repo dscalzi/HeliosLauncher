@@ -130,6 +130,14 @@ waitingText = "Waiting for Microsoft.."
 continueButton = "CONTINUE"
 
 
+[js.discord]
+waiting = "Waiting for Client.."
+state = "Server: {shortId}"
+
+[js.index]
+microsoftLoginTitle = "Microsoft Login"
+microsoftLogoutTitle = "Microsoft Logout"
+
 [js.login]
 login = "LOGIN"
 loggingIn = "LOGGING IN"
@@ -201,6 +209,14 @@ checkConsoleForDetails = "Please check the console (CTRL + Shift + i) for more d
 
 [js.landing.news]
 checking = "Checking for News"
+
+[js.landing.discord]
+loading = "Loading game.."
+joining = "Sailing to Westeros!"
+joined = "Exploring the Realm!"
+
+[js.overlay]
+dismiss = "Dismiss"
 
 [js.settings.fileSelectors]
 executables = "Executables"
