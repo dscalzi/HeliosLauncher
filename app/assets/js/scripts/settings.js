@@ -900,7 +900,7 @@ function bindDropinModsRemoveButton(){
                 setOverlayContent(
                     Lang.queryJS('settings.dropinMods.deleteFailedTitle', { fullName }),
                     Lang.queryJS('settings.dropinMods.deleteFailedMessage'),
-                    Lang.queryJS('settings.okButton')
+                    Lang.queryJS('settings.dropinMods.okButton')
                 )
                 setOverlayHandler(null)
                 toggleOverlay(true)
@@ -955,7 +955,7 @@ function saveDropinModConfiguration(){
                         setOverlayContent(
                             Lang.queryJS('settings.dropinMods.failedToggleTitle'),
                             err.message,
-                            Lang.queryJS('settings.okButton')
+                            Lang.queryJS('settings.dropinMods.okButton')
                         )
                         setOverlayHandler(null)
                         toggleOverlay(true)
