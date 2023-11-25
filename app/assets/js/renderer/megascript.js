@@ -781,7 +781,7 @@ async function toggleServerSelection(toggleState){
  * @param {string} acknowledge Acknowledge button text.
  * @param {string} dismiss Dismiss button text.
  */
-function setOverlayContent(title, description, acknowledge, dismiss = 'Dismiss'){
+function setOverlayContent(title, description, acknowledge, dismiss = Lang.queryJS('overlay.dismiss')){
     document.getElementById('overlayTitle').innerHTML = title
     document.getElementById('overlayDesc').innerHTML = description
     document.getElementById('overlayAcknowledge').innerHTML = acknowledge
@@ -2175,7 +2175,7 @@ function bindDropinModsRemoveButton(){
                 setOverlayContent(
                     Lang.queryJS('settings.dropinMods.deleteFailedTitle', { fullName }),
                     Lang.queryJS('settings.dropinMods.deleteFailedMessage'),
-                    Lang.queryJS('settings.okButton')
+                    Lang.queryJS('settings.dropinMods.okButton')
                 )
                 setOverlayHandler(null)
                 toggleOverlay(true)
@@ -2230,7 +2230,7 @@ function saveDropinModConfiguration(){
                         setOverlayContent(
                             Lang.queryJS('settings.dropinMods.failedToggleTitle'),
                             err.message,
-                            Lang.queryJS('settings.okButton')
+                            Lang.queryJS('settings.dropinMods.okButton')
                         )
                         setOverlayHandler(null)
                         toggleOverlay(true)
@@ -3431,7 +3431,7 @@ async function dlAsync(login = true) {
         const onLoadComplete = () => {
             toggleLaunchArea(false)
             if(hasRPC){
-                DiscordWrapper.updateDetails('Loading game..')
+                DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.loading'))
                 proc.stdout.on('data', gameStateChange)
             }
             proc.stdout.removeListener('data', tempListener)
@@ -3458,9 +3458,9 @@ async function dlAsync(login = true) {
         const gameStateChange = function(data){
             data = data.trim()
             if(SERVER_JOINED_REGEX.test(data)){
-                DiscordWrapper.updateDetails('Exploring the Realm!')
+                DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.joined'))
             } else if(GAME_JOINED_REGEX.test(data)){
-                DiscordWrapper.updateDetails('Sailing to Westeros!')
+                DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.joining'))
             }
         }
 
@@ -3483,7 +3483,7 @@ async function dlAsync(login = true) {
             setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
 
             // Init Discord Hook
-            if(distro.rawDistribution.discord != null && serv.rawServerdiscord != null){
+            if(distro.rawDistribution.discord != null && serv.rawServer.discord != null){
                 DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.rawServer.discord)
                 hasRPC = true
                 proc.on('close', (code, signal) => {
