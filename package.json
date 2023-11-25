@@ -23,12 +23,12 @@
     "node": "18.x.x"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.11",
+    "@electron/remote": "^2.1.0",
     "adm-zip": "^0.5.9",
     "discord-rpc-patch": "^4.0.1",
     "ejs": "^3.1.9",
     "ejs-electron": "^2.1.1",
-    "electron-updater": "^6.1.4",
+    "electron-updater": "^6.1.7",
     "fs-extra": "^11.1.1",
     "github-syntax-dark": "^0.5.0",
     "got": "^11.8.5",
@@ -40,9 +40,9 @@
     "toml": "^3.0.0"
   },
   "devDependencies": {
-    "electron": "^26.3.0",
-    "electron-builder": "^24.6.4",
-    "eslint": "^8.50.0"
+    "electron": "^27.1.2",
+    "electron-builder": "^24.9.1",
+    "eslint": "^8.54.0"
   },
   "repository": {
     "type": "git",
