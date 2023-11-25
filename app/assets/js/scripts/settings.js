@@ -1,9 +1,8 @@
-// Requirements
-const os     = require('os')
-const semver = require('semver')
 
-const DropinModUtil  = require('./assets/js/dropinmodutil')
-const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
+import { VIEWS } from './views.js'
+
+import DropinModUtil from './assets/js/dropinmodutil'
+import { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } from './assets/js/ipcconstants'
 
 const settingsState = {
     invalid: new Set()
@@ -64,13 +63,14 @@ function bindFileSelectors(){
                 ]
             }
 
-            const res = await remote.dialog.showOpenDialog(remote.getCurrentWindow(), options)
-            if(!res.canceled) {
-                ele.previousElementSibling.value = res.filePaths[0]
-                if(isJavaExecSel) {
-                    await populateJavaExecDetails(ele.previousElementSibling.value)
-                }
-            }
+            // TODO FIXME
+            // const res = await remote.dialog.showOpenDialog(remote.getCurrentWindow(), options)
+            // if(!res.canceled) {
+            //     ele.previousElementSibling.value = res.filePaths[0]
+            //     if(isJavaExecSel) {
+            //         await populateJavaExecDetails(ele.previousElementSibling.value)
+            //     }
+            // }
         }
     }
 }
@@ -716,7 +716,7 @@ async function resolveModsForUI(){
     const distro = await DistroAPI.getDistribution()
     const servConf = ConfigManager.getModConfiguration(serv)
 
-    const modStr = parseModulesForUI(distro.getServerById(serv).modules, false, servConf.mods)
+    const modStr = await parseModulesForUI(distro.getServerById(serv).modules, false, servConf.mods)
 
     document.getElementById('settingsReqModsContent').innerHTML = modStr.reqMods
     document.getElementById('settingsOptModsContent').innerHTML = modStr.optMods
@@ -729,10 +729,12 @@ async function resolveModsForUI(){
  * @param {boolean} submodules Whether or not we are parsing submodules.
  * @param {Object} servConf The server configuration object for this module level.
  */
-function parseModulesForUI(mdls, submodules, servConf){
+async function parseModulesForUI(mdls, submodules, servConf){
 
     let reqMods = ''
     let optMods = ''
+
+    const Type = await hc.type
 
     for(const mdl of mdls){
 
@@ -755,7 +757,7 @@ function parseModulesForUI(mdls, submodules, servConf){
                         </label>
                     </div>
                     ${mdl.subModules.length > 0 ? `<div class="settingsSubModContainer">
-                        ${Object.values(parseModulesForUI(mdl.subModules, true, servConf[mdl.getVersionlessMavenIdentifier()])).join('')}
+                        ${Object.values(await parseModulesForUI(mdl.subModules, true, servConf[mdl.getVersionlessMavenIdentifier()])).join('')}
                     </div>` : ''}
                 </div>`
 
@@ -779,7 +781,7 @@ function parseModulesForUI(mdls, submodules, servConf){
                         </label>
                     </div>
                     ${mdl.subModules.length > 0 ? `<div class="settingsSubModContainer">
-                        ${Object.values(parseModulesForUI(mdl.subModules, true, conf.mods)).join('')}
+                        ${Object.values(await parseModulesForUI(mdl.subModules, true, conf.mods)).join('')}
                     </div>` : ''}
                 </div>`
 
@@ -1403,8 +1405,7 @@ const settingsAboutChangelogButton = settingsTabAbout.getElementsByClassName('se
 
 // Bind the devtools toggle button.
 document.getElementById('settingsAboutDevToolsButton').onclick = (e) => {
-    let window = remote.getCurrentWindow()
-    window.toggleDevTools()
+    xwindow.toggleDevTools()
 }
 
 /**
@@ -1444,7 +1445,7 @@ function populateVersionInformation(version, valueElement, titleElement, checkEl
  * Retrieve the version information and display it on the UI.
  */
 function populateAboutVersionInformation(){
-    populateVersionInformation(remote.app.getVersion(), document.getElementById('settingsAboutCurrentVersionValue'), document.getElementById('settingsAboutCurrentVersionTitle'), document.getElementById('settingsAboutCurrentVersionCheck'))
+    populateVersionInformation(app.getVersion(), document.getElementById('settingsAboutCurrentVersionValue'), document.getElementById('settingsAboutCurrentVersionTitle'), document.getElementById('settingsAboutCurrentVersionCheck'))
 }
 
 /**
@@ -1455,7 +1456,7 @@ function populateReleaseNotes(){
     $.ajax({
         url: 'https://github.com/dscalzi/HeliosLauncher/releases.atom',
         success: (data) => {
-            const version = 'v' + remote.app.getVersion()
+            const version = 'v' + app.getVersion()
             const entries = $(data).find('entry')
             
             for(let i=0; i<entries.length; i++){
@@ -1537,7 +1538,7 @@ function populateSettingsUpdateInformation(data){
     } else {
         settingsUpdateTitle.innerHTML = Lang.queryJS('settings.updates.latestVersionTitle')
         settingsUpdateChangelogCont.style.display = 'none'
-        populateVersionInformation(remote.app.getVersion(), settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
+        populateVersionInformation(app.getVersion(), settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
         settingsUpdateButtonStatus(Lang.queryJS('settings.updates.checkForUpdatesButton'), false, () => {
             if(!isDev){
                 ipcRenderer.send('autoUpdateAction', 'checkForUpdate')

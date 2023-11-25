@@ -1,23 +1,104 @@
-const remoteMain = require('@electron/remote/main')
-remoteMain.initialize()
 
 // Requirements
 const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
 const autoUpdater                       = require('electron-updater').autoUpdater
 const ejse                              = require('ejs-electron')
-const fs                                = require('fs')
-const isDev                             = require('./app/assets/js/isdev')
+const fs                                = require('fs-extra')
 const path                              = require('path')
 const semver                            = require('semver')
 const { pathToFileURL }                 = require('url')
 const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
-const LangLoader                        = require('./app/assets/js/langloader')
+
+const { Type } = require('helios-distribution-types')
+const { totalmem, freemem, tmpdir } = require('node:os')
+const { prerelease } = require('semver')
+const { addMojangAccount, addMicrosoftAccount, removeMojangAccount, removeMicrosoftAccount, validateSelected } = require('./app/assets/js/main/authmanager')
+
+const ConfigManager = require('./app/assets/js/main/configmanager')
+const { DistroAPI }  = require('./app/assets/js/main/distromanager')
+// eslint-disable-next-line no-unused-vars
+const { HeliosDistribution } = require('helios-core/common')
+const { LoggerUtil } = require('helios-core')
+const { getLang, setupLanguage, queryEJS } = require('./app/assets/js/main/langloader')
+
+const logger = LoggerUtil.getLogger('Preloader')
+
+// Log deprecation and process warnings.
+process.traceProcessWarnings = true
+process.traceDeprecation = true
+
+// Load ConfigManager
+ConfigManager.load()
+
+// Yuck!
+// TODO Fix this
+DistroAPI['commonDir'] = ConfigManager.getCommonDirectory()
+DistroAPI['instanceDir'] = ConfigManager.getInstanceDirectory()
 
 // Setup Lang
-LangLoader.setupLanguage()
+setupLanguage()
+
+/**
+ * 
+ * @param {HeliosDistribution} data 
+ */
+function onDistroLoad(data){
+    if(data != null){
+        
+        // Resolve the selected server if its value has yet to be set.
+        if(ConfigManager.getSelectedServer() == null || data.getServerById(ConfigManager.getSelectedServer()) == null){
+            logger.info('Determining default selected server..')
+            ConfigManager.setSelectedServer(data.getMainServer().rawServer.id)
+            ConfigManager.save()
+        }
+    }
+    win.webContents.send('distributionIndexDone', data != null)
+}
+
+// Ensure Distribution is downloaded and cached.
+DistroAPI.getDistribution()
+    .then(heliosDistro => {
+        logger.info('Loaded distribution index.')
+
+        onDistroLoad(heliosDistro)
+    })
+    .catch(err => {
+        logger.info('Failed to load an older version of the distribution index.')
+        logger.info('Application cannot run.')
+        logger.error(err)
+
+        onDistroLoad(null)
+    })
+
+// Clean up temp dir incase previous launches ended unexpectedly. 
+fs.remove(path.join(tmpdir(), ConfigManager.getTempNativeFolder()), (err) => {
+    if(err){
+        logger.warn('Error while cleaning natives directory', err)
+    } else {
+        logger.info('Cleaned natives directory.')
+    }
+})
+
+
+
+const autoUpdateChannel = new MessageChannel()
+
+
+
+
+
+
+
+
+
+
+// ORIGINAL BELOW
+
+
+
 
 // Setup auto updater.
-function initAutoUpdater(event, data) {
+function initAutoUpdater(data) {
 
     if(data){
         autoUpdater.allowPrerelease = true
@@ -26,7 +107,7 @@ function initAutoUpdater(event, data) {
         // autoUpdater.allowPrerelease = true
     }
     
-    if(isDev){
+    if(!app.isPackaged){
         autoUpdater.autoInstallOnAppQuit = false
         autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml')
     }
@@ -34,21 +115,76 @@ function initAutoUpdater(event, data) {
         autoUpdater.autoDownload = false
     }
     autoUpdater.on('update-available', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-available', info)
+        autoUpdateChannel.port1.postMessage(['autoUpdateNotification', 'update-available', info])
     })
     autoUpdater.on('update-downloaded', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-downloaded', info)
+        autoUpdateChannel.port1.postMessage(['autoUpdateNotification', 'update-downloaded', info])
     })
     autoUpdater.on('update-not-available', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-not-available', info)
+        autoUpdateChannel.port1.postMessage(['autoUpdateNotification', 'update-not-available', info])
     })
     autoUpdater.on('checking-for-update', () => {
-        event.sender.send('autoUpdateNotification', 'checking-for-update')
+        autoUpdateChannel.port1.postMessage(['autoUpdateNotification', 'checking-for-update'])
     })
     autoUpdater.on('error', (err) => {
-        event.sender.send('autoUpdateNotification', 'realerror', err)
+        autoUpdateChannel.port1.postMessage(['autoUpdateNotification', 'realerror', err])
     }) 
 }
+
+/*
+// all on autoupdatechannel
+[
+    command,
+    arg1,
+    arg2,
+    ...
+]
+
+
+*/
+
+autoUpdateChannel.port1.on('message', (event) => {
+    const command = event[0]
+    switch(command) {
+        case 'initAutoUpdater':
+            console.log('Initializing auto updater.')
+            initAutoUpdater(event[1])
+            autoUpdateChannel.port1.postMessage([
+                'autoUpdateNotification',
+                'ready'
+            ])
+            break
+        case 'checkForUpdate':
+            // TODO Test that error is passed properly
+            autoUpdater.checkForUpdates()
+                .catch(err => {
+                    autoUpdateChannel.port1.postMessage([
+                        'autoUpdateNotification',
+                        'realerror',
+                        err
+                    ])
+                })
+            break
+        case 'allowPrereleaseChange':
+            if(!event[1]){
+                const preRelComp = semver.prerelease(app.getVersion())
+                if(preRelComp != null && preRelComp.length > 0){
+                    autoUpdater.allowPrerelease = true
+                } else {
+                    autoUpdater.allowPrerelease = event[1]
+                }
+            } else {
+                autoUpdater.allowPrerelease = event[1]
+            }
+            break
+        case 'installUpdateNow':
+            autoUpdater.quitAndInstall()
+            break
+        default:
+            console.log('Unknown command', command)
+            break
+    }
+})
 
 // Open channel to listen for update actions.
 ipcMain.on('autoUpdateAction', (event, arg, data) => {
@@ -83,10 +219,6 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
             console.log('Unknown argument', arg)
             break
     }
-})
-// Redirect distribution index event from preloader to renderer.
-ipcMain.on('distributionIndexDone', (event, res) => {
-    event.sender.send('distributionIndexDone', res)
 })
 
 // Handle trash item.
@@ -234,15 +366,18 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js'),
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: true
         },
         backgroundColor: '#171614'
     })
-    remoteMain.enable(win.webContents)
+
+    // Disable zoom, needed for darwin.
+    win.webContents.setZoomLevel(0)
+    win.webContents.setVisualZoomLevelLimits(1, 1)
 
     const data = {
         bkid: Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)),
-        lang: (str, placeHolders) => LangLoader.queryEJS(str, placeHolders)
+        lang: (str, placeHolders) => queryEJS(str, placeHolders)
     }
     Object.entries(data).forEach(([key, val]) => ejse.data(key, val))
 
@@ -341,8 +476,47 @@ function getPlatformIcon(filename){
     return path.join(__dirname, 'app', 'assets', 'images', `${filename}.${ext}`)
 }
 
-app.on('ready', createWindow)
-app.on('ready', createMenu)
+app.whenReady().then(() => {
+
+    ipcMain.handle('os.totalmem', () => totalmem())
+    ipcMain.handle('os.freemem', () => freemem())
+
+    ipcMain.handle('semver.prerelease', (version) => prerelease(version))
+
+    ipcMain.handle('path.join', (...args) => path.join(args))
+
+    ipcMain.handle('app.isDev', () => !app.isPackaged)
+    ipcMain.handle('app.getVersion', () => app.getVersion())
+
+    ipcMain.handle('shell.openExternal', (url) => shell.openExternal(url))
+    ipcMain.handle('shell.openPath', (path) => shell.openPath(path))
+
+    ipcMain.handle('xwindow.close', () => win.close())
+    ipcMain.handle('xwindow.setProgressBar', (progress) => win.setProgressBar(progress))
+    ipcMain.handle('xwindow.toggleDevTools', () => win.webContents.toggleDevTools())
+    ipcMain.handle('xwindow.minimize', () => win.minimize())
+    ipcMain.handle('xwindow.maximize', () => win.maximize())
+    ipcMain.handle('xwindow.unmaximize', () => win.unmaximize())
+    ipcMain.handle('xwindow.isMaximized', () => win.isMaximized())
+
+    ipcMain.handle('process.platform', () => process.platform)
+    ipcMain.handle('process.arch', () => process.arch)
+
+    ipcMain.handle('hc.type', () => Type)
+
+    ipcMain.handle('AuthManager.addMojangAccount', async (username, password) => await addMojangAccount(username, password))
+    ipcMain.handle('AuthManager.addMicrosoftAccount', async (authCode) => await addMicrosoftAccount(authCode))
+    ipcMain.handle('AuthManager.removeMojangAccount', async (uuid) => await removeMojangAccount(uuid))
+    ipcMain.handle('AuthManager.removeMicrosoftAccount', async (uuid) => await removeMicrosoftAccount(uuid))
+    ipcMain.handle('AuthManager.validateSelected', async () => await validateSelected())
+
+    ipcMain.handle('Lang.getLang', () => getLang())
+
+    ipcMain.handle('AutoUpdater.port2', () => autoUpdateChannel.port2)
+
+    createWindow()
+    createMenu()
+})
 
 app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar

@@ -2,26 +2,11 @@
  * Initialize UI functions which depend on internal modules.
  * Loaded after core UI functions are initialized in uicore.js.
  */
-// Requirements
-const path          = require('path')
-const { Type }      = require('helios-distribution-types')
 
-const AuthManager   = require('./assets/js/authmanager')
-const ConfigManager = require('./assets/js/configmanager')
-const { DistroAPI } = require('./assets/js/distromanager')
+import { VIEWS } from './views.js'
 
 let rscShouldLoad = false
 let fatalStartupError = false
-
-// Mapping of each view to their container IDs.
-const VIEWS = {
-    landing: '#landingContainer',
-    loginOptions: '#loginOptionsContainer',
-    login: '#loginContainer',
-    settings: '#settingsContainer',
-    welcome: '#welcomeContainer',
-    waiting: '#waitingContainer'
-}
 
 // The currently shown view container.
 let currentView
@@ -119,8 +104,7 @@ function showFatalStartupError(){
                 Lang.queryJS('uibinder.startup.closeButton')
             )
             setOverlayHandler(() => {
-                const window = remote.getCurrentWindow()
-                window.close()
+                xwindow.close()
             })
             toggleOverlay(true)
         })
@@ -145,9 +129,10 @@ function onDistroRefresh(data){
  * 
  * @param {Object} data The distro index object.
  */
-function syncModConfigurations(data){
+async function syncModConfigurations(data){
 
     const syncedCfgs = []
+    const Type = await hc.type
 
     for(let serv of data.servers){
 
@@ -439,7 +424,7 @@ document.addEventListener('readystatechange', async () => {
 ipcRenderer.on('distributionIndexDone', async (event, res) => {
     if(res) {
         const data = await DistroAPI.getDistribution()
-        syncModConfigurations(data)
+        await syncModConfigurations(data)
         ensureJavaSettings(data)
         if(document.readyState === 'interactive' || document.readyState === 'complete'){
             await showMainUI(data)
@@ -462,5 +447,5 @@ async function devModeToggle() {
     const data = await DistroAPI.refreshDistributionOrFallback()
     ensureJavaSettings(data)
     updateSelectedServer(data.servers[0])
-    syncModConfigurations(data)
+    await syncModConfigurations(data)
 }

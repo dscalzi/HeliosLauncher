@@ -9,7 +9,9 @@ const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.e
 
 const dataPath = path.join(sysRoot, '.helioslauncher')
 
-const launcherDir = require('@electron/remote').app.getPath('userData')
+const { app } = require('electron')
+
+const launcherDir = app.getPath('userData')
 
 /**
  * Retrieve the absolute path of the launcher directory.

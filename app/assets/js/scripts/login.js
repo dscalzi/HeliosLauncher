@@ -1,6 +1,9 @@
 /**
  * Script for login.ejs
  */
+
+import { VIEWS } from './views.js'
+
 // Validation Regexes.
 const validUsername         = /^[a-zA-Z0-9_]{1,16}$/
 const basicEmail            = /^\S+@\S+\.\S+$/

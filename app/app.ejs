@@ -2,8 +2,10 @@
 <head>
     <meta charset="utf-8" http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-In6B8teKZQll5heMl9bS7CESTbGvuAt3VVV86BUQBDk='"/>
     <title><%= lang('app.title') %></title>
-    <script src="./assets/js/scripts/uicore.js"></script>
-    <script src="./assets/js/scripts/uibinder.js"></script>
+    <!-- TODO FIXME -->
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <!-- <script type="module" src="./assets/js/scripts/uicore.js"></script>
+    <script type="module" src="./assets/js/scripts/uibinder.js"></script> -->
     <link type="text/css" rel="stylesheet" href="./assets/css/launcher.css">
     <style>
         body {
@@ -25,6 +27,7 @@
             filter: blur(3px) contrast(0.9) brightness(1.0);
         }
     </style>
+    <script type="module" src="./assets/js/renderer/megascript.js"></script>
 </head>
 <body bkid="<%=bkid%>">
     <%- include('frame') %>

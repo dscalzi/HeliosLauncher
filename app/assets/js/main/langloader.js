@@ -6,7 +6,7 @@ const merge = require('lodash.merge')
 let lang
 
 exports.loadLanguage = function(id){
-    lang = merge(lang || {}, toml.parse(fs.readFileSync(path.join(__dirname, '..', 'lang', `${id}.toml`))) || {})
+    lang = merge(lang || {}, toml.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'lang', `${id}.toml`))) || {})
 }
 
 exports.query = function(id, placeHolders){
@@ -40,4 +40,8 @@ exports.setupLanguage = function(){
 
     // Load Custom Language File for Launcher Customizer
     exports.loadLanguage('_custom')
+}
+
+exports.getLang = () => {
+    return lang
 }

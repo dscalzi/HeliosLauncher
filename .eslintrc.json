@@ -52,15 +52,15 @@
     },
     "overrides": [
         {
-          "files": [ "app/assets/js/scripts/*.js" ],
-          "rules": {
-            "no-unused-vars": [
-                0
-            ],
-            "no-undef": [
-                0
+            "env": {
+                "browser": true,
+                "node": false,
+                "jquery": true
+            },
+            "files": [
+                "app/assets/js/scripts/*.js",
+                "app/assets/js/renderer/*.js"
             ]
-          }
         }
-      ]
+    ]
 }

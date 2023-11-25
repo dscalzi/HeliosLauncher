@@ -1,3 +1,5 @@
+import { VIEWS } from './views.js'
+
 /**
  * Script for welcome.ejs
  */

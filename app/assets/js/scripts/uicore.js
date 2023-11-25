@@ -1,3 +1,5 @@
+import { VIEWS } from './views.js'
+
 /**
  * Core UI functions are initialized in this file. This prevents
  * unexpected errors from breaking the core features. Specifically,
@@ -5,36 +7,19 @@
  * modules, excluding dependencies.
  */
 // Requirements
-const $                              = require('jquery')
-const {ipcRenderer, shell, webFrame} = require('electron')
-const remote                         = require('@electron/remote')
-const isDev                          = require('./assets/js/isdev')
-const { LoggerUtil }                 = require('helios-core')
-const Lang                           = require('./assets/js/langloader')
+// const { ipcRenderer } = require('electron')
+const isDev                          = await window.api.app.isDev()
+// const { LoggerUtil }                 = require('helios-core')
+// const Lang                           = require('./assets/js/langloader')
 
-const loggerUICore             = LoggerUtil.getLogger('UICore')
-const loggerAutoUpdater        = LoggerUtil.getLogger('AutoUpdater')
-
-// Log deprecation and process warnings.
-process.traceProcessWarnings = true
-process.traceDeprecation = true
+// const loggerUICore             = LoggerUtil.getLogger('UICore')
+// const loggerAutoUpdater        = LoggerUtil.getLogger('AutoUpdater')
 
 // Disable eval function.
 // eslint-disable-next-line
-window.eval = global.eval = function () {
+window.eval = function () {
     throw new Error('Sorry, this app does not support window.eval().')
 }
-
-// Display warning when devtools window is opened.
-remote.getCurrentWebContents().on('devtools-opened', () => {
-    console.log('%cThe console is dark and full of terrors.', 'color: white; -webkit-text-stroke: 4px #a02d2a; font-size: 60px; font-weight: bold')
-    console.log('%cIf you\'ve been told to paste something here, you\'re being scammed.', 'font-size: 16px')
-    console.log('%cUnless you know exactly what you\'re doing, close this window.', 'font-size: 16px')
-})
-
-// Disable zoom, needed for darwin.
-webFrame.setZoomLevel(0)
-webFrame.setVisualZoomLevelLimits(1, 1)
 
 // Initialize auto updates in production environments.
 let updateCheckListener
@@ -42,21 +27,21 @@ if(!isDev){
     ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
         switch(arg){
             case 'checking-for-update':
-                loggerAutoUpdater.info('Checking for update..')
+                // loggerAutoUpdater.info('Checking for update..')
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkingForUpdateButton'), true)
                 break
             case 'update-available':
-                loggerAutoUpdater.info('New update available', info.version)
+                // loggerAutoUpdater.info('New update available', info.version)
                 
-                if(process.platform === 'darwin'){
-                    info.darwindownload = `https://github.com/dscalzi/HeliosLauncher/releases/download/v${info.version}/Helios-Launcher-setup-${info.version}${process.arch === 'arm64' ? '-arm64' : '-x64'}.dmg`
+                if(process.platform() === 'darwin'){
+                    info.darwindownload = `https://github.com/dscalzi/HeliosLauncher/releases/download/v${info.version}/Helios-Launcher-setup-${info.version}${process.arch() === 'arm64' ? '-arm64' : '-x64'}.dmg`
                     showUpdateUI(info)
                 }
                 
                 populateSettingsUpdateInformation(info)
                 break
             case 'update-downloaded':
-                loggerAutoUpdater.info('Update ' + info.version + ' ready to be installed.')
+                // loggerAutoUpdater.info('Update ' + info.version + ' ready to be installed.')
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.installNowButton'), false, () => {
                     if(!isDev){
                         ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
@@ -65,7 +50,7 @@ if(!isDev){
                 showUpdateUI(info)
                 break
             case 'update-not-available':
-                loggerAutoUpdater.info('No new update found.')
+                // loggerAutoUpdater.info('No new update found.')
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'))
                 break
             case 'ready':
@@ -77,17 +62,17 @@ if(!isDev){
             case 'realerror':
                 if(info != null && info.code != null){
                     if(info.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
-                        loggerAutoUpdater.info('No suitable releases found.')
+                        // loggerAutoUpdater.info('No suitable releases found.')
                     } else if(info.code === 'ERR_XML_MISSED_ELEMENT'){
-                        loggerAutoUpdater.info('No releases found.')
+                        // loggerAutoUpdater.info('No releases found.')
                     } else {
-                        loggerAutoUpdater.error('Error during update check..', info)
-                        loggerAutoUpdater.debug('Error Code:', info.code)
+                        // loggerAutoUpdater.error('Error during update check..', info)
+                        // loggerAutoUpdater.debug('Error Code:', info.code)
                     }
                 }
                 break
             default:
-                loggerAutoUpdater.info('Unknown argument', arg)
+                // loggerAutoUpdater.info('Unknown argument', arg)
                 break
         }
     })
@@ -133,72 +118,62 @@ $(function(){
     loggerUICore.info('UICore Initialized');
 })*/
 
-document.addEventListener('readystatechange', function () {
-    if (document.readyState === 'interactive'){
-        loggerUICore.info('UICore Initializing..')
+// loggerUICore.info('UICore Initializing..')
 
-        // Bind close button.
-        Array.from(document.getElementsByClassName('fCb')).map((val) => {
-            val.addEventListener('click', e => {
-                const window = remote.getCurrentWindow()
-                window.close()
-            })
-        })
+// Bind close button.
+Array.from(document.getElementsByClassName('fCb')).map((val) => {
+    val.addEventListener('click', async e => {
+        await window.api.xwindow.close()
+    })
+})
 
-        // Bind restore down button.
-        Array.from(document.getElementsByClassName('fRb')).map((val) => {
-            val.addEventListener('click', e => {
-                const window = remote.getCurrentWindow()
-                if(window.isMaximized()){
-                    window.unmaximize()
-                } else {
-                    window.maximize()
-                }
-                document.activeElement.blur()
-            })
-        })
+// Bind restore down button.
+Array.from(document.getElementsByClassName('fRb')).map((val) => {
+    val.addEventListener('click', async e => {
+        if(await window.api.xwindow.isMaximized()){
+            await window.api.xwindow.unmaximize()
+        } else {
+            await window.api.xwindow.maximize()
+        }
+        document.activeElement.blur()
+    })
+})
 
-        // Bind minimize button.
-        Array.from(document.getElementsByClassName('fMb')).map((val) => {
-            val.addEventListener('click', e => {
-                const window = remote.getCurrentWindow()
-                window.minimize()
-                document.activeElement.blur()
-            })
-        })
+// Bind minimize button.
+Array.from(document.getElementsByClassName('fMb')).map((val) => {
+    val.addEventListener('click', async e => {
+        console.log('hi')
+        await window.api.xwindow.minimize()
+        document.activeElement.blur()
+    })
+})
 
-        // Remove focus from social media buttons once they're clicked.
-        Array.from(document.getElementsByClassName('mediaURL')).map(val => {
-            val.addEventListener('click', e => {
-                document.activeElement.blur()
-            })
-        })
+// Remove focus from social media buttons once they're clicked.
+Array.from(document.getElementsByClassName('mediaURL')).map(val => {
+    val.addEventListener('click', e => {
+        document.activeElement.blur()
+    })
+})
 
-    } else if(document.readyState === 'complete'){
+//266.01
+//170.8
+//53.21
+// Bind progress bar length to length of bot wrapper
+//const targetWidth = document.getElementById("launch_content").getBoundingClientRect().width
+//const targetWidth2 = document.getElementById("server_selection").getBoundingClientRect().width
+//const targetWidth3 = document.getElementById("launch_button").getBoundingClientRect().width
 
-        //266.01
-        //170.8
-        //53.21
-        // Bind progress bar length to length of bot wrapper
-        //const targetWidth = document.getElementById("launch_content").getBoundingClientRect().width
-        //const targetWidth2 = document.getElementById("server_selection").getBoundingClientRect().width
-        //const targetWidth3 = document.getElementById("launch_button").getBoundingClientRect().width
-
-        document.getElementById('launch_details').style.maxWidth = 266.01
-        document.getElementById('launch_progress').style.width = 170.8
-        document.getElementById('launch_details_right').style.maxWidth = 170.8
-        document.getElementById('launch_progress_label').style.width = 53.21
-        
-    }
-
-}, false)
+document.getElementById('launch_details').style.maxWidth = 266.01
+document.getElementById('launch_progress').style.width = 170.8
+document.getElementById('launch_details_right').style.maxWidth = 170.8
+document.getElementById('launch_progress_label').style.width = 53.21
 
 /**
  * Open web links in the user's default browser.
  */
-$(document).on('click', 'a[href^="http"]', function(event) {
+$(document).on('click', 'a[href^="http"]', async (event) => {
     event.preventDefault()
-    shell.openExternal(this.href)
+    await window.api.shell.openExternal(this.href)
 })
 
 /**
@@ -206,9 +181,8 @@ $(document).on('click', 'a[href^="http"]', function(event) {
  * This will crash the program if you are using multiple
  * DevTools, for example the chrome debugger in VS Code. 
  */
-document.addEventListener('keydown', function (e) {
+document.addEventListener('keydown', async (e) => {
     if((e.key === 'I' || e.key === 'i') && e.ctrlKey && e.shiftKey){
-        let window = remote.getCurrentWindow()
-        window.toggleDevTools()
+        await window.api.xwindow.toggleDevTools()
     }
 })

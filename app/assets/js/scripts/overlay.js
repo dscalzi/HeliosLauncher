@@ -2,6 +2,8 @@
  * Script for overlay.ejs
  */
 
+import { VIEWS } from './views.js'
+
 /* Overlay Wrapper Functions */
 
 /**

@@ -1,8 +1,10 @@
 /**
  * Script for landing.ejs
  */
+
+import { VIEWS } from './views.js'
+
 // Requirements
-const { URL }                 = require('url')
 const {
     MojangRestAPI,
     getServerStatus
@@ -85,7 +87,7 @@ function setLaunchPercentage(percent){
  * @param {number} percent Percentage (0-100)
  */
 function setDownloadPercentage(percent){
-    remote.getCurrentWindow().setProgressBar(percent/100)
+    xwindow.setProgressBar(percent/100)
     setLaunchPercentage(percent)
 }
 
@@ -402,7 +404,7 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
     // Extract
     // Show installing progress bar.
-    remote.getCurrentWindow().setProgressBar(2)
+    xwindow.setProgressBar(2)
 
     // Wait for extration to complete.
     const eLStr = Lang.queryJS('landing.downloadJava.extractingJava')
@@ -420,7 +422,7 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
     const newJavaExec = await extractJdk(asset.path)
 
     // Extraction complete, remove the loading from the OS progress bar.
-    remote.getCurrentWindow().setProgressBar(-1)
+    xwindow.setProgressBar(-1)
 
     // Extraction completed successfully.
     ConfigManager.setJavaExecutable(ConfigManager.getSelectedServer(), newJavaExec)
@@ -533,7 +535,7 @@ async function dlAsync(login = true) {
     }
 
     // Remove download bar.
-    remote.getCurrentWindow().setProgressBar(-1)
+    xwindow.setProgressBar(-1)
 
     fullRepairModule.destroyReceiver()
 
@@ -554,7 +556,7 @@ async function dlAsync(login = true) {
     if(login) {
         const authUser = ConfigManager.getSelectedAccount()
         loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
-        let pb = new ProcessBuilder(serv, versionData, forgeData, authUser, remote.app.getVersion())
+        let pb = new ProcessBuilder(serv, versionData, forgeData, authUser, app.getVersion())
         setLaunchDetails(Lang.queryJS('landing.dlAsync.launchingGame'))
 
         // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/

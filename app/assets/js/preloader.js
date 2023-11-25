@@ -1,67 +1,58 @@
-const {ipcRenderer}  = require('electron')
-const fs             = require('fs-extra')
-const os             = require('os')
-const path           = require('path')
+const { contextBridge, ipcRenderer } = require('electron')
 
-const ConfigManager  = require('./configmanager')
-const { DistroAPI }  = require('./distromanager')
-const LangLoader     = require('./langloader')
-const { LoggerUtil } = require('helios-core')
-// eslint-disable-next-line no-unused-vars
-const { HeliosDistribution } = require('helios-core/common')
-
-const logger = LoggerUtil.getLogger('Preloader')
-
-logger.info('Loading..')
-
-// Load ConfigManager
-ConfigManager.load()
-
-// Yuck!
-// TODO Fix this
-DistroAPI['commonDir'] = ConfigManager.getCommonDirectory()
-DistroAPI['instanceDir'] = ConfigManager.getInstanceDirectory()
-
-// Load Strings
-LangLoader.setupLanguage()
-
-/**
- * 
- * @param {HeliosDistribution} data 
- */
-function onDistroLoad(data){
-    if(data != null){
-        
-        // Resolve the selected server if its value has yet to be set.
-        if(ConfigManager.getSelectedServer() == null || data.getServerById(ConfigManager.getSelectedServer()) == null){
-            logger.info('Determining default selected server..')
-            ConfigManager.setSelectedServer(data.getMainServer().rawServer.id)
-            ConfigManager.save()
-        }
+module.exports.api = {
+    os: {
+        totalmem: () => ipcRenderer.invoke('os.totalmem'),
+        freemem: () => ipcRenderer.invoke('os.freemem')
+    },
+    semver: {
+        prerelease: (version) => ipcRenderer.invoke('semver.prerelease', version)
+    },
+    path: {
+        join: (...args) => ipcRenderer.invoke('path.join', args)
+    },
+    app: {
+        isDev: () => ipcRenderer.invoke('app.isDev'),
+        getVersion: () => ipcRenderer.invoke('app.getVersion')
+    },
+    shell: {
+        openExternal: (url) => ipcRenderer.invoke('shell.openExternal', url),
+        openPath: (path) => ipcRenderer.invoke('shell.openPath', path),
+    },
+    xwindow: {
+        close: () => ipcRenderer.invoke('xwindow.close'),
+        setProgressBar: (progress) => ipcRenderer.invoke('xwindow.setProgressBar', progress),
+        toggleDevTools: () => {
+            console.log('%cThe console is dark and full of terrors.', 'color: white; -webkit-text-stroke: 4px #a02d2a; font-size: 60px; font-weight: bold')
+            console.log('%cIf you\'ve been told to paste something here, you\'re being scammed.', 'font-size: 16px')
+            console.log('%cUnless you know exactly what you\'re doing, close this window.', 'font-size: 16px')
+            return ipcRenderer.invoke('xwindow.toggleDevTools')
+        },
+        minimize: () => ipcRenderer.invoke('xwindow.minimize'),
+        maximize: () => ipcRenderer.invoke('xwindow.maximize'),
+        unmaximize: () => ipcRenderer.invoke('xwindow.unmaximize'),
+        isMaximized: () => ipcRenderer.invoke('xwindow.isMaximized')
+    },
+    process: {
+        platform: () => ipcRenderer.invoke('process.platform'),
+        arch: () => ipcRenderer.invoke('process.arch')
+    },
+    hc: {
+        type: () => ipcRenderer.invoke('hc.type')
+    },
+    AuthManager: {
+        addMojangAccount: (username, password) => ipcRenderer.invoke('AuthManager.addMojangAccount', username, password),
+        addMicrosoftAccount: (authCode) => ipcRenderer.invoke('AuthManager.addMicrosoftAccount', authCode),
+        removeMojangAccount: (uuid) => ipcRenderer.invoke('AuthManager.removeMojangAccount', uuid),
+        removeMicrosoftAccount: (uuid) => ipcRenderer.invoke('AuthManager.removeMicrosoftAccount', uuid),
+        validateSelected: () => ipcRenderer.invoke('AuthManager.validateSelected')
+    },
+    Lang: {
+        getLang: () => ipcRenderer.invoke('Lang.getLang')
+    },
+    AutoUpdater: {
+        port2: () => ipcRenderer.invoke('AutoUpdater.port2')
     }
-    ipcRenderer.send('distributionIndexDone', data != null)
 }
 
-// Ensure Distribution is downloaded and cached.
-DistroAPI.getDistribution()
-    .then(heliosDistro => {
-        logger.info('Loaded distribution index.')
-
-        onDistroLoad(heliosDistro)
-    })
-    .catch(err => {
-        logger.info('Failed to load an older version of the distribution index.')
-        logger.info('Application cannot run.')
-        logger.error(err)
-
-        onDistroLoad(null)
-    })
-
-// Clean up temp dir incase previous launches ended unexpectedly. 
-fs.remove(path.join(os.tmpdir(), ConfigManager.getTempNativeFolder()), (err) => {
-    if(err){
-        logger.warn('Error while cleaning natives directory', err)
-    } else {
-        logger.info('Cleaned natives directory.')
-    }
-})
+contextBridge.exposeInMainWorld('api', module.exports.api)
