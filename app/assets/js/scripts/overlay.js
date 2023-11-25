@@ -130,7 +130,7 @@ async function toggleServerSelection(toggleState){
  * @param {string} acknowledge Acknowledge button text.
  * @param {string} dismiss Dismiss button text.
  */
-function setOverlayContent(title, description, acknowledge, dismiss = 'Dismiss'){
+function setOverlayContent(title, description, acknowledge, dismiss = Lang.queryJS('overlay.dismiss')){
     document.getElementById('overlayTitle').innerHTML = title
     document.getElementById('overlayDesc').innerHTML = description
     document.getElementById('overlayAcknowledge').innerHTML = acknowledge
