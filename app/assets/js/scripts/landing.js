@@ -615,7 +615,7 @@ async function dlAsync(login = true) {
             setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
 
             // Init Discord Hook
-            if(distro.rawDistribution.discord != null && serv.rawServerdiscord != null){
+            if(distro.rawDistribution.discord != null && serv.rawServer.discord != null){
                 DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.rawServer.discord)
                 hasRPC = true
                 proc.on('close', (code, signal) => {
