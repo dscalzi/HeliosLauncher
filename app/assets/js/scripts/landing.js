@@ -3,6 +3,7 @@
  */
 // Requirements
 const { URL }                 = require('url')
+const { join }                = require('path')
 const {
     MojangRestAPI,
     getServerStatus
@@ -548,6 +549,33 @@ async function dlAsync(login = true) {
         serv.rawServer.id
     )
 
+    // Install Forge
+    let wrapperPath
+    if(isDev) {
+        wrapperPath = join(process.cwd(), 'libraries', 'java', 'ForgeInstallerCLI.jar')
+    } else {
+        const exePath = remote.app.getPath('exe')
+        if(process.platform === 'darwin'){
+            wrapperPath = join(exePath, '..', '..', 'Resources', 'libraries', 'java', 'ForgeInstallerCLI.jar')
+        } else {
+            wrapperPath = join(exePath, '..', 'resources', 'libraries', 'java', 'ForgeInstallerCLI.jar')
+        }
+    }
+
+    // Launch Forge Installer
+    loggerLaunchSuite.info('Installing Forge.')
+    setLaunchDetails('Installing Forge..')
+    setLaunchPercentage(0)
+    const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
+    await distributionIndexProcessor.installForge(jExe, wrapperPath, percent => {
+        setDownloadPercentage(percent)
+    })
+    setDownloadPercentage(100)
+
+    // Remove download bar.
+    remote.getCurrentWindow().setProgressBar(-1)
+
+    // After Forge installed, we can get the Forge version data.
     const forgeData = await distributionIndexProcessor.loadForgeVersionJson(serv)
     const versionData = await mojangIndexProcessor.getVersionJson()
 

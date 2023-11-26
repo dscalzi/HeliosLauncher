@@ -841,6 +841,13 @@ class ProcessBuilder {
                         libs = {...libs, ...res}
                     }
                 }
+            } else if(type === Type.Forge){
+                // Forge installer generated libraries
+                const forgeLibs = []
+                for (const library of this.forgeData.libraries) {
+                    forgeLibs.push(path.join(ConfigManager.getCommonDirectory(), 'libraries', library.downloads.artifact.path))
+                }
+                libs = {...libs, ...forgeLibs}
             }
         }
 
