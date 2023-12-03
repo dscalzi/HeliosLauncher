@@ -360,10 +360,12 @@ The resolved/provided paths are appended to a base path depending on the module'
 | Type | Path |
 | ---- | ---- |
 | `ForgeHosted` | ({`commonDirectory`}/libraries/{`path` OR resolved}) |
+| `Fabric` | ({`commonDirectory`}/libraries/{`path` OR resolved}) |
 | `LiteLoader` | ({`commonDirectory`}/libraries/{`path` OR resolved}) |
 | `Library` | ({`commonDirectory`}/libraries/{`path` OR resolved}) |
 | `ForgeMod` | ({`commonDirectory`}/modstore/{`path` OR resolved}) |
 | `LiteMod` | ({`commonDirectory`}/modstore/{`path` OR resolved}) |
+| `FabricMod` | ({`commonDirectory`}/mods/fabric/{`path` OR resolved}) |
 | `File` | ({`instanceDirectory`}/{`Server.id`}/{`path` OR resolved}) |
 
 The `commonDirectory` and `instanceDirectory` values are stored in the launcher's config.json.
@@ -408,7 +410,7 @@ If the module is enabled by default. Has no effect unless `Required.value` is fa
 
 ### ForgeHosted
 
-The module type `ForgeHosted` represents forge itself. Currently, the launcher only supports forge servers, as vanilla servers can be connected to via the mojang launcher. The `Hosted` part is key, this means that the forge module must declare its required libraries as submodules.
+The module type `ForgeHosted` represents forge itself. Currently, the launcher only supports modded servers, as vanilla servers can be connected to via the mojang launcher. The `Hosted` part is key, this means that the forge module must declare its required libraries as submodules.
 
 Ex.
 
@@ -440,6 +442,40 @@ Ex.
 All of forge's required libraries are declared in the `version.json` file found in the root of the forge jar file. These libraries MUST be hosted and declared a submodules or forge will not work.
 
 There were plans to add a `Forge` type, in which the required libraries would be resolved by the launcher and downloaded from forge's servers. The forge servers are down at times, however, so this plan was stopped half-implemented.
+
+---
+
+### Fabric
+
+The module type `Fabric` represents the fabric mod loader. Currently, the launcher only supports modded servers, as vanilla servers can be connected to via the mojang launcher.
+
+Ex.
+
+```json
+{
+    "id": "net.fabricmc:fabric-loader:0.15.0",
+    "name": "Fabric (fabric-loader)",
+    "type": "Fabric",
+    "artifact": {
+    "size": 1196222,
+    "MD5": "a43d5a142246801343b6cedef1c102c4",
+    "url": "http://localhost:8080/repo/lib/net/fabricmc/fabric-loader/0.15.0/fabric-loader-0.15.0.jar"
+    },
+    "subModules": [
+    {
+        "id": "1.20.1-fabric-0.15.0",
+        "name": "Fabric (version.json)",
+        "type": "VersionManifest",
+        "artifact": {
+        "size": 2847,
+        "MD5": "69a2bd43452325ba1bc882fa0904e054",
+        "url": "http://localhost:8080/repo/versions/1.20.1-fabric-0.15.0/1.20.1-fabric-0.15.0.json"
+        }
+    }
+}
+```
+
+Fabric works similarly to Forge 1.13+.
 
 ---
 

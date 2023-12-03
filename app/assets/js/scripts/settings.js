@@ -736,7 +736,7 @@ function parseModulesForUI(mdls, submodules, servConf){
 
     for(const mdl of mdls){
 
-        if(mdl.rawModule.type === Type.ForgeMod || mdl.rawModule.type === Type.LiteMod || mdl.rawModule.type === Type.LiteLoader){
+        if(mdl.rawModule.type === Type.ForgeMod || mdl.rawModule.type === Type.LiteMod || mdl.rawModule.type === Type.LiteLoader || mdl.rawModule.type === Type.FabricMod){
 
             if(mdl.getRequired().value){
 
