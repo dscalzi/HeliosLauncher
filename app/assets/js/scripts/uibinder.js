@@ -9,7 +9,6 @@ const { Type }      = require('helios-distribution-types')
 const AuthManager   = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
 const { DistroAPI } = require('./assets/js/distromanager')
-const Lang          = require('./assets/js/langloader')
 
 let rscShouldLoad = false
 let fatalStartupError = false
@@ -115,9 +114,9 @@ function showFatalStartupError(){
         $('#loadingContainer').fadeOut(250, () => {
             document.getElementById('overlayContainer').style.background = 'none'
             setOverlayContent(
-                'Fatal Error: Unable to Load Distribution Index',
-                'A connection could not be established to our servers to download the distribution index. No local copies were available to load. <br><br>The distribution index is an essential file which provides the latest server information. The launcher is unable to start without it. Ensure you are connected to the internet and relaunch the application.',
-                'Close'
+                Lang.queryJS('uibinder.startup.fatalErrorTitle'),
+                Lang.queryJS('uibinder.startup.fatalErrorMessage'),
+                Lang.queryJS('uibinder.startup.closeButton')
             )
             setOverlayHandler(() => {
                 const window = remote.getCurrentWindow()
@@ -164,7 +163,7 @@ function syncModConfigurations(data){
             for(let mdl of mdls){
                 const type = mdl.rawModule.type
 
-                if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader){
+                if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader || type === Type.FabricMod){
                     if(!mdl.getRequired().value){
                         const mdlID = mdl.getVersionlessMavenIdentifier()
                         if(modsOld[mdlID] == null){
@@ -199,7 +198,7 @@ function syncModConfigurations(data){
 
             for(let mdl of mdls){
                 const type = mdl.rawModule.type
-                if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader){
+                if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader || type === Type.FabricMod){
                     if(!mdl.getRequired().value){
                         mods[mdl.getVersionlessMavenIdentifier()] = scanOptionalSubModules(mdl.subModules, mdl)
                     } else {
@@ -254,7 +253,7 @@ function scanOptionalSubModules(mdls, origin){
         for(let mdl of mdls){
             const type = mdl.rawModule.type
             // Optional types.
-            if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader){
+            if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader || type === Type.FabricMod){
                 // It is optional.
                 if(!mdl.getRequired().value){
                     mods[mdl.getVersionlessMavenIdentifier()] = scanOptionalSubModules(mdl.subModules, mdl)
@@ -333,10 +332,12 @@ async function validateSelectedAccount(){
             ConfigManager.save()
             const accLen = Object.keys(ConfigManager.getAuthAccounts()).length
             setOverlayContent(
-                'Failed to Refresh Login',
-                `We were unable to refresh the login for <strong>${selectedAcc.displayName}</strong>. Please ${accLen > 0 ? 'select another account or ' : ''} login again.`,
-                'Login',
-                'Select Another Account'
+                Lang.queryJS('uibinder.validateAccount.failedMessageTitle'),
+                accLen > 0
+                    ? Lang.queryJS('uibinder.validateAccount.failedMessage', { 'account': selectedAcc.displayName })
+                    : Lang.queryJS('uibinder.validateAccount.failedMessageSelectAnotherAccount', { 'account': selectedAcc.displayName }),
+                Lang.queryJS('uibinder.validateAccount.loginButton'),
+                Lang.queryJS('uibinder.validateAccount.selectAnotherAccountButton')
             )
             setOverlayHandler(() => {
 
