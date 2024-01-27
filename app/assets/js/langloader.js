@@ -1,27 +1,19 @@
 const fs = require('fs-extra')
 const path = require('path')
-const toml = require('toml')
-const merge = require('lodash.merge')
 
 let lang
 
 exports.loadLanguage = function(id){
-    lang = merge(lang || {}, toml.parse(fs.readFileSync(path.join(__dirname, '..', 'lang', `${id}.toml`))) || {})
+    lang = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'lang', `${id}.json`))) || {}
 }
 
-exports.query = function(id, placeHolders){
+exports.query = function(id){
     let query = id.split('.')
     let res = lang
     for(let q of query){
         res = res[q]
     }
-    let text = res === lang ? '' : res
-    if (placeHolders) {
-        Object.entries(placeHolders).forEach(([key, value]) => {
-            text = text.replace(`{${key}}`, value)
-        })
-    }
-    return text
+    return res === lang ? {} : res
 }
 
 exports.queryJS = function(id, placeHolders){

@@ -12,23 +12,14 @@ const ConfigManager            = require('./configmanager')
 
 const logger = LoggerUtil.getLogger('ProcessBuilder')
 
-
-/**
- * Only forge and fabric are top level mod loaders.
- * 
- * Forge 1.13+ launch logic is similar to fabrics, for now using usingFabricLoader flag to
- * change minor details when needed.
- * 
- * Rewrite of this module may be needed in the future.
- */
 class ProcessBuilder {
 
-    constructor(distroServer, vanillaManifest, modManifest, authUser, launcherVersion){
+    constructor(distroServer, versionData, forgeData, authUser, launcherVersion){
         this.gameDir = path.join(ConfigManager.getInstanceDirectory(), distroServer.rawServer.id)
         this.commonDir = ConfigManager.getCommonDirectory()
         this.server = distroServer
-        this.vanillaManifest = vanillaManifest
-        this.modManifest = modManifest
+        this.versionData = versionData
+        this.forgeData = forgeData
         this.authUser = authUser
         this.launcherVersion = launcherVersion
         this.forgeModListFile = path.join(this.gameDir, 'forgeMods.list') // 1.13+
@@ -37,7 +28,6 @@ class ProcessBuilder {
         this.libPath = path.join(this.commonDir, 'libraries')
 
         this.usingLiteLoader = false
-        this.usingFabricLoader = false
         this.llPath = null
     }
     
@@ -50,12 +40,9 @@ class ProcessBuilder {
         process.throwDeprecation = true
         this.setupLiteLoader()
         logger.info('Using liteloader:', this.usingLiteLoader)
-        this.usingFabricLoader = this.server.modules.some(mdl => mdl.rawModule.type === Type.Fabric)
-        logger.info('Using fabric loader:', this.usingFabricLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.rawServer.id).mods, this.server.modules)
         
         // Mod list below 1.13
-        // Fabric only supports 1.14+
         if(!mcVersionAtLeast('1.13', this.server.rawServer.minecraftVersion)){
             this.constructJSONModList('forge', modObj.fMods, true)
             if(this.usingLiteLoader){
@@ -179,7 +166,7 @@ class ProcessBuilder {
 
         for(let mdl of mdls){
             const type = mdl.rawModule.type
-            if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader || type === Type.FabricMod){
+            if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader){
                 const o = !mdl.getRequired().value
                 const e = ProcessBuilder.isModEnabled(modCfg[mdl.getVersionlessMavenIdentifier()], mdl.getRequired())
                 if(!o || (o && e)){
@@ -191,7 +178,7 @@ class ProcessBuilder {
                             continue
                         }
                     }
-                    if(type === Type.ForgeMod || type === Type.FabricMod){
+                    if(type === Type.ForgeMod){
                         fMods.push(mdl)
                     } else {
                         lMods.push(mdl)
@@ -207,7 +194,7 @@ class ProcessBuilder {
     }
 
     _lteMinorVersion(version) {
-        return Number(this.modManifest.id.split('-')[0].split('.')[1]) <= Number(version)
+        return Number(this.forgeData.id.split('-')[0].split('.')[1]) <= Number(version)
     }
 
     /**
@@ -219,7 +206,7 @@ class ProcessBuilder {
             if(this._lteMinorVersion(9)) {
                 return false
             }
-            const ver = this.modManifest.id.split('-')[2]
+            const ver = this.forgeData.id.split('-')[2]
             const pts = ver.split('.')
             const min = [14, 23, 3, 2655]
             for(let i=0; i<pts.length; i++){
@@ -295,21 +282,18 @@ class ProcessBuilder {
     // }
 
     /**
-     * Construct the mod argument list for forge 1.13 and Fabric
+     * Construct the mod argument list for forge 1.13
      * 
      * @param {Array.<Object>} mods An array of mods to add to the mod list.
      */
     constructModList(mods) {
         const writeBuffer = mods.map(mod => {
-            return this.usingFabricLoader ? mod.getPath() : mod.getExtensionlessMavenIdentifier()
+            return mod.getExtensionlessMavenIdentifier()
         }).join('\n')
 
         if(writeBuffer) {
             fs.writeFileSync(this.forgeModListFile, writeBuffer, 'UTF-8')
-            return this.usingFabricLoader ? [
-                '--fabric.addMods',
-                `@${this.forgeModListFile}`
-            ] : [
+            return [
                 '--fml.mavenRoots',
                 path.join('..', '..', 'common', 'modstore'),
                 '--fml.modLists',
@@ -323,15 +307,10 @@ class ProcessBuilder {
 
     _processAutoConnectArg(args){
         if(ConfigManager.getAutoConnect() && this.server.rawServer.autoconnect){
-            if(mcVersionAtLeast('1.20', this.server.rawServer.minecraftVersion)){
-                args.push('--quickPlayMultiplayer')
-                args.push(`${this.server.hostname}:${this.server.port}`)
-            } else {
-                args.push('--server')
-                args.push(this.server.hostname)
-                args.push('--port')
-                args.push(this.server.port)
-            }
+            args.push('--server')
+            args.push(this.server.hostname)
+            args.push('--port')
+            args.push(this.server.port)
         }
     }
 
@@ -377,7 +356,7 @@ class ProcessBuilder {
         args.push('-Djava.library.path=' + tempNativePath)
 
         // Main Java Class
-        args.push(this.modManifest.mainClass)
+        args.push(this.forgeData.mainClass)
 
         // Forge Arguments
         args = args.concat(this._resolveForgeArgs())
@@ -400,17 +379,17 @@ class ProcessBuilder {
         const argDiscovery = /\${*(.*)}/
 
         // JVM Arguments First
-        let args = this.vanillaManifest.arguments.jvm
+        let args = this.versionData.arguments.jvm
 
         // Debug securejarhandler
         // args.push('-Dbsl.debug=true')
 
-        if(this.modManifest.arguments.jvm != null) {
-            for(const argStr of this.modManifest.arguments.jvm) {
+        if(this.forgeData.arguments.jvm != null) {
+            for(const argStr of this.forgeData.arguments.jvm) {
                 args.push(argStr
                     .replaceAll('${library_directory}', this.libPath)
                     .replaceAll('${classpath_separator}', ProcessBuilder.getClasspathSeparator())
-                    .replaceAll('${version_name}', this.modManifest.id)
+                    .replaceAll('${version_name}', this.forgeData.id)
                 )
             }
         }
@@ -427,10 +406,10 @@ class ProcessBuilder {
         args = args.concat(ConfigManager.getJVMOptions(this.server.rawServer.id))
 
         // Main Java Class
-        args.push(this.modManifest.mainClass)
+        args.push(this.forgeData.mainClass)
 
         // Vanilla Arguments
-        args = args.concat(this.vanillaManifest.arguments.game)
+        args = args.concat(this.versionData.arguments.game)
 
         for(let i=0; i<args.length; i++){
             if(typeof args[i] === 'object' && args[i].rules != null){
@@ -487,7 +466,7 @@ class ProcessBuilder {
                             val = this.authUser.displayName.trim()
                             break
                         case 'version_name':
-                            //val = vanillaManifest.id
+                            //val = versionData.id
                             val = this.server.rawServer.id
                             break
                         case 'game_directory':
@@ -497,7 +476,7 @@ class ProcessBuilder {
                             val = path.join(this.commonDir, 'assets')
                             break
                         case 'assets_index_name':
-                            val = this.vanillaManifest.assets
+                            val = this.versionData.assets
                             break
                         case 'auth_uuid':
                             val = this.authUser.uuid.trim()
@@ -509,7 +488,7 @@ class ProcessBuilder {
                             val = this.authUser.type === 'microsoft' ? 'msa' : 'mojang'
                             break
                         case 'version_type':
-                            val = this.vanillaManifest.type
+                            val = this.versionData.type
                             break
                         case 'resolution_width':
                             val = ConfigManager.getGameWidth()
@@ -538,11 +517,25 @@ class ProcessBuilder {
         }
 
         // Autoconnect
-        this._processAutoConnectArg(args)
+        let isAutoconnectBroken
+        try {
+            isAutoconnectBroken = ProcessBuilder.isAutoconnectBroken(this.forgeData.id.split('-')[2])
+        } catch(err) {
+            logger.error(err)
+            logger.error('Forge version format changed.. assuming autoconnect works.')
+            logger.debug('Forge version:', this.forgeData.id)
+        }
+
+        if(isAutoconnectBroken) {
+            logger.error('Server autoconnect disabled on Forge 1.15.2 for builds earlier than 31.2.15 due to OpenGL Stack Overflow issue.')
+            logger.error('Please upgrade your Forge version to at least 31.2.15!')
+        } else {
+            this._processAutoConnectArg(args)
+        }
         
 
         // Forge Specific Arguments
-        args = args.concat(this.modManifest.arguments.game)
+        args = args.concat(this.forgeData.arguments.game)
 
         // Filter null values
         args = args.filter(arg => {
@@ -558,7 +551,7 @@ class ProcessBuilder {
      * @returns {Array.<string>} An array containing the arguments required by forge.
      */
     _resolveForgeArgs(){
-        const mcArgs = this.modManifest.minecraftArguments.split(' ')
+        const mcArgs = this.forgeData.minecraftArguments.split(' ')
         const argDiscovery = /\${*(.*)}/
 
         // Replace the declared variables with their proper values.
@@ -571,7 +564,7 @@ class ProcessBuilder {
                         val = this.authUser.displayName.trim()
                         break
                     case 'version_name':
-                        //val = vanillaManifest.id
+                        //val = versionData.id
                         val = this.server.rawServer.id
                         break
                     case 'game_directory':
@@ -581,7 +574,7 @@ class ProcessBuilder {
                         val = path.join(this.commonDir, 'assets')
                         break
                     case 'assets_index_name':
-                        val = this.vanillaManifest.assets
+                        val = this.versionData.assets
                         break
                     case 'auth_uuid':
                         val = this.authUser.uuid.trim()
@@ -596,7 +589,7 @@ class ProcessBuilder {
                         val = '{}'
                         break
                     case 'version_type':
-                        val = this.vanillaManifest.type
+                        val = this.versionData.type
                         break
                 }
                 if(val != null){
@@ -671,10 +664,10 @@ class ProcessBuilder {
     classpathArg(mods, tempNativePath){
         let cpArgs = []
 
-        if(!mcVersionAtLeast('1.17', this.server.rawServer.minecraftVersion) || this.usingFabricLoader) {
+        if(!mcVersionAtLeast('1.17', this.server.rawServer.minecraftVersion)) {
             // Add the version.jar to the classpath.
             // Must not be added to the classpath for Forge 1.17+.
-            const version = this.vanillaManifest.id
+            const version = this.versionData.id
             cpArgs.push(path.join(this.commonDir, 'versions', version, version + '.jar'))
         }
         
@@ -713,7 +706,7 @@ class ProcessBuilder {
         const nativesRegex = /.+:natives-([^-]+)(?:-(.+))?/
         const libs = {}
 
-        const libArr = this.vanillaManifest.libraries
+        const libArr = this.versionData.libraries
         fs.ensureDirSync(tempNativePath)
         for(let i=0; i<libArr.length; i++){
             const lib = libArr[i]
@@ -832,10 +825,10 @@ class ProcessBuilder {
         const mdls = this.server.modules
         let libs = {}
 
-        // Locate Forge/Fabric/Libraries
+        // Locate Forge/Libraries
         for(let mdl of mdls){
             const type = mdl.rawModule.type
-            if(type === Type.ForgeHosted || type === Type.Fabric || type === Type.Library){
+            if(type === Type.ForgeHosted || type === Type.Library){
                 libs[mdl.getVersionlessMavenIdentifier()] = mdl.getPath()
                 if(mdl.subModules.length > 0){
                     const res = this._resolveModuleLibraries(mdl)
@@ -887,6 +880,24 @@ class ProcessBuilder {
             }
         }
         return libs
+    }
+
+    static isAutoconnectBroken(forgeVersion) {
+
+        const minWorking = [31, 2, 15]
+        const verSplit = forgeVersion.split('.').map(v => Number(v))
+
+        if(verSplit[0] === 31) {
+            for(let i=0; i<minWorking.length; i++) {
+                if(verSplit[i] > minWorking[i]) {
+                    return false
+                } else if(verSplit[i] < minWorking[i]) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 
 }
