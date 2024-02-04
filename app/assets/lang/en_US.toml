@@ -279,6 +279,11 @@ latestVersionTitle = "You Are Running the Latest Version"
 checkForUpdatesButton = "Check for Updates"
 checkingForUpdatesButton = "Checking for Updates.."
 
+[js.settings.msftLogin]
+errorTitle = "Microsoft Login Failed"
+errorMessage = "We were unable to authenticate your Microsoft account. Please try again."
+okButton = "OK"
+
 [js.uibinder.startup]
 fatalErrorTitle = "Fatal Error: Unable to Load Distribution Index"
 fatalErrorMessage = "A connection could not be established to our servers to download the distribution index. No local copies were available to load. <br><br>The distribution index is an essential file which provides the latest server information. The launcher is unable to start without it. Ensure you are connected to the internet and relaunch the application."
