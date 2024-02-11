@@ -1,6 +1,6 @@
 appId: 'mrslauncher'
 productName: 'MRS Launcher'
-artifactName: '${productName}-setup-${version}.${ext}'
+artifactName: 'MRS-Launcher-setup-${version}.${ext}'
 
 copyright: 'Copyright © 2018-2022 Daniel Scalzi, Copyright © 2024 peunsu'
 
@@ -33,7 +33,7 @@ mac:
       arch:
         - 'x64'
         - 'arm64'
-  artifactName: '${productName}-setup-${version}-${arch}.${ext}'
+  artifactName: 'MRS-Launcher-setup-${version}-${arch}.${ext}'
   category: 'public.app-category.games'
 
 # Linux Configuration

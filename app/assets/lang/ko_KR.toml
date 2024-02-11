@@ -100,7 +100,7 @@ jvmOptsDesc = "실행 시 JVM에 전달할 추가 인수를 설정합니다. <em
 launcherTabHeaderText = "런처 설정"
 launcherTabHeaderDesc = "런처와 관련된 설정입니다."
 allowPrereleaseTitle = "Pre-Release 업데이트를 허용합니다."
-allowPrereleaseDesc = "Pre-Release는 안정성이 보장되지 않은 기능을 포함할 수 있습니다.<br>이미 Pre-Release 버전을 사용 중이라면, 이 설정은 항상 활성화됩니다."
+allowPrereleaseDesc = "Pre-Release는 안정성이 보장되지 않은 기능을 포함할 수 있습니다.<br>현재 실행 중인 런처가 Pre-Release 버전이라면, 이 설정은 항상 활성화됩니다."
 dataDirectoryTitle = "데이터 디렉토리"
 selectDataDirectory = "데이터 디렉토리 선택"
 chooseFolder = "폴더 선택"
@@ -263,7 +263,7 @@ mainServer = "메인 서버"
 selectedJava = "선택: Java {version} ({vendor})"
 invalidSelection = "유효하지 않은 선택"
 requiresJava = "64비트 Java {major}가 필요합니다."
-availableOptions = "Java {major} (HotSpot VM)의 사용 가능한 옵션"
+availableOptions = "Java {major} (HotSpot VM)의 사용 가능한 JVM 인수"
 
 [js.settings.about]
 preReleaseTitle = "Pre-release"
