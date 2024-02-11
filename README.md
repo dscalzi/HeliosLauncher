@@ -1,12 +1,12 @@
-* Original Source: [https://github.com/dscalzi/HeliosLauncher](https://github.com/dscalzi/HeliosLauncher)
-
 <p align="center"><img src="./app/assets/images/Icon.png" width="150px" height="150px" alt="aventium softworks"></p>
 
-<h1 align="center">Helios Launcher</h1>
+<h1 align="center">MRS Launcher</h1>
 
-<em><h5 align="center">[MRS Server Homepage](https://mysticred.space) [(Discord)](https://discord.gg/gdhjBVw)</h5></em>
+[<h3 align="center">Forked from Helios Launcher</h3>](https://github.com/dscalzi/HeliosLauncher)
 
 [<p align="center"><img src="https://img.shields.io/github/actions/workflow/status/peunsu/MRSLauncher/build.yml?branch=master&style=for-the-badge" alt="gh actions">](https://github.com/peunsu/MRSLauncher/actions) [<img src="https://img.shields.io/github/downloads/peunsu/MRSLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/peunsu/MRSLauncher/releases)
+
+[<p align="center"><img src="https://img.shields.io/endpoint?url=https://minecraft-server-status-badge.vercel.app/api/server/mysticred.space?port=25565&logo=curseforge&logoColor=ffffff&label=MRS Server&labelColor=F16436&color=28231d&style=for-the-badge">](https://mysticred.space) [<img src="https://img.shields.io/discord/330997213255827457?style=for-the-badge&logo=discord&logoColor=ffffff&label=Discord&labelColor=6173f4&color=28231d" alt="discord">](https://discord.gg/Z8j6ahF4MJ)
 
 <p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
 
@@ -191,7 +191,6 @@ For instructions on setting up Microsoft Authentication, see https://github.com/
 
 * [Wiki][wiki]
 * [Nebula (Create Distribution.json)][nebula]
-* [v2 Rewrite Branch (Inactive)][v2branch]
 
 The best way to contact the developers is on Discord.
 
