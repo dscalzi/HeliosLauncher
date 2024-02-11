@@ -1,0 +1,297 @@
+[ejs.landing]
+updateAvailableTooltip = "업데이트 가능"
+usernamePlaceholder = "사용자 이름"
+usernameEditButton = "편집"
+settingsTooltip = "설정"
+serverStatus = "서버"
+serverStatusPlaceholder = "오프라인"
+mojangStatus = "MOJANG 상태"
+mojangStatusTooltipTitle = "서비스"
+mojangStatusNETitle = "Non&nbsp;Essential"
+newsButton = "NEWS"
+launchButton = "PLAY"
+launchButtonPlaceholder = "&#8226; 선택된 서버 없음"
+launchDetails = "잠시만 기다려주세요.."
+newsNavigationStatus = "{currentPage} / {totalPages}"
+newsErrorLoadSpan = "뉴스를 확인하는 중.."
+newsErrorFailedSpan = "뉴스 불러오기 실패"
+newsErrorRetryButton = "다시 시도"
+newsErrorNoneSpan = "뉴스 없음"
+
+[ejs.login]
+loginCancelText = "취소"
+loginSubheader = "마인크래프트 로그인"
+loginEmailError = "* 유효하지 않은 값"
+loginEmailPlaceholder = "이메일 또는 사용자 이름"
+loginPasswordError = "* 필수 항목"
+loginPasswordPlaceholder = "비밀번호"
+loginForgotPasswordLink = "https://minecraft.net/password/forgot/"
+loginForgotPasswordText = "비밀번호를 잊으셨나요?"
+loginRememberMeText = "로그인 저장"
+loginButtonText = "로그인"
+loginNeedAccountLink = "https://minecraft.net/store/minecraft-java-edition/"
+loginNeedAccountText = "계정이 없으신가요?"
+loginPasswordDisclaimer1 = "비밀번호는 Mojang에 직접 전송되며 저장되지 않습니다."
+loginPasswordDisclaimer2 = "{appName}는 Mojang AB와 관련이 없습니다."
+
+[ejs.loginOptions]
+loginOptionsTitle = "로그인 옵션"
+loginWithMicrosoft = "Microsoft 계정으로 로그인"
+loginWithMojang = "Mojang 계정으로 로그인"
+cancelButton = "취소"
+
+[ejs.overlay]
+serverSelectHeader = "서버 선택"
+serverSelectConfirm = "선택"
+serverSelectCancel = "취소"
+accountSelectHeader = "계정 선택"
+accountSelectConfirm = "선택"
+accountSelectCancel = "취소"
+
+[ejs.settings]
+navHeaderText = "설정"
+navAccount = "계정"
+navMinecraft = "마인크래프트"
+navMods = "모드"
+navJava = "Java"
+navLauncher = "런처"
+navAbout = "정보"
+navUpdates = "업데이트"
+navDone = "완료"
+tabAccountHeaderText = "계정 설정"
+tabAccountHeaderDesc = "새로운 계정을 추가하거나 기존 계정을 관리합니다."
+microsoftAccount = "Microsoft"
+addMicrosoftAccount = "+ Microsoft 계정 추가"
+mojangAccount = "Mojang"
+addMojangAccount = "+ Mojang 계정 추가"
+minecraftTabHeaderText = "마인크래프트 설정"
+minecraftTabHeaderDesc = "게임 실행과 관련된 설정입니다."
+gameResolutionTitle = "게임 해상도"
+launchFullscreenTitle = "전체 화면으로 실행합니다."
+autoConnectTitle = "게임 실행 후 자동으로 서버에 접속합니다."
+launchDetachedTitle = "런처와 게임 프로세스를 분리하여 실행합니다."
+launchDetachedDesc = "이 옵션을 사용하면 런처를 닫아도 게임이 계속 실행됩니다."
+tabModsHeaderText = "모드 설정"
+tabModsHeaderDesc = "모드를 활성화하거나 비활성화합니다."
+switchServerButton = "변경"
+requiredMods = "필수 모드"
+optionalMods = "선택 모드"
+dropinMods = "사용자 추가 모드"
+addMods = "모드 추가"
+dropinRefreshNote = "(F5를 눌러 새로고침)"
+shaderpacks = "쉐이더팩"
+shaderpackDesc = "쉐이더를 활성화하거나 비활성화합니다. 쉐이더가 원활하게 작동하려면 높은 컴퓨터 성능이 필요합니다. 여기서 쉐이더팩을 추가할 수 있습니다."
+selectShaderpack = "쉐이더팩 선택"
+tabJavaHeaderText = "Java 설정"
+tabJavaHeaderDesc = "Java 설정을 관리합니다 (고급 설정)."
+memoryTitle = "메모리"
+maxRAM = "최대 RAM"
+minRAM = "최소 RAM"
+memoryDesc = "권장하는 최소 RAM은 4GB입니다. 최소와 최대 RAM을 같은 값으로 설정하면 게임 렉을 줄일 수 있습니다."
+memoryTotalTitle = "전체"
+memoryAvailableTitle = "사용 가능"
+javaExecutableTitle = "Java 실행 파일"
+javaExecSelDialogTitle = "Java 실행 파일 선택"
+javaExecSelButtonText = "파일 선택"
+javaExecDesc = "게임 실행 전에 Java 실행 파일의 유효성을 검사합니다."
+javaPathDesc = "Java 실행 파일의 경로는 반드시 <strong>{pathSuffix}</strong>로 끝나야 합니다."
+jvmOptsTitle = "JVM 인수 설정"
+jvmOptsDesc = "실행 시 JVM에 전달할 추가 인수를 설정합니다. <em>-Xms</em>와 <em>-Xmx</em>는 포함되지 않아야 합니다."
+launcherTabHeaderText = "런처 설정"
+launcherTabHeaderDesc = "런처와 관련된 설정입니다."
+allowPrereleaseTitle = "Pre-Release 업데이트를 허용합니다."
+allowPrereleaseDesc = "Pre-Release는 안정성이 보장되지 않은 기능을 포함할 수 있습니다.<br>현재 실행 중인 런처가 Pre-Release 버전이라면, 이 설정은 항상 활성화됩니다."
+dataDirectoryTitle = "데이터 디렉토리"
+selectDataDirectory = "데이터 디렉토리 선택"
+chooseFolder = "폴더 선택"
+dataDirectoryDesc = "모든 게임 파일과 로컬 Java 설치는 데이터 디렉토리에 저장됩니다.<br>스크린샷과 월드 데이터는 서버 설정에서 지정한 인스턴스 폴더에 저장됩니다."
+aboutTabHeaderText = "정보"
+aboutTabHeaderDesc = "런처 정보와 릴리즈 노트를 확인합니다."
+aboutTitle = "{appName}"
+stableRelease = "Stable Release"
+versionText = "Version "
+sourceGithub = "GitHub"
+support = "Support"
+devToolsConsole = "DevTools Console"
+releaseNotes = "릴리즈 노트"
+changelog = "변경 로그"
+noReleaseNotes = "릴리즈 노트 없음"
+viewReleaseNotes = "GitHub에서 릴리즈 노트 보기"
+launcherUpdatesHeaderText = "런처 업데이트"
+launcherUpdatesHeaderDesc = "런처 업데이트를 확인하고 설치합니다."
+checkForUpdates = "업데이트 확인"
+whatsNew = "새로운 기능"
+updateReleaseNotes = "업데이트 릴리즈 노트"
+
+[ejs.waiting]
+waitingText = "Microsoft의 응답을 기다리는 중.."
+
+[ejs.welcome]
+continueButton = "계속"
+
+
+[js.discord]
+waiting = "클라이언트 대기 중.."
+state = "Server: {shortId}"
+
+[js.index]
+microsoftLoginTitle = "Microsoft 로그인"
+microsoftLogoutTitle = "Microsoft 로그아웃"
+
+[js.login]
+login = "로그인"
+loggingIn = "로그인 중"
+success = "성공"
+tryAgain = "다시 시도"
+
+[js.login.error]
+invalidValue = "* 유효하지 않은 값"
+requiredValue = "* 필수 항목"
+
+[js.login.error.unknown]
+title = "알 수 없는 로그인 오류"
+desc = "로그인 중 알 수 없는 오류가 발생했습니다. 콘솔에서 자세한 내용을 확인하세요."
+
+[js.landing.launch]
+pleaseWait = "잠시만 기다려주세요.."
+failureTitle = "실행 중 오류 발생"
+failureText = "콘솔 (CTRL + Shift + i) 에서 자세한 내용을 확인하세요."
+okay = "확인"
+
+[js.landing.selectedAccount]
+noAccountSelected = "선택된 계정 없음"
+
+[js.landing.selectedServer]
+noSelection = "선택된 서버 없음"
+loading = "로딩 중.."
+
+[js.landing.serverStatus]
+server = "서버"
+offline = "오프라인"
+players = "플레이어"
+
+[js.landing.systemScan]
+checking = "시스템 정보 확인 중.."
+noCompatibleJava = "호환되는 Java가<br>설치되지 않음"
+installJavaMessage = "마인크래프트 실행을 위해 64비트 Java {major} 설치가 필요합니다. Java를 설치할까요?"
+installJava = "Java 설치"
+installJavaManually = "수동 설치"
+javaDownloadPrepare = "Java 다운로드 준비 중.."
+javaDownloadFailureTitle = "Java 다운로드 중 오류 발생"
+javaDownloadFailureText = "콘솔 (CTRL + Shift + i) 에서 자세한 내용을 확인하세요."
+javaRequired = "실행을 위해<br>Java가 필요합니다"
+javaRequiredMessage = "실행을 위해 유효한 64비트 Java {major} 를 설치해야 합니다.<br><br><a href=\"https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java\">Java Management Guide</a>를 참조하여 Java 수동 설치 방법을 확인하세요."
+javaRequiredDismiss = "확인"
+javaRequiredCancel = "돌아가기"
+
+[js.landing.downloadJava]
+findJdkFailure = "OpenJDK를 찾을 수 없습니다."
+javaDownloadCorruptedError = "다운로드한 JDK가 손상되었습니다."
+extractingJava = "Java 압축 해제 중.."
+javaInstalled = "Java 설치 완료!"
+
+[js.landing.dlAsync]
+loadingServerInfo = "서버 정보 로딩 중.."
+fatalError = "치명적 오류 발생"
+unableToLoadDistributionIndex = "배포 인덱스를 불러올 수 없습니다. 콘솔 (CTRL + Shift + i) 에서 자세한 내용을 확인하세요."
+pleaseWait = "잠시만 기다려주세요.."
+errorDuringLaunchTitle = "실행 중 오류 발생"
+seeConsoleForDetails = "콘솔 (CTRL + Shift + i) 에서 자세한 내용을 확인하세요."
+validatingFileIntegrity = "파일 무결성 검사 중.."
+errorDuringFileVerificationTitle = "파일 검사 중 오류 발생"
+downloadingFiles = "파일 다운로드 중.."
+errorDuringFileDownloadTitle = "파일 다운로드 중 오류 발생"
+preparingToLaunch = "실행 준비 중.."
+launchingGame = "게임 실행 중.."
+launchWrapperNotDownloaded = "게임 실행을 위한 메인 파일(LaunchWrapper)을 다운로드할 수 없습니다.<br><br>문제 해결을 위해 임시로 안티바이러스 프로그램을 비활성화한 뒤 게임을 다시 실행해 보세요.<br><br>만약 이 문제가 계속된다면, <a href=\"https://github.com/peunsu/MRSLauncher/issues\">GitHub 이슈 페이지</a>에 사용 중인 안티바이러스 프로그램과 함께 문제를 제보해 주세요."
+doneEnjoyServer = "완료. 즐거운 시간 되세요!"
+checkConsoleForDetails = "콘솔 (CTRL + Shift + i) 에서 자세한 내용을 확인하세요."
+
+[js.landing.news]
+checking = "뉴스 확인 중"
+
+[js.landing.discord]
+loading = "게임 로딩 중.."
+joining = "서버 접속 중.."
+joined = "Mystic Red Space"
+
+[js.overlay]
+dismiss = "닫기"
+
+[js.settings.fileSelectors]
+executables = "실행 파일"
+allFiles = "모든 파일"
+
+[js.settings.mstfLogin]
+errorTitle = "오류 발생"
+errorMessage = "Microsoft 로그인에 실패했습니다. 다시 시도해 주세요."
+okButton = "확인"
+
+[js.settings.mstfLogout]
+errorTitle = "오류 발생"
+errorMessage = "Microsoft 로그아웃에 실패했습니다. 다시 시도해 주세요."
+okButton = "확인"
+
+[js.settings.authAccountSelect]
+selectButton = "계정 선택"
+selectedButton = "선택된 계정 &#10004;"
+
+[js.settings.authAccountLogout]
+lastAccountWarningTitle = "경고<br>마지막 남은 계정을 로그아웃합니다."
+lastAccountWarningMessage = "런처를 사용하려면 최소한 하나의 계정은 로그인되어 있어야 합니다.<br><br>정말 로그아웃 하시겠습니까?"
+confirmButton = "확인"
+cancelButton = "취소"
+
+[js.settings.authAccountPopulate]
+username = "사용자 이름"
+uuid = "UUID"
+selectAccount = "계정 선택"
+selectedAccount = "선택된 계정 ✓"
+logout = "로그아웃"
+
+[js.settings.dropinMods]
+removeButton = "제거"
+deleteFailedTitle = "사용자 추가 모드 삭제 실패<br>{fullName}"
+deleteFailedMessage = "삭제하려는 파일이 사용 중인지 확인하고 다시 시도해 주세요."
+failedToggleTitle = "사용자 추가 모드를<br>활성화/비활성화할 수 없습니다."
+okButton = "확인"
+
+[js.settings.serverListing]
+mainServer = "메인 서버"
+
+[js.settings.java]
+selectedJava = "선택: Java {version} ({vendor})"
+invalidSelection = "유효하지 않은 선택"
+requiresJava = "64비트 Java {major}가 필요합니다."
+availableOptions = "Java {major} (HotSpot VM)의 사용 가능한 JVM 인수"
+
+[js.settings.about]
+preReleaseTitle = "Pre-release"
+stableReleaseTitle = "Stable Release"
+releaseNotesFailed = "릴리즈 노트를 불러올 수 없습니다."
+
+[js.settings.updates]
+newReleaseTitle = "새로운 Release 업데이트 가능"
+newPreReleaseTitle = "새로운 Pre-Release 업데이트 가능"
+downloadingButton = "다운로드 중.."
+downloadButton = 'GitHub에서 다운로드<span style="font-size: 10px;color: gray;text-shadow: none !important;">런처를 종료하고 dmg 파일을 실행하여 업데이트하세요.</span>'
+latestVersionTitle = "최신 버전을 사용하고 있습니다"
+checkForUpdatesButton = "업데이트 확인"
+checkingForUpdatesButton = "업데이트 확인 중.."
+
+[js.uibinder.startup]
+fatalErrorTitle = "치명적 오류: 배포 인덱스를 불러올 수 없습니다."
+fatalErrorMessage = "배포 인덱스 다운로드 서버에 연결할 수 없습니다. 로컬 복사본도 존재하지 않습니다.<br><br>배포 인덱스는 최신 서버 정보를 제공하는 필수 파일로 런처를 실행하기 위해 필요합니다. 인터넷 연결을 확인하고 프로그램을 다시 실행해 보세요."
+closeButton = "닫기"
+
+[js.uibinder.validateAccount]
+failedMessageTitle = "로그인 갱신 실패"
+failedMessage = "<strong>{account}</strong>의 로그인을 갱신할 수 없습니다. 다른 계정을 선택하거나 다시 로그인하세요."
+failedMessageSelectAnotherAccount = "<strong>{account}</strong>의 로그인을 갱신할 수 없습니다. 다시 로그인하세요."
+loginButton = "로그인"
+selectAnotherAccountButton = "다른 계정 선택"
+
+[js.uicore.autoUpdate]
+checkingForUpdateButton = "업데이트 확인 중..."
+installNowButton = "설치하기"
+checkForUpdatesButton = "업데이트 확인"
