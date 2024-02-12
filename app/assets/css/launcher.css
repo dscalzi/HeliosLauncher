@@ -2680,6 +2680,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsArticleContentScrollable img,
 #newsArticleContentScrollable iframe {
     max-width: 95%;
+    height: auto;
     display: block;
     margin: 0 auto;
 }
@@ -2858,9 +2859,9 @@ input:checked + .toggleSwitchSlider:before {
     height: 70px;
     width: auto;
     position: relative;
-    border: 2px solid white;
+    /* border: 2px solid white; */
     box-sizing: border-box;
-    border-radius: 50%;
+    /* border-radius: 50%; */
 }
 
 /* Logo container styles. */
