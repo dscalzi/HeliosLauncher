@@ -45,10 +45,10 @@ You can download from [GitHub Releases](https://github.com/peunsu/MRSLauncher/re
 
 #### Latest Release
 
-[![](https://img.shields.io/github/release/dscalzi/HeliosLauncher.svg?style=flat-square)](https://github.com/peunsu/MRSLauncher/releases/latest)
+[![](https://img.shields.io/github/v/release/peunsu/MRSLauncher?style=flat-square)](https://github.com/peunsu/MRSLauncher/releases/latest)
 
 #### Latest Pre-Release
-[![](https://img.shields.io/github/release/dscalzi/HeliosLauncher/all.svg?style=flat-square)](https://github.com/peunsu/MRSLauncher/releases)
+[![](https://img.shields.io/github/v/release/peunsu/MRSLauncher?include_prereleases&style=flat-square&label=pre-release)](https://github.com/peunsu/MRSLauncher/releases)
 
 **Supported Platforms**
 
