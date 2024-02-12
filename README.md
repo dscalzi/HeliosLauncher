@@ -57,8 +57,8 @@ If you download from the [Releases](https://github.com/peunsu/MRSLauncher/releas
 | Platform | File |
 | -------- | ---- |
 | Windows x64 | `MRS-Launcher-setup-VERSION.exe` |
-| macOS x64 | `MRS-Launcher-setup-VERSION-x64.dmg` |
-| macOS arm64 | `MRS-Launcher-setup-VERSION-arm64.dmg` |
+| ~~macOS x64~~ | ~~`MRS-Launcher-setup-VERSION-x64.dmg`~~ |
+| ~~macOS arm64~~ | ~~`MRS-Launcher-setup-VERSION-arm64.dmg`~~ |
 | Linux x64 | `MRS-Launcher-setup-VERSION.AppImage` |
 
 ## Console
