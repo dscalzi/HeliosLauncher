@@ -4,9 +4,9 @@
 
 <h3 align="center"><a href="https://github.com/dscalzi/HeliosLauncher">Forked from Helios Launcher</a></h3>
 
-[<p align="center"><img src="https://img.shields.io/github/actions/workflow/status/peunsu/MRSLauncher/build.yml?branch=master&style=for-the-badge" alt="gh actions">](https://github.com/peunsu/MRSLauncher/actions) [<img src="https://img.shields.io/github/downloads/peunsu/MRSLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/peunsu/MRSLauncher/releases)
+<p align="center"><a href="https://github.com/peunsu/MRSLauncher/actions"><img src="https://img.shields.io/github/actions/workflow/status/peunsu/MRSLauncher/build.yml?branch=master&style=for-the-badge" alt="gh actions"></a> <a href="https://github.com/peunsu/MRSLauncher/releases"><img src="https://img.shields.io/github/downloads/peunsu/MRSLauncher/total.svg?style=for-the-badge" alt="downloads"></a>
 
-[<p align="center"><img src="https://img.shields.io/endpoint?url=https://minecraft-server-status-badge.vercel.app/api/server/mysticred.space?port=25565&logo=curseforge&logoColor=ffffff&label=MRS Server&labelColor=F16436&color=28231d&style=for-the-badge">](https://mysticred.space) [<img src="https://img.shields.io/discord/330997213255827457?style=for-the-badge&logo=discord&logoColor=ffffff&label=Discord&labelColor=6173f4&color=28231d" alt="discord">](https://discord.gg/Z8j6ahF4MJ)
+<p align="center"><a href="https://mysticred.space"><img src="https://img.shields.io/endpoint?url=https://minecraft-server-status-badge.vercel.app/api/server/mysticred.space?port=25565&logo=curseforge&logoColor=ffffff&label=MRS Server&labelColor=F16436&color=28231d&style=for-the-badge"></a> <a href="https://discord.gg/Z8j6ahF4MJ"><img src="https://img.shields.io/discord/330997213255827457?style=for-the-badge&logo=discord&logoColor=ffffff&label=Discord&labelColor=6173f4&color=28231d" alt="discord"></a>
 
 <p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
 
