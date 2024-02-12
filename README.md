@@ -2,7 +2,7 @@
 
 <h1 align="center">MRS Launcher</h1>
 
-[<h3 align="center">Forked from Helios Launcher</h3>](https://github.com/dscalzi/HeliosLauncher)
+<h3 align="center"><a href="https://github.com/dscalzi/HeliosLauncher">Forked from Helios Launcher</a></h3>
 
 [<p align="center"><img src="https://img.shields.io/github/actions/workflow/status/peunsu/MRSLauncher/build.yml?branch=master&style=for-the-badge" alt="gh actions">](https://github.com/peunsu/MRSLauncher/actions) [<img src="https://img.shields.io/github/downloads/peunsu/MRSLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/peunsu/MRSLauncher/releases)
 
