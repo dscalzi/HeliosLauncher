@@ -5,9 +5,9 @@
   "description": "Modded Minecraft Launcher for Japsik",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/thecats1105/Japsik",
+  "homepage": "https://github.com/thecats1105/JapsikLauncher",
   "bugs": {
-    "url": "https://github.com/thecats1105/Japsik/issues"
+    "url": "https://github.com/thecats1105/JapsikLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -46,6 +46,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thecats1105/Japsik.git"
+    "url": "git+https://github.com/thecats1105/JapsikLauncher.git"
   }
 }
