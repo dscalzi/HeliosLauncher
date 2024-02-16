@@ -4,17 +4,17 @@
 title = "Japsik Launcher"
 
 [ejs.landing]
-mediaGitHubURL = "https://github.com/thecats1105/Japsik"
+mediaGitHubURL = "https://github.com/thecats1105/JapsikLauncher"
 mediaTwitterURL = "#"
 mediaInstagramURL = "#"
 mediaYouTubeURL = "#"
 mediaDiscordURL = "https://discord.gg/japsik"
 
 [ejs.settings]
-sourceGithubLink = "https://github.com/thecats1105/Japsik"
-supportLink = "https://github.com/thecats1105/Japsik/issues"
+sourceGithubLink = "https://github.com/thecats1105/JapsikLauncher"
+supportLink = "https://github.com/thecats1105/JapsikLauncher/issues"
 
 [ejs.welcome]
-welcomeHeader = "WELCOME TO JAPSIK"
-welcomeDescription = "Our Making City in Minecraft"
-welcomeDescCTA = "You are just a few clicks away from Japsik."
+welcomeHeader = "잡식서버에 오신 걸 환영합니다!"
+welcomeDescription = "서버에서 건축을 하며 도시를 만들어나가봐요!"
+welcomeDescCTA = "단 몇번의 클릭만으로 서버에 접속하실 수 있어요."
