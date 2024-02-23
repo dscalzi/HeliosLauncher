@@ -193,7 +193,7 @@ Everything above might seem scary, some people may not know how to setup [Nebula
 
 | Setup Provider | Monthly Maintanance | One-Time Creation | Nebula Cloud Hosting |
 | :---: | :---: | :---: | :---: |
-| [Codixer](https://discord.gg/AE6ZsDe48s) | ✅ | ✅ | ✅ |
+| [Codixer](https://discord.gg/AE6ZsDe48s) | ✅💵 | ✅💵 | ✅💵 |
 
 ---
 
