@@ -349,6 +349,19 @@ exports.addMojangAuthAccount = function(uuid, accessToken, username, displayName
     return config.authenticationDatabase[uuid]
 }
 
+exports.addOfflineAccount = function(username){
+    uuid = "00000000-0000-0000-0000-000000000000"
+    config.selectedAccount = uuid
+    config.authenticationDatabase[uuid] = {
+        type: 'offline',
+        uuid,
+        username: username.trim(),
+        uuid: uuid.trim(),
+        displayName: username.trim()
+    }
+    return config.authenticationDatabase[uuid]
+}
+
 /**
  * Update the tokens of an authenticated microsoft account.
  * 

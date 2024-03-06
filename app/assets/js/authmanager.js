@@ -57,6 +57,20 @@ exports.addMojangAccount = async function(username, password) {
     }
 }
 
+exports.addOfflineAccount = async function(username) {
+    try {
+        const ret = ConfigManager.addOfflineAccount(username)
+        if(ConfigManager.getClientToken() == null){
+            ConfigManager.setClientToken("00000000-0000-0000-0000-000000000000")
+        }
+        ConfigManager.save()
+        return ret
+    } catch (err){
+        log.error(err)
+        return Promise.reject(mojangErrorDisplayable(MojangErrorCode.UNKNOWN))
+    }
+}
+
 const AUTH_MODE = { FULL: 0, MS_REFRESH: 1, MC_REFRESH: 2 }
 
 /**
