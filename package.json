@@ -1,13 +1,13 @@
 {
   "name": "helioslauncher",
-  "version": "2.1.1",
-  "productName": "Helios Launcher",
+  "version": "2.3.0",
+  "productName": "Creatopico Launcher (Helios Launcher)",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "author": "Daniel Scalzi (https://github.com/dscalzi/) & LittleLigr",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/Creatopico/HeliosLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/Creatopico/HeliosLauncher/issues"
   },
   "private": true,
   "main": "index.js",
