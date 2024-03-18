@@ -12,8 +12,6 @@ const loginCancelButton     = document.getElementById('loginCancelButton')
 const loginEmailError       = document.getElementById('loginEmailError')
 const loginUsername         = document.getElementById('loginUsername')
 const loginPasswordError    = document.getElementById('loginPasswordError')
-const checkmarkContainer    = document.getElementById('checkmarkContainer')
-const loginRememberOption   = document.getElementById('loginRememberOption')
 const loginButton           = document.getElementById('loginButton')
 const loginForm             = document.getElementById('loginForm')
 
@@ -126,12 +124,6 @@ function formDisabled(v){
     loginDisabled(v)
     loginCancelButton.disabled = v
     loginUsername.disabled = v
-    if(v){
-        checkmarkContainer.setAttribute('disabled', v)
-    } else {
-        checkmarkContainer.removeAttribute('disabled')
-    }
-    loginRememberOption.disabled = v
 }
 
 let loginViewOnSuccess = VIEWS.landing
@@ -183,7 +175,6 @@ loginButton.addEventListener('click', () => {
                 loginCancelEnabled(false) // Reset this for good measure.
                 loginViewCancelHandler = null // Reset this for good measure.
                 loginUsername.value = ''
-                loginPassword.value = ''
                 $('.circle-loader').toggleClass('load-complete')
                 $('.checkmark').toggle()
                 loginLoading(false)

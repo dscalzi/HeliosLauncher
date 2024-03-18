@@ -1,6 +1,6 @@
 {
-  "name": "helioslauncher",
-  "version": "2.3.0",
+  "name": "creatopicolauncher",
+  "version": "2.3.1",
   "productName": "Creatopico Launcher (Helios Launcher)",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/) & LittleLigr",
@@ -46,6 +46,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/Creatopico/HeliosLauncher.git"
   }
 }

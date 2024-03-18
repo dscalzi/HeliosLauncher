@@ -343,13 +343,13 @@ const msftLoginLogger = LoggerUtil.getLogger('Microsoft Login')
 const msftLogoutLogger = LoggerUtil.getLogger('Microsoft Logout')
 
 // Bind the add mojang account button.
-document.getElementById('settingsAddMojangAccount').onclick = (e) => {
-    switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
-        loginViewOnCancel = VIEWS.settings
-        loginViewOnSuccess = VIEWS.settings
-        loginCancelEnabled(true)
-    })
-}
+// document.getElementById('settingsAddMojangAccount').onclick = (e) => {
+//     switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
+//         loginViewOnCancel = VIEWS.settings
+//         loginViewOnSuccess = VIEWS.settings
+//         loginCancelEnabled(true)
+//     })
+// }
 
 // Bind the add microsoft account button.
 document.getElementById('settingsAddMicrosoftAccount').onclick = (e) => {
@@ -513,13 +513,35 @@ function processLogOut(val, isLastAccount){
     const uuid = parent.getAttribute('uuid')
     const prevSelAcc = ConfigManager.getSelectedAccount()
     const targetAcc = ConfigManager.getAuthAccount(uuid)
+    
+    console.log("Trying exit from account")
+    console.log("" + targetAcc.type)
+
     if(targetAcc.type === 'microsoft') {
         msAccDomElementCache = parent
         switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
             ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount)
         })
-    } else {
+    } else if(targetAcc.type === 'mojang2') {
         AuthManager.removeMojangAccount(uuid).then(() => {
+            if(!isLastAccount && uuid === prevSelAcc.uuid){
+                const selAcc = ConfigManager.getSelectedAccount()
+                refreshAuthAccountSelected(selAcc.uuid)
+                updateSelectedAccount(selAcc)
+                validateSelectedAccount()
+            }
+            if(isLastAccount) {
+                loginOptionsCancelEnabled(false)
+                loginOptionsViewOnLoginSuccess = VIEWS.settings
+                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+                switchView(getCurrentView(), VIEWS.loginOptions)
+            }
+        })
+        $(parent).fadeOut(250, () => {
+            parent.remove()
+        })
+    } else {
+        AuthManager.removeOfflineAccount(uuid).then(() => {
             if(!isLastAccount && uuid === prevSelAcc.uuid){
                 const selAcc = ConfigManager.getSelectedAccount()
                 refreshAuthAccountSelected(selAcc.uuid)
@@ -619,7 +641,8 @@ function refreshAuthAccountSelected(uuid){
 }
 
 const settingsCurrentMicrosoftAccounts = document.getElementById('settingsCurrentMicrosoftAccounts')
-const settingsCurrentMojangAccounts = document.getElementById('settingsCurrentMojangAccounts')
+//const settingsCurrentMojangAccounts = document.getElementById('settingsCurrentMojangAccounts')
+const settingsCurrentOfflineAccounts = document.getElementById('settingsCurrentOfflineAccounts')
 
 /**
  * Add auth account elements for each one stored in the authentication database.
@@ -634,6 +657,7 @@ function populateAuthAccounts(){
 
     let microsoftAuthAccountStr = ''
     let mojangAuthAccountStr = ''
+    let offlineAuthAccountStr = ''
 
     authKeys.forEach((val) => {
         const acc = authAccounts[val]
@@ -665,13 +689,14 @@ function populateAuthAccounts(){
         if(acc.type === 'microsoft') {
             microsoftAuthAccountStr += accHtml
         } else {
-            mojangAuthAccountStr += accHtml
+            offlineAuthAccountStr += accHtml
         }
 
     })
 
     settingsCurrentMicrosoftAccounts.innerHTML = microsoftAuthAccountStr
-    settingsCurrentMojangAccounts.innerHTML = mojangAuthAccountStr
+    //settingsCurrentMojangAccounts.innerHTML = mojangAuthAccountStr
+    settingsCurrentOfflineAccounts.innerHTML = offlineAuthAccountStr
 }
 
 /**

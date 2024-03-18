@@ -1,3 +1,4 @@
+const { randomUUID } = require('crypto')
 const fs   = require('fs-extra')
 const { LoggerUtil } = require('helios-core')
 const os   = require('os')
@@ -350,11 +351,12 @@ exports.addMojangAuthAccount = function(uuid, accessToken, username, displayName
 }
 
 exports.addOfflineAccount = function(username){
-    uuid = "00000000-0000-0000-0000-000000000000"
+    console.log("Yeah I try to create new offline account")
+    uuid = randomUUID()
     config.selectedAccount = uuid
     config.authenticationDatabase[uuid] = {
         type: 'offline',
-        uuid,
+        password: '',
         username: username.trim(),
         uuid: uuid.trim(),
         displayName: username.trim()

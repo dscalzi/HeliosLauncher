@@ -15,7 +15,6 @@ const { RestResponseStatus } = require('helios-core/common')
 const { MojangRestAPI, mojangErrorDisplayable, MojangErrorCode } = require('helios-core/mojang')
 const { MicrosoftAuth, microsoftErrorDisplayable, MicrosoftErrorCode } = require('helios-core/microsoft')
 const { AZURE_CLIENT_ID }    = require('./ipcconstants')
-
 const log = LoggerUtil.getLogger('AuthManager')
 
 // Functions
@@ -60,9 +59,6 @@ exports.addMojangAccount = async function(username, password) {
 exports.addOfflineAccount = async function(username) {
     try {
         const ret = ConfigManager.addOfflineAccount(username)
-        if(ConfigManager.getClientToken() == null){
-            ConfigManager.setClientToken("00000000-0000-0000-0000-000000000000")
-        }
         ConfigManager.save()
         return ret
     } catch (err){
@@ -213,6 +209,19 @@ exports.removeMicrosoftAccount = async function(uuid){
     }
 }
 
+
+exports.removeOfflineAccount = async function(uuid){
+    try {
+        ConfigManager.removeAuthAccount(uuid)
+        ConfigManager.save()
+        return Promise.resolve()
+    } catch (err){
+        log.error('Error while removing account', err)
+        return Promise.reject(err)
+    }
+}
+
+
 /**
  * Validate the selected account with Mojang's authserver. If the account is not valid,
  * we will attempt to refresh the access token and update that value. If that fails, a
@@ -322,8 +331,8 @@ exports.validateSelected = async function(){
 
     if(current.type === 'microsoft') {
         return await validateSelectedMicrosoftAccount()
-    } else {
+    } else if (current.type === 'mojang'){
         return await validateSelectedMojangAccount()
     }
-    
+    else return true
 }
