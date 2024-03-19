@@ -1,6 +1,6 @@
 {
   "name": "creatopicolauncher",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "productName": "Creatopico Launcher (Helios Launcher)",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/) & LittleLigr",
@@ -37,7 +37,8 @@
     "jquery": "^3.7.1",
     "lodash.merge": "^4.6.2",
     "semver": "^7.5.4",
-    "toml": "^3.0.0"
+    "toml": "^3.0.0",
+    "discord.js": "14.14.1"
   },
   "devDependencies": {
     "electron": "^27.1.3",
