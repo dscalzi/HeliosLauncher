@@ -2,7 +2,7 @@ appId: 'helioslauncher'
 productName: 'Helios Launcher'
 artifactName: '${productName}-setup-${version}.${ext}'
 
-copyright: 'Copyright © 2018-2022 Daniel Scalzi'
+copyright: 'Copyright © 2018-2024 Daniel Scalzi'
 
 asar: true
 compression: 'maximum'
