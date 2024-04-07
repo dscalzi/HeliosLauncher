@@ -1,4 +1,4 @@
-const { DistributionAPI } = require('helios-core/common')
+const { DistributionAPI } = require('limbo-core/common')
 
 const ConfigManager = require('./configmanager')
 

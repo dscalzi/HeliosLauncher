@@ -1,5 +1,5 @@
 const fs   = require('fs-extra')
-const { LoggerUtil } = require('helios-core')
+const { LoggerUtil } = require('limbo-core')
 const os   = require('os')
 const path = require('path')
 
@@ -7,7 +7,7 @@ const logger = LoggerUtil.getLogger('ConfigManager')
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME)
 
-const dataPath = path.join(sysRoot, '.helioslauncher')
+const dataPath = path.join(sysRoot, '.limbostudios')
 
 const launcherDir = require('@electron/remote').app.getPath('userData')
 
