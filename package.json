@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
-  "version": "2.2.1",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "name": "Limbolauncher",
+  "version": "1.0.0",
+  "productName": "Limbo Launcher",
+  "description": "Launcher de Limbo-Studios",
+  "author": "IkyMax",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/Limbo-Studios/LimboLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/Limbo-Studios/LimboLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -32,7 +32,7 @@
     "fs-extra": "^11.1.1",
     "github-syntax-dark": "^0.5.0",
     "got": "^11.8.5",
-    "helios-core": "~2.2.0",
+    "limbo-core": "~1.0.0",
     "helios-distribution-types": "^1.3.0",
     "jquery": "^3.7.1",
     "lodash.merge": "^4.6.2",
@@ -46,6 +46,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/Limbo-Studios/LimboLauncher.git"
   }
 }
