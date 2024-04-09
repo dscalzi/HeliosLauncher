@@ -273,6 +273,10 @@ exports.getClientToken = function(){
 exports.setClientToken = function(clientToken){
     config.clientToken = clientToken
 }
+/**
+ * 
+ * @param {string} PlayerMeta 
+ */
 
 /**
  * Retrieve the ID of the selected serverpack.
@@ -651,6 +655,7 @@ exports.getJVMOptions = function(serverid){
 exports.setJVMOptions = function(serverid, jvmOptions){
     config.javaConfig[serverid].jvmOptions = jvmOptions
 }
+
 
 // Game Settings
 

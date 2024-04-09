@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "rss": "<LINK TO RSS FEED>",
+  "rss": "https://social.lsmp.site/@limbo.rss",
   "discord": {
     "clientId": "1089465027486035978",
     "smallImageText": "LSMP",
