@@ -2,25 +2,34 @@ const AdmZip                = require('adm-zip')
 const child_process         = require('child_process')
 const crypto                = require('crypto')
 const fs                    = require('fs-extra')
-const { LoggerUtil }        = require('helios-core')
+const { LoggerUtil }        = require('limbo-core')
+const { getMojangOS, isLibraryCompatible, mcVersionAtLeast }  = require('limbo-core/common')
+const { Type }              = require('helios-distribution-types')
 const os                    = require('os')
 const path                  = require('path')
-const { URL }               = require('url')
 
-const { Util, Library }  = require('./assetguard')
 const ConfigManager            = require('./configmanager')
-const DistroManager            = require('./distromanager')
+
 
 const logger = LoggerUtil.getLogger('ProcessBuilder')
 
+
+/**
+ * Only forge and fabric are top level mod loaders.
+ * 
+ * Forge 1.13+ launch logic is similar to fabrics, for now using usingFabricLoader flag to
+ * change minor details when needed.
+ * 
+ * Rewrite of this module may be needed in the future.
+ */
 class ProcessBuilder {
 
-    constructor(distroServer, versionData, forgeData, authUser, launcherVersion){
-        this.gameDir = path.join(ConfigManager.getInstanceDirectory(), distroServer.getID())
+    constructor(distroServer, vanillaManifest, modManifest, authUser, launcherVersion){
+        this.gameDir = path.join(ConfigManager.getInstanceDirectory(), distroServer.rawServer.id)
         this.commonDir = ConfigManager.getCommonDirectory()
         this.server = distroServer
-        this.versionData = versionData
-        this.forgeData = forgeData
+        this.vanillaManifest = vanillaManifest
+        this.modManifest = modManifest
         this.authUser = authUser
         this.launcherVersion = launcherVersion
         this.forgeModListFile = path.join(this.gameDir, 'forgeMods.list') // 1.13+
@@ -29,6 +38,7 @@ class ProcessBuilder {
         this.libPath = path.join(this.commonDir, 'libraries')
 
         this.usingLiteLoader = false
+        this.usingFabricLoader = false
         this.llPath = null
     }
     
@@ -41,10 +51,13 @@ class ProcessBuilder {
         process.throwDeprecation = true
         this.setupLiteLoader()
         logger.info('Using liteloader:', this.usingLiteLoader)
-        const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.getID()).mods, this.server.getModules())
+        this.usingFabricLoader = this.server.modules.some(mdl => mdl.rawModule.type === Type.Fabric)
+        logger.info('Using fabric loader:', this.usingFabricLoader)
+        const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.rawServer.id).mods, this.server.modules)
         
         // Mod list below 1.13
-        if(!Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        // Fabric only supports 1.14+
+        if(!mcVersionAtLeast('1.13', this.server.rawServer.minecraftVersion)){
             this.constructJSONModList('forge', modObj.fMods, true)
             if(this.usingLiteLoader){
                 this.constructJSONModList('liteloader', modObj.lMods, true)
@@ -54,14 +67,14 @@ class ProcessBuilder {
         const uberModArr = modObj.fMods.concat(modObj.lMods)
         let args = this.constructJVMArguments(uberModArr, tempNativePath)
 
-        if(Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        if(mcVersionAtLeast('1.13', this.server.rawServer.minecraftVersion)){
             //args = args.concat(this.constructModArguments(modObj.fMods))
             args = args.concat(this.constructModList(modObj.fMods))
         }
 
         logger.info('Launch Arguments:', args)
 
-        const child = child_process.spawn(ConfigManager.getJavaExecutable(this.server.getID()), args, {
+        const child = child_process.spawn(ConfigManager.getJavaExecutable(this.server.rawServer.id), args, {
             cwd: this.gameDir,
             detached: ConfigManager.getLaunchDetached()
         })
@@ -122,7 +135,7 @@ class ProcessBuilder {
      * @returns {boolean} True if the mod is enabled, false otherwise.
      */
     static isModEnabled(modCfg, required = null){
-        return modCfg != null ? ((typeof modCfg === 'boolean' && modCfg) || (typeof modCfg === 'object' && (typeof modCfg.value !== 'undefined' ? modCfg.value : true))) : required != null ? required.isDefault() : true
+        return modCfg != null ? ((typeof modCfg === 'boolean' && modCfg) || (typeof modCfg === 'object' && (typeof modCfg.value !== 'undefined' ? modCfg.value : true))) : required != null ? required.def : true
     }
 
     /**
@@ -132,20 +145,20 @@ class ProcessBuilder {
      * mod. It must not be declared as a submodule.
      */
     setupLiteLoader(){
-        for(let ll of this.server.getModules()){
-            if(ll.getType() === DistroManager.Types.LiteLoader){
-                if(!ll.getRequired().isRequired()){
-                    const modCfg = ConfigManager.getModConfiguration(this.server.getID()).mods
-                    if(ProcessBuilder.isModEnabled(modCfg[ll.getVersionlessID()], ll.getRequired())){
-                        if(fs.existsSync(ll.getArtifact().getPath())){
+        for(let ll of this.server.modules){
+            if(ll.rawModule.type === Type.LiteLoader){
+                if(!ll.getRequired().value){
+                    const modCfg = ConfigManager.getModConfiguration(this.server.rawServer.id).mods
+                    if(ProcessBuilder.isModEnabled(modCfg[ll.getVersionlessMavenIdentifier()], ll.getRequired())){
+                        if(fs.existsSync(ll.getPath())){
                             this.usingLiteLoader = true
-                            this.llPath = ll.getArtifact().getPath()
+                            this.llPath = ll.getPath()
                         }
                     }
                 } else {
-                    if(fs.existsSync(ll.getArtifact().getPath())){
+                    if(fs.existsSync(ll.getPath())){
                         this.usingLiteLoader = true
-                        this.llPath = ll.getArtifact().getPath()
+                        this.llPath = ll.getPath()
                     }
                 }
             }
@@ -166,20 +179,20 @@ class ProcessBuilder {
         let lMods = []
 
         for(let mdl of mdls){
-            const type = mdl.getType()
-            if(type === DistroManager.Types.ForgeMod || type === DistroManager.Types.LiteMod || type === DistroManager.Types.LiteLoader){
-                const o = !mdl.getRequired().isRequired()
-                const e = ProcessBuilder.isModEnabled(modCfg[mdl.getVersionlessID()], mdl.getRequired())
+            const type = mdl.rawModule.type
+            if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader || type === Type.FabricMod){
+                const o = !mdl.getRequired().value
+                const e = ProcessBuilder.isModEnabled(modCfg[mdl.getVersionlessMavenIdentifier()], mdl.getRequired())
                 if(!o || (o && e)){
-                    if(mdl.hasSubModules()){
-                        const v = this.resolveModConfiguration(modCfg[mdl.getVersionlessID()].mods, mdl.getSubModules())
+                    if(mdl.subModules.length > 0){
+                        const v = this.resolveModConfiguration(modCfg[mdl.getVersionlessMavenIdentifier()].mods, mdl.subModules)
                         fMods = fMods.concat(v.fMods)
                         lMods = lMods.concat(v.lMods)
-                        if(mdl.type === DistroManager.Types.LiteLoader){
+                        if(type === Type.LiteLoader){
                             continue
                         }
                     }
-                    if(mdl.type === DistroManager.Types.ForgeMod){
+                    if(type === Type.ForgeMod || type === Type.FabricMod){
                         fMods.push(mdl)
                     } else {
                         lMods.push(mdl)
@@ -195,7 +208,7 @@ class ProcessBuilder {
     }
 
     _lteMinorVersion(version) {
-        return Number(this.forgeData.id.split('-')[0].split('.')[1]) <= Number(version)
+        return Number(this.modManifest.id.split('-')[0].split('.')[1]) <= Number(version)
     }
 
     /**
@@ -207,7 +220,7 @@ class ProcessBuilder {
             if(this._lteMinorVersion(9)) {
                 return false
             }
-            const ver = this.forgeData.id.split('-')[2]
+            const ver = this.modManifest.id.split('-')[2]
             const pts = ver.split('.')
             const min = [14, 23, 3, 2655]
             for(let i=0; i<pts.length; i++){
@@ -242,11 +255,11 @@ class ProcessBuilder {
         const ids = []
         if(type === 'forge'){
             for(let mod of mods){
-                ids.push(mod.getExtensionlessID())
+                ids.push(mod.getExtensionlessMavenIdentifier())
             }
         } else {
             for(let mod of mods){
-                ids.push(mod.getExtensionlessID() + '@' + mod.getExtension())
+                ids.push(mod.getMavenIdentifier())
             }
         }
         modList.modRef = ids
@@ -266,7 +279,7 @@ class ProcessBuilder {
     //  */
     // constructModArguments(mods){
     //     const argStr = mods.map(mod => {
-    //         return mod.getExtensionlessID()
+    //         return mod.getExtensionlessMavenIdentifier()
     //     }).join(',')
 
     //     if(argStr){
@@ -283,18 +296,21 @@ class ProcessBuilder {
     // }
 
     /**
-     * Construct the mod argument list for forge 1.13
+     * Construct the mod argument list for forge 1.13 and Fabric
      * 
      * @param {Array.<Object>} mods An array of mods to add to the mod list.
      */
     constructModList(mods) {
         const writeBuffer = mods.map(mod => {
-            return mod.getExtensionlessID()
+            return this.usingFabricLoader ? mod.getPath() : mod.getExtensionlessMavenIdentifier()
         }).join('\n')
 
         if(writeBuffer) {
             fs.writeFileSync(this.forgeModListFile, writeBuffer, 'UTF-8')
-            return [
+            return this.usingFabricLoader ? [
+                '--fabric.addMods',
+                `@${this.forgeModListFile}`
+            ] : [
                 '--fml.mavenRoots',
                 path.join('..', '..', 'common', 'modstore'),
                 '--fml.modLists',
@@ -307,13 +323,15 @@ class ProcessBuilder {
     }
 
     _processAutoConnectArg(args){
-        if(ConfigManager.getAutoConnect() && this.server.isAutoConnect()){
-            const serverURL = new URL('my://' + this.server.getAddress())
-            args.push('--server')
-            args.push(serverURL.hostname)
-            if(serverURL.port){
+        if(ConfigManager.getAutoConnect() && this.server.rawServer.autoconnect){
+            if(mcVersionAtLeast('1.20', this.server.rawServer.minecraftVersion)){
+                args.push('--quickPlayMultiplayer')
+                args.push(`${this.server.hostname}:${this.server.port}`)
+            } else {
+                args.push('--server')
+                args.push(this.server.hostname)
                 args.push('--port')
-                args.push(serverURL.port)
+                args.push(this.server.port)
             }
         }
     }
@@ -326,7 +344,7 @@ class ProcessBuilder {
      * @returns {Array.<string>} An array containing the full JVM arguments for this process.
      */
     constructJVMArguments(mods, tempNativePath){
-        if(Util.mcVersionAtLeast('1.13', this.server.getMinecraftVersion())){
+        if(mcVersionAtLeast('1.13', this.server.rawServer.minecraftVersion)){
             return this._constructJVMArguments113(mods, tempNativePath)
         } else {
             return this._constructJVMArguments112(mods, tempNativePath)
@@ -351,16 +369,19 @@ class ProcessBuilder {
 
         // Java Arguments
         if(process.platform === 'darwin'){
-            args.push('-Xdock:name=HeliosLauncher')
+            args.push('-Xdock:name=LimboLauncher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
-        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.getID()))
-        args.push('-Xms' + ConfigManager.getMinRAM(this.server.getID()))
-        args = args.concat(ConfigManager.getJVMOptions(this.server.getID()))
+        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
+        args.push('-Xms' + ConfigManager.getMinRAM(this.server.rawServer.id))
+        args = args.concat(ConfigManager.getJVMOptions(this.server.rawServer.id))
         args.push('-Djava.library.path=' + tempNativePath)
+        args.push(`-javaagent:${path.join(process.cwd(), 'resources', 'libraries', 'java', 'LimboAuth.jar')}=https://auth.lsmp.site/authlib-injector`)
+        args.push('-Dauthlibinjector.side=client')
+        args.push('-Dauthlibinjector.yggdrasil.prefetched=eyJtZXRhIjp7ImltcGxlbWVudGF0aW9uTmFtZSI6IkRyYXNsIiwiaW1wbGVtZW50YXRpb25WZXJzaW9uIjoiMS4wLjEiLCJsaW5rcyI6eyJob21lcGFnZSI6Imh0dHBzOi8vYXV0aC5sc21wLnNpdGUiLCJyZWdpc3RlciI6Imh0dHBzOi8vYXV0aC5sc21wLnNpdGUvZHJhc2wvcmVnaXN0cmF0aW9uIn0sInNlcnZlck5hbWUiOiJMaW1ibyIsImZlYXR1cmUuZW5hYmxlX3Byb2ZpbGVfa2V5Ijp0cnVlfSwic2lnbmF0dXJlUHVibGlja2V5IjoiLS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS1cbk1JSUNJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBZzhBTUlJQ0NnS0NBZ0VBeEpjeUkySlZ2YnoydVEzWGtuTm1cbmkzR1FhMHFVUmxxV2FsdGgzNEcreTMyeUJSWlFiVUVuM05HV0hFOVcrdGs3OG95WGQ2bHduWngyMlJJeVJjRlNcbnhPeFhDcW1DUTJpWmFWZi9KVE4vNG1VWmJnaWk4RU9DeVptT3dwZmp5RTJQZXFkQ1BaaHlVdExLYS82djhxVnlcbmRNSGZhMzV4Uml3UGtQdkdaQ3FJcmhRaktLcGxLaWJ1MzRzR1hDNy9hQXlBMXpqRXZoeFoyRjJLS0gwbzc5c2Jcbk16cmtML1N0alZDbnlnMVhCQUJ2ZDdBUENlTkViaytOamlTY0JLNExBTmpSZ2tqV2RQZjZRZ0lSRWJNN05TbTBcbk8yZGI3VmlWYVI3Q1FhMTlUa1Z2MHRTR3hCY1EyYmZiWk9teWtKK2ZtMDdBdUp2ek5qekRmMDZPNEdCckZVOUhcbjFkaWN4Q0wrM2grZzZvL0JiNUk3LzBGaVdId2xrUDNsRzhhQVk5clFhcm5OakxsZENrakN5Rmw4Y24zNENnWDBcbnNhNnN3Mkh2YUdqaEd1bldsazQvUjU0UUw4YVVVcGsrVzh2YzFaV2JOL3VONVRRNWZ6NDQyWmF5QnlJNkxqUlZcbjRXMXhnaS9adVNsc0dKZlgrdEdkTXNyTmNpbVZUakpNQUlIMUEwM2kyTWl3dmJsbmI1ZzRLM0hoZWtOakRUZ05cbmxKUXlGR1BQZmN6dkNwSFdITk5NODlaWlBweVhOZmZBbjltV21VaXFOTjM2WHR1SkxyTTFnTnJ5K3hwMnJic3dcbnduNEthUlpTcGFpencvUzd3cnlLN0lvNXpXb1R6aVZoM0RJblovUXZrb1NPMThMVWdBekpheVNvdWd5UFRWRnhcblNQY1ZoOWVEcit4aVoydit2RlFLMFJNQ0F3RUFBUT09XG4tLS0tLUVORCBQVUJMSUMgS0VZLS0tLS1cbiIsInNpZ25hdHVyZVB1YmxpY2tleXMiOlsiLS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS1cbk1JSUNJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBZzhBTUlJQ0NnS0NBZ0VBeEpjeUkySlZ2YnoydVEzWGtuTm1cbmkzR1FhMHFVUmxxV2FsdGgzNEcreTMyeUJSWlFiVUVuM05HV0hFOVcrdGs3OG95WGQ2bHduWngyMlJJeVJjRlNcbnhPeFhDcW1DUTJpWmFWZi9KVE4vNG1VWmJnaWk4RU9DeVptT3dwZmp5RTJQZXFkQ1BaaHlVdExLYS82djhxVnlcbmRNSGZhMzV4Uml3UGtQdkdaQ3FJcmhRaktLcGxLaWJ1MzRzR1hDNy9hQXlBMXpqRXZoeFoyRjJLS0gwbzc5c2Jcbk16cmtML1N0alZDbnlnMVhCQUJ2ZDdBUENlTkViaytOamlTY0JLNExBTmpSZ2tqV2RQZjZRZ0lSRWJNN05TbTBcbk8yZGI3VmlWYVI3Q1FhMTlUa1Z2MHRTR3hCY1EyYmZiWk9teWtKK2ZtMDdBdUp2ek5qekRmMDZPNEdCckZVOUhcbjFkaWN4Q0wrM2grZzZvL0JiNUk3LzBGaVdId2xrUDNsRzhhQVk5clFhcm5OakxsZENrakN5Rmw4Y24zNENnWDBcbnNhNnN3Mkh2YUdqaEd1bldsazQvUjU0UUw4YVVVcGsrVzh2YzFaV2JOL3VONVRRNWZ6NDQyWmF5QnlJNkxqUlZcbjRXMXhnaS9adVNsc0dKZlgrdEdkTXNyTmNpbVZUakpNQUlIMUEwM2kyTWl3dmJsbmI1ZzRLM0hoZWtOakRUZ05cbmxKUXlGR1BQZmN6dkNwSFdITk5NODlaWlBweVhOZmZBbjltV21VaXFOTjM2WHR1SkxyTTFnTnJ5K3hwMnJic3dcbnduNEthUlpTcGFpencvUzd3cnlLN0lvNXpXb1R6aVZoM0RJblovUXZrb1NPMThMVWdBekpheVNvdWd5UFRWRnhcblNQY1ZoOWVEcit4aVoydit2RlFLMFJNQ0F3RUFBUT09XG4tLS0tLUVORCBQVUJMSUMgS0VZLS0tLS1cbiIsIi0tLS0tQkVHSU4gUFVCTElDIEtFWS0tLS0tXG5NSUlDSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQWc4QU1JSUNDZ0tDQWdFQXlsQjRCNm01bHo3andyY0Z6NkZkXG4vZm5mVWhjdmx4c1RTbjVrSUsvMmFHRzFDM2tNeTRWamh3bHhGNkJGVVNuZnhoTnN3UGpoM1ppdGtCeEVBRlkyXG41dXprSkZSd0h3VkE5bWR3amFzaFhJTHRSNk9xZExYWEZWeVVQSVVSTE9TV3FHTkJ0YjA4RU41Zk1uRzhpRkxnXG5FSklCTXhzOUJ2RjNzMy9GaHVIeVBLaVZUWm1YWTBXWTRaeVlxdm9LUitYamFUUlBQdkJzRGE0V0kydTF6eFhNXG5lSGxvZFQzbG5DelZ2eU9ZQkxYTDZDSmdCeXVPeGNjSjhoblhmRjl5WTRGMGFlTDA4MEp6LzMrRUJORzhSTzRCXG55aHRCZjROeThOUTZzdFdzamZlVUl2SDdiVS80ekNZY1lPcTRXckluWEhxUzhxcnVEbUlsN1A1WFhHY2FidXpRXG5zdFBmL2gyQ1JBVXBQL1BsSFhjTWx2ZXdqbUdVNk1mREsrbGlmU2NOWXdqUHhSbzRuS1RHRlpmLzBhcUhDaC9FXG5Bc1F5TEtyT0lZUkUwbERHM2J6Qmg4b2dJTUxBdWdzQWZCYjZNM21xQ3FLYVRNQWYvVkFqaDVGRkpualMrN2JFXG4rYlpFVjBxd2F4MUNFb1BQSkwxZklRak9TOHpqMDg2Z2pwR1JDdFN5OStiVFBUZlRSL1NKK1ZVQjVHMkllQ0l0XG5rTkhwSlgyeWdvakZaOW41Rm5qN1I5Wm5PTStMOG55SWpQdTNhZVB2dGNyWGx5TGhIL2h2T2ZJT2pQeE9scVcrXG5PNVF3U0ZQNE9FY3lMQVVnRGRVZ3lXMzZaNW1CMjg1dUtXL2lnaHpac09UZXZWVUcyUXdESXRPYklWNmk4UkN4XG5GYk4yb0RIeVBhTzVqMXRUYUJOeVZ0OENBd0VBQVE9PVxuLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tXG4iLCItLS0tLUJFR0lOIFBVQkxJQyBLRVktLS0tLVxuTUlJQ0lqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FnOEFNSUlDQ2dLQ0FnRUFyYTRZMnd1M3JXRVc3Y0RURFJSZFxuNEl2VUQxNDBZMTJTYUczazRWM1V3VC9wRG5uWDVpdE9jWWlaQTBxZjRWQ3BKRHAyUGlmT0wrUHIvcGgvRzkvNlxuWm9JeGtCZUdFTm8rUzdpOUJxaXpKeTljbVpvY3B5eCtSa1phdzkrZnJDR05MdVlMcnh6aU5XaVhGQUNKU2cybVxuSEFDUjcrNk5rR044ZC8xNi8zUHhNbnZHU3lMVDdKS0dVZ3FqMVEzb1c3aytOTFhSOXN3Nm9SRUxPY25VdlpWYVxuMmJjZ2x2OHZsY3lQcXFuQmh5ZExmSEk4NVo1V25JWVp2aVozQmI0ZHY1Rm1lNzI2QkdPdEVZN2t6NDBSZml3alxuVDN4WUtZS1BKVVMzL2NyUFg2ZXVnbVd5cldkZGRLYWVQclc4OGJwMTdaNU5JU3RsSjVLSkprNGNvaGE4TytQN1xub25EcW1iSHdMcVBUZVI1MW5qa2daK0RKV1Q2Zno4a3U5T1dRbjZJL0Z4cU4xNGlZSWdoREppam1LdkV3c0k3RlxuSjVYMnR0UFhFdkJZTG1wajJqMGxRUWNVSXFIN2hraVorbUNXMEdZYXdKZ2JBZU5BcmFNOXNQKzc2TXlBR0lUdFxuQXNYdjFJUW1haCs3T2VESk9Ub0cyS2IxRGwwVmErSGlQOU1QcGNuTzdrYm42ZHFBeWhOdlJObUhuc1VPaUVjTFxuaFc5Ums3eHo4N0lCVi9jR0tiVURneHU4Y1lZMFA1MTJEV3Q1K0ptcjhXMTBGREZkTG1rSnQxdGFXeE54QXBNMlxuQ2lGUENpbWswMmtveUxaRFc5bnFwV053NnFTL1RPWVBkejQzOHFFdWFtdFlVSit1NldoQmpLOHhBSkVBdDVrM1xuZ0RLWCtubFRpRzNONnNlMDlENjJmUzhDQXdFQUFRPT1cbi0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLVxuIl0sInNraW5Eb21haW5zIjpbImF1dGgubHNtcC5zaXRlIiwidGV4dHVyZXMubWluZWNyYWZ0Lm5ldCJdfQ==')
 
         // Main Java Class
-        args.push(this.forgeData.mainClass)
+        args.push(this.modManifest.mainClass)
 
         // Forge Arguments
         args = args.concat(this._resolveForgeArgs())
@@ -383,17 +404,17 @@ class ProcessBuilder {
         const argDiscovery = /\${*(.*)}/
 
         // JVM Arguments First
-        let args = this.versionData.arguments.jvm
+        let args = this.vanillaManifest.arguments.jvm
 
         // Debug securejarhandler
         // args.push('-Dbsl.debug=true')
 
-        if(this.forgeData.arguments.jvm != null) {
-            for(const argStr of this.forgeData.arguments.jvm) {
+        if(this.modManifest.arguments.jvm != null) {
+            for(const argStr of this.modManifest.arguments.jvm) {
                 args.push(argStr
                     .replaceAll('${library_directory}', this.libPath)
                     .replaceAll('${classpath_separator}', ProcessBuilder.getClasspathSeparator())
-                    .replaceAll('${version_name}', this.forgeData.id)
+                    .replaceAll('${version_name}', this.modManifest.id)
                 )
             }
         }
@@ -402,18 +423,34 @@ class ProcessBuilder {
 
         // Java Arguments
         if(process.platform === 'darwin'){
-            args.push('-Xdock:name=HeliosLauncher')
+            args.push('-Xdock:name=LimboLauncher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
-        args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.getID()))
-        args.push('-Xms' + ConfigManager.getMinRAM(this.server.getID()))
-        args = args.concat(ConfigManager.getJVMOptions(this.server.getID()))
 
+        const current = ConfigManager.getSelectedAccount()
+        if (current.type === 'microsoft') {
+            args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
+            args.push('-Xms' + ConfigManager.getMinRAM(this.server.rawServer.id))
+            args = args.concat(ConfigManager.getJVMOptions(this.server.rawServer.id))
+        } else {
+            args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
+            args.push('-Xms' + ConfigManager.getMinRAM(this.server.rawServer.id))
+            args = args.concat(ConfigManager.getJVMOptions(this.server.rawServer.id))
+            args.push('-Duser.language=es')
+            args.push('-Dminecraft.api.env=custom')
+            args.push('-Dminecraft.api.auth.host=https://auth.lsmp.site/authlib-injector/authserver')
+            args.push('-Dminecraft.api.account.host=https://auth.lsmp.site/authlib-injector/api')
+            args.push('-Dminecraft.api.session.host=https://auth.lsmp.site/authlib-injector/sessionserver')
+            args.push('-Dminecraft.api.services.host=https://auth.lsmp.site/authlib-injector/minecraftservices')
+            args.push(`-javaagent:${path.join(process.cwd(), 'resources', 'libraries', 'java', 'LimboAuth.jar')}=https://auth.lsmp.site/authlib-injector`)
+            args.push('-Dauthlibinjector.yggdrasil.prefetched=eyJtZXRhIjp7ImltcGxlbWVudGF0aW9uTmFtZSI6IkRyYXNsIiwiaW1wbGVtZW50YXRpb25WZXJzaW9uIjoiMS4wLjEiLCJsaW5rcyI6eyJob21lcGFnZSI6Imh0dHBzOi8vYXV0aC5sc21wLnNpdGUiLCJyZWdpc3RlciI6Imh0dHBzOi8vYXV0aC5sc21wLnNpdGUvZHJhc2wvcmVnaXN0cmF0aW9uIn0sInNlcnZlck5hbWUiOiJMaW1ibyIsImZlYXR1cmUuZW5hYmxlX3Byb2ZpbGVfa2V5Ijp0cnVlfSwic2lnbmF0dXJlUHVibGlja2V5IjoiLS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS1cbk1JSUNJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBZzhBTUlJQ0NnS0NBZ0VBeEpjeUkySlZ2YnoydVEzWGtuTm1cbmkzR1FhMHFVUmxxV2FsdGgzNEcreTMyeUJSWlFiVUVuM05HV0hFOVcrdGs3OG95WGQ2bHduWngyMlJJeVJjRlNcbnhPeFhDcW1DUTJpWmFWZi9KVE4vNG1VWmJnaWk4RU9DeVptT3dwZmp5RTJQZXFkQ1BaaHlVdExLYS82djhxVnlcbmRNSGZhMzV4Uml3UGtQdkdaQ3FJcmhRaktLcGxLaWJ1MzRzR1hDNy9hQXlBMXpqRXZoeFoyRjJLS0gwbzc5c2Jcbk16cmtML1N0alZDbnlnMVhCQUJ2ZDdBUENlTkViaytOamlTY0JLNExBTmpSZ2tqV2RQZjZRZ0lSRWJNN05TbTBcbk8yZGI3VmlWYVI3Q1FhMTlUa1Z2MHRTR3hCY1EyYmZiWk9teWtKK2ZtMDdBdUp2ek5qekRmMDZPNEdCckZVOUhcbjFkaWN4Q0wrM2grZzZvL0JiNUk3LzBGaVdId2xrUDNsRzhhQVk5clFhcm5OakxsZENrakN5Rmw4Y24zNENnWDBcbnNhNnN3Mkh2YUdqaEd1bldsazQvUjU0UUw4YVVVcGsrVzh2YzFaV2JOL3VONVRRNWZ6NDQyWmF5QnlJNkxqUlZcbjRXMXhnaS9adVNsc0dKZlgrdEdkTXNyTmNpbVZUakpNQUlIMUEwM2kyTWl3dmJsbmI1ZzRLM0hoZWtOakRUZ05cbmxKUXlGR1BQZmN6dkNwSFdITk5NODlaWlBweVhOZmZBbjltV21VaXFOTjM2WHR1SkxyTTFnTnJ5K3hwMnJic3dcbnduNEthUlpTcGFpencvUzd3cnlLN0lvNXpXb1R6aVZoM0RJblovUXZrb1NPMThMVWdBekpheVNvdWd5UFRWRnhcblNQY1ZoOWVEcit4aVoydit2RlFLMFJNQ0F3RUFBUT09XG4tLS0tLUVORCBQVUJMSUMgS0VZLS0tLS1cbiIsInNpZ25hdHVyZVB1YmxpY2tleXMiOlsiLS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS1cbk1JSUNJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBZzhBTUlJQ0NnS0NBZ0VBeEpjeUkySlZ2YnoydVEzWGtuTm1cbmkzR1FhMHFVUmxxV2FsdGgzNEcreTMyeUJSWlFiVUVuM05HV0hFOVcrdGs3OG95WGQ2bHduWngyMlJJeVJjRlNcbnhPeFhDcW1DUTJpWmFWZi9KVE4vNG1VWmJnaWk4RU9DeVptT3dwZmp5RTJQZXFkQ1BaaHlVdExLYS82djhxVnlcbmRNSGZhMzV4Uml3UGtQdkdaQ3FJcmhRaktLcGxLaWJ1MzRzR1hDNy9hQXlBMXpqRXZoeFoyRjJLS0gwbzc5c2Jcbk16cmtML1N0alZDbnlnMVhCQUJ2ZDdBUENlTkViaytOamlTY0JLNExBTmpSZ2tqV2RQZjZRZ0lSRWJNN05TbTBcbk8yZGI3VmlWYVI3Q1FhMTlUa1Z2MHRTR3hCY1EyYmZiWk9teWtKK2ZtMDdBdUp2ek5qekRmMDZPNEdCckZVOUhcbjFkaWN4Q0wrM2grZzZvL0JiNUk3LzBGaVdId2xrUDNsRzhhQVk5clFhcm5OakxsZENrakN5Rmw4Y24zNENnWDBcbnNhNnN3Mkh2YUdqaEd1bldsazQvUjU0UUw4YVVVcGsrVzh2YzFaV2JOL3VONVRRNWZ6NDQyWmF5QnlJNkxqUlZcbjRXMXhnaS9adVNsc0dKZlgrdEdkTXNyTmNpbVZUakpNQUlIMUEwM2kyTWl3dmJsbmI1ZzRLM0hoZWtOakRUZ05cbmxKUXlGR1BQZmN6dkNwSFdITk5NODlaWlBweVhOZmZBbjltV21VaXFOTjM2WHR1SkxyTTFnTnJ5K3hwMnJic3dcbnduNEthUlpTcGFpencvUzd3cnlLN0lvNXpXb1R6aVZoM0RJblovUXZrb1NPMThMVWdBekpheVNvdWd5UFRWRnhcblNQY1ZoOWVEcit4aVoydit2RlFLMFJNQ0F3RUFBUT09XG4tLS0tLUVORCBQVUJMSUMgS0VZLS0tLS1cbiIsIi0tLS0tQkVHSU4gUFVCTElDIEtFWS0tLS0tXG5NSUlDSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQWc4QU1JSUNDZ0tDQWdFQXlsQjRCNm01bHo3andyY0Z6NkZkXG4vZm5mVWhjdmx4c1RTbjVrSUsvMmFHRzFDM2tNeTRWamh3bHhGNkJGVVNuZnhoTnN3UGpoM1ppdGtCeEVBRlkyXG41dXprSkZSd0h3VkE5bWR3amFzaFhJTHRSNk9xZExYWEZWeVVQSVVSTE9TV3FHTkJ0YjA4RU41Zk1uRzhpRkxnXG5FSklCTXhzOUJ2RjNzMy9GaHVIeVBLaVZUWm1YWTBXWTRaeVlxdm9LUitYamFUUlBQdkJzRGE0V0kydTF6eFhNXG5lSGxvZFQzbG5DelZ2eU9ZQkxYTDZDSmdCeXVPeGNjSjhoblhmRjl5WTRGMGFlTDA4MEp6LzMrRUJORzhSTzRCXG55aHRCZjROeThOUTZzdFdzamZlVUl2SDdiVS80ekNZY1lPcTRXckluWEhxUzhxcnVEbUlsN1A1WFhHY2FidXpRXG5zdFBmL2gyQ1JBVXBQL1BsSFhjTWx2ZXdqbUdVNk1mREsrbGlmU2NOWXdqUHhSbzRuS1RHRlpmLzBhcUhDaC9FXG5Bc1F5TEtyT0lZUkUwbERHM2J6Qmg4b2dJTUxBdWdzQWZCYjZNM21xQ3FLYVRNQWYvVkFqaDVGRkpualMrN2JFXG4rYlpFVjBxd2F4MUNFb1BQSkwxZklRak9TOHpqMDg2Z2pwR1JDdFN5OStiVFBUZlRSL1NKK1ZVQjVHMkllQ0l0XG5rTkhwSlgyeWdvakZaOW41Rm5qN1I5Wm5PTStMOG55SWpQdTNhZVB2dGNyWGx5TGhIL2h2T2ZJT2pQeE9scVcrXG5PNVF3U0ZQNE9FY3lMQVVnRGRVZ3lXMzZaNW1CMjg1dUtXL2lnaHpac09UZXZWVUcyUXdESXRPYklWNmk4UkN4XG5GYk4yb0RIeVBhTzVqMXRUYUJOeVZ0OENBd0VBQVE9PVxuLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tXG4iLCItLS0tLUJFR0lOIFBVQkxJQyBLRVktLS0tLVxuTUlJQ0lqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FnOEFNSUlDQ2dLQ0FnRUFyYTRZMnd1M3JXRVc3Y0RURFJSZFxuNEl2VUQxNDBZMTJTYUczazRWM1V3VC9wRG5uWDVpdE9jWWlaQTBxZjRWQ3BKRHAyUGlmT0wrUHIvcGgvRzkvNlxuWm9JeGtCZUdFTm8rUzdpOUJxaXpKeTljbVpvY3B5eCtSa1phdzkrZnJDR05MdVlMcnh6aU5XaVhGQUNKU2cybVxuSEFDUjcrNk5rR044ZC8xNi8zUHhNbnZHU3lMVDdKS0dVZ3FqMVEzb1c3aytOTFhSOXN3Nm9SRUxPY25VdlpWYVxuMmJjZ2x2OHZsY3lQcXFuQmh5ZExmSEk4NVo1V25JWVp2aVozQmI0ZHY1Rm1lNzI2QkdPdEVZN2t6NDBSZml3alxuVDN4WUtZS1BKVVMzL2NyUFg2ZXVnbVd5cldkZGRLYWVQclc4OGJwMTdaNU5JU3RsSjVLSkprNGNvaGE4TytQN1xub25EcW1iSHdMcVBUZVI1MW5qa2daK0RKV1Q2Zno4a3U5T1dRbjZJL0Z4cU4xNGlZSWdoREppam1LdkV3c0k3RlxuSjVYMnR0UFhFdkJZTG1wajJqMGxRUWNVSXFIN2hraVorbUNXMEdZYXdKZ2JBZU5BcmFNOXNQKzc2TXlBR0lUdFxuQXNYdjFJUW1haCs3T2VESk9Ub0cyS2IxRGwwVmErSGlQOU1QcGNuTzdrYm42ZHFBeWhOdlJObUhuc1VPaUVjTFxuaFc5Ums3eHo4N0lCVi9jR0tiVURneHU4Y1lZMFA1MTJEV3Q1K0ptcjhXMTBGREZkTG1rSnQxdGFXeE54QXBNMlxuQ2lGUENpbWswMmtveUxaRFc5bnFwV053NnFTL1RPWVBkejQzOHFFdWFtdFlVSit1NldoQmpLOHhBSkVBdDVrM1xuZ0RLWCtubFRpRzNONnNlMDlENjJmUzhDQXdFQUFRPT1cbi0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLVxuIl0sInNraW5Eb21haW5zIjpbImF1dGgubHNtcC5zaXRlIiwidGV4dHVyZXMubWluZWNyYWZ0Lm5ldCJdfQ==')
+        }
+        //estoy hasta los uebos, saquenme de aquí :3
         // Main Java Class
-        args.push(this.forgeData.mainClass)
+        args.push(this.modManifest.mainClass)
 
         // Vanilla Arguments
-        args = args.concat(this.versionData.arguments.game)
+        args = args.concat(this.vanillaManifest.arguments.game)
 
         for(let i=0; i<args.length; i++){
             if(typeof args[i] === 'object' && args[i].rules != null){
@@ -421,7 +458,7 @@ class ProcessBuilder {
                 let checksum = 0
                 for(let rule of args[i].rules){
                     if(rule.os != null){
-                        if(rule.os.name === Library.mojangFriendlyOS()
+                        if(rule.os.name === getMojangOS()
                             && (rule.os.version == null || new RegExp(rule.os.version).test(os.release))){
                             if(rule.action === 'allow'){
                                 checksum++
@@ -470,8 +507,8 @@ class ProcessBuilder {
                             val = this.authUser.displayName.trim()
                             break
                         case 'version_name':
-                            //val = versionData.id
-                            val = this.server.getID()
+                            //val = vanillaManifest.id
+                            val = this.server.rawServer.id
                             break
                         case 'game_directory':
                             val = this.gameDir
@@ -480,7 +517,7 @@ class ProcessBuilder {
                             val = path.join(this.commonDir, 'assets')
                             break
                         case 'assets_index_name':
-                            val = this.versionData.assets
+                            val = this.vanillaManifest.assets
                             break
                         case 'auth_uuid':
                             val = this.authUser.uuid.trim()
@@ -492,7 +529,7 @@ class ProcessBuilder {
                             val = this.authUser.type === 'microsoft' ? 'msa' : 'mojang'
                             break
                         case 'version_type':
-                            val = this.versionData.type
+                            val = this.vanillaManifest.type
                             break
                         case 'resolution_width':
                             val = ConfigManager.getGameWidth()
@@ -521,25 +558,11 @@ class ProcessBuilder {
         }
 
         // Autoconnect
-        let isAutoconnectBroken
-        try {
-            isAutoconnectBroken = Util.isAutoconnectBroken(this.forgeData.id.split('-')[2])
-        } catch(err) {
-            logger.error(err)
-            logger.error('Forge version format changed.. assuming autoconnect works.')
-            logger.debug('Forge version:', this.forgeData.id)
-        }
-
-        if(isAutoconnectBroken) {
-            logger.error('Server autoconnect disabled on Forge 1.15.2 for builds earlier than 31.2.15 due to OpenGL Stack Overflow issue.')
-            logger.error('Please upgrade your Forge version to at least 31.2.15!')
-        } else {
-            this._processAutoConnectArg(args)
-        }
+        this._processAutoConnectArg(args)
         
 
         // Forge Specific Arguments
-        args = args.concat(this.forgeData.arguments.game)
+        args = args.concat(this.modManifest.arguments.game)
 
         // Filter null values
         args = args.filter(arg => {
@@ -555,7 +578,7 @@ class ProcessBuilder {
      * @returns {Array.<string>} An array containing the arguments required by forge.
      */
     _resolveForgeArgs(){
-        const mcArgs = this.forgeData.minecraftArguments.split(' ')
+        const mcArgs = this.modManifest.minecraftArguments.split(' ')
         const argDiscovery = /\${*(.*)}/
 
         // Replace the declared variables with their proper values.
@@ -568,8 +591,8 @@ class ProcessBuilder {
                         val = this.authUser.displayName.trim()
                         break
                     case 'version_name':
-                        //val = versionData.id
-                        val = this.server.getID()
+                        //val = vanillaManifest.id
+                        val = this.server.rawServer.id
                         break
                     case 'game_directory':
                         val = this.gameDir
@@ -578,7 +601,7 @@ class ProcessBuilder {
                         val = path.join(this.commonDir, 'assets')
                         break
                     case 'assets_index_name':
-                        val = this.versionData.assets
+                        val = this.vanillaManifest.assets
                         break
                     case 'auth_uuid':
                         val = this.authUser.uuid.trim()
@@ -593,7 +616,7 @@ class ProcessBuilder {
                         val = '{}'
                         break
                     case 'version_type':
-                        val = this.versionData.type
+                        val = this.vanillaManifest.type
                         break
                 }
                 if(val != null){
@@ -668,10 +691,10 @@ class ProcessBuilder {
     classpathArg(mods, tempNativePath){
         let cpArgs = []
 
-        if(!Util.mcVersionAtLeast('1.17', this.server.getMinecraftVersion())) {
+        if(!mcVersionAtLeast('1.17', this.server.rawServer.minecraftVersion) || this.usingFabricLoader) {
             // Add the version.jar to the classpath.
             // Must not be added to the classpath for Forge 1.17+.
-            const version = this.versionData.id
+            const version = this.vanillaManifest.id
             cpArgs.push(path.join(this.commonDir, 'versions', version, version + '.jar'))
         }
         
@@ -710,17 +733,17 @@ class ProcessBuilder {
         const nativesRegex = /.+:natives-([^-]+)(?:-(.+))?/
         const libs = {}
 
-        const libArr = this.versionData.libraries
+        const libArr = this.vanillaManifest.libraries
         fs.ensureDirSync(tempNativePath)
         for(let i=0; i<libArr.length; i++){
             const lib = libArr[i]
-            if(Library.validateRules(lib.rules, lib.natives)){
+            if(isLibraryCompatible(lib.rules, lib.natives)){
 
                 // Pre-1.19 has a natives object.
                 if(lib.natives != null) {
                     // Extract the native library.
                     const exclusionArr = lib.extract != null ? lib.extract.exclude : ['META-INF/']
-                    const artifact = lib.downloads.classifiers[lib.natives[Library.mojangFriendlyOS()].replace('${arch}', process.arch.replace('x', ''))]
+                    const artifact = lib.downloads.classifiers[lib.natives[getMojangOS()].replace('${arch}', process.arch.replace('x', ''))]
 
                     // Location of native zip.
                     const to = path.join(this.libPath, artifact.path)
@@ -826,15 +849,15 @@ class ProcessBuilder {
      * @returns {{[id: string]: string}} An object containing the paths of each library this server requires.
      */
     _resolveServerLibraries(mods){
-        const mdls = this.server.getModules()
+        const mdls = this.server.modules
         let libs = {}
 
-        // Locate Forge/Libraries
+        // Locate Forge/Fabric/Libraries
         for(let mdl of mdls){
-            const type = mdl.getType()
-            if(type === DistroManager.Types.ForgeHosted || type === DistroManager.Types.Library){
-                libs[mdl.getVersionlessID()] = mdl.getArtifact().getPath()
-                if(mdl.hasSubModules()){
+            const type = mdl.rawModule.type
+            if(type === Type.ForgeHosted || type === Type.Fabric || type === Type.Library){
+                libs[mdl.getVersionlessMavenIdentifier()] = mdl.getPath()
+                if(mdl.subModules.length > 0){
                     const res = this._resolveModuleLibraries(mdl)
                     if(res.length > 0){
                         libs = {...libs, ...res}
@@ -863,20 +886,20 @@ class ProcessBuilder {
      * @returns {Array.<string>} An array containing the paths of each library this module requires.
      */
     _resolveModuleLibraries(mdl){
-        if(!mdl.hasSubModules()){
+        if(!mdl.subModules.length > 0){
             return []
         }
         let libs = []
-        for(let sm of mdl.getSubModules()){
-            if(sm.getType() === DistroManager.Types.Library){
+        for(let sm of mdl.subModules){
+            if(sm.rawModule.type === Type.Library){
 
-                if(sm.getClasspath()) {
-                    libs.push(sm.getArtifact().getPath())
+                if(sm.rawModule.classpath ?? true) {
+                    libs.push(sm.getPath())
                 }
             }
             // If this module has submodules, we need to resolve the libraries for those.
             // To avoid unnecessary recursive calls, base case is checked here.
-            if(mdl.hasSubModules()){
+            if(mdl.subModules.length > 0){
                 const res = this._resolveModuleLibraries(sm)
                 if(res.length > 0){
                     libs = libs.concat(res)

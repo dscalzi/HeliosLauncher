@@ -1,16 +1,15 @@
 const fs   = require('fs-extra')
-const { LoggerUtil } = require('helios-core')
+const { LoggerUtil } = require('limbo-core')
 const os   = require('os')
 const path = require('path')
 
 const logger = LoggerUtil.getLogger('ConfigManager')
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME)
-// TODO change
-const dataPath = path.join(sysRoot, '.helioslauncher')
 
-// Forked processes do not have access to electron, so we have this workaround.
-const launcherDir = process.env.CONFIG_DIRECT_PATH || require('@electron/remote').app.getPath('userData')
+const dataPath = path.join(sysRoot, '.limbostudios')
+
+const launcherDir = require('@electron/remote').app.getPath('userData')
 
 /**
  * Retrieve the absolute path of the launcher directory.
@@ -44,45 +43,30 @@ const configPath = path.join(exports.getLauncherDirectory(), 'config.json')
 const configPathLEGACY = path.join(dataPath, 'config.json')
 const firstLaunch = !fs.existsSync(configPath) && !fs.existsSync(configPathLEGACY)
 
-exports.getAbsoluteMinRAM = function(){
-    const mem = os.totalmem()
-    return mem >= 6000000000 ? 3 : 2
-}
-
-exports.getAbsoluteMaxRAM = function(){
-    const mem = os.totalmem()
-    const gT16 = mem-16000000000
-    return Math.floor((mem-1000000000-(gT16 > 0 ? (Number.parseInt(gT16/8) + 16000000000/4) : mem/4))/1000000000)
-}
-
-function resolveMaxRAM(){
-    const mem = os.totalmem()
-    return mem >= 8000000000 ? '4G' : (mem >= 6000000000 ? '3G' : '2G')
-}
-
-function resolveMinRAM(){
-    return resolveMaxRAM()
-}
-
-/**
- * TODO Copy pasted, should be in a utility file.
- * 
- * Returns true if the actual version is greater than
- * or equal to the desired version.
- * 
- * @param {string} desired The desired version.
- * @param {string} actual The actual version.
- */
-function mcVersionAtLeast(desired, actual){
-    const des = desired.split('.')
-    const act = actual.split('.')
-
-    for(let i=0; i<des.length; i++){
-        if(!(parseInt(act[i]) >= parseInt(des[i]))){
-            return false
-        }
+exports.getAbsoluteMinRAM = function(ram){
+    if(ram?.minimum != null) {
+        return ram.minimum/1024
+    } else {
+        // Legacy behavior
+        const mem = os.totalmem()
+        return mem >= (6*1073741824) ? 3 : 2
     }
-    return true
+}
+
+exports.getAbsoluteMaxRAM = function(ram){
+    const mem = os.totalmem()
+    const gT16 = mem-(16*1073741824)
+    return Math.floor((mem-(gT16 > 0 ? (Number.parseInt(gT16/8) + (16*1073741824)/4) : mem/4))/1073741824)
+}
+
+function resolveSelectedRAM(ram) {
+    if(ram?.recommended != null) {
+        return `${ram.recommended}M`
+    } else {
+        // Legacy behavior
+        const mem = os.totalmem()
+        return mem >= (8*1073741824) ? '4G' : (mem >= (6*1073741824) ? '3G' : '2G')
+    }
 }
 
 /**
@@ -289,6 +273,10 @@ exports.getClientToken = function(){
 exports.setClientToken = function(clientToken){
     config.clientToken = clientToken
 }
+/**
+ * 
+ * @param {string} PlayerMeta 
+ */
 
 /**
  * Retrieve the ID of the selected serverpack.
@@ -523,18 +511,18 @@ exports.setModConfiguration = function(serverid, configuration){
 
 // Java Settings
 
-function defaultJavaConfig(mcVersion) {
-    if(mcVersionAtLeast('1.17', mcVersion)) {
-        return defaultJavaConfig117()
+function defaultJavaConfig(effectiveJavaOptions, ram) {
+    if(effectiveJavaOptions.suggestedMajor > 8) {
+        return defaultJavaConfig17(ram)
     } else {
-        return defaultJavaConfigBelow117()
+        return defaultJavaConfig8(ram)
     }
 }
 
-function defaultJavaConfigBelow117() {
+function defaultJavaConfig8(ram) {
     return {
-        minRAM: resolveMinRAM(),
-        maxRAM: resolveMaxRAM(), // Dynamic
+        minRAM: resolveSelectedRAM(ram),
+        maxRAM: resolveSelectedRAM(ram),
         executable: null,
         jvmOptions: [
             '-XX:+UseConcMarkSweepGC',
@@ -545,10 +533,10 @@ function defaultJavaConfigBelow117() {
     }
 }
 
-function defaultJavaConfig117() {
+function defaultJavaConfig17(ram) {
     return {
-        minRAM: resolveMinRAM(),
-        maxRAM: resolveMaxRAM(), // Dynamic
+        minRAM: resolveSelectedRAM(ram),
+        maxRAM: resolveSelectedRAM(ram),
         executable: null,
         jvmOptions: [
             '-XX:+UnlockExperimentalVMOptions',
@@ -567,9 +555,9 @@ function defaultJavaConfig117() {
  * @param {string} serverid The server id.
  * @param {*} mcVersion The minecraft version of the server.
  */
-exports.ensureJavaConfig = function(serverid, mcVersion) {
+exports.ensureJavaConfig = function(serverid, effectiveJavaOptions, ram) {
     if(!Object.prototype.hasOwnProperty.call(config.javaConfig, serverid)) {
-        config.javaConfig[serverid] = defaultJavaConfig(mcVersion)
+        config.javaConfig[serverid] = defaultJavaConfig(effectiveJavaOptions, ram)
     }
 }
 
@@ -667,6 +655,7 @@ exports.getJVMOptions = function(serverid){
 exports.setJVMOptions = function(serverid, jvmOptions){
     config.javaConfig[serverid].jvmOptions = jvmOptions
 }
+
 
 // Game Settings
 

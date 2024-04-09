@@ -1,7 +1,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-In6B8teKZQll5heMl9bS7CESTbGvuAt3VVV86BUQBDk='"/>
-    <title>Helios Launcher</title>
+    <title><%= lang('app.title') %></title>
     <script src="./assets/js/scripts/uicore.js"></script>
     <script src="./assets/js/scripts/uibinder.js"></script>
     <link type="text/css" rel="stylesheet" href="./assets/css/launcher.css">
@@ -45,11 +45,5 @@
             </div>
         </div>
     </div>
-    <script>
-        // Load language
-        for(let key of Object.keys(Lang.query('html'))){
-            document.getElementById(key).innerHTML = Lang.query(`html.${key}`)
-        }
-    </script>
 </body>
 </html>

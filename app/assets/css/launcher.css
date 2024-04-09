@@ -3772,6 +3772,7 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 10px;
     line-height: 10px;
     font-weight: bold;
+    text-align: left;
 }
 
 /* Content container for the server listing's information. */

@@ -1,0 +1,19 @@
+# Custom Language File for Launcher Customizer
+
+[ejs.app]
+title = "Limbo Launcher"
+
+[ejs.landing]
+mediaGitHubURL = "https://github.com/Limbo-Studios/LimboLauncher"
+mediaTwitterURL = "#"
+mediaInstagramURL = "#"
+mediaYouTubeURL = "#"
+mediaDiscordURL = "#"
+
+[ejs.settings]
+sourceGithubLink = "https://github.com/Limbo-Studios/LimboLauncher"
+supportLink = "https://github.com/Limbo-Studios/LimboLauncher/issues"
+
+[ejs.welcome]
+welcomeHeader = "BIENVENIDO A LIMBO-STUDIOS"
+welcomeDescription = "Hemos creado este launcher para que puedas disfrutar de nuestros proyectos, el proyecto el curso por ahora es Lurkarya, pero siempre podrán estar atentos a más!  Lurkarya es un servidor survival multijugador con lore, ahora estamos en el segundo acto y estamos impacientes por ver que les depará el destino ;)"

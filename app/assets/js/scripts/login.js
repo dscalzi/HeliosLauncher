@@ -193,10 +193,10 @@ loginButton.addEventListener('click', () => {
         $('.circle-loader').toggleClass('load-complete')
         $('.checkmark').toggle()
         setTimeout(() => {
-            switchView(VIEWS.login, loginViewOnSuccess, 500, 500, () => {
+            switchView(VIEWS.login, loginViewOnSuccess, 500, 500, async () => {
                 // Temporary workaround
                 if(loginViewOnSuccess === VIEWS.settings){
-                    prepareSettings()
+                    await prepareSettings()
                 }
                 loginViewOnSuccess = VIEWS.landing // Reset this for good measure.
                 loginCancelEnabled(false) // Reset this for good measure.
@@ -220,10 +220,7 @@ loginButton.addEventListener('click', () => {
         } else {
             // Uh oh.
             msftLoginLogger.error('Unhandled error during login.', displayableError)
-            actualDisplayableError = {
-                title: 'Unknown Error During Login',
-                desc: 'An unknown error has occurred. Please see the console for details.'
-            }
+            actualDisplayableError = Lang.queryJS('login.error.unknown')
         }
 
         setOverlayContent(actualDisplayableError.title, actualDisplayableError.desc, Lang.queryJS('login.tryAgain'))
