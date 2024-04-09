@@ -109,7 +109,7 @@ ipcMain.handle(SHELL_OPCODE.TRASH_ITEM, async (event, ...args) => {
 app.disableHardwareAcceleration()
 
 
- 
+const REDIRECT_URI_PREFIX = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
 
 // Microsoft Auth Login
 let msftAuthWindow
@@ -227,8 +227,8 @@ let win
 function createWindow() {
 
     win = new BrowserWindow({
-        width: 1143,
-        height: 700,
+        width: 980,
+        height: 552,
         icon: getPlatformIcon('SealCircle'),
         frame: false,
         webPreferences: {
@@ -358,83 +358,4 @@ app.on('activate', () => {
     if (win === null) {
         createWindow()
     }
-})
-
-const REDIRECT_URI_PREFIX = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
-
-// Microsoft Auth Login
-let msftAuthWindow
-let msftAuthSuccess
-let msftAuthViewSuccess
-let msftAuthViewOnClose
-ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
-	/*
-		Clear cookies from live.com and github.com from Microsoft Login, since there isn't an actual way to invalidate Microsoft access token
-	*/
-    session.defaultSession.cookies.get({ domain: 'live.com' }).then((cookies) => {
-        for (let cookie of cookies) {
-            let urlcookie = `http${cookie.secure ? "s" : ""}://${cookie.domain.replace(/$\./, "") + cookie.path}`;
-            session.defaultSession.cookies.remove(urlcookie, cookie.name)
-        }
-    })
-    session.defaultSession.cookies.get({ domain: 'github.com' }).then((cookies) => {
-        for (let cookie of cookies) {
-            let urlcookie = `http${cookie.secure ? "s" : ""}://${cookie.domain.replace(/$\./, "") + cookie.path}`;
-            session.defaultSession.cookies.remove(urlcookie, cookie.name)
-        }
-    })
-    if (msftAuthWindow) {
-        ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.ALREADY_OPEN, msftAuthViewOnClose)
-        return
-    }
-    msftAuthSuccess = false
-    msftAuthViewSuccess = arguments_[0]
-    msftAuthViewOnClose = arguments_[1]
-    msftAuthWindow = new BrowserWindow({
-        parent: win,
-        modal: true,
-        resizable: false,
-        title: 'Microsoft Login',
-        backgroundColor: '#222222',
-        width: 520,
-        height: 700,
-        frame: true,
-        icon: getPlatformIcon('SealCircle')
-    })
-
-    msftAuthWindow.on('closed', () => {
-        msftAuthWindow = undefined
-    })
-
-    msftAuthWindow.on('close', () => {
-        if (!msftAuthSuccess) {
-            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.ERROR, MSFT_ERROR.NOT_FINISHED, msftAuthViewOnClose)
-        }
-    })
-
-    msftAuthWindow.webContents.on('did-navigate', (_, uri) => {
-        if (uri.startsWith(REDIRECT_URI_PREFIX)) {
-            let queries = uri.substring(REDIRECT_URI_PREFIX.length).split('#', 1).toString().split('&')
-            let queryMap = {}
-
-            queries.forEach(query => {
-                const [name, value] = query.split('=')
-                queryMap[name] = decodeURI(value)
-            })
-
-            ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.SUCCESS, queryMap, msftAuthViewSuccess)
-
-            msftAuthSuccess = true
-            msftAuthWindow.close()
-            msftAuthWindow = null
-        }
-    })
-
-    msftAuthWindow.removeMenu()
-    msftAuthWindow.loadURL(`https://login.live.com/oauth20_authorize.srf?prompt=select_account&client_id=${AZURE_CLIENT_ID}&response_type=code&scope=XboxLive.signin%20offline_access&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient&cobrandid=8058f65d-ce06-4c30-9559-473c9275a65d`) //Cobrandid adds the Minecraft branding on the login page
-})
-
-// Microsoft Auth Logout
-ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
-    ipcEvent.reply(MSFT_OPCODE.REPLY_LOGOUT, MSFT_REPLY_TYPE.SUCCESS, uuid, isLastAccount) //Just reply to the event, since logout pop up isn't that much useful
 })
