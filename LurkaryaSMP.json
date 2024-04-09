@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "rss": "https://bsky.app/profile/did:plc:d34wmovscvnoexuwlpodij73/rss",
+  "rss": "http://resources.lsmp.site:28398/feed",
   "discord": {
     "clientId": "1089465027486035978",
     "smallImageText": "LSMP",
