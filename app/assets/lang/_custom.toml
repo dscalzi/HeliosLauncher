@@ -5,15 +5,15 @@ title = "Limbo Launcher"
 
 [ejs.landing]
 mediaGitHubURL = "https://github.com/Limbo-Studios/LimboLauncher"
-mediaTwitterURL = "#"
+mediaTwitterURL = "https://twitter.com/lurkarya"
 mediaInstagramURL = "#"
-mediaYouTubeURL = "#"
-mediaDiscordURL = "#"
+mediaYouTubeURL = "https://www.youtube.com/@Vigilante_LK"
+mediaDiscordURL = "https://discord.gg/8jFFMKMgkU"
 
 [ejs.settings]
 sourceGithubLink = "https://github.com/Limbo-Studios/LimboLauncher"
 supportLink = "https://github.com/Limbo-Studios/LimboLauncher/issues"
 
 [ejs.welcome]
-welcomeHeader = "BIENVENIDO A LIMBO-STUDIOS"
-welcomeDescription = "Hemos creado este launcher para que puedas disfrutar de nuestros proyectos, el proyecto el curso por ahora es Lurkarya, pero siempre podrán estar atentos a más!  Lurkarya es un servidor survival multijugador con lore, ahora estamos en el segundo acto y estamos impacientes por ver que les depará el destino ;)"
+welcomeHeader = "BIENVENIDO A LIMBO STUDIOS"
+welcomeDescription = "Hemos creado este launcher para que puedas disfrutar de nuestros proyectos, el proyecto en curso por ahora es Lurkarya, pero siempre podrán estar atentos a más!  Lurkarya es un servidor survival multijugador con lore, ahora estamos en el segundo acto y estamos impacientes por ver que les depará el destino ;)"

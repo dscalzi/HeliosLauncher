@@ -41,8 +41,8 @@ linux:
   target: 'AppImage'
   maintainer: 'IkyMax'
   vendor: 'IkyMax'
-  synopsis: 'Launcher de Limbo-studios para Lurkarya'
-  description: 'Custom launcher maded by IkyMax'
+  synopsis: 'Launcher de Limbo-Studios para Lurkarya'
+  description: 'Custom launcher maded for Limbo-Studios projects by IkyMax'
   category: 'Game'
 
 
