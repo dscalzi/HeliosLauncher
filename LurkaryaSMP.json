@@ -1,10 +1,10 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "rss": "https://news.lsmp.site/category/noticias/feed/",
   "discord": {
     "clientId": "1231317013423722530",
     "smallImageText": "LimboLauncher",
-    "smallImageKey": "https://resources.lsmp.site/logo.png"
+    "smallImageKey": "o"
   },
   "servers": [
     {
@@ -16,9 +16,9 @@
       "address": "jugar.lsmp.site:25565",
       "minecraftVersion": "1.20.4",
       "discord": {
-        "shortId": "LSMP",
-        "largeImageText": "Jugando en LimboLauncher",
-        "largeImageKey": "https://resources.lsmp.site/logo.png"
+        "shortId": "Lurkarya",
+        "largeImageText": "Jugando en Lurkarya",
+        "largeImageKey": "o"
       },
       "mainServer": true,
       "autoconnect": false,
