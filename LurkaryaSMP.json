@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "rss": "https://news.lsmp.site/category/noticias/feed/",
   "discord": {
-    "clientId": "1180428821686652948",
+    "clientId": "1231317013423722530",
     "smallImageText": "LimboLauncher",
     "smallImageKey": "https://resources.lsmp.site/logo.png"
   },
@@ -12,11 +12,11 @@
       "name": "LurkaryaSMP (Minecraft 1.20.4)",
       "description": "Embarcate en un mundo de aventuras mientras descubres los secretos detrás de este lugar!",
       "icon": "https://resources.lsmp.site/server-icon.png",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "address": "jugar.lsmp.site:25565",
       "minecraftVersion": "1.20.4",
       "discord": {
-        "shortId": "1180428821686652948",
+        "shortId": "LSMP",
         "largeImageText": "Jugando en LimboLauncher",
         "largeImageKey": "https://resources.lsmp.site/logo.png"
       },
@@ -176,23 +176,23 @@
           }
         },
         {
-          "id": "traben.entity_model_features:entity_model_features:1.3@jar",
+          "id": "traben.entity_model_features:entity_model_features:2.0@jar",
           "name": "Entity Model Features",
           "type": "FabricMod",
           "artifact": {
-            "size": 347117,
-            "url": "https://resources.lsmp.site/servers/LurkaryaSMP-1.20.4/fabricmods/required/entity_model_features_fabric_1.20.4-1.3.jar",
-            "MD5": "30b300e663d4b942b21efaef0eb4f6fd"
+            "size": 383171,
+            "url": "https://resources.lsmp.site/servers/LurkaryaSMP-1.20.4/fabricmods/required/entity_model_features_fabric_1.20.4-2.0.jar",
+            "MD5": "6724dd5e2e13fb0c9400930bc10fa2c0"
           }
         },
         {
-          "id": "traben.entity_texture_features:entity_texture_features:5.2.3@jar",
+          "id": "traben.entity_texture_features:entity_texture_features:6.0@jar",
           "name": "Entity Texture Features",
           "type": "FabricMod",
           "artifact": {
-            "size": 449202,
-            "url": "https://resources.lsmp.site/servers/LurkaryaSMP-1.20.4/fabricmods/required/entity_texture_features_fabric_1.20.4-5.2.3.jar",
-            "MD5": "e1cf1150b93b238737a73492db69962e"
+            "size": 535139,
+            "url": "https://resources.lsmp.site/servers/LurkaryaSMP-1.20.4/fabricmods/required/entity_texture_features_fabric_1.20.4-6.0.jar",
+            "MD5": "34bbed7d0f435db9601b13ada53e85a6"
           }
         },
         {
@@ -306,13 +306,13 @@
           }
         },
         {
-          "id": "ca.fxco:moreculling:1.20.4-0.23.1@jar",
+          "id": "ca.fxco:moreculling:1.20.4-0.24.0@jar",
           "name": "More Culling",
           "type": "FabricMod",
           "artifact": {
-            "size": 272244,
-            "url": "https://resources.lsmp.site/servers/LurkaryaSMP-1.20.4/fabricmods/required/moreculling-1.20.4-0.23.1.jar",
-            "MD5": "b2cf2ab58a621218fe0d5f5f7ad5be70"
+            "size": 272851,
+            "url": "https://resources.lsmp.site/servers/LurkaryaSMP-1.20.4/fabricmods/required/moreculling-1.20.4-0.24.0.jar",
+            "MD5": "109804ad4b9f14a549f02bf26c98ac44"
           }
         },
         {
@@ -321,8 +321,11 @@
           "type": "FabricMod",
           "artifact": {
             "size": 164283,
-            "url": "https://resources.lsmp.site/servers/LurkaryaSMP-1.20.4/fabricmods/required/nvidium-0.2.6-beta.jar",
+            "url": "https://resources.lsmp.site/servers/LurkaryaSMP-1.20.4/fabricmods/optionalon/nvidium-0.2.6-beta.jar",
             "MD5": "6b5c5cac72b63ff8b2505a1691955f16"
+          },
+          "required": {
+            "value": false
           }
         },
         {
@@ -756,24 +759,13 @@
           }
         },
         {
-          "id": "CustomSkinAPIPlus-ClientID",
-          "name": "CustomSkinAPIPlus-ClientID",
-          "type": "File",
-          "artifact": {
-            "size": 36,
-            "url": "https://resources.lsmp.site/servers/LurkaryaSMP-1.20.4/files/CustomSkinLoader/CustomSkinAPIPlus-ClientID",
-            "MD5": "d738145bc5249dd1aafcaf5c861595c0",
-            "path": "CustomSkinLoader/CustomSkinAPIPlus-ClientID"
-          }
-        },
-        {
           "id": "CustomSkinLoader.json",
           "name": "CustomSkinLoader.json",
           "type": "File",
           "artifact": {
-            "size": 536,
+            "size": 769,
             "url": "https://resources.lsmp.site/servers/LurkaryaSMP-1.20.4/files/CustomSkinLoader/CustomSkinLoader.json",
-            "MD5": "184957e43bcb83b760215388e306f093",
+            "MD5": "383d4d80f3b905324c769dc439081335",
             "path": "CustomSkinLoader/CustomSkinLoader.json"
           }
         },
