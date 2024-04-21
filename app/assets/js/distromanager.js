@@ -4,7 +4,7 @@ const ConfigManager = require('./configmanager')
 
 // Old WesterosCraft url.
 // exports.REMOTE_DISTRO_URL = 'http://mc.westeroscraft.com/WesterosCraftLauncher/distribution.json'
-exports.REMOTE_DISTRO_URL = 'https://raw.githubusercontent.com/Limbo-Studios/LimboLauncher/master/LurkaryaSMP.json'
+exports.REMOTE_DISTRO_URL = 'https://raw.githubusercontent.com/Limbo-Studios/distro/main/LurkaryaSMP.json'
 
 const api = new DistributionAPI(
     ConfigManager.getLauncherDirectory(),

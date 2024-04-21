@@ -213,8 +213,8 @@ checking = "Buscando noticias"
 
 [js.landing.discord]
 loading = "Cargando juego.."
-joining = "Sailing to Westeros!" # IDK how to translate this xD
-joined = "Explora el Realm!"
+joining = "Entrando a Lurkarya!" # IDK how to translate this xD
+joined = "Explora estas tierras!"
 
 [js.overlay]
 dismiss = "Dismiss"
