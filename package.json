@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
-  "version": "2.2.1",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
-  "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "name": "graschatiumlauncher",
+  "version": "0.0.1",
+  "productName": "Graschatium Launcher",
+  "description": "Le launcher moddé de Graschatium®",
+  "author": "Graschatium",
+  "license": "LICENSED",
+  "homepage": "https://github.com/gribouille406413/GraschatiumLauncher/",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/gribouille406413/GraschatiumLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -46,6 +46,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/gribouille406413/GraschatiumLauncher.git"
   }
 }
