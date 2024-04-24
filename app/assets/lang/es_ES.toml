@@ -8,7 +8,7 @@ serverStatus = "SERVIDOR"
 serverStatusPlaceholder = "DESC."
 mojangStatus = "LIMBOAUTH"
 mojangStatusTooltipTitle = "Servicios"
-mojangStatusNETitle = "Non&nbsp;Essential"
+mojangStatusNETitle = "No&nbsp;Esenciales"
 newsButton = "NOTICIAS"
 launchButton = "JUGAR"
 launchButtonPlaceholder = "&#8226; Ningún servidor seleccionado"
@@ -26,13 +26,13 @@ loginEmailError = "* Valor invaido"
 loginEmailPlaceholder = "CORREO O NOMBRE DE USUARIO"
 loginPasswordError = "* Requerido"
 loginPasswordPlaceholder = "CONTRASEÑA"
-loginForgotPasswordLink = "https://discord.com/channels/1088661129615642716/1088661130785869909"
+loginForgotPasswordLink = "https://discord.com/channels/1088661129615642716/1231456034199961620"
 loginForgotPasswordText = "olvidaste tu contraseña?"
 loginRememberMeText = "Recuerdame?"
 loginButtonText = "Inicio de sesión"
-loginNeedAccountLink = "https://discord.com/channels/1088661129615642716/1088661130785869909"
+loginNeedAccountLink = "https://discord.com/channels/1088661129615642716/1231456034199961620"
 loginNeedAccountText = "Necesitas una cuenta?"
-loginPasswordDisclaimer1 = "Tu contraseña se envía directamente a mojang y nunca se almacena."
+loginPasswordDisclaimer1 = "Tu contraseña se envía directamente a Limbo y nunca se almacena."
 loginPasswordDisclaimer2 = "{appName} no esta afiliado con Mojang AB."
 
 [ejs.loginOptions]
@@ -174,14 +174,14 @@ players = "JUGADORES"
 [js.landing.systemScan]
 checking = "Verificando la información del sistema.."
 noCompatibleJava = "No se encontró<br>una versión de Java compatible"
-installJavaMessage = "In order to launch Minecraft, you need a 64-bit installation of Java {major}. Would you like us to install a copy?"
+installJavaMessage = "Para poder lanzar Minecraft, Necesitas una instalación de 64 bits de Java {major}. Te gustaría que instalásemos una copia?"
 installJava = "Instalar Java"
 installJavaManually = "Instalar manualmente"
-javaDownloadPrepare = "Preparando descarga de Java.."
+javaDownloadPrepare = "Preparando descarga de Java..."
 javaDownloadFailureTitle = "Error durante la descarga de Java"
 javaDownloadFailureText = "Ver la consola (CTRL + Shift + i) para más detalles."
 javaRequired = "Java es requerido<br>para iniciar"
-javaRequiredMessage = 'Para iniciar se requiere una version de Java mayor a {major}.<br><br>Por favor diríjase a <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Guía de administración de Java</a> para instrucciónes de instalación manual.'
+javaRequiredMessage = 'Para iniciar se requiere una version de Java mayor a {major}.<br><br>Por favor diríjase a <a href="https://github.com/Limbo-Studios/LimboLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Guía de administración de Java</a> para instrucciónes de instalación manual.'
 javaRequiredDismiss = "Entiendo"
 javaRequiredCancel = "Regresar"
 
@@ -213,8 +213,8 @@ checking = "Buscando noticias"
 
 [js.landing.discord]
 loading = "Cargando juego.."
-joining = "Entrando a Lurkarya!" # IDK how to translate this xD
-joined = "Explora estas tierras!"
+joining = "En el menú de Lurkarya!" # IDK how to translate this xD
+joined = "Explorando los misterios de este lugar...!"
 
 [js.overlay]
 dismiss = "Dismiss"
