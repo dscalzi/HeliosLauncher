@@ -84,7 +84,7 @@ This section details the setup of a basic developmentment environment.
 
 **System Requirements**
 
-* [Node.js][nodejs] v18
+* [Node.js][nodejs] v20
 
 ---
 

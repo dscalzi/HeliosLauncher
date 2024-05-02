@@ -1,13 +1,13 @@
 {
-  "name": "crafted-launcher-legacy",
-  "version": "2.0.5",
-  "productName": "Crafted Launcher Legacy",
-  "description": "Offline and online laucher for Raft's Modpacks",
-  "author": "Daniel Scalzi, RaftDev",
-  "license": "MIT",
-  "homepage": "https://github.com/Raft08/Crafted-Launcher-legacy/",
+  "name": "helioslauncher",
+  "version": "2.2.1",
+  "productName": "Helios Launcher",
+  "description": "Modded Minecraft Launcher",
+  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/dscalzi/HeliosLauncher",
   "bugs": {
-    "url": "https://discord.gg/m8ZzTEqeDN"
+    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -20,31 +20,32 @@
     "lint": "eslint --config .eslintrc.json ."
   },
   "engines": {
-    "node": "18.x.x"
+    "node": "20.x.x"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.8",
-    "adm-zip": "^0.5.9",
+    "@electron/remote": "^2.1.2",
+    "adm-zip": "^0.5.12",
     "discord-rpc-patch": "^4.0.1",
-    "ejs": "^3.1.9",
-    "ejs-electron": "^2.1.1",
-    "electron-updater": "^5.3.0",
+    "ejs": "^3.1.10",
+    "ejs-electron": "^3.0.0",
+    "electron-updater": "^6.1.8",
     "fs-extra": "^11.1.1",
     "github-syntax-dark": "^0.5.0",
     "got": "^11.8.5",
-    "helios-core": "~2.0.4",
-    "helios-distribution-types": "^1.2.0",
-    "jquery": "^3.6.4",
-    "semver": "^7.4.0",
-    "uuid": "^9.0.0"
+    "helios-core": "~2.2.1",
+    "helios-distribution-types": "^1.3.0",
+    "jquery": "^3.7.1",
+    "lodash.merge": "^4.6.2",
+    "semver": "^7.6.0",
+    "toml": "^3.0.0"
   },
   "devDependencies": {
-    "electron": "^24.1.1",
-    "electron-builder": "^23.6.0",
-    "eslint": "^8.38.0"
+    "electron": "^30.0.1",
+    "electron-builder": "^24.13.3",
+    "eslint": "^8.57.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Raft08/Crafted-Launcher-legacy.git"
+    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
   }
 }
