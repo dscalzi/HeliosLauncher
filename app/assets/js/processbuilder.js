@@ -416,7 +416,7 @@ class ProcessBuilder {
         }
 
         //args.push('-Dlog4j.configurationFile=D:\\WesterosCraft\\game\\common\\assets\\log_configs\\client-1.12.xml')
-
+        
         // Java Arguments
         if(process.platform === 'darwin'){
             args.push('-Xdock:name=HeliosLauncher')
@@ -431,6 +431,26 @@ class ProcessBuilder {
 
         // Vanilla Arguments
         args = args.concat(this.vanillaManifest.arguments.game)
+
+        async function WriteFullscreenToOptions(filePath, lineToReplace, newLine) {
+            try {
+                const exists = await fs.pathExists(filePath);
+            
+                if (exists) {
+                    let fileContent = await fs.readFile(filePath, 'utf8');
+                    if (fileContent.includes(lineToReplace)) {
+                        fileContent = fileContent.replace(lineToReplace, newLine);
+                        await fs.outputFile(filePath, fileContent);
+                    } else {
+                        await fs.outputFile(filePath, newLine);
+                    }
+                } else {
+                    await fs.outputFile(filePath, newLine);
+                }
+            } catch (err) {
+                logger.info('Error while writing fullscreen to options.txt:', err);
+            }
+        }
 
         for(let i=0; i<args.length; i++){
             if(typeof args[i] === 'object' && args[i].rules != null){
@@ -453,6 +473,14 @@ class ProcessBuilder {
                         // This should be fine for a while.
                         if(rule.features.has_custom_resolution != null && rule.features.has_custom_resolution === true){
                             if(ConfigManager.getFullscreen()){
+                                logger.info("gamedir: ", this.gameDir)
+                                
+                                const filePath = path.join(this.gameDir, "options.txt");
+                                const lineToReplace = 'fullscreen:false';
+                                const newLine = 'fullscreen:true';
+
+                                WriteFullscreenToOptions(filePath, lineToReplace, newLine);
+
                                 args[i].value = [
                                     '--fullscreen',
                                     'true'
