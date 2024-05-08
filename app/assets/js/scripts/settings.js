@@ -89,6 +89,19 @@ bindFileSelectors()
   * will be disabled until the value is corrected. This is an automated
   * process. More complex UI may need to be bound separately.
   */
+
+closeOnLaunchCheckbox  = document.querySelector('input[cValue="CloseOnLaunch"]')
+launchDetachedCheckbox = document.querySelector('input[cValue="LaunchDetached"]')
+
+closeOnLaunchCheckbox.addEventListener('change', function() {
+    if (this.checked) {
+        launchDetachedCheckbox.disabled = true
+        launchDetachedCheckbox.checked  = true
+    } else {
+        launchDetachedCheckbox.disabled = false
+    }
+})
+
 function initSettingsValidators(){
     const sEls = document.getElementById('settingsContainer').querySelectorAll('[cValue]')
     Array.from(sEls).map((v, index, arr) => {

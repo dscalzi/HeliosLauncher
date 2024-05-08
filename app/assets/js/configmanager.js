@@ -81,6 +81,7 @@ const DEFAULT_CONFIG = {
             resWidth: 1280,
             resHeight: 720,
             fullscreen: false,
+            CloseOnLaunch: false,
             autoConnect: true,
             launchDetached: true
         },
@@ -731,6 +732,25 @@ exports.getFullscreen = function(def = false){
  */
 exports.setFullscreen = function(fullscreen){
     config.settings.game.fullscreen = fullscreen
+}
+
+/**
+ * Check if the launcher should be closed when the game launch.
+ * 
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {boolean} Whether or not the launcher should be closed when the game launched.
+ */
+exports.getCloseOnLaunch = function(def = false){
+    return !def ? config.settings.game.CloseOnLaunch : DEFAULT_CONFIG.settings.game.CloseOnLaunch
+}
+
+/**
+ * Change the status if the launcher should be closed when the game launch.
+ * 
+ * @param {boolean} CloseOnLaunch Whether or not the launcher should be closed when the game launched.
+ */
+exports.setCloseOnLaunch = function(CloseOnLaunch){
+    config.settings.game.CloseOnLaunch = CloseOnLaunch
 }
 
 /**
