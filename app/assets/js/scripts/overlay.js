@@ -15,6 +15,9 @@ function isOverlayVisible(){
 
 let overlayHandlerContent
 
+let overlayContainer = document.getElementById('overlayContainer')
+let accountSelectContent = document.getElementById('accountSelectContent')
+
 /**
  * Overlay keydown handler for a non-dismissable overlay.
  * 
@@ -76,6 +79,8 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
     bindOverlayKeys(toggleState, content, dismissable)
     if(toggleState){
         document.getElementById('main').setAttribute('overlay', true)
+        overlayContainer.setAttribute('content', content)
+
         // Make things untabbable.
         $('#main *').attr('tabindex', '-1')
         $('#' + content).parent().children().hide()
@@ -95,6 +100,8 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
         })
     } else {
         document.getElementById('main').removeAttribute('overlay')
+        overlayContainer.removeAttribute('content')
+
         // Make things tabbable.
         $('#main *').removeAttr('tabindex')
         $('#overlayContainer').fadeOut({
@@ -120,6 +127,22 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
 async function toggleServerSelection(toggleState){
     await prepareServerSelectionList()
     toggleOverlay(toggleState, true, 'serverSelectContent')
+}
+
+async function toggleAccountSelection(toggleState, popup = false){    
+    if (popup) {
+        // set the popup=true attribute to the accountSelectContent div and set the accountSelectActions div to display: none to avoid colliding with the validateSelectedAccount function
+        accountSelectContent.setAttribute('popup', 'true')
+        document.getElementById('accountSelectActions').style.display = 'none'
+    } else {
+        // remove the popup attribute and set the accountSelectActions div to display: block, this is not done while closing the overlay because of the fadeOut effect
+        accountSelectContent.removeAttribute('popup')
+        document.getElementById('accountSelectActions').style.display = 'block'
+    }
+
+    // show the overlay
+    await prepareAccountSelectionList()
+    toggleOverlay(toggleState, true, 'accountSelectContent')
 }
 
 /**
@@ -169,8 +192,9 @@ function setDismissHandler(handler){
     }
 }
 
-/* Account Select View */
+/* Account Select button */
 
+// Bind account select confirm button.
 document.getElementById('accountSelectConfirm').addEventListener('click', async () => {
     const listings = document.getElementsByClassName('accountListing')
     for(let i=0; i<listings.length; i++){
@@ -200,18 +224,30 @@ document.getElementById('accountSelectConfirm').addEventListener('click', async 
 })
 
 // Bind account select cancel button.
-
 document.getElementById('accountSelectCancel').addEventListener('click', () => {
     $('#accountSelectContent').fadeOut(250, () => {
         $('#overlayContent').fadeIn(250)
     })
 })
 
+// Bind account select manage button.
+document.getElementById('accountSelectManage').addEventListener('click', async () => {
+    await prepareSettings()
+    switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
+        settingsNavItemListener(document.getElementById('settingsNavAccount'), false)
+    })
+    toggleOverlay(false)
+})
+
 // Make the Server Selection background clickable to close the overlay.
-let overlayContainer = document.getElementById('overlayContainer')
 overlayContainer.addEventListener('click', e => {
-    if(e.target === overlayContainer){
-        toggleOverlay(false)
+    if (e.target === overlayContainer) {
+        // This function only works for the server selection overlay or if the account selection is a popup
+        if(overlayContainer.getAttribute('content') === 'serverSelectContent') {
+            toggleOverlay(false)
+        } else if(overlayContainer.getAttribute('content') === 'accountSelectContent' && accountSelectContent.hasAttribute('popup')) {
+            toggleOverlay(false)
+        }
     }
 })
 
@@ -219,7 +255,6 @@ async function setServerListingHandlers(){
     const listings = Array.from(document.getElementsByClassName('serverListing'))
     listings.map(async (val) => {
         val.onclick = async e => {
-            console.log(e)
             const serv = (await DistroAPI.getDistribution()).getServerById(val.getAttribute('servid'))
             updateSelectedServer(serv)
             refreshServerStatus(true)
@@ -228,21 +263,34 @@ async function setServerListingHandlers(){
     })
 }
 
-function setAccountListingHandlers(){
+async function setAccountListingHandlers(){
     const listings = Array.from(document.getElementsByClassName('accountListing'))
-    listings.map((val) => {
-        val.onclick = e => {
-            if(val.hasAttribute('selected')){
-                return
-            }
-            const cListings = document.getElementsByClassName('accountListing')
-            for(let i=0; i<cListings.length; i++){
-                if(cListings[i].hasAttribute('selected')){
-                    cListings[i].removeAttribute('selected')
+    listings.map(async (val) => {
+        val.onclick = async e => {
+            // popup mode
+            if(accountSelectContent.hasAttribute('popup')){
+                const authAcc = ConfigManager.setSelectedAccount(val.getAttribute('uuid'))
+                ConfigManager.save()
+                updateSelectedAccount(authAcc)
+                if(getCurrentView() === VIEWS.settings) {
+                    await prepareSettings()
                 }
+                toggleOverlay(false)
+                validateSelectedAccount()
+                return    
+            } else {
+                if(val.hasAttribute('selected')){
+                    return
+                }
+                const cListings = document.getElementsByClassName('accountListing')
+                for(let i=0; i<cListings.length; i++){
+                    if(cListings[i].hasAttribute('selected')){
+                        cListings[i].removeAttribute('selected')
+                    }
+                }
+                val.setAttribute('selected', '')
+                document.activeElement.blur()
             }
-            val.setAttribute('selected', '')
-            document.activeElement.blur()
         }
     })
 }
@@ -284,7 +332,7 @@ function populateAccountListings(){
     const accounts = Array.from(Object.keys(accountsObj), v=>accountsObj[v])
     let htmlString = ''
     for(let i=0; i<accounts.length; i++){
-        htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${i===0 ? 'selected' : ''}>
+        htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${!i && !accountSelectContent.hasAttribute("popup") ? 'selected' : ''}>
             <img src="https://mc-heads.net/head/${accounts[i].uuid}/40">
             <div class="accountListingName">${accounts[i].displayName}</div>
         </button>`
@@ -298,7 +346,7 @@ async function prepareServerSelectionList(){
     await setServerListingHandlers()
 }
 
-function prepareAccountSelectionList(){
+async function prepareAccountSelectionList(){
     populateAccountListings()
-    setAccountListingHandlers()
+    await setAccountListingHandlers()
 }

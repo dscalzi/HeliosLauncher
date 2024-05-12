@@ -3850,7 +3850,8 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Server selection confirm button styles. */
 #serverSelectConfirm,
-#accountSelectConfirm {
+#accountSelectConfirm,
+#accountSelectManage {
     background: none;
     border: 1px solid #ffffff;
     color: white;

@@ -1,7 +1,7 @@
 [ejs.landing]
 updateAvailableTooltip = "Update Available"
 usernamePlaceholder = "Username"
-usernameEditButton = "Edit"
+usernameEditButton = "Switch"
 settingsTooltip = "Settings"
 serverStatus = "SERVER"
 serverStatusPlaceholder = "OFFLINE"
@@ -45,6 +45,7 @@ serverSelectHeader = "Available Servers"
 accountSelectHeader = "Select an Account"
 accountSelectConfirm = "Select"
 accountSelectCancel = "Cancel"
+accountSelectManage = "Manage Accounts"
 
 [ejs.settings]
 navHeaderText = "Settings"
