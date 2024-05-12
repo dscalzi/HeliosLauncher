@@ -42,8 +42,6 @@ cancelButton = "Cancel"
 
 [ejs.overlay]
 serverSelectHeader = "Available Servers"
-serverSelectConfirm = "Select"
-serverSelectCancel = "Cancel"
 accountSelectHeader = "Select an Account"
 accountSelectConfirm = "Select"
 accountSelectCancel = "Cancel"

@@ -169,26 +169,7 @@ function setDismissHandler(handler){
     }
 }
 
-/* Server Select View */
-
-document.getElementById('serverSelectConfirm').addEventListener('click', async () => {
-    const listings = document.getElementsByClassName('serverListing')
-    for(let i=0; i<listings.length; i++){
-        if(listings[i].hasAttribute('selected')){
-            const serv = (await DistroAPI.getDistribution()).getServerById(listings[i].getAttribute('servid'))
-            updateSelectedServer(serv)
-            refreshServerStatus(true)
-            toggleOverlay(false)
-            return
-        }
-    }
-    // None are selected? Not possible right? Meh, handle it.
-    if(listings.length > 0){
-        const serv = (await DistroAPI.getDistribution()).getServerById(listings[i].getAttribute('servid'))
-        updateSelectedServer(serv)
-        toggleOverlay(false)
-    }
-})
+/* Account Select View */
 
 document.getElementById('accountSelectConfirm').addEventListener('click', async () => {
     const listings = document.getElementsByClassName('accountListing')
@@ -218,10 +199,7 @@ document.getElementById('accountSelectConfirm').addEventListener('click', async 
     }
 })
 
-// Bind server select cancel button.
-document.getElementById('serverSelectCancel').addEventListener('click', () => {
-    toggleOverlay(false)
-})
+// Bind account select cancel button.
 
 document.getElementById('accountSelectCancel').addEventListener('click', () => {
     $('#accountSelectContent').fadeOut(250, () => {
@@ -229,21 +207,23 @@ document.getElementById('accountSelectCancel').addEventListener('click', () => {
     })
 })
 
-function setServerListingHandlers(){
+// Make the Server Selection background clickable to close the overlay.
+let overlayContainer = document.getElementById('overlayContainer')
+overlayContainer.addEventListener('click', e => {
+    if(e.target === overlayContainer){
+        toggleOverlay(false)
+    }
+})
+
+async function setServerListingHandlers(){
     const listings = Array.from(document.getElementsByClassName('serverListing'))
-    listings.map((val) => {
-        val.onclick = e => {
-            if(val.hasAttribute('selected')){
-                return
-            }
-            const cListings = document.getElementsByClassName('serverListing')
-            for(let i=0; i<cListings.length; i++){
-                if(cListings[i].hasAttribute('selected')){
-                    cListings[i].removeAttribute('selected')
-                }
-            }
-            val.setAttribute('selected', '')
-            document.activeElement.blur()
+    listings.map(async (val) => {
+        val.onclick = async e => {
+            console.log(e)
+            const serv = (await DistroAPI.getDistribution()).getServerById(val.getAttribute('servid'))
+            updateSelectedServer(serv)
+            refreshServerStatus(true)
+            toggleOverlay(false)
         }
     })
 }
@@ -315,7 +295,7 @@ function populateAccountListings(){
 
 async function prepareServerSelectionList(){
     await populateServerListings()
-    setServerListingHandlers()
+    await setServerListingHandlers()
 }
 
 function prepareAccountSelectionList(){
