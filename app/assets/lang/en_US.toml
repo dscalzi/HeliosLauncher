@@ -218,6 +218,12 @@ joined = "Exploring the Realm!"
 [js.overlay]
 dismiss = "Dismiss"
 
+[js.processbuilder.exit]
+exitErrorHeader = "Game exited with an error code"
+message = "The game exited abnormally with the exited code: "
+copyCode = "Copy exit code"
+copyCodeText = "Minecraft exit code "
+
 [js.settings.fileSelectors]
 executables = "Executables"
 allFiles = "All Files"
