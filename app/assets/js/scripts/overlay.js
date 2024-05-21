@@ -25,7 +25,11 @@ let accountSelectContent = document.getElementById('accountSelectContent')
  */
 function overlayKeyHandler (e){
     if(e.key === 'Enter' || e.key === 'Escape'){
-        document.getElementById(overlayHandlerContent).getElementsByClassName('overlayKeybindEnter')[0].click()
+        if (overlayContainer.hasAttribute('popup')) {
+            toggleOverlay(false)
+        } else {
+            document.getElementById(overlayHandlerContent).getElementsByClassName('overlayKeybindEnter')[0].click()
+        }
     }
 }
 /**
@@ -67,8 +71,9 @@ function bindOverlayKeys(state, content, dismissable){
  * @param {boolean} toggleState True to display, false to hide.
  * @param {boolean} dismissable Optional. True to show the dismiss option, otherwise false.
  * @param {string} content Optional. The content div to be shown.
+ * @param {boolean} popup Optional. True to show the overlay as a popup that is easily dismissable and interactible.
  */
-function toggleOverlay(toggleState, dismissable = false, content = 'overlayContent'){
+function toggleOverlay(toggleState, dismissable = false, content = 'overlayContent', popup = false){
     if(toggleState == null){
         toggleState = !document.getElementById('main').hasAttribute('overlay')
     }
@@ -80,6 +85,7 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
     if(toggleState){
         document.getElementById('main').setAttribute('overlay', true)
         overlayContainer.setAttribute('content', content)
+        overlayContainer.setAttribute('popup', popup)
 
         // Make things untabbable.
         $('#main *').attr('tabindex', '-1')
@@ -126,23 +132,21 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
 
 async function toggleServerSelection(toggleState){
     await prepareServerSelectionList()
-    toggleOverlay(toggleState, true, 'serverSelectContent')
+    toggleOverlay(toggleState, false, 'serverSelectContent', true)
 }
 
 async function toggleAccountSelection(toggleState, popup = false){    
     if (popup) {
-        // set the popup=true attribute to the accountSelectContent div and set the accountSelectActions div to display: none to avoid colliding with the validateSelectedAccount function
-        accountSelectContent.setAttribute('popup', 'true')
+        // set the accountSelectActions div to display: none to avoid colliding with the validateSelectedAccount function
         document.getElementById('accountSelectActions').style.display = 'none'
     } else {
-        // remove the popup attribute and set the accountSelectActions div to display: block, this is not done while closing the overlay because of the fadeOut effect
-        accountSelectContent.removeAttribute('popup')
+        // set the overlayContainer div to display: block, this is not done while closing the overlay because of the fadeOut effect
         document.getElementById('accountSelectActions').style.display = 'block'
     }
 
     // show the overlay
     await prepareAccountSelectionList()
-    toggleOverlay(toggleState, true, 'accountSelectContent')
+    toggleOverlay(toggleState, false, 'accountSelectContent', popup)
 }
 
 /**
@@ -242,10 +246,8 @@ document.getElementById('accountSelectManage').addEventListener('click', async (
 // Make the Server Selection background clickable to close the overlay.
 overlayContainer.addEventListener('click', e => {
     if (e.target === overlayContainer) {
-        // This function only works for the server selection overlay or if the account selection is a popup
-        if(overlayContainer.getAttribute('content') === 'serverSelectContent') {
-            toggleOverlay(false)
-        } else if(overlayContainer.getAttribute('content') === 'accountSelectContent' && accountSelectContent.hasAttribute('popup')) {
+        // This function only works if the overlay is a popup
+        if(overlayContainer.hasAttribute('popup')) {
             toggleOverlay(false)
         }
     }
@@ -268,7 +270,7 @@ async function setAccountListingHandlers(){
     listings.map(async (val) => {
         val.onclick = async e => {
             // popup mode
-            if(accountSelectContent.hasAttribute('popup')){
+            if(overlayContainer.hasAttribute('popup')){
                 const authAcc = ConfigManager.setSelectedAccount(val.getAttribute('uuid'))
                 ConfigManager.save()
                 updateSelectedAccount(authAcc)
@@ -332,7 +334,7 @@ function populateAccountListings(){
     const accounts = Array.from(Object.keys(accountsObj), v=>accountsObj[v])
     let htmlString = ''
     for(let i=0; i<accounts.length; i++){
-        htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${!i && !accountSelectContent.hasAttribute("popup") ? 'selected' : ''}>
+        htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${!i && !overlayContainer.hasAttribute("popup") ? 'selected' : ''}>
             <img src="https://mc-heads.net/head/${accounts[i].uuid}/40">
             <div class="accountListingName">${accounts[i].displayName}</div>
         </button>`
