@@ -474,18 +474,15 @@ class ProcessBuilder {
                         if(rule.features.has_custom_resolution != null && rule.features.has_custom_resolution === true){
                             if(ConfigManager.getFullscreen()){
                                 logger.info("gamedir: ", this.gameDir)
-                                
-                                const filePath = path.join(this.gameDir, "options.txt");
-                                const lineToReplace = 'fullscreen:false';
-                                const newLine = 'fullscreen:true';
-
-                                WriteFullscreenToOptions(filePath, lineToReplace, newLine);
-
+                                WriteFullscreenToOptions(path.join(this.gameDir, "options.txt"), 'fullscreen:false', 'fullscreen:true')
                                 args[i].value = [
                                     '--fullscreen',
                                     'true'
                                 ]
+                            } else {
+                                WriteFullscreenToOptions(path.join(this.gameDir, "options.txt"), 'fullscreen:true', 'fullscreen:false');
                             }
+                            
                             checksum++
                         }
                     }
