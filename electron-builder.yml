@@ -2,7 +2,7 @@ appId: 'mrslauncher'
 productName: 'MRS Launcher'
 artifactName: 'MRS-Launcher-setup-${version}.${ext}'
 
-copyright: 'Copyright © 2018-2022 Daniel Scalzi, Copyright © 2024 peunsu'
+copyright: 'Copyright © 2018-2024 Daniel Scalzi, Copyright © 2024 peunsu'
 
 asar: true
 compression: 'maximum'
