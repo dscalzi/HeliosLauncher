@@ -2,9 +2,9 @@
 
 <h1 align="center">MRS Launcher</h1>
 
-[<h3 align="center">Forked from Helios Launcher</h3>](https://github.com/dscalzi/HeliosLauncher)
+<h3 align="center"><a href="https://github.com/dscalzi/HeliosLauncher">Forked from Helios Launcher</a></h3>
 
-[<p align="center"><img src="https://img.shields.io/github/actions/workflow/status/peunsu/MRSLauncher/build.yml?branch=master&style=for-the-badge" alt="gh actions">](https://github.com/peunsu/MRSLauncher/actions) [<img src="https://img.shields.io/github/downloads/peunsu/MRSLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/peunsu/MRSLauncher/releases)
+<p align="center"><a href="https://github.com/peunsu/MRSLauncher/actions"><img src="https://img.shields.io/github/actions/workflow/status/peunsu/MRSLauncher/build.yml?branch=master&style=for-the-badge" alt="gh actions"></a> <a href="https://github.com/peunsu/MRSLauncher/releases"><img src="https://img.shields.io/github/downloads/peunsu/MRSLauncher/total.svg?style=for-the-badge" alt="downloads"></a>
 
 [<p align="center"><img src="https://img.shields.io/endpoint?url=https://minecraft-server-status-badge.vercel.app/api/server/mysticred.space?port=25565&logo=curseforge&logoColor=ffffff&label=MRS Server&labelColor=F16436&color=28231d&style=for-the-badge" alt="homepage">](https://mysticred.space) [<img src="https://img.shields.io/discord/330997213255827457?style=for-the-badge&logo=discord&logoColor=ffffff&label=Discord&labelColor=6173f4&color=28231d" alt="discord">](https://discord.gg/Z8j6ahF4MJ)
 
@@ -46,11 +46,11 @@
 
 #### 최신 릴리즈 버전
 
-[![](https://img.shields.io/github/release/dscalzi/HeliosLauncher.svg?style=flat-square)](https://github.com/peunsu/MRSLauncher/releases/latest)
+[![](https://img.shields.io/github/v/release/peunsu/MRSLauncher?style=flat-square)](https://github.com/peunsu/MRSLauncher/releases/latest)
 
 #### 최신 프리릴리즈 버전
 
-[![](https://img.shields.io/github/release/dscalzi/HeliosLauncher/all.svg?style=flat-square)](https://github.com/peunsu/MRSLauncher/releases)
+[![](https://img.shields.io/github/v/release/peunsu/MRSLauncher?include_prereleases&style=flat-square&label=pre-release)](https://github.com/peunsu/MRSLauncher/releases)
 
 **지원하는 플랫폼**
 
