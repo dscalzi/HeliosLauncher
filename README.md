@@ -10,8 +10,8 @@
 
 <p align="center">Java, Forge, 모드 설치 걱정 없이 서버에 접속하세요. MRS 런처 하나로 준비 끝!</p>
 
-![Screenshot 1](https://i.imgur.com/hL9gCr3.jpg)
-![Screenshot 2](https://i.imgur.com/m1yHiM6.jpg)
+![Screenshot 1](https://i.imgur.com/44esaa9.png)
+![Screenshot 2](https://i.imgur.com/NxUAzlL.png)
 
 ## 기능
 
@@ -37,8 +37,7 @@
 
 #### 도움이 필요하신가요? [위키를 확인해보세요.][wiki]
 
-#### Like the project? Leave a ⭐ star on the repository!
-#### 프로젝트가 마음에 드셨나요? [원본 레포지토리](https://github.com/dscalzi/HeliosLauncher)에 ⭐ 스타를 남겨주세요!
+#### 프로젝트가 마음에 드셨나요? [원작자(dscalzi)](https://github.com/dscalzi)의 [원본 레포지토리(HeliosLauncher)](https://github.com/dscalzi/HeliosLauncher)에 ⭐ 스타를 남겨주세요!
 
 ## 다운로드
 
@@ -78,7 +77,7 @@ ctrl + shift + i
 
 콘솔 출력을 내보내려면 콘솔 어디에서든 마우스 오른쪽 버튼을 클릭하고 **다른 이름으로 저장**을 클릭하세요.
 
-![console example](https://i.imgur.com/T5e73jP.png)
+![console example](https://i.imgur.com/ry2Disn.png)
 
 
 ## 개발
