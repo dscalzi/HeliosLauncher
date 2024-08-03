@@ -1,10 +1,5 @@
-<<<<<<< Updated upstream
-appId: 'helioslauncher'
-productName: 'Helios Launcher'
-=======
-appId: 'Wordsmp_launcher'
-productName: 'Wordsmp Launcher'
->>>>>>> Stashed changes
+appId: 'Wordsmplauncher'
+productName: 'Wordsmp_Launcher'
 artifactName: '${productName}-setup-${version}.${ext}'
 
 copyright: 'Copyright © 2018-2024 Daniel Scalzi'
