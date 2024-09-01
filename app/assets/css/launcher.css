@@ -13,6 +13,21 @@
 }
 
 @font-face {
+    font-family: 'Monocraft';
+    src: url('../fonts/Monocraft.otf');
+}
+
+@font-face {
+    font-family: 'Option';
+    src: url('../fonts/Option-Light.otf');
+}
+
+@font-face {
+    font-family: 'Monocraft';
+    src: url('../fonts/GeometricaSans-Regular');
+}
+
+@font-face {
     font-family: 'Evolve_Sans_Light';
     src: url('../fonts/Evolve_Sans_Light.otf');
 }
@@ -47,7 +62,7 @@ p {
 
 /* Set default font and color. */
 body, button {
-    font-family: 'nunito';
+    font-family: 'Monocraft';
     color: white;
 }
 
@@ -115,7 +130,7 @@ body, button {
 }
 #frameTitleText {
     font-size: 14px;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     letter-spacing: 0.5px;
 }
 
@@ -289,7 +304,7 @@ body, button {
 }
 
 #welcomeHeader {
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     text-align: center;
     color: white;
     margin-bottom: 25px;
@@ -513,7 +528,7 @@ body, button {
 
 /* Header on login view. */
 #loginSubheader {
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     margin-bottom: 25px;
     font-size: 12px;
     letter-spacing: 1px;
@@ -538,7 +553,7 @@ body, button {
 
 /* Span which displays errors related to login field content. */
 .loginErrorSpan {
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     font-weight: bold;
     font-size: 8px;
     color: #ff1b0c;
@@ -574,7 +589,7 @@ body, button {
 
 /* Login text input styles. */
 .loginField {
-    font-family: 'nunito';
+    font-family: 'Monocraft';
     background: none;
     border-width: 1.5px 0px 0px 0px;
     border-style: solid;
@@ -1239,7 +1254,7 @@ body, button {
 }
 .settingsTabHeaderText {
     font-size: 20px;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
 }
 .settingsTabHeaderDesc {
     font-size: 12px;
@@ -1278,7 +1293,7 @@ body, button {
     background: none;
     font-size: 12px;
     border-radius: 3px;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     transition: 0.25s ease;
     cursor: pointer;
     outline: none;
@@ -1310,7 +1325,7 @@ body, button {
     background: rgba(0, 0, 0, 0.25);
     border-radius: 3px;
     border: 1px solid rgba(126, 126, 126, 0.57);
-    font-family: 'nunito';
+    font-family: 'Monocraft';
     transition: 0.25s ease;
 }
 #settingsContainer input[type=number]:focus,
@@ -1339,7 +1354,7 @@ body, button {
 }
 .settingsFieldTitle {
     font-size: 14px;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     color: rgba(255, 255, 255, 0.95);
 }
 .settingsFieldDesc {
@@ -1502,7 +1517,7 @@ input:checked + .toggleSwitchSlider:before {
     width: 89%;
 }
 .settingsFileSelDesc strong {
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
 }
 
 /* * *
@@ -1610,7 +1625,7 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 12px;
     color: grey;
     font-weight: bold;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
 }
 .settingsAuthAccountDetailValue {
     font-size: 14px;
@@ -1632,7 +1647,7 @@ input:checked + .toggleSwitchSlider:before {
     border: none;
     white-space: nowrap;
     background: none;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     outline: none;
     transition: 0.25s ease;
 }
@@ -1657,7 +1672,7 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     font-size: 12px;
     border-radius: 3px;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     transition: 0.25s ease;
     cursor: pointer;
     outline: none;
@@ -2212,7 +2227,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Release type text. */
 #settingsAboutCurrentVersionTitle {
     font-size: 12px;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     color: #23aa23;
     font-weight: bold;
 }
@@ -2301,7 +2316,7 @@ input:checked + .toggleSwitchSlider:before {
     background-color: rgba(255, 255, 255, 0.25);
     color: white;
     border-radius: 3px;
-    font-family: 'nunito';
+    font-family: 'Monocraft';
 }
 .settingsChangelogText li+li {
     margin-top: .25em;
@@ -2411,7 +2426,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Release type text. */
 #settingsUpdateVersionTitle {
     font-size: 12px;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     color: #23aa23;
     font-weight: bold;
 }
@@ -2610,7 +2625,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsArticleTitle {
     font-size: 18px;
     font-weight: bold;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     color: white;
     text-decoration: none;
     transition: 0.25s ease;
@@ -2927,7 +2942,7 @@ input:checked + .toggleSwitchSlider:before {
     z-index: 1;
     top: 115%;
     left: -17.5px;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     font-size: 12px;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
 }
@@ -3259,7 +3274,7 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 4px;
     padding: 5px 10px;
     z-index: 1;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     font-size: 12px;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
     bottom: calc(100% + 15px);
@@ -3574,7 +3589,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Overlay title styles. */
 #overlayTitle {
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     font-size: 20px;
     font-weight: bold;
     letter-spacing: 1px;
@@ -3600,7 +3615,7 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     border: 1px solid #ffffff;
     color: white;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     font-weight: bold;
     border-radius: 2px;
     padding: 0px 8.1px;
@@ -3652,7 +3667,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Server selection header. */
 #serverSelectHeader,
 #accountSelectHeader {
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     font-size: 20px;
     font-weight: bold;
     color: #fff;
@@ -3875,7 +3890,7 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     border: 1px solid #ffffff;
     color: white;
-    font-family: 'Evolve_Sans_Light';
+    font-family: 'Monocraft';
     font-weight: bold;
     border-radius: 2px;
     padding: 0px 8.1px;

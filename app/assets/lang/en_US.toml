@@ -121,7 +121,7 @@ noReleaseNotes = "К выпуску нет примечаний "
 viewReleaseNotes = "Просмотреть примечания к выпуску на GitHub"
 launcherUpdatesHeaderText = "Обновления лаунчера"
 launcherUpdatesHeaderDesc = "Скачивайте, устанавливайте и просматривайте обновления для программы запуска"
-checkForUpdates = "Проверите обновления"
+checkForUpdates = "Проверить обновления"
 whatsNew = "Что нового"
 updateReleaseNotes = "Примечания обновлению"
 
@@ -129,7 +129,7 @@ updateReleaseNotes = "Примечания обновлению"
 waitingText = "Ожидаем ответа сервера Microsoft.."
 
 [ejs.welcome]
-continueButton = "ПРОДОДЖАЕМ"
+continueButton = "ПРОДОЛЖИТЬ"
 
 
 [js.discord]
@@ -252,7 +252,7 @@ selectedAccount = "Выбранная учетная запись ✓"
 logout = "Выйти из системы"
 
 [js.settings.dropinMods]
-removeButton = "Удалять"
+removeButton = "Удалить"
 deleteFailedTitle = "Не удалось удалить<br>Всплывающий мод {fullName}"
 deleteFailedMessage = "Убедитесь, что файл не используется, и повторите попытку"
 failedToggleTitle = "Не удалось переключить один или несколько встроенных модов"
