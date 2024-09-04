@@ -7,6 +7,7 @@ const { getMojangOS, isLibraryCompatible, mcVersionAtLeast }  = require('helios-
 const { Type }              = require('helios-distribution-types')
 const os                    = require('os')
 const path                  = require('path')
+const util                  = require('util')
 
 const ConfigManager            = require('./configmanager')
 
@@ -177,6 +178,10 @@ class ProcessBuilder {
         let fMods = []
         let lMods = []
 
+        console.log('Sub mode log:')
+        console.log(util.inspect(modCfg, {showHidden: false, depth: null, colors: true}))
+                        
+
         for(let mdl of mdls){
             const type = mdl.rawModule.type
             if(type === Type.ForgeMod || type === Type.LiteMod || type === Type.LiteLoader || type === Type.FabricMod){
@@ -184,7 +189,7 @@ class ProcessBuilder {
                 const e = ProcessBuilder.isModEnabled(modCfg[mdl.getVersionlessMavenIdentifier()], mdl.getRequired())
                 if(!o || (o && e)){
                     if(mdl.subModules.length > 0){
-                        const v = this.resolveModConfiguration(modCfg[mdl.getVersionlessMavenIdentifier()].mods, mdl.subModules)
+                        const v = this.resolveModConfiguration(mdl.rawModule, mdl.subModules)
                         fMods = fMods.concat(v.fMods)
                         lMods = lMods.concat(v.lMods)
                         if(type === Type.LiteLoader){
