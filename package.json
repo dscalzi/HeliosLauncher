@@ -1,9 +1,9 @@
 {
   "name": "marcusklauncher",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "productName": "Marcusk Studio Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "description": "Launcher for the Marcusk Events",
+  "author": "Leafd (https://github.com/Leafd_TK/)",
   "license": "UNLICENSED",
   "homepage": "https://marcusk.fun/",
   "bugs": {
@@ -46,6 +46,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/LeafdTK/Launcher.git"
   }
 }
