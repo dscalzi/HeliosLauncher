@@ -1,0 +1,305 @@
+/**
+ * @Name dlAsync Function
+ * @async
+ * @param {boolean} login
+ * @returns {Promise<void>}
+ *
+ * @author Sandro642
+ * @Cheating Athena's Shield
+ * @Ajout Liste blanche des mods
+ */
+
+/**
+ * @Révision le XX.XX.2024 périme le 01.01.2025
+ * @Bug découvert : 0
+ * @Athena's Shield
+ * @Sandro642
+ */
+
+// ▄▄▄     ▄▄▄█████▓ ██░ ██ ▓█████  ███▄    █  ▄▄▄        ██████      ██████  ██░ ██  ██▓▓█████  ██▓    ▓█████▄
+// ▒████▄   ▓  ██▒ ▓▒▓██░ ██▒▓█   ▀  ██ ▀█   █ ▒████▄    ▒██    ▒    ▒██    ▒ ▓██░ ██▒▓██▒▓█   ▀ ▓██▒    ▒██▀ ██▌
+// ▒██  ▀█▄ ▒ ▓██░ ▒░▒██▀▀██░▒███   ▓██  ▀█ ██▒▒██  ▀█▄  ░ ▓██▄      ░ ▓██▄   ▒██▀▀██░▒██▒▒███   ▒██░    ░██   █▌
+// ░██▄▄▄▄██░ ▓██▓ ░ ░▓█ ░██ ▒▓█  ▄ ▓██▒  ▐▌██▒░██▄▄▄▄██   ▒   ██▒     ▒   ██▒░▓█ ░██ ░██░▒▓█  ▄ ▒██░    ░▓█▄   ▌
+//  ▓█   ▓██▒ ▒██▒ ░ ░▓█▒░██▓░▒████▒▒██░   ▓██░ ▓█   ▓██▒▒██████▒▒   ▒██████▒▒░▓█▒░██▓░██░░▒████▒░██████▒░▒████▓
+//  ▒▒   ▓▒█░ ▒ ░░    ▒ ░░▒░▒░░ ▒░ ░░ ▒░   ▒ ▒  ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░   ▒ ▒▓▒ ▒ ░ ▒ ░░▒░▒░▓  ░░ ▒░ ░░ ▒░▓  ░ ▒▒▓  ▒
+//   ▒   ▒▒ ░   ░     ▒ ░▒░ ░ ░ ░  ░░ ░░   ░ ▒░  ▒   ▒▒ ░░ ░▒  ░ ░   ░ ░▒  ░ ░ ▒ ░▒░ ░ ▒ ░ ░ ░  ░░ ░ ▒  ░ ░ ▒  ▒
+//   ░   ▒    ░       ░  ░░ ░   ░      ░   ░ ░   ░   ▒   ░  ░  ░     ░  ░  ░   ░  ░░ ░ ▒ ░   ░     ░ ░    ░ ░  ░
+//       ░  ░         ░  ░  ░   ░  ░         ░       ░  ░      ░           ░   ░  ░  ░ ░     ░  ░    ░  ░   ░
+//                                                                                                        ░
+
+// Keep reference to Minecraft Process
+let proc;
+// Is DiscordRPC enabled
+let hasRPC = false;
+// Joined server regex
+const GAME_JOINED_REGEX = /\[.+\]: Sound engine started/;
+const GAME_LAUNCH_REGEX = /^\[.+\]: (?:MinecraftForge .+ Initialized|ModLauncher .+ starting: .+|Loading Minecraft .+ with Fabric Loader .+)$/
+const MIN_LINGER = 5000;
+
+// List of mods to exclude from validation
+const EXCLUDED_MODS = [
+];
+
+async function dlAsync(login = true) {
+    const loggerLaunchSuite = LoggerUtil.getLogger('LaunchSuite');
+    const loggerLanding = LoggerUtil.getLogger('Landing');
+    setLaunchDetails(Lang.queryJS('landing.dlAsync.loadingServerInfo'));
+
+    let distro;
+
+    try {
+        distro = await DistroAPI.refreshDistributionOrFallback();
+        onDistroRefresh(distro);
+    } catch (err) {
+        loggerLaunchSuite.error('Unable to refresh distribution index.', err);
+        showLaunchFailure(Lang.queryJS('landing.dlAsync.fatalError'), Lang.queryJS('landing.dlAsync.unableToLoadDistributionIndex'));
+        return;
+    }
+
+    const serv = distro.getServerById(ConfigManager.getSelectedServer());
+
+    if (login) {
+        if (ConfigManager.getSelectedAccount() == null) {
+            loggerLanding.error('You must be logged into an account.');
+            return;
+        }
+    }
+
+    // --------- Mod Verification Logic ---------
+    const modsDir = path.join(ConfigManager.getDataDirectory(), 'instances', serv.rawServer.id, 'mods');
+
+    // Check if mods directory exists, if not, create it
+    if (!fs.existsSync(modsDir)) {
+        fs.mkdirSync(modsDir, { recursive: true });
+    }
+
+    const distroMods = {};
+    const mdls = serv.modules;
+
+    // Populate expected mod identities and log them
+    mdls.forEach(mdl => {
+        if (mdl.rawModule.name.endsWith('.jar')) {
+            const modPath = path.join(modsDir, mdl.rawModule.name);
+            const modIdentity = mdl.rawModule.identity || mdl.rawModule.MD5;
+            loggerLanding.info(`Expected Identity from Distribution for ${mdl.rawModule.name}: ${modIdentity}`);
+            distroMods[modPath] = modIdentity;
+        }
+    });
+
+    // Function to extract mod identity from the jar file
+    const extractModIdentity = (filePath) => {
+        loggerLanding.info(`Extracting identity for mod at: ${filePath}`);
+        const zip = new AdmZip(filePath);
+        const manifestEntry = zip.getEntry('META-INF/MANIFEST.MF');
+
+        if (manifestEntry) {
+            const manifestContent = manifestEntry.getData().toString('utf8');
+            const lines = manifestContent.split('\n');
+            const identityLine = lines.find(line => line.startsWith('Mod-Id:') || line.startsWith('Implementation-Title:'));
+            if (identityLine) {
+                loggerLanding.info(`Found identity in manifest for ${filePath}: ${identityLine}`);
+                return identityLine.split(':')[1].trim();
+            }
+        }
+
+        // Fall back to a hash if no identity is found
+        const fileBuffer = fs.readFileSync(filePath);
+        const hashSum = crypto.createHash('md5');  // Use MD5 to match the distribution configuration
+        hashSum.update(fileBuffer);
+        const hash = hashSum.digest('hex');
+        loggerLanding.info(`No identity found in manifest for ${filePath}, using hash: ${hash}`);
+        return hash;
+    };
+
+    // Validate mods function
+    const validateMods = () => {
+        loggerLanding.info("Starting mod validation...");
+        const installedMods = fs.readdirSync(modsDir);
+        let valid = true;
+
+        for (let mod of installedMods) {
+            const modPath = path.join(modsDir, mod);
+
+            // Skip validation for mods in the excluded list
+            if (EXCLUDED_MODS.includes(mod)) {
+                loggerLanding.info(`Skipping validation for excluded mod: ${mod}`);
+                continue;
+            }
+
+            const expectedIdentity = distroMods[modPath];
+            loggerLanding.info(`Validating mod: ${mod}`);
+
+            if (expectedIdentity) {
+                const modIdentity = extractModIdentity(modPath);
+                loggerLanding.info(`Expected Identity: ${expectedIdentity}, Calculated Identity for ${mod}: ${modIdentity}`);
+                if (modIdentity !== expectedIdentity) {
+                    loggerLanding.error(`Mod identity mismatch! Mod: ${mod}, Expected: ${expectedIdentity}, Found: ${modIdentity}`);
+                    valid = false;
+                    break;
+                }
+            } else {
+                loggerLanding.warn(`No expected identity found for mod: ${mod}. Marking as invalid.`);
+                valid = false;
+                break;
+            }
+        }
+
+        loggerLanding.info("Mod validation completed.");
+        return valid;
+    };
+
+    // Perform mod validation before proceeding
+    if (!validateMods()) {
+        const errorMessage = `Athena's Shield a détecté des mods non valides. Veuillez supprimer le dossier .folder et redémarrer le lanceur.`;
+        loggerLanding.error(errorMessage);
+        showLaunchFailure(errorMessage, null);
+        return;
+    }
+    // --------- End of Mod Verification Logic ---------
+
+    setLaunchDetails(Lang.queryJS('landing.dlAsync.pleaseWait'));
+    toggleLaunchArea(true);
+    setLaunchPercentage(0, 100);
+
+    const fullRepairModule = new FullRepair(
+        ConfigManager.getCommonDirectory(),
+        ConfigManager.getInstanceDirectory(),
+        ConfigManager.getLauncherDirectory(),
+        ConfigManager.getSelectedServer(),
+        DistroAPI.isDevMode()
+    );
+
+    fullRepairModule.spawnReceiver();
+
+    fullRepairModule.childProcess.on('error', (err) => {
+        loggerLaunchSuite.error('Error during launch', err);
+        showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), err.message || Lang.queryJS('landing.dlAsync.errorDuringLaunchText'));
+    });
+    fullRepairModule.childProcess.on('close', (code, _signal) => {
+        if(code !== 0){
+            loggerLaunchSuite.error(`Full Repair Module exited with code ${code}, assuming error.`);
+            showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), Lang.queryJS('landing.dlAsync.seeConsoleForDetails'));
+        }
+    });
+
+    loggerLaunchSuite.info('Validating files.');
+    setLaunchDetails(Lang.queryJS('landing.dlAsync.validatingFileIntegrity'));
+    let invalidFileCount = 0;
+    try {
+        invalidFileCount = await fullRepairModule.verifyFiles(percent => {
+            setLaunchPercentage(percent);
+        });
+        setLaunchPercentage(100);
+    } catch (err) {
+        loggerLaunchSuite.error('Error during file validation.');
+        showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringFileVerificationTitle'), err.displayable || Lang.queryJS('landing.dlAsync.seeConsoleForDetails'));
+        return;
+    }
+
+    if(invalidFileCount > 0) {
+        loggerLaunchSuite.info('Downloading files.');
+        setLaunchDetails(Lang.queryJS('landing.dlAsync.downloadingFiles'));
+        setLaunchPercentage(0);
+        try {
+            await fullRepairModule.download(percent => {
+                setDownloadPercentage(percent);
+            });
+            setDownloadPercentage(100);
+        } catch(err) {
+            loggerLaunchSuite.error('Error during file download.');
+            showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringFileDownloadTitle'), err.displayable || Lang.queryJS('landing.dlAsync.seeConsoleForDetails'));
+            return;
+        }
+    } else {
+        loggerLaunchSuite.info('No invalid files, skipping download.');
+    }
+
+    // Remove download bar.
+    remote.getCurrentWindow().setProgressBar(-1);
+
+    fullRepairModule.destroyReceiver();
+
+    setLaunchDetails(Lang.queryJS('landing.dlAsync.preparingToLaunch'));
+
+    const mojangIndexProcessor = new MojangIndexProcessor(
+        ConfigManager.getCommonDirectory(),
+        serv.rawServer.minecraftVersion);
+    const distributionIndexProcessor = new DistributionIndexProcessor(
+        ConfigManager.getCommonDirectory(),
+        distro,
+        serv.rawServer.id
+    );
+
+    const modLoaderData = await distributionIndexProcessor.loadModLoaderVersionJson(serv);
+    const versionData = await mojangIndexProcessor.getVersionJson();
+
+    if(login) {
+        const authUser = ConfigManager.getSelectedAccount();
+        loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`);
+        let pb = new ProcessBuilder(serv, versionData, modLoaderData, authUser, remote.app.getVersion());
+        setLaunchDetails(Lang.queryJS('landing.dlAsync.launchingGame'));
+
+        const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`);
+
+        const onLoadComplete = () => {
+            toggleLaunchArea(false);
+
+            proc.stdout.removeListener('data', tempListener);
+            proc.stderr.removeListener('data', gameErrorListener);
+        };
+        const start = Date.now();
+
+        // Attach a temporary listener to the client output.
+        const tempListener = function(data){
+            if(GAME_LAUNCH_REGEX.test(data.trim())){
+                const diff = Date.now()-start;
+                if(diff < MIN_LINGER) {
+                    setTimeout(onLoadComplete, MIN_LINGER-diff);
+                } else {
+                    onLoadComplete();
+                }
+            }
+        };
+
+        const gameErrorListener = function(data){
+            if(data.trim().toLowerCase().includes('error')){
+                loggerLaunchSuite.error(`Game error: ${data}`);
+            }
+        };
+
+        proc = pb.build();
+
+        proc.stdout.on('data', tempListener);
+        proc.stderr.on('data', gameErrorListener);
+
+        proc.stdout.on('data', function(data){
+            if(SERVER_JOINED_REGEX.test(data.trim())){
+                DiscordWrapper.updateDetails('Exploring the World');
+            } else if(GAME_JOINED_REGEX.test(data.trim())) {
+                DiscordWrapper.updateDetails('Main Menu');
+            }
+        });
+
+        proc.on('close', (code, _signal) => {
+            if (hasRPC) {
+                DiscordWrapper.shutdownRPC();
+                hasRPC = false;
+            }
+            loggerLaunchSuite.info(`Game process exited with code ${code}.`);
+            if(code !== 0){
+                showLaunchFailure(Lang.queryJS('landing.dlAsync.gameExitedAbnormal'), Lang.queryJS('landing.dlAsync.seeConsoleForDetails'));
+            }
+            proc = null;
+        });
+
+        proc.on('error', (err) => {
+            loggerLaunchSuite.error('Error during game launch', err);
+            showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), err.message || Lang.queryJS('landing.dlAsync.errorDuringLaunchText'));
+            proc = null;
+        });
+
+        setTimeout(() => {
+            loggerLaunchSuite.info('Waiting for game window...');
+        }, MIN_LINGER);
+    }
+}

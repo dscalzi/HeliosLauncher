@@ -12,6 +12,15 @@ const dataPath = path.join(sysRoot, '.helioslauncher')
 const launcherDir = require('@electron/remote').app.getPath('userData')
 
 /**
+ * The path to the data directory used by the application.
+ * This variable can be used to retrieve or set the location
+ * where the application's data files are stored.
+ *
+ * @type {string}
+ */
+exports.dataPath = dataPath
+
+/**
  * Retrieve the absolute path of the launcher directory.
  * 
  * @returns {string} The absolute path of the launcher directory.
