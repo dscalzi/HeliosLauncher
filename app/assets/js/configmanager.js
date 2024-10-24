@@ -7,7 +7,9 @@ const logger = LoggerUtil.getLogger('ConfigManager')
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME)
 
-const dataPath = path.join(sysRoot, '.helioslauncher')
+const nameDataPath = '.helioslauncher'
+
+const dataPath = path.join(sysRoot, nameDataPath)
 
 const launcherDir = require('@electron/remote').app.getPath('userData')
 
@@ -18,7 +20,9 @@ const launcherDir = require('@electron/remote').app.getPath('userData')
  *
  * @type {string}
  */
-exports.dataPath = dataPath
+exports.getNameDataPath = function(){
+    return nameDataPath
+}
 
 /**
  * Retrieve the absolute path of the launcher directory.
