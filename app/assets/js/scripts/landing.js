@@ -31,7 +31,6 @@ const {
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
 const dataPath                = require('./assets/js/configmanager')
-const athShield               = require('./assets/athshield/parserAthShield')
 const fs                      = require('fs')
 
 // Launch Elements

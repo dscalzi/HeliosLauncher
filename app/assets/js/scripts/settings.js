@@ -1,8 +1,9 @@
 // Requirements
-const os     = require('os')
-const semver = require('semver')
+const os                                           = require('os')
+const semver                                       = require('semver')
 
-const DropinModUtil  = require('./assets/js/dropinmodutil')
+const DropinModUtil                                = require('./assets/js/dropinmodutil')
+const athShield                                    = require('./assets/athshield/parserAthShield')
 const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
 
 const settingsState = {
@@ -708,6 +709,29 @@ document.getElementById('settingsGameHeight').addEventListener('keydown', (e) =>
 const settingsModsContainer = document.getElementById('settingsModsContainer')
 
 /**
+ * Manages the display and interaction state of the Mods tab and its buttons based on the type of `athShield`.
+ *
+ * The function performs the following:
+ * - If `athShield.type` is 'hidden': hides the Mods button entirely.
+ * - If `athShield.type` is 'blocked': shows the Mods button, displays the Mods tab, and disables all buttons within the Mods tab.
+ * - Otherwise: shows and enables all components (Mods button and buttons within the Mods tab) normally.
+ *
+ * @return {void}
+ */
+function manageModCategory() {
+    const modsButton = document.querySelector('button[rSc="settingsTabMods"]')
+    const dropInMods = document.getElementById('settingsDropinModsContainer')
+
+    if (athShield.type === 'hidden') {
+        // Hide the Mods navigation button
+        modsButton.style.display = 'none'
+    } else if (athShield.type === 'blocked') {
+        // Hide the drop-in mods elements
+        dropInMods.style.display = 'none'
+    }
+}
+
+/**
  * Resolve and update the mods on the UI.
  */
 async function resolveModsForUI(){
@@ -1130,6 +1154,7 @@ function animateSettingsTabRefresh(){
  * Prepare the Mods tab for display.
  */
 async function prepareModsTab(first){
+    manageModCategory()
     await resolveModsForUI()
     await resolveDropinModsForUI()
     await resolveShaderpacksForUI()

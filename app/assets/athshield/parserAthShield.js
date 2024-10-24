@@ -22,7 +22,7 @@ class AthenaShield {
     }
 
     // Récupérer la visibilité du menu
-    get view() {
+    get type() {
         return this.config.menuVisibility
     }
 }
