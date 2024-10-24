@@ -30,7 +30,6 @@ const {
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
-const dataPath                = require('./assets/js/configmanager')
 const fs                      = require('fs')
 
 // Launch Elements
@@ -614,7 +613,7 @@ async function dlAsync(login = true) {
 
         // Perform mod validation before proceeding
         if (!validateMods()) {
-            const errorMessage = Lang.queryJS('landing.dlAsync.AthShield.invalidModsDetectedMessage', {'folder': dataPath})
+            const errorMessage = Lang.queryJS('landing.dlAsync.AthShield.invalidModsDetectedMessage', {'folder': ConfigManager.getNameDataPath()})
             loggerLanding.error(errorMessage)
             showLaunchFailure(errorMessage, null)
             return
