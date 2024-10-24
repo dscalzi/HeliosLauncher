@@ -1,20 +1,21 @@
 /**
  * @Name dlAsync Function
- * @async
- * @param {boolean} login
  * @returns {Promise<void>}
  *
  * @author Sandro642
  * @Cheating Athena's Shield
- * @Ajout Liste blanche des mods
+ *
+ * @Added whitelist for mods
+ * @Added support for the new HeliosLauncher version
  */
 
 /**
- * @Révision le XX.XX.2024 périme le 01.01.2025
- * @Bug découvert : 0
+ * @Reviewed on XX.XX.2024 expires on 01.01.2025
+ * @Bugs discovered: 0
  * @Athena's Shield
  * @Sandro642
  */
+
 
 // ▄▄▄     ▄▄▄█████▓ ██░ ██ ▓█████  ███▄    █  ▄▄▄        ██████      ██████  ██░ ██  ██▓▓█████  ██▓    ▓█████▄
 // ▒████▄   ▓  ██▒ ▓▒▓██░ ██▒▓█   ▀  ██ ▀█   █ ▒████▄    ▒██    ▒    ▒██    ▒ ▓██░ ██▒▓██▒▓█   ▀ ▓██▒    ▒██▀ ██▌
@@ -300,7 +301,7 @@ async function dlAsync(login = true) {
         })
 
         setTimeout(() => {
-            loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.launchingGame'))
+            loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.waintingLaunchingGame'))
         }, MIN_LINGER)
     }
 }
