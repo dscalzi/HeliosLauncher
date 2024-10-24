@@ -44,17 +44,21 @@ function startCLI() {
                     return
                 }
 
-                if (menuAnswer.toLowerCase() === 'cacher' || menuAnswer.toLowerCase() === 'bloquer') {
-                    config.menuVisibility = menuAnswer.toLowerCase()
-                    console.log(`Athena's Shield activé. Menu ${config.menuVisibility === 'cacher' ? 'caché' : 'bloqué'}.`)
-
-                    // Sauvegarder la configuration modifiée
-                    saveConfig(config)
-                    rl.close()
+                if (menuAnswer.toLowerCase() === 'cacher') {
+                    config.menuVisibility = 'hidden' // Change to 'hidden'
+                    console.log(`Athena's Shield activé. Menu caché.`)
+                } else if (menuAnswer.toLowerCase() === 'bloquer') {
+                    config.menuVisibility = 'blocked' // Change to 'blocked'
+                    console.log(`Athena's Shield activé. Menu bloqué.`)
                 } else {
                     console.log('Option non valide pour le menu.')
                     rl.close()
+                    return
                 }
+
+                // Sauvegarder la configuration modifiée
+                saveConfig(config)
+                rl.close()
             })
         } else if (answer.toLowerCase() === 'non') {
             console.log('Athena\'s Shield non activé. Fermeture du CLI.')
