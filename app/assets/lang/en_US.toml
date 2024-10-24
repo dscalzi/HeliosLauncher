@@ -229,6 +229,8 @@ expectedIdentityNotFound = "No expected identity found for mod: {mod}. Marking a
 modValidationCompleted = "Mod validation completed."
 invalidModsDetectedMessage = "Athena's Shield has detected invalid mods. Please delete the {folder} folder and restart the launcher."
 downloadingFiles = "No invalid files, skipping download."
+usingAthShield = "Athena's Shield activated, Resource usage..."
+notUsingAthShield = "Athena's Shield deactivated, Not using resources..."
 
 [js.landing.news]
 checking = "Checking for News"
