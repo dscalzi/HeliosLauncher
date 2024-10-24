@@ -2,78 +2,78 @@ const fs = require('fs')
 const readline = require('readline')
 const path = require('path')
 
-// Chemin vers le fichier de configuration
+// Path to the configuration file
 const configPath = path.join(__dirname, 'variables.athshield')
 
-// Charger les variables depuis le fichier
+// Load the variables from the file
 function loadConfig() {
     const rawData = fs.readFileSync(configPath)
-    return JSON.parse(rawData.toString()) // Convertir Buffer en string
+    return JSON.parse(rawData.toString()) // Convert Buffer to string
 }
 
-// Sauvegarder les variables dans le fichier
+// Save the variables to the file
 function saveConfig(config) {
     const data = JSON.stringify(config, null, 2)
     fs.writeFileSync(configPath, data)
 }
 
-// Création de l'interface readline
+// Create the readline interface
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 })
 
-// Fonction pour poser les questions à l'utilisateur
+// Function to ask questions to the user
 function startCLI() {
     const config = loadConfig()
 
-    rl.question('Voulez-vous activer Athena\'s Shield ? (oui/non) : ', (answer) => {
+    rl.question('Would you like to activate Athena\'s Shield? (yes/no): ', (answer) => {
         if (answer.trim().startsWith('//')) {
-            console.log('Ceci est un commentaire, la ligne est ignorée.')
+            console.log('This is a comment; the line is ignored.')
             rl.close()
             return
         }
 
-        if (answer.toLowerCase() === 'oui') {
+        if (answer.toLowerCase() === 'yes') {
             config.athenaShieldActivated = true
 
-            rl.question('Voulez-vous cacher ou bloquer le menu ? (cacher/bloquer) : ', (menuAnswer) => {
+            rl.question('Would you like to hide or block the menu? (hide/block): ', (menuAnswer) => {
                 if (menuAnswer.trim().startsWith('//')) {
-                    console.log('Ceci est un commentaire, la ligne est ignorée.')
+                    console.log('This is a comment; the line is ignored.')
                     rl.close()
                     return
                 }
 
-                if (menuAnswer.toLowerCase() === 'cacher') {
+                if (menuAnswer.toLowerCase() === 'hide') {
                     config.menuVisibility = 'hidden' // Change to 'hidden'
-                    console.log(`Athena's Shield activé. Menu caché.`)
-                } else if (menuAnswer.toLowerCase() === 'bloquer') {
+                    console.log(`Athena's Shield activated. Menu hidden.`)
+                } else if (menuAnswer.toLowerCase() === 'block') {
                     config.menuVisibility = 'blocked' // Change to 'blocked'
-                    console.log(`Athena's Shield activé. Menu bloqué.`)
+                    console.log(`Athena's Shield activated. Menu blocked.`)
                 } else {
-                    console.log('Option non valide pour le menu.')
+                    console.log('Invalid option for the menu.')
                     rl.close()
                     return
                 }
 
-                // Sauvegarder la configuration modifiée
+                // Save the modified configuration
                 saveConfig(config)
                 rl.close()
             })
-        } else if (answer.toLowerCase() === 'non') {
-            console.log('Athena\'s Shield non activé. Fermeture du CLI.')
+        } else if (answer.toLowerCase() === 'no') {
+            console.log('Athena\'s Shield not activated. Closing the CLI.')
             config.athenaShieldActivated = false
-            config.menuVisibility = 'visible' // Remettre la valeur par défaut
+            config.menuVisibility = 'visible' // Reset to default value
 
-            // Sauvegarder la configuration modifiée
+            // Save the modified configuration
             saveConfig(config)
             rl.close()
         } else {
-            console.log('Réponse non valide.')
+            console.log('Invalid response.')
             rl.close()
         }
     })
 }
 
-// Lancer le CLI
+// Launch the CLI
 startCLI()
