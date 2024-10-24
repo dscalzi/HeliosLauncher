@@ -213,7 +213,7 @@ accountToProcessBuilder = "Sending selected account ({userDisplayName}) to Proce
 gameError = "Game error: {data}"
 gameExited = "Game process exited with code {code}."
 gameErrorDuringLaunch = "Error during game launch {error}."
-launchingGame = "Waiting for game window..."
+waintingLaunchingGame = "Waiting for game window..."
 
 [js.landing.dlAsync.AthShield]
 distributionIdentityError = "Expected Identity from Distribution for {moduleName}: {moduleIdentity}."
