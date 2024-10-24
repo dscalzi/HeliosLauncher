@@ -46,10 +46,10 @@ function startCLI() {
 
                 if (menuAnswer.toLowerCase() === 'hide') {
                     config.menuVisibility = 'hidden' // Change to 'hidden'
-                    console.log(`Athena's Shield activated. Menu hidden.`)
+                    console.log('Athena\'s Shield activated. Menu hidden.')
                 } else if (menuAnswer.toLowerCase() === 'block') {
                     config.menuVisibility = 'blocked' // Change to 'blocked'
-                    console.log(`Athena's Shield activated. Menu blocked.`)
+                    console.log('Athena\'s Shield activated. Menu blocked.')
                 } else {
                     console.log('Invalid option for the menu.')
                     rl.close()
