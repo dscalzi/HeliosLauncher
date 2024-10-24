@@ -30,8 +30,9 @@ const {
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
-const dataPath                = require('./app/assets/configmanager')
-const fs                = require('fs')
+const dataPath                = require('./assets/js/configmanager')
+const athShield               = require('./assets/athshield/parserAthShield')
+const fs                      = require('fs')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -508,96 +509,122 @@ async function dlAsync(login = true) {
     }
 
     // --------- Mod Verification Logic ---------
-    const modsDir = path.join(ConfigManager.getDataDirectory(), 'instances', serv.rawServer.id, 'mods')
 
-    // Check if mods directory exists, if not, create it
-    if (!fs.existsSync(modsDir)) {
-        fs.mkdirSync(modsDir, { recursive: true })
-    }
+    if (athShield.status) {
+        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.usingAthShield'))
 
-    const distroMods = {}
-    const mdls = serv.modules
+        const modsDir = path.join(ConfigManager.getDataDirectory(), 'instances', serv.rawServer.id, 'mods')
 
-    // Populate expected mod identities and log them
-    mdls.forEach(mdl => {
-        if (mdl.rawModule.name.endsWith('.jar')) {
-            const modPath = path.join(modsDir, mdl.rawModule.name)
-            const modIdentity = mdl.rawModule.identity || mdl.rawModule.MD5
-            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.distributionIdentityError', {'moduleName': mdl.rawModule.name, 'moduleIdentity': modIdentity}))
-            distroMods[modPath] = modIdentity
-        }
-    })
-
-    // Function to extract mod identity from the jar file
-    const extractModIdentity = (filePath) => {
-        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modIdentityExtraction', {'filePath': filePath}))
-        const zip = new AdmZip(filePath)
-        const manifestEntry = zip.getEntry('META-INF/MANIFEST.MF')
-
-        if (manifestEntry) {
-            const manifestContent = manifestEntry.getData().toString('utf8')
-            const lines = manifestContent.split('\n')
-            const identityLine = lines.find(line => line.startsWith('Mod-Id:') || line.startsWith('Implementation-Title:'))
-            if (identityLine) {
-                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.manifestIdentityFound', {'filePath': filePath, 'identityLine': identityLine}))
-                return identityLine.split(':')[1].trim()
-            }
+        // Check if mods directory exists, if not, create it
+        if (!fs.existsSync(modsDir)) {
+            fs.mkdirSync(modsDir, {recursive: true})
         }
 
-        // Fall back to a hash if no identity is found
-        const fileBuffer = fs.readFileSync(filePath)
-        const hashSum = crypto.createHash('md5')  // Use MD5 to match the distribution configuration
-        hashSum.update(fileBuffer)
-        const hash = hashSum.digest('hex')
-        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.identityNotFoundInManifest', {'filePath': filePath, 'hash': hash}))
-        return hash
-    }
+        const distroMods = {}
+        const mdls = serv.modules
 
-    // Validate mods function
-    const validateMods = () => {
-        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.startingModValidation'))
-        const installedMods = fs.readdirSync(modsDir)
-        let valid = true
+        // Populate expected mod identities and log them
+        mdls.forEach(mdl => {
+            if (mdl.rawModule.name.endsWith('.jar')) {
+                const modPath = path.join(modsDir, mdl.rawModule.name)
+                const modIdentity = mdl.rawModule.identity || mdl.rawModule.MD5
+                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.distributionIdentityError', {
+                    'moduleName': mdl.rawModule.name,
+                    'moduleIdentity': modIdentity
+                }))
+                distroMods[modPath] = modIdentity
+            }
+        })
 
-        for (let mod of installedMods) {
-            const modPath = path.join(modsDir, mod)
+        // Function to extract mod identity from the jar file
+        const extractModIdentity = (filePath) => {
+            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modIdentityExtraction', {'filePath': filePath}))
+            const zip = new AdmZip(filePath)
+            const manifestEntry = zip.getEntry('META-INF/MANIFEST.MF')
 
-            // Skip validation for mods in the excluded list
-            if (EXCLUDED_MODS.includes(mod)) {
-                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modValidationBypassed', {'mod': mod}))
-                continue
+            if (manifestEntry) {
+                const manifestContent = manifestEntry.getData().toString('utf8')
+                const lines = manifestContent.split('\n')
+                const identityLine = lines.find(line => line.startsWith('Mod-Id:') || line.startsWith('Implementation-Title:'))
+                if (identityLine) {
+                    loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.manifestIdentityFound', {
+                        'filePath': filePath,
+                        'identityLine': identityLine
+                    }))
+                    return identityLine.split(':')[1].trim()
+                }
             }
 
-            const expectedIdentity = distroMods[modPath]
-            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.validatingMod', {'mod': mod}))
+            // Fall back to a hash if no identity is found
+            const fileBuffer = fs.readFileSync(filePath)
+            const hashSum = crypto.createHash('md5')  // Use MD5 to match the distribution configuration
+            hashSum.update(fileBuffer)
+            const hash = hashSum.digest('hex')
+            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.identityNotFoundInManifest', {
+                'filePath': filePath,
+                'hash': hash
+            }))
+            return hash
+        }
 
-            if (expectedIdentity) {
-                const modIdentity = extractModIdentity(modPath)
-                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.expectedAndCalculatedIdentity', {'expectedIdentity': expectedIdentity, 'mod': mod, 'modIdentity': modIdentity}))
+        // Validate mods function
+        const validateMods = () => {
+            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.startingModValidation'))
+            const installedMods = fs.readdirSync(modsDir)
+            let valid = true
 
-                if (modIdentity !== expectedIdentity) {
-                    loggerLanding.error(Lang.queryJS('landing.dlAsync.AthShield.modIdentityMismatchError', {'mod': mod, 'expectedIdentity': expectedIdentity, 'modIdentity': modIdentity}))
+            for (let mod of installedMods) {
+                const modPath = path.join(modsDir, mod)
+
+                // Skip validation for mods in the excluded list
+                if (EXCLUDED_MODS.includes(mod)) {
+                    loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modValidationBypassed', {'mod': mod}))
+                    continue
+                }
+
+                const expectedIdentity = distroMods[modPath]
+                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.validatingMod', {'mod': mod}))
+
+                if (expectedIdentity) {
+                    const modIdentity = extractModIdentity(modPath)
+                    loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.expectedAndCalculatedIdentity', {
+                        'expectedIdentity': expectedIdentity,
+                        'mod': mod,
+                        'modIdentity': modIdentity
+                    }))
+
+                    if (modIdentity !== expectedIdentity) {
+                        loggerLanding.error(Lang.queryJS('landing.dlAsync.AthShield.modIdentityMismatchError', {
+                            'mod': mod,
+                            'expectedIdentity': expectedIdentity,
+                            'modIdentity': modIdentity
+                        }))
+                        valid = false
+                        break
+                    }
+                } else {
+                    loggerLanding.warn(Lang.queryJS('landing.dlAsync.AthShield.expectedIdentityNotFound', {'mod': mod}))
                     valid = false
                     break
                 }
-            } else {
-                loggerLanding.warn(Lang.queryJS('landing.dlAsync.AthShield.expectedIdentityNotFound', {'mod': mod}))
-                valid = false
-                break
             }
+
+            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modValidationCompleted'))
+            return valid
         }
 
-        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modValidationCompleted'))
-        return valid
+        // Perform mod validation before proceeding
+        if (!validateMods()) {
+            const errorMessage = Lang.queryJS('landing.dlAsync.AthShield.invalidModsDetectedMessage', {'folder': dataPath})
+            loggerLanding.error(errorMessage)
+            showLaunchFailure(errorMessage, null)
+            return
+        }
+
+    } else {
+        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.notUsingAthShield'))
     }
 
-    // Perform mod validation before proceeding
-    if (!validateMods()) {
-        const errorMessage = Lang.queryJS('landing.dlAsync.AthShield.invalidModsDetectedMessage', {'folder': dataPath})
-        loggerLanding.error(errorMessage)
-        showLaunchFailure(errorMessage, null)
-        return
-    }
     // --------- End of Mod Verification Logic ---------
 
     setLaunchDetails(Lang.queryJS('landing.dlAsync.pleaseWait'))

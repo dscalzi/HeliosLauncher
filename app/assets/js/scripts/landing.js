@@ -30,6 +30,9 @@ const {
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
+const dataPath                = require('./assets/js/configmanager')
+const athShield               = require('./assets/athshield/parserAthShield')
+const fs                      = require('fs')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -46,7 +49,7 @@ const loggerLanding = LoggerUtil.getLogger('Landing')
 
 /**
  * Show/hide the loading area.
- * 
+ *
  * @param {boolean} loading True if the loading area should be shown, otherwise false.
  */
 function toggleLaunchArea(loading){
@@ -61,7 +64,7 @@ function toggleLaunchArea(loading){
 
 /**
  * Set the details text of the loading area.
- * 
+ *
  * @param {string} details The new text for the loading details.
  */
 function setLaunchDetails(details){
@@ -70,7 +73,7 @@ function setLaunchDetails(details){
 
 /**
  * Set the value of the loading progress bar and display that value.
- * 
+ *
  * @param {number} percent Percentage (0-100)
  */
 function setLaunchPercentage(percent){
@@ -81,7 +84,7 @@ function setLaunchPercentage(percent){
 
 /**
  * Set the value of the OS progress bar and display that on the UI.
- * 
+ *
  * @param {number} percent Percentage (0-100)
  */
 function setDownloadPercentage(percent){
@@ -91,7 +94,7 @@ function setDownloadPercentage(percent){
 
 /**
  * Enable or disable the launch button.
- * 
+ *
  * @param {boolean} val True to enable, false to disable.
  */
 function setLaunchEnabled(val){
@@ -192,7 +195,7 @@ const refreshMojangStatuses = async function(){
         loggerLanding.warn('Unable to refresh Mojang service status.')
         statuses = MojangRestAPI.getDefaultStatuses()
     }
-    
+
     greenCount = 0
     greyCount = 0
 
@@ -229,7 +232,7 @@ const refreshMojangStatuses = async function(){
             status = 'green'
         }
     }
-    
+
     document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML
     document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML
     document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
@@ -263,7 +266,7 @@ const refreshServerStatus = async (fade = false) => {
         document.getElementById('landingPlayerLabel').innerHTML = pLabel
         document.getElementById('player_count').innerHTML = pVal
     }
-    
+
 }
 
 refreshMojangStatuses()
@@ -276,7 +279,7 @@ let serverStatusListener = setInterval(() => refreshServerStatus(true), 300000)
 
 /**
  * Shows an error overlay, toggles off the launch area.
- * 
+ *
  * @param {string} title The overlay title.
  * @param {string} desc The overlay description.
  */
@@ -295,8 +298,8 @@ function showLaunchFailure(title, desc){
 
 /**
  * Asynchronously scan the system for valid Java installations.
- * 
- * @param {boolean} launchAfter Whether we should begin to launch after scanning. 
+ *
+ * @param {boolean} launchAfter Whether we should begin to launch after scanning.
  */
 async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
 
@@ -321,7 +324,7 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
         setOverlayHandler(() => {
             setLaunchDetails(Lang.queryJS('landing.systemScan.javaDownloadPrepare'))
             toggleOverlay(false)
-            
+
             try {
                 downloadJava(effectiveJavaOptions, launchAfter)
             } catch(err) {
@@ -437,23 +440,52 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @Name dlAsync Function
+ * @returns {Promise<void>}
+ *
+ * @author Sandro642
+ * @Cheating Athena's Shield
+ *
+ * @Added whitelist for mods
+ * @Added support for the new HeliosLauncher version
+ */
+
+/**
+ * @Reviewed on XX.XX.2024 expires on 01.01.2025
+ * @Bugs discovered: 0
+ * @Athena's Shield
+ * @Sandro642
+ */
+
+
+// ▄▄▄     ▄▄▄█████▓ ██░ ██ ▓█████  ███▄    █  ▄▄▄        ██████      ██████  ██░ ██  ██▓▓█████  ██▓    ▓█████▄
+// ▒████▄   ▓  ██▒ ▓▒▓██░ ██▒▓█   ▀  ██ ▀█   █ ▒████▄    ▒██    ▒    ▒██    ▒ ▓██░ ██▒▓██▒▓█   ▀ ▓██▒    ▒██▀ ██▌
+// ▒██  ▀█▄ ▒ ▓██░ ▒░▒██▀▀██░▒███   ▓██  ▀█ ██▒▒██  ▀█▄  ░ ▓██▄      ░ ▓██▄   ▒██▀▀██░▒██▒▒███   ▒██░    ░██   █▌
+// ░██▄▄▄▄██░ ▓██▓ ░ ░▓█ ░██ ▒▓█  ▄ ▓██▒  ▐▌██▒░██▄▄▄▄██   ▒   ██▒     ▒   ██▒░▓█ ░██ ░██░▒▓█  ▄ ▒██░    ░▓█▄   ▌
+//  ▓█   ▓██▒ ▒██▒ ░ ░▓█▒░██▓░▒████▒▒██░   ▓██░ ▓█   ▓██▒▒██████▒▒   ▒██████▒▒░▓█▒░██▓░██░░▒████▒░██████▒░▒████▓
+//  ▒▒   ▓▒█░ ▒ ░░    ▒ ░░▒░▒░░ ▒░ ░░ ▒░   ▒ ▒  ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░   ▒ ▒▓▒ ▒ ░ ▒ ░░▒░▒░▓  ░░ ▒░ ░░ ▒░▓  ░ ▒▒▓  ▒
+//   ▒   ▒▒ ░   ░     ▒ ░▒░ ░ ░ ░  ░░ ░░   ░ ▒░  ▒   ▒▒ ░░ ░▒  ░ ░   ░ ░▒  ░ ░ ▒ ░▒░ ░ ▒ ░ ░ ░  ░░ ░ ▒  ░ ░ ▒  ▒
+//   ░   ▒    ░       ░  ░░ ░   ░      ░   ░ ░   ░   ▒   ░  ░  ░     ░  ░  ░   ░  ░░ ░ ▒ ░   ░     ░ ░    ░ ░  ░
+//       ░  ░         ░  ░  ░   ░  ░         ░       ░  ░      ░           ░   ░  ░  ░ ░     ░  ░    ░  ░   ░
+//                                                                                                        ░
+
 // Keep reference to Minecraft Process
 let proc
 // Is DiscordRPC enabled
 let hasRPC = false
 // Joined server regex
-// Change this if your server uses something different.
 const GAME_JOINED_REGEX = /\[.+\]: Sound engine started/
 const GAME_LAUNCH_REGEX = /^\[.+\]: (?:MinecraftForge .+ Initialized|ModLauncher .+ starting: .+|Loading Minecraft .+ with Fabric Loader .+)$/
 const MIN_LINGER = 5000
 
+// List of mods to exclude from validation
+const EXCLUDED_MODS = [
+]
+
 async function dlAsync(login = true) {
-
-    // Login parameter is temporary for debug purposes. Allows testing the validation/downloads without
-    // launching the game.
-
     const loggerLaunchSuite = LoggerUtil.getLogger('LaunchSuite')
-
+    const loggerLanding = LoggerUtil.getLogger('Landing')
     setLaunchDetails(Lang.queryJS('landing.dlAsync.loadingServerInfo'))
 
     let distro
@@ -461,20 +493,139 @@ async function dlAsync(login = true) {
     try {
         distro = await DistroAPI.refreshDistributionOrFallback()
         onDistroRefresh(distro)
-    } catch(err) {
-        loggerLaunchSuite.error('Unable to refresh distribution index.', err)
+    } catch (err) {
+        loggerLanding.error(Lang.queryJS('landing.dlAsync.unableToLoadDistributionIndex'))
         showLaunchFailure(Lang.queryJS('landing.dlAsync.fatalError'), Lang.queryJS('landing.dlAsync.unableToLoadDistributionIndex'))
         return
     }
 
     const serv = distro.getServerById(ConfigManager.getSelectedServer())
 
-    if(login) {
-        if(ConfigManager.getSelectedAccount() == null){
-            loggerLanding.error('You must be logged into an account.')
+    if (login) {
+        if (ConfigManager.getSelectedAccount() == null) {
+            loggerLanding.error(Lang.queryJS('landing.dlAsync.accountLoginNeeded'))
             return
         }
     }
+
+    // --------- Mod Verification Logic ---------
+
+    if (athShield.status) {
+        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.usingAthShield'))
+
+        const modsDir = path.join(ConfigManager.getDataDirectory(), 'instances', serv.rawServer.id, 'mods')
+
+        // Check if mods directory exists, if not, create it
+        if (!fs.existsSync(modsDir)) {
+            fs.mkdirSync(modsDir, {recursive: true})
+        }
+
+        const distroMods = {}
+        const mdls = serv.modules
+
+        // Populate expected mod identities and log them
+        mdls.forEach(mdl => {
+            if (mdl.rawModule.name.endsWith('.jar')) {
+                const modPath = path.join(modsDir, mdl.rawModule.name)
+                const modIdentity = mdl.rawModule.identity || mdl.rawModule.MD5
+                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.distributionIdentityError', {
+                    'moduleName': mdl.rawModule.name,
+                    'moduleIdentity': modIdentity
+                }))
+                distroMods[modPath] = modIdentity
+            }
+        })
+
+        // Function to extract mod identity from the jar file
+        const extractModIdentity = (filePath) => {
+            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modIdentityExtraction', {'filePath': filePath}))
+            const zip = new AdmZip(filePath)
+            const manifestEntry = zip.getEntry('META-INF/MANIFEST.MF')
+
+            if (manifestEntry) {
+                const manifestContent = manifestEntry.getData().toString('utf8')
+                const lines = manifestContent.split('\n')
+                const identityLine = lines.find(line => line.startsWith('Mod-Id:') || line.startsWith('Implementation-Title:'))
+                if (identityLine) {
+                    loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.manifestIdentityFound', {
+                        'filePath': filePath,
+                        'identityLine': identityLine
+                    }))
+                    return identityLine.split(':')[1].trim()
+                }
+            }
+
+            // Fall back to a hash if no identity is found
+            const fileBuffer = fs.readFileSync(filePath)
+            const hashSum = crypto.createHash('md5')  // Use MD5 to match the distribution configuration
+            hashSum.update(fileBuffer)
+            const hash = hashSum.digest('hex')
+            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.identityNotFoundInManifest', {
+                'filePath': filePath,
+                'hash': hash
+            }))
+            return hash
+        }
+
+        // Validate mods function
+        const validateMods = () => {
+            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.startingModValidation'))
+            const installedMods = fs.readdirSync(modsDir)
+            let valid = true
+
+            for (let mod of installedMods) {
+                const modPath = path.join(modsDir, mod)
+
+                // Skip validation for mods in the excluded list
+                if (EXCLUDED_MODS.includes(mod)) {
+                    loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modValidationBypassed', {'mod': mod}))
+                    continue
+                }
+
+                const expectedIdentity = distroMods[modPath]
+                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.validatingMod', {'mod': mod}))
+
+                if (expectedIdentity) {
+                    const modIdentity = extractModIdentity(modPath)
+                    loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.expectedAndCalculatedIdentity', {
+                        'expectedIdentity': expectedIdentity,
+                        'mod': mod,
+                        'modIdentity': modIdentity
+                    }))
+
+                    if (modIdentity !== expectedIdentity) {
+                        loggerLanding.error(Lang.queryJS('landing.dlAsync.AthShield.modIdentityMismatchError', {
+                            'mod': mod,
+                            'expectedIdentity': expectedIdentity,
+                            'modIdentity': modIdentity
+                        }))
+                        valid = false
+                        break
+                    }
+                } else {
+                    loggerLanding.warn(Lang.queryJS('landing.dlAsync.AthShield.expectedIdentityNotFound', {'mod': mod}))
+                    valid = false
+                    break
+                }
+            }
+
+            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modValidationCompleted'))
+            return valid
+        }
+
+        // Perform mod validation before proceeding
+        if (!validateMods()) {
+            const errorMessage = Lang.queryJS('landing.dlAsync.AthShield.invalidModsDetectedMessage', {'folder': dataPath})
+            loggerLanding.error(errorMessage)
+            showLaunchFailure(errorMessage, null)
+            return
+        }
+
+    } else {
+        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.notUsingAthShield'))
+    }
+
+    // --------- End of Mod Verification Logic ---------
 
     setLaunchDetails(Lang.queryJS('landing.dlAsync.pleaseWait'))
     toggleLaunchArea(true)
@@ -491,17 +642,17 @@ async function dlAsync(login = true) {
     fullRepairModule.spawnReceiver()
 
     fullRepairModule.childProcess.on('error', (err) => {
-        loggerLaunchSuite.error('Error during launch', err)
+        loggerLaunchSuite.error(Lang.queryJS('landing.dlAsync.errorDuringLaunchText') + err)
         showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), err.message || Lang.queryJS('landing.dlAsync.errorDuringLaunchText'))
     })
     fullRepairModule.childProcess.on('close', (code, _signal) => {
         if(code !== 0){
-            loggerLaunchSuite.error(`Full Repair Module exited with code ${code}, assuming error.`)
+            loggerLaunchSuite.error(Lang.queryJS('landing.dlAsync.fullRepairMode', {'code': code}))
             showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
         }
     })
 
-    loggerLaunchSuite.info('Validating files.')
+    loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.validatingFileIntegrity'))
     setLaunchDetails(Lang.queryJS('landing.dlAsync.validatingFileIntegrity'))
     let invalidFileCount = 0
     try {
@@ -510,11 +661,10 @@ async function dlAsync(login = true) {
         })
         setLaunchPercentage(100)
     } catch (err) {
-        loggerLaunchSuite.error('Error during file validation.')
+        loggerLaunchSuite.error(Lang.queryJS('landing.dlAsync.errFileVerification'))
         showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringFileVerificationTitle'), err.displayable || Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
         return
     }
-    
 
     if(invalidFileCount > 0) {
         loggerLaunchSuite.info('Downloading files.')
@@ -526,12 +676,12 @@ async function dlAsync(login = true) {
             })
             setDownloadPercentage(100)
         } catch(err) {
-            loggerLaunchSuite.error('Error during file download.')
+            loggerLaunchSuite.error(Lang.queryJS('landing.dlAsync.errorDuringFileDownloadTitle'))
             showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringFileDownloadTitle'), err.displayable || Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
             return
         }
     } else {
-        loggerLaunchSuite.info('No invalid files, skipping download.')
+        loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.AthShield.downloadingFiles'))
     }
 
     // Remove download bar.
@@ -555,28 +705,21 @@ async function dlAsync(login = true) {
 
     if(login) {
         const authUser = ConfigManager.getSelectedAccount()
-        loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
+        loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.accountToProcessBuilder', {'userDisplayName': authUser.displayName}))
         let pb = new ProcessBuilder(serv, versionData, modLoaderData, authUser, remote.app.getVersion())
         setLaunchDetails(Lang.queryJS('landing.dlAsync.launchingGame'))
 
-        // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
         const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
 
         const onLoadComplete = () => {
             toggleLaunchArea(false)
-            if(hasRPC){
-                DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.loading'))
-                proc.stdout.on('data', gameStateChange)
-            }
+
             proc.stdout.removeListener('data', tempListener)
             proc.stderr.removeListener('data', gameErrorListener)
         }
         const start = Date.now()
 
         // Attach a temporary listener to the client output.
-        // Will wait for a certain bit of text meaning that
-        // the client application has started, and we can hide
-        // the progress bar stuff.
         const tempListener = function(data){
             if(GAME_LAUNCH_REGEX.test(data.trim())){
                 const diff = Date.now()-start
@@ -588,54 +731,47 @@ async function dlAsync(login = true) {
             }
         }
 
-        // Listener for Discord RPC.
-        const gameStateChange = function(data){
-            data = data.trim()
-            if(SERVER_JOINED_REGEX.test(data)){
-                DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.joined'))
-            } else if(GAME_JOINED_REGEX.test(data)){
-                DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.joining'))
-            }
-        }
-
         const gameErrorListener = function(data){
-            data = data.trim()
-            if(data.indexOf('Could not find or load main class net.minecraft.launchwrapper.Launch') > -1){
-                loggerLaunchSuite.error('Game launch failed, LaunchWrapper was not downloaded properly.')
-                showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), Lang.queryJS('landing.dlAsync.launchWrapperNotDownloaded'))
+            if(data.trim().toLowerCase().includes('error')){
+                loggerLaunchSuite.error(Lang.queryJS('landing.dlAsync.gameError', {'data': data}))
             }
         }
 
-        try {
-            // Build Minecraft process.
-            proc = pb.build()
+        proc = pb.build()
 
-            // Bind listeners to stdout.
-            proc.stdout.on('data', tempListener)
-            proc.stderr.on('data', gameErrorListener)
+        proc.stdout.on('data', tempListener)
+        proc.stderr.on('data', gameErrorListener)
 
-            setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
-
-            // Init Discord Hook
-            if(distro.rawDistribution.discord != null && serv.rawServer.discord != null){
-                DiscordWrapper.initRPC(distro.rawDistribution.discord, serv.rawServer.discord)
-                hasRPC = true
-                proc.on('close', (code, signal) => {
-                    loggerLaunchSuite.info('Shutting down Discord Rich Presence..')
-                    DiscordWrapper.shutdownRPC()
-                    hasRPC = false
-                    proc = null
-                })
+        proc.stdout.on('data', function(data){
+            if(SERVER_JOINED_REGEX.test(data.trim())){
+                DiscordWrapper.updateDetails('Exploring the World')
+            } else if(GAME_JOINED_REGEX.test(data.trim())) {
+                DiscordWrapper.updateDetails('Main Menu')
             }
+        })
 
-        } catch(err) {
+        proc.on('close', (code, _signal) => {
+            if (hasRPC) {
+                DiscordWrapper.shutdownRPC()
+                hasRPC = false
+            }
+            loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.gameExited', {'code': code}))
+            if(code !== 0){
+                showLaunchFailure(Lang.queryJS('landing.dlAsync.gameExitedAbnormal'), Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
+            }
+            proc = null
+        })
 
-            loggerLaunchSuite.error('Error during launch', err)
-            showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), Lang.queryJS('landing.dlAsync.checkConsoleForDetails'))
+        proc.on('error', (err) => {
+            loggerLaunchSuite.error(Lang.queryJS('landing.dlAsync.gameErrorDuringLaunch', {'error': err}))
+            showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), err.message || Lang.queryJS('landing.dlAsync.errorDuringLaunchText'))
+            proc = null
+        })
 
-        }
+        setTimeout(() => {
+            loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.waintingLaunchingGame'))
+        }, MIN_LINGER)
     }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -660,8 +796,8 @@ let newsGlideCount = 0
 
 /**
  * Show the news UI via a slide animation.
- * 
- * @param {boolean} up True to slide up, otherwise false. 
+ *
+ * @param {boolean} up True to slide up, otherwise false.
  */
 function slide_(up){
     const lCUpper = document.querySelector('#landingContainer > #upper')
@@ -735,7 +871,7 @@ let newsLoadingListener = null
 
 /**
  * Set the news loading animation.
- * 
+ *
  * @param {boolean} val True to set loading animation, otherwise false.
  */
 function setNewsLoading(val){
@@ -777,7 +913,7 @@ newsArticleContentScrollable.onscroll = (e) => {
 
 /**
  * Reload the news without restarting.
- * 
+ *
  * @returns {Promise.<void>} A promise which resolves when the news
  * content has finished loading and transitioning.
  */
@@ -815,7 +951,7 @@ async function digestMessage(str) {
 /**
  * Initialize News UI. This will load the news and prepare
  * the UI accordingly.
- * 
+ *
  * @returns {Promise.<void>} A promise which resolves when the news
  * content has finished loading and transitioning.
  */
@@ -894,7 +1030,7 @@ async function initNews(){
         const switchHandler = (forward) => {
             let cArt = parseInt(newsContent.getAttribute('article'))
             let nxtArt = forward ? (cArt >= newsArr.length-1 ? 0 : cArt + 1) : (cArt <= 0 ? newsArr.length-1 : cArt - 1)
-    
+
             displayArticle(newsArr[nxtArt], nxtArt+1)
         }
 
@@ -934,7 +1070,7 @@ document.addEventListener('keydown', (e) => {
 
 /**
  * Display a news article on the UI.
- * 
+ *
  * @param {Object} articleObject The article meta object.
  * @param {number} index The article index.
  */
@@ -969,7 +1105,7 @@ async function loadNews(){
     }
 
     const promise = new Promise((resolve, reject) => {
-        
+
         const newsFeed = distroData.rawDistribution.rss
         const newsHost = new URL(newsFeed).origin + '/'
         $.ajax({
@@ -979,7 +1115,7 @@ async function loadNews(){
                 const articles = []
 
                 for(let i=0; i<items.length; i++){
-                // JQuery Element
+                    // JQuery Element
                     const el = $(items[i])
 
                     // Resolve date.
