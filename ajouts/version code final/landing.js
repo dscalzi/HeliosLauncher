@@ -30,9 +30,8 @@ const {
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
-const Lang                    = require('./app/assets/js/langloader')
 const dataPath                = require('./app/assets/configmanager')
-const path  = require('path')
+const fs                = require('fs')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -442,21 +441,22 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
 /**
  * @Name dlAsync Function
- * @async
- * @param {boolean} login
  * @returns {Promise<void>}
  *
  * @author Sandro642
  * @Cheating Athena's Shield
- * @Ajout Liste blanche des mods
+ *
+ * @Added whitelist for mods
+ * @Added support for the new HeliosLauncher version
  */
 
 /**
- * @Révision le XX.XX.2024 périme le 01.01.2025
- * @Bug découvert : 0
+ * @Reviewed on XX.XX.2024 expires on 01.01.2025
+ * @Bugs discovered: 0
  * @Athena's Shield
  * @Sandro642
  */
+
 
 // ▄▄▄     ▄▄▄█████▓ ██░ ██ ▓█████  ███▄    █  ▄▄▄        ██████      ██████  ██░ ██  ██▓▓█████  ██▓    ▓█████▄
 // ▒████▄   ▓  ██▒ ▓▒▓██░ ██▒▓█   ▀  ██ ▀█   █ ▒████▄    ▒██    ▒    ▒██    ▒ ▓██░ ██▒▓██▒▓█   ▀ ▓██▒    ▒██▀ ██▌
@@ -742,7 +742,7 @@ async function dlAsync(login = true) {
         })
 
         setTimeout(() => {
-            loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.launchingGame'))
+            loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.waintingLaunchingGame'))
         }, MIN_LINGER)
     }
 }
