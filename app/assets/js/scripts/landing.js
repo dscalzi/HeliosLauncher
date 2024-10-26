@@ -472,6 +472,7 @@ let proc
 // Is DiscordRPC enabled
 let hasRPC = false
 // Joined server regex
+// Change this if your server uses something different.
 const GAME_JOINED_REGEX = /\[.+\]: Sound engine started/
 const GAME_LAUNCH_REGEX = /^\[.+\]: (?:MinecraftForge .+ Initialized|ModLauncher .+ starting: .+|Loading Minecraft .+ with Fabric Loader .+)$/
 const MIN_LINGER = 5000
@@ -481,6 +482,10 @@ const EXCLUDED_MODS = [
 ]
 
 async function dlAsync(login = true) {
+
+    // Login parameter is temporary for debug purposes. Allows testing the validation/downloads without
+    // launching the game.
+
     const loggerLaunchSuite = LoggerUtil.getLogger('LaunchSuite')
     const loggerLanding = LoggerUtil.getLogger('Landing')
     setLaunchDetails(Lang.queryJS('landing.dlAsync.loadingServerInfo'))
