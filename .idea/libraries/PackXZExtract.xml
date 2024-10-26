@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="PackXZExtract">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libraries/java/PackXZExtract.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
