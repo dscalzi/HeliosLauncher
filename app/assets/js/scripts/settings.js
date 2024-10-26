@@ -1154,10 +1154,10 @@ function animateSettingsTabRefresh(){
  * Prepare the Mods tab for display.
  */
 async function prepareModsTab(first){
-    manageModCategory()
     await resolveModsForUI()
     await resolveDropinModsForUI()
     await resolveShaderpacksForUI()
+    manageModCategory()
     bindDropinModsRemoveButton()
     bindDropinModFileSystemButton()
     bindShaderpackButton()
