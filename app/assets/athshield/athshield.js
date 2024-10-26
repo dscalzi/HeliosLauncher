@@ -37,33 +37,38 @@ function startCLI() {
         if (answer.toLowerCase() === 'yes') {
             config.athenaShieldActivated = true
 
-            rl.question('Would you like to hide or block the menu? (hide/block): ', (menuAnswer) => {
-                if (menuAnswer.trim().startsWith('//')) {
-                    console.log('This is a comment; the line is ignored.')
-                    rl.close()
-                    return
-                }
+            rl.question('Would you like to activate debug mode? (yes/no): ', (debugAnswer) => {
+                config.debug = debugAnswer.toLowerCase() === 'yes' // Set debug to true or false
 
-                if (menuAnswer.toLowerCase() === 'hide') {
-                    config.menuVisibility = 'hidden' // Change to 'hidden'
-                    console.log('Athena\'s Shield activated. Menu hidden.')
-                } else if (menuAnswer.toLowerCase() === 'block') {
-                    config.menuVisibility = 'blocked' // Change to 'blocked'
-                    console.log('Athena\'s Shield activated. Menu blocked.')
-                } else {
-                    console.log('Invalid option for the menu.')
-                    rl.close()
-                    return
-                }
+                rl.question('Would you like to hide or block the menu? (hide/block): ', (menuAnswer) => {
+                    if (menuAnswer.trim().startsWith('//')) {
+                        console.log('This is a comment; the line is ignored.')
+                        rl.close()
+                        return
+                    }
 
-                // Save the modified configuration
-                saveConfig(config)
-                rl.close()
+                    if (menuAnswer.toLowerCase() === 'hide') {
+                        config.menuVisibility = 'hidden' // Set to 'hidden'
+                        console.log('Athena\'s Shield activated. Menu hidden.')
+                    } else if (menuAnswer.toLowerCase() === 'block') {
+                        config.menuVisibility = 'blocked' // Set to 'blocked'
+                        console.log('Athena\'s Shield activated. Menu blocked.')
+                    } else {
+                        console.log('Invalid option for the menu.')
+                        rl.close()
+                        return
+                    }
+
+                    // Save the modified configuration
+                    saveConfig(config)
+                    rl.close()
+                })
             })
         } else if (answer.toLowerCase() === 'no') {
             console.log('Athena\'s Shield not activated. Closing the CLI.')
             config.athenaShieldActivated = false
-            config.menuVisibility = 'visible' // Reset to default value
+            config.menuVisibility = 'visible' // Reset to default
+            config.debug = 'false'
 
             // Save the modified configuration
             saveConfig(config)

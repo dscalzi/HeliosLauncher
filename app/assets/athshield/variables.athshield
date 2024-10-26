@@ -1,4 +1,5 @@
 {
   "athenaShieldActivated": false,
-  "menuVisibility": "visible"
+  "menuVisibility": "visible",
+  "debug": "false"
 }

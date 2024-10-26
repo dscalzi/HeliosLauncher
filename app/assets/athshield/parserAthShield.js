@@ -25,6 +25,11 @@ class AthenaShield {
     get type() {
         return this.config.menuVisibility
     }
+
+    // Récupérer le mode debug
+    get debug() {
+        return this.config.debug
+    }
 }
 
 // Exporter une instance de la classe
