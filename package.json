@@ -9,7 +9,7 @@
   "bugs": {
     "url": "https://github.com/dscalzi/HeliosLauncher/issues"
   },
-  "private": false,
+  "private": true,
   "main": "index.js",
   "scripts": {
     "start": "electron .",
