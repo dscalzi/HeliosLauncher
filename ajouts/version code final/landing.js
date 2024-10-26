@@ -30,8 +30,7 @@ const {
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
-const dataPath                = require('./assets/js/configmanager')
-const athShield               = require('./assets/athshield/parserAthShield')
+const crypto                  = require('crypto')
 const fs                      = require('fs')
 
 // Launch Elements
@@ -453,7 +452,7 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
 /**
  * @Reviewed on XX.XX.2024 expires on 01.01.2025
- * @Bugs discovered: 0
+ * @Bugs discovereds: 0
  * @Athena's Shield
  * @Sandro642
  */
@@ -527,32 +526,22 @@ async function dlAsync(login = true) {
         mdls.forEach(mdl => {
             if (mdl.rawModule.name.endsWith('.jar')) {
                 const modPath = path.join(modsDir, mdl.rawModule.name)
-                const modIdentity = mdl.rawModule.identity || mdl.rawModule.MD5
-                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.distributionIdentityError', {
-                    'moduleName': mdl.rawModule.name,
-                    'moduleIdentity': modIdentity
-                }))
+                const modIdentity = mdl.rawModule.identity || mdl.rawModule.artifact.MD5
+                if (athShield.debug) {
+                    loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.distributionIdentityError', {
+                        'moduleName': mdl.rawModule.name,
+                        'moduleIdentity': modIdentity
+                    }))
+                }
+
                 distroMods[modPath] = modIdentity
             }
         })
 
         // Function to extract mod identity from the jar file
         const extractModIdentity = (filePath) => {
-            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modIdentityExtraction', {'filePath': filePath}))
-            const zip = new AdmZip(filePath)
-            const manifestEntry = zip.getEntry('META-INF/MANIFEST.MF')
-
-            if (manifestEntry) {
-                const manifestContent = manifestEntry.getData().toString('utf8')
-                const lines = manifestContent.split('\n')
-                const identityLine = lines.find(line => line.startsWith('Mod-Id:') || line.startsWith('Implementation-Title:'))
-                if (identityLine) {
-                    loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.manifestIdentityFound', {
-                        'filePath': filePath,
-                        'identityLine': identityLine
-                    }))
-                    return identityLine.split(':')[1].trim()
-                }
+            if (athShield.debug) {
+                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modIdentityExtraction', {'filePath': filePath}))
             }
 
             // Fall back to a hash if no identity is found
@@ -560,10 +549,13 @@ async function dlAsync(login = true) {
             const hashSum = crypto.createHash('md5')  // Use MD5 to match the distribution configuration
             hashSum.update(fileBuffer)
             const hash = hashSum.digest('hex')
-            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.identityNotFoundInManifest', {
-                'filePath': filePath,
-                'hash': hash
-            }))
+            if (athShield.debug) {
+                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.identityNotFoundUsingHash', {
+                    'filePath': filePath,
+                    'hash': hash
+                }))
+            }
+
             return hash
         }
 
@@ -587,18 +579,23 @@ async function dlAsync(login = true) {
 
                 if (expectedIdentity) {
                     const modIdentity = extractModIdentity(modPath)
-                    loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.expectedAndCalculatedIdentity', {
-                        'expectedIdentity': expectedIdentity,
-                        'mod': mod,
-                        'modIdentity': modIdentity
-                    }))
-
-                    if (modIdentity !== expectedIdentity) {
-                        loggerLanding.error(Lang.queryJS('landing.dlAsync.AthShield.modIdentityMismatchError', {
-                            'mod': mod,
+                    if (athShield.debug) {
+                        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.expectedAndCalculatedIdentity', {
                             'expectedIdentity': expectedIdentity,
+                            'mod': mod,
                             'modIdentity': modIdentity
                         }))
+                    }
+
+                    if (modIdentity !== expectedIdentity) {
+                        if (athShield.debug) {
+                            loggerLanding.error(Lang.queryJS('landing.dlAsync.AthShield.modIdentityMismatchError', {
+                                'mod': mod,
+                                'expectedIdentity': expectedIdentity,
+                                'modIdentity': modIdentity
+                            }))
+                        }
+
                         valid = false
                         break
                     }
@@ -615,7 +612,7 @@ async function dlAsync(login = true) {
 
         // Perform mod validation before proceeding
         if (!validateMods()) {
-            const errorMessage = Lang.queryJS('landing.dlAsync.AthShield.invalidModsDetectedMessage', {'folder': dataPath})
+            const errorMessage = Lang.queryJS('landing.dlAsync.AthShield.invalidModsDetectedMessage', {'folder': ConfigManager.getNameDataPath()})
             loggerLanding.error(errorMessage)
             showLaunchFailure(errorMessage, null)
             return
