@@ -452,7 +452,7 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
 /**
  * @Reviewed on XX.XX.2024 expires on 01.01.2025
- * @Bugs discovered: 0
+ * @Bugs discovereds: 0
  * @Athena's Shield
  * @Sandro642
  */
