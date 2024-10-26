@@ -437,8 +437,6 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
 }
 
-////////////////////////////////////////////////////////////////////////////////////
-
 /**
  * @Name dlAsync Function
  * @returns {Promise<void>}
@@ -781,8 +779,6 @@ async function dlAsync(login = true) {
         }
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * News Loading Functions
