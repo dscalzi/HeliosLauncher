@@ -457,7 +457,7 @@ async function dlAsync(login = true) {
     // launching the game.
 
     const loggerLaunchSuite = LoggerUtil.getLogger('LaunchSuite')
-    const loggerLanding = LoggerUtil.getLogger('Landing')
+    const loggerLanding = LoggerUtil.getLogger('dlAsync')
     setLaunchDetails(Lang.queryJS('landing.dlAsync.loadingServerInfo'))
 
     let distro
