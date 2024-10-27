@@ -215,7 +215,7 @@ gameExited = "Game process exited with code {code}."
 gameErrorDuringLaunch = "Error during game launch {error}."
 waintingLaunchingGame = "Waiting for game window..."
 
-[js.landing.dlAsync.AthShield]
+[js.landing.dlAsync.extraFileVerif]
 distributionIdentityError = "Expected Identity from Distribution for {moduleName}: {moduleIdentity}."
 modIdentityExtraction = "Extracting identity for mod at: {filePath}."
 identityNotFoundUsingHash  = "No identity found in manifest for {filePath}, using hash: {hash}"
@@ -226,10 +226,10 @@ expectedAndCalculatedIdentity = "Expected Identity: {expectedIdentity}, Calculat
 modIdentityMismatchError = "Mod identity mismatch! Mod: {mod}, Expected: {expectedIdentity}, Found: {modIdentity}"
 expectedIdentityNotFound = "No expected identity found for mod: {mod}. Marking as invalid."
 modValidationCompleted = "Mod validation completed."
-invalidModsDetectedMessage = "Athena's Shield has detected invalid mods. Please delete the {folder} folder and restart the launcher."
+invalidModsDetectedMessage = "Extra file verification has detected invalid mods. Please delete the {folder} folder and restart the launcher."
 downloadingFiles = "No invalid files, skipping download."
-usingAthShield = "Athena's Shield activated, Resource usage..."
-notUsingAthShield = "Athena's Shield deactivated, Not using resources..."
+usingExtraFileVerif = "Extra file verification activated, Resource usage..."
+notUsingExtraFileVerif = "Extra file verification deactivated, Not using resources..."
 
 [js.landing.news]
 checking = "Checking for News"
