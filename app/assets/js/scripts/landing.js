@@ -437,35 +437,7 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
 }
 
-/**
- * @Name dlAsync Function
- * @returns {Promise<void>}
- *
- * @author Sandro642
- * @Cheating Athena's Shield
- *
- * @Added whitelist for mods
- * @Added support for the new HeliosLauncher version
- */
 
-/**
- * @Reviewed on 10.26.2024 expires on XX.XX.2025
- * @Bugs discovereds: 0
- * @Athena's Shield
- * @Sandro642
- */
-
-
-// ▄▄▄     ▄▄▄█████▓ ██░ ██ ▓█████  ███▄    █  ▄▄▄        ██████      ██████  ██░ ██  ██▓▓█████  ██▓    ▓█████▄
-// ▒████▄   ▓  ██▒ ▓▒▓██░ ██▒▓█   ▀  ██ ▀█   █ ▒████▄    ▒██    ▒    ▒██    ▒ ▓██░ ██▒▓██▒▓█   ▀ ▓██▒    ▒██▀ ██▌
-// ▒██  ▀█▄ ▒ ▓██░ ▒░▒██▀▀██░▒███   ▓██  ▀█ ██▒▒██  ▀█▄  ░ ▓██▄      ░ ▓██▄   ▒██▀▀██░▒██▒▒███   ▒██░    ░██   █▌
-// ░██▄▄▄▄██░ ▓██▓ ░ ░▓█ ░██ ▒▓█  ▄ ▓██▒  ▐▌██▒░██▄▄▄▄██   ▒   ██▒     ▒   ██▒░▓█ ░██ ░██░▒▓█  ▄ ▒██░    ░▓█▄   ▌
-//  ▓█   ▓██▒ ▒██▒ ░ ░▓█▒░██▓░▒████▒▒██░   ▓██░ ▓█   ▓██▒▒██████▒▒   ▒██████▒▒░▓█▒░██▓░██░░▒████▒░██████▒░▒████▓
-//  ▒▒   ▓▒█░ ▒ ░░    ▒ ░░▒░▒░░ ▒░ ░░ ▒░   ▒ ▒  ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░   ▒ ▒▓▒ ▒ ░ ▒ ░░▒░▒░▓  ░░ ▒░ ░░ ▒░▓  ░ ▒▒▓  ▒
-//   ▒   ▒▒ ░   ░     ▒ ░▒░ ░ ░ ░  ░░ ░░   ░ ▒░  ▒   ▒▒ ░░ ░▒  ░ ░   ░ ░▒  ░ ░ ▒ ░▒░ ░ ▒ ░ ░ ░  ░░ ░ ▒  ░ ░ ▒  ▒
-//   ░   ▒    ░       ░  ░░ ░   ░      ░   ░ ░   ░   ▒   ░  ░  ░     ░  ░  ░   ░  ░░ ░ ▒ ░   ░     ░ ░    ░ ░  ░
-//       ░  ░         ░  ░  ░   ░  ░         ░       ░  ░      ░           ░   ░  ░  ░ ░     ░  ░    ░  ░   ░
-//                                                                                                        ░
 
 // Keep reference to Minecraft Process
 let proc
@@ -512,8 +484,8 @@ async function dlAsync(login = true) {
 
     // --------- Mod Verification Logic ---------
 
-    if (athShield.status) {
-        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.usingAthShield'))
+    if (extraFileVerif.status) {
+        loggerLanding.info(Lang.queryJS('landing.dlAsync.extraFileVerif.usingExtraFileVerif'))
 
         const modsDir = path.join(ConfigManager.getDataDirectory(), 'instances', serv.rawServer.id, 'mods')
 
@@ -529,9 +501,9 @@ async function dlAsync(login = true) {
         mdls.forEach(mdl => {
             if (mdl.rawModule.name.endsWith('.jar')) {
                 const modPath = path.join(modsDir, mdl.rawModule.name)
-                const modIdentity = mdl.rawModule.identity || mdl.rawModule.artifact.MD5
-                if (athShield.debug) {
-                    loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.distributionIdentityError', {
+                const modIdentity = mdl.rawModule || mdl.rawModule.artifact.MD5
+                if (extraFileVerif.debug) {
+                    loggerLanding.info(Lang.queryJS('landing.dlAsync.extraFileVerif.distributionIdentityError', {
                         'moduleName': mdl.rawModule.name,
                         'moduleIdentity': modIdentity
                     }))
@@ -543,17 +515,16 @@ async function dlAsync(login = true) {
 
         // Function to extract mod identity from the jar file
         const extractModIdentity = (filePath) => {
-            if (athShield.debug) {
-                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modIdentityExtraction', {'filePath': filePath}))
+            if (extraFileVerif.debug) {
+                loggerLanding.info(Lang.queryJS('landing.dlAsync.extraFileVerif.modIdentityExtraction', {'filePath': filePath}))
             }
 
-            // Fall back to a hash if no identity is found
             const fileBuffer = fs.readFileSync(filePath)
             const hashSum = crypto.createHash('md5')  // Use MD5 to match the distribution configuration
             hashSum.update(fileBuffer)
             const hash = hashSum.digest('hex')
-            if (athShield.debug) {
-                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.identityNotFoundUsingHash', {
+            if (extraFileVerif.debug) {
+                loggerLanding.info(Lang.queryJS('landing.dlAsync.extraFileVerif.identityNotFoundUsingHash', {
                     'filePath': filePath,
                     'hash': hash
                 }))
@@ -564,7 +535,7 @@ async function dlAsync(login = true) {
 
         // Validate mods function
         const validateMods = () => {
-            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.startingModValidation'))
+            loggerLanding.info(Lang.queryJS('landing.dlAsync.extraFileVerif.startingModValidation'))
             const installedMods = fs.readdirSync(modsDir)
             let valid = true
 
@@ -573,17 +544,17 @@ async function dlAsync(login = true) {
 
                 // Skip validation for mods in the excluded list
                 if (EXCLUDED_MODS.includes(mod)) {
-                    loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modValidationBypassed', {'mod': mod}))
+                    loggerLanding.info(Lang.queryJS('landing.dlAsync.extraFileVerif.modValidationBypassed', {'mod': mod}))
                     continue
                 }
 
                 const expectedIdentity = distroMods[modPath]
-                loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.validatingMod', {'mod': mod}))
+                loggerLanding.info(Lang.queryJS('landing.dlAsync.extraFileVerif.validatingMod', {'mod': mod}))
 
                 if (expectedIdentity) {
                     const modIdentity = extractModIdentity(modPath)
-                    if (athShield.debug) {
-                        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.expectedAndCalculatedIdentity', {
+                    if (extraFileVerif.debug) {
+                        loggerLanding.info(Lang.queryJS('landing.dlAsync.extraFileVerif.expectedAndCalculatedIdentity', {
                             'expectedIdentity': expectedIdentity,
                             'mod': mod,
                             'modIdentity': modIdentity
@@ -591,8 +562,8 @@ async function dlAsync(login = true) {
                     }
 
                     if (modIdentity !== expectedIdentity) {
-                        if (athShield.debug) {
-                            loggerLanding.error(Lang.queryJS('landing.dlAsync.AthShield.modIdentityMismatchError', {
+                        if (extraFileVerif.debug) {
+                            loggerLanding.error(Lang.queryJS('landing.dlAsync.extraFileVerif.modIdentityMismatchError', {
                                 'mod': mod,
                                 'expectedIdentity': expectedIdentity,
                                 'modIdentity': modIdentity
@@ -603,26 +574,26 @@ async function dlAsync(login = true) {
                         break
                     }
                 } else {
-                    loggerLanding.warn(Lang.queryJS('landing.dlAsync.AthShield.expectedIdentityNotFound', {'mod': mod}))
+                    loggerLanding.warn(Lang.queryJS('landing.dlAsync.extraFileVerif.expectedIdentityNotFound', {'mod': mod}))
                     valid = false
                     break
                 }
             }
 
-            loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.modValidationCompleted'))
+            loggerLanding.info(Lang.queryJS('landing.dlAsync.extraFileVerif.modValidationCompleted'))
             return valid
         }
 
         // Perform mod validation before proceeding
         if (!validateMods()) {
-            const errorMessage = Lang.queryJS('landing.dlAsync.AthShield.invalidModsDetectedMessage', {'folder': ConfigManager.getNameDataPath()})
+            const errorMessage = Lang.queryJS('landing.dlAsync.extraFileVerif.invalidModsDetectedMessage', {'folder': ConfigManager.getNameDataPath()})
             loggerLanding.error(errorMessage)
             showLaunchFailure(errorMessage, null)
             return
         }
 
     } else {
-        loggerLanding.info(Lang.queryJS('landing.dlAsync.AthShield.notUsingAthShield'))
+        loggerLanding.info(Lang.queryJS('landing.dlAsync.extraFileVerif.notUsingExtraFileVerif'))
     }
 
     // --------- End of Mod Verification Logic ---------
@@ -681,7 +652,7 @@ async function dlAsync(login = true) {
             return
         }
     } else {
-        loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.AthShield.downloadingFiles'))
+        loggerLaunchSuite.info(Lang.queryJS('landing.dlAsync.notUsingExtraFileVerif.downloadingFiles'))
     }
 
     // Remove download bar.

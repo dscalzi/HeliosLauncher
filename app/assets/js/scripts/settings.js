@@ -3,7 +3,7 @@ const os                                           = require('os')
 const semver                                       = require('semver')
 
 const DropinModUtil                                = require('./assets/js/dropinmodutil')
-const athShield                                    = require('./assets/athshield/parserAthShield')
+const extraFileVerif                               = require('./assets/extraverif/parserExtraverif')
 const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
 
 const settingsState = {
@@ -722,10 +722,10 @@ function manageModCategory() {
     const modsButton = document.querySelector('button[rSc="settingsTabMods"]')
     const dropInMods = document.getElementById('settingsDropinModsContainer')
 
-    if (athShield.type === 'hidden') {
+    if (extraFileVerif.type === 'hidden') {
         // Hide the Mods navigation button
         modsButton.style.display = 'none'
-    } else if (athShield.type === 'blocked') {
+    } else if (extraFileVerif.type === 'blocked') {
         // Hide the drop-in mods elements
         dropInMods.style.display = 'none'
     }
