@@ -23,8 +23,11 @@ function startCLI() {
     const config = loadConfig()
 
     rl.question('Would you like to activate extra file verification? (yes/no): ', (answer) => {
+        if (answer.trim().startsWith('//')) {
+            console.log('This is a comment; the line is ignored.')
             rl.close()
             return
+        }
 
         if (answer.toLowerCase() === 'yes') {
             config.extraFileVerifActivated = true
@@ -33,15 +36,18 @@ function startCLI() {
                 config.debug = debugAnswer.toLowerCase() === 'yes'
 
                 rl.question('Would you like to hide or block the menu? (hide/block): ', (menuAnswer) => {
+                    if (menuAnswer.trim().startsWith('//')) {
+                        console.log('This is a comment; the line is ignored.')
                         rl.close()
                         return
+                    }
 
                     if (menuAnswer.toLowerCase() === 'hide') {
                         config.menuVisibility = 'hidden'
-                        console.log('Extra file verification is activated. Menu hidden.')
+                        console.log('Extra file verification activated. Menu hidden.')
                     } else if (menuAnswer.toLowerCase() === 'block') {
                         config.menuVisibility = 'blocked'
-                        console.log('Extra file verification is activated. Menu blocked.')
+                        console.log('Extra file verification activated. Menu blocked.')
                     } else {
                         console.log('Invalid option for the menu.')
                         rl.close()
@@ -53,7 +59,7 @@ function startCLI() {
                 })
             })
         } else if (answer.toLowerCase() === 'no') {
-            console.log('Extra file verification is not activated. Closing the CLI.')
+            console.log('Extra file verification not activated. Closing the CLI.')
             config.extraFileVerifActivated = false
             config.menuVisibility = 'visible'
             config.debug = false
