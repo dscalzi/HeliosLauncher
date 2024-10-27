@@ -26,5 +26,5 @@ class ExtraFileVerification {
     }
 }
 
-const athenaShieldInstance = new AthenaShield()
-module.exports = athenaShieldInstance
+const ExtraFileVerificationInstance = new ExtraFileVerification()
+module.exports = ExtraFileVerificationInstance
