@@ -437,8 +437,6 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
 }
 
-
-
 // Keep reference to Minecraft Process
 let proc
 // Is DiscordRPC enabled
