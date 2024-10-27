@@ -499,7 +499,7 @@ async function dlAsync(login = true) {
         mdls.forEach(mdl => {
             if (mdl.rawModule.name.endsWith('.jar')) {
                 const modPath = path.join(modsDir, mdl.rawModule.name)
-                const modIdentity = mdl.rawModule || mdl.rawModule.artifact.MD5
+                const modIdentity = mdl.rawModule.identity || mdl.rawModule.artifact.MD5
                 if (extraFileVerif.debug) {
                     loggerLanding.info(Lang.queryJS('landing.dlAsync.extraFileVerif.distributionIdentityError', {
                         'moduleName': mdl.rawModule.name,
