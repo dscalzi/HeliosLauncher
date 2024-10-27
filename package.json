@@ -18,7 +18,7 @@
     "dist:mac": "npm run dist -- -m",
     "dist:linux": "npm run dist -- -l",
     "lint": "eslint --config .eslintrc.json .",
-    "athshield": "node app/assets/athshield/athshield.js"
+    "extraverif": "node app/assets/extraverif/extraverif.js"
   },
   "engines": {
     "node": "20.x.x"
