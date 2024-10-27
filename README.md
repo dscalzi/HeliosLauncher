@@ -126,30 +126,6 @@ Builds for macOS may not work on Windows/Linux and vice-versa.
 
 ---
 
-### ExtraFileVerification
-
-The Extra File Verification System
-
-ExtraFileVerification prevents the use of unapproved mods in HeliosLauncher by verifying the integrity of each mod from the distribution, blocking unauthorized changes, and ensuring a secure, reliable gaming experience.
-
-**How to active this ?**
-
-```console
-> npm run extraverif
-```
-
-```
-Would you like to activate extra file verification? (yes/no): yes
-Would you like to activate debug mode? (yes/no): yes
-Would you like to hide or block the menu? (hide/block): block
-
-Extra file verification activated. Menu blocked.
-```
-
-You can choose whether extra file verification hides the mod category or blocks interaction with the drop-in mod.
-
----
-
 ### Visual Studio Code
 
 All development of the launcher should be done using [Visual Studio Code][vscode].
