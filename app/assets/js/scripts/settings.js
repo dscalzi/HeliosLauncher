@@ -709,11 +709,11 @@ document.getElementById('settingsGameHeight').addEventListener('keydown', (e) =>
 const settingsModsContainer = document.getElementById('settingsModsContainer')
 
 /**
- * Manages the display and interaction state of the Mods tab and its buttons based on the type of `athShield`.
+ * Manages the display and interaction state of the Mods tab and its buttons based on the type of `extraFileVerif`.
  *
  * The function performs the following:
- * - If `athShield.type` is 'hidden': hides the Mods button entirely.
- * - If `athShield.type` is 'blocked': shows the Mods button, displays the Mods tab, and disables all buttons within the Mods tab.
+ * - If `extraFileVerif.type` is 'hidden': hides the Mods button entirely.
+ * - If `extraFileVerif.type` is 'blocked': shows the Mods button, displays the Mods tab, and disables all buttons within the Mods tab.
  * - Otherwise: shows and enables all components (Mods button and buttons within the Mods tab) normally.
  *
  * @return {void}
