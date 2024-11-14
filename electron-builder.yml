@@ -2,7 +2,7 @@ appId: 'mystormlauncher'
 productName: 'MyStormLauncher'
 artifactName: '${productName}-setup-${version}.${ext}'
 
-copyright: 'Copyright © 2018-2024 StormGamesStudios'
+copyright: 'Copyright © 2020-2024 StormGamesStudios'
 
 asar: true
 compression: 'maximum'
