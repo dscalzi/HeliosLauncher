@@ -1,8 +1,8 @@
-appId: 'helioslauncher'
-productName: 'Helios Launcher'
+appId: 'mystormlauncher'
+productName: 'MyStormLauncher'
 artifactName: '${productName}-setup-${version}.${ext}'
 
-copyright: 'Copyright © 2018-2024 Daniel Scalzi'
+copyright: 'Copyright © 2018-2024 StormGamesStudios'
 
 asar: true
 compression: 'maximum'
@@ -39,8 +39,8 @@ mac:
 # Linux Configuration
 linux: 
   target: 'AppImage'
-  maintainer: 'Daniel Scalzi'
-  vendor: 'Daniel Scalzi'
+  maintainer: 'StormGamesStudios'
+  vendor: 'StormGamesStudios'
   synopsis: 'Modded Minecraft Launcher'
   description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.'
   category: 'Game'

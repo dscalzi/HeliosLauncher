@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
+  "name": "mystormlauncher",
   "version": "2.2.1",
-  "productName": "Helios Launcher",
+  "productName": "MyStormLauncher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "author": "StormGamesStudios (https://github.com/acierto-incomodo/)",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/acierto-incomodo/MyStormLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/acierto-incomodo/MyStormLauncher/issues"
   },
   "private": true,
   "main": "index.js",
@@ -46,6 +46,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/acierto-incomodo/MyStormLauncher.git"
   }
 }
