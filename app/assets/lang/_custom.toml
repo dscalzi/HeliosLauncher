@@ -5,9 +5,9 @@ title = "Helios Launcher"
 
 [ejs.landing]
 mediaGitHubURL = "https://github.com/dscalzi/HeliosLauncher"
-mediaTwitterURL = "#"
-mediaInstagramURL = "#"
-mediaYouTubeURL = "#"
+mediaTwitterURL = ""
+mediaInstagramURL = ""
+mediaYouTubeURL = ""
 mediaDiscordURL = "https://discord.gg/zNWUXdt"
 
 [ejs.settings]

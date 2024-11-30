@@ -961,6 +961,10 @@ async function loadNews(){
     const distroData = await DistroAPI.getDistribution()
     if(!distroData.rawDistribution.rss) {
         loggerLanding.debug('No RSS feed provided.')
+
+        // remove the news button
+        await $('#newsButton').fadeOut(250).promise()
+
         return null
     }
 
