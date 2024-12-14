@@ -1,13 +1,13 @@
 {
-  "name": "mrslauncher",
-  "version": "3.0.3",
-  "productName": "MRS Launcher",
+  "name": "rollipartylauncher",
+  "version": "1.0.4",
+  "productName": "Rolli Party Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/), peunsu (https://github.com/peunsu)",
+  "author": "Daniel Scalzi (https://github.com/dscalzi/), peunsu (https://github.com/peunsu), Irgis",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/peunsu/MRSLauncher",
+  "homepage": "",
   "bugs": {
-    "url": "https://github.com/peunsu/MRSLauncher/issues"
+    "url": ""
   },
   "private": true,
   "main": "index.js",
@@ -46,6 +46,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/peunsu/MRSLauncher.git"
+    "url": ""
   }
 }

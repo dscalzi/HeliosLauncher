@@ -1,21 +1,21 @@
 # Custom Language File for Launcher Customizer
 
 [ejs.app]
-title = "MRS Launcher"
+title = "Rolli Party Launcher"
 
 [ejs.landing]
-mediaLinkURL = "https://mysticred.space"
-mediaGitHubURL = "https://github.com/peunsu/MRSLauncher"
+mediaLinkURL = "https://ch.sooplive.co.kr/rolli826"
+mediaGitHubURL = "#"
 mediaTwitterURL = "#"
 mediaInstagramURL = "#"
 mediaYouTubeURL = "#"
-mediaDiscordURL = "https://discord.gg/Z8j6ahF4MJ"
+mediaDiscordURL = "https://discord.gg/EbsBXSgxT4"
 
 [ejs.settings]
 sourceGithubLink = "https://github.com/peunsu/MRSLauncher"
 supportLink = "https://github.com/peunsu/MRSLauncher/issues"
 
 [ejs.welcome]
-welcomeHeader = "Mystic Red Space"
-welcomeDescription = "2017년, 작은 모드팩 서버로 시작한 Mystic Red Space는 오랜 시간동안 모드팩 유저의 사랑을 받으면서 현재까지 수십 개 이상의 모드팩 서버를 제공하였습니다.  이제 MRS는 단순한 마인크래프트 모드팩 서버를 넘어서, 더 많은 사람들이 마인크래프트 모드 정보를 쉽게 접하고 모드팩에 대한 관심을 키울 수 있는 모드 커뮤니티로 한 걸음 나아가고 있습니다."
-welcomeDescCTA = "모드팩을 사랑하는 당신을 위한 최고의 선물이 되겠습니다."
+welcomeHeader = "롤리 파티 런처에 어서오세요."
+welcomeDescription = "다양한 즐길거리와 미니게임"
+welcomeDescCTA = ""

@@ -1,8 +1,8 @@
-appId: 'mrslauncher'
-productName: 'MRS Launcher'
-artifactName: 'MRS-Launcher-setup-${version}.${ext}'
+appId: 'rollipartylauncher'
+productName: 'Rolli Party Launcher'
+artifactName: 'Rolli-Party-Launcher-setup-${version}.${ext}'
 
-copyright: 'Copyright © 2018-2024 Daniel Scalzi, Copyright © 2024 peunsu'
+copyright: 'Copyright © 2018-2024 Daniel Scalzi, Copyright © 2024 peunsu, Copyright © 2024 Irgis'
 
 asar: true
 compression: 'maximum'
@@ -12,6 +12,10 @@ files:
 
 extraResources:
   - 'libraries'
+
+publish:
+  provider: 'generic'
+  url: 'http://59.26.10.62:9090/'
 
 # Windows Configuration
 win: 
@@ -33,14 +37,14 @@ mac:
       arch:
         - 'x64'
         - 'arm64'
-  artifactName: 'MRS-Launcher-setup-${version}-${arch}.${ext}'
+  artifactName: 'Rolli-Party-Launcher-setup-${version}-${arch}.${ext}'
   category: 'public.app-category.games'
 
 # Linux Configuration
 linux: 
   target: 'AppImage'
-  maintainer: 'Daniel Scalzi, peunsu'
-  vendor: 'Daniel Scalzi, peunsu'
+  maintainer: 'Daniel Scalzi, peunsu, Irgis'
+  vendor: 'Daniel Scalzi, peunsu, Irgis'
   synopsis: 'Modded Minecraft Launcher'
   description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.'
   category: 'Game'
