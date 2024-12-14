@@ -1,6 +1,6 @@
 <p align="center"><img src="./app/assets/images/Icon.png" width="150px" height="150px" alt="mystic red space"></p>
 
-<h1 align="center">MRS Launcher</h1>
+<h1 align="center">Rolli Party Launcher</h1>
 
 <h3 align="center"><a href="https://github.com/dscalzi/HeliosLauncher">Forked from Helios Launcher</a></h3>
 
