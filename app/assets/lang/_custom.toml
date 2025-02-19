@@ -1,7 +1,7 @@
 # Custom Language File for Launcher Customizer
 
 [ejs.app]
-title = "[ALPHA BUILD] Krakyn Launcher"
+title = "Krakyn Launcher"
 
 [ejs.landing]
 mediaGitHubURL = "https://github.com/Kairosen/KrakynLauncher"
