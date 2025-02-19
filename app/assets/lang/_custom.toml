@@ -1,20 +1,20 @@
 # Custom Language File for Launcher Customizer
 
 [ejs.app]
-title = "Krakyn Launcher"
+title = "[ALPHA BUILD] Krakyn Launcher"
 
 [ejs.landing]
-mediaGitHubURL = "https://github.com/dscalzi/HeliosLauncher"
+mediaGitHubURL = "https://github.com/Kairosen/KrakynLauncher"
 mediaTwitterURL = "#"
 mediaInstagramURL = "#"
 mediaYouTubeURL = "#"
 mediaDiscordURL = "https://discord.gg/zNWUXdt"
 
 [ejs.settings]
-sourceGithubLink = "https://github.com/dscalZi/HeliosLauncher"
-supportLink = "https://github.com/dscalZi/HeliosLauncher/issues"
+sourceGithubLink = "https://github.com/Kairosen/KrakynLauncher"
+supportLink = "https://github.com/Kairosen/KrakynLauncher/issues"
 
 [ejs.welcome]
-welcomeHeader = "WELCOME TO WESTEROSCRAFT"
-welcomeDescription = "Our mission is to recreate the universe imagined by author George RR Martin in his fantasy series, A Song of Ice and Fire.  Through the collaborative effort of thousands of community members, we have sought to create Westeros as accurately and precisely as possible within Minecraft.  The world we are creating is yours to explore.  Journey from Dorne to Castle Black, and if you aren’t afraid, beyond the Wall itself, but best not delay.  As the words of House Stark ominously warn: Winter is Coming."
-welcomeDescCTA = "You are just a few clicks away from Westeros."
+welcomeHeader = "WELCOME TO THE KRAKYN LAUNCHER"
+welcomeDescription = "All of our clients, modpacks, and servers are seemlessly managed within this streamlined launcher. Updates are automatic and new clients/modpacks we release will automatically show up here. Join us on our first journey into Prominence II RPG: Hasturian Era. A MASSIVE modpack with 460+ mods, with some further modding by us to add more content like Distant Horizons for example."
+welcomeDescCTA = "You are just a few clicks away from joining your grand adventure..."

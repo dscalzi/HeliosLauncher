@@ -1,6 +1,6 @@
 # Microsoft Authentication
 
-Authenticating with Microsoft is fully supported by Helios Launcher.
+Authenticating with Microsoft is fully supported by Krakyn Launcher.
 
 ## Acquiring an Azure Client ID
 
@@ -28,7 +28,7 @@ Authenticating with Microsoft is fully supported by Helios Launcher.
 9. Copy **Application (client) ID**.
 
 
-## Adding the Azure Client ID to Helios Launcher.
+## Adding the Azure Client ID to Krakyn Launcher.
 
 In `app/assets/js/ipcconstants.js` you'll find **`AZURE_CLIENT_ID`**. Set it to your application's id.
 
