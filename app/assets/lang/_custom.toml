@@ -1,7 +1,7 @@
 # Custom Language File for Launcher Customizer
 
 [ejs.app]
-title = "Krakyn Launcher 2.2.2 THIS WORKED"
+title = "Krakyn Launcher"
 
 [ejs.landing]
 mediaGitHubURL = "https://github.com/Kairosen/KrakynLauncher"

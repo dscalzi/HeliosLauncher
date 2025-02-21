@@ -1,9 +1,9 @@
 {
   "name": "krakynlauncher",
-  "version": "2.2.2",
+  "version": "1.0.0",
   "productName": "Krakyn Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Kairo, Source by Daniel Scalzi",
+  "author": "Kairo",
   "license": "UNLICENSED",
   "homepage": "https://github.com/Kairosen/KrakynLauncher",
   "bugs": {
