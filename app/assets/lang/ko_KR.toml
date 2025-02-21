@@ -180,7 +180,7 @@ javaDownloadPrepare = "Java 다운로드 준비 중.."
 javaDownloadFailureTitle = "Java 다운로드 중 오류 발생"
 javaDownloadFailureText = "콘솔 (CTRL + Shift + i) 에서 자세한 내용을 확인하세요."
 javaRequired = "실행을 위해<br>Java가 필요합니다"
-javaRequiredMessage = "실행을 위해 유효한 64비트 Java {major} 를 설치해야 합니다.<br><br><a href=\"https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java\">Java Management Guide</a>를 참조하여 Java 수동 설치 방법을 확인하세요."
+javaRequiredMessage = "실행을 위해 유효한 64비트 Java {major} 를 설치해야 합니다.<br><br><a href=\"https://github.com/peunsu/MRSLauncher/wiki/Java-%EA%B4%80%EB%A6%AC#java-%EC%88%98%EB%8F%99-%EC%84%A4%EC%B9%98\">Java Management Guide</a>를 참조하여 Java 수동 설치 방법을 확인하세요."
 javaRequiredDismiss = "확인"
 javaRequiredCancel = "돌아가기"
 
