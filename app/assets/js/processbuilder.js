@@ -71,7 +71,11 @@ class ProcessBuilder {
             args = args.concat(this.constructModList(modObj.fMods))
         }
 
-        logger.info('Launch Arguments:', args)
+        // Hide access token
+        const loggableArgs = [...args]
+        loggableArgs[loggableArgs.findIndex(x => x === this.authUser.accessToken)] = '**********'
+
+        logger.info('Launch Arguments:', loggableArgs)
 
         const child = child_process.spawn(ConfigManager.getJavaExecutable(this.server.rawServer.id), args, {
             cwd: this.gameDir,
