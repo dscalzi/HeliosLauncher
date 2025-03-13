@@ -1,8 +1,9 @@
 // Requirements
-const os     = require('os')
-const semver = require('semver')
+const os                                           = require('os')
+const semver                                       = require('semver')
 
-const DropinModUtil  = require('./assets/js/dropinmodutil')
+const DropinModUtil                                = require('./assets/js/dropinmodutil')
+const extraFileVerif                               = require('./assets/extraverif/parserExtraverif')
 const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
 
 const settingsState = {
@@ -708,6 +709,29 @@ document.getElementById('settingsGameHeight').addEventListener('keydown', (e) =>
 const settingsModsContainer = document.getElementById('settingsModsContainer')
 
 /**
+ * Manages the display and interaction state of the Mods tab and its buttons based on the type of `extraFileVerif`.
+ *
+ * The function performs the following:
+ * - If `extraFileVerif.type` is 'hidden': hides the Mods button entirely.
+ * - If `extraFileVerif.type` is 'blocked': shows the Mods button, displays the Mods tab, and disables all buttons within the Mods tab.
+ * - Otherwise: shows and enables all components (Mods button and buttons within the Mods tab) normally.
+ *
+ * @return {void}
+ */
+function manageModCategory() {
+    const modsButton = document.querySelector('button[rSc="settingsTabMods"]')
+    const dropInMods = document.getElementById('settingsDropinModsContainer')
+
+    if (extraFileVerif.type === 'hidden') {
+        // Hide the Mods navigation button
+        modsButton.style.display = 'none'
+    } else if (extraFileVerif.type === 'blocked') {
+        // Hide the drop-in mods elements
+        dropInMods.style.display = 'none'
+    }
+}
+
+/**
  * Resolve and update the mods on the UI.
  */
 async function resolveModsForUI(){
@@ -1133,6 +1157,7 @@ async function prepareModsTab(first){
     await resolveModsForUI()
     await resolveDropinModsForUI()
     await resolveShaderpacksForUI()
+    manageModCategory()
     bindDropinModsRemoveButton()
     bindDropinModFileSystemButton()
     bindShaderpackButton()
