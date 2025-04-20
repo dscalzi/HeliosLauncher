@@ -3136,13 +3136,13 @@ input:checked + .toggleSwitchSlider:before {
     transition-delay:0s;
 }
 
-/* Twitter icon colors. */
-#twitterSVG:hover,
-#twitterURL:focus #twitterSVG {
-    fill: #1da1f2;
+/* X icon colors. */
+#xSVG:hover,
+#xURL:focus #xSVG {
+    fill: #000000;
 }
-#twitterSVG:active {
-    fill: #1b8dd4;
+#xSVG:active {
+    fill: #090909;
 }
 
 /* Instagram icon colors. */
