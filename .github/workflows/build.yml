@@ -36,3 +36,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run dist
         shell: bash
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ runner.os }}
+          path: |
+            dist/**/*.exe
+            dist/**/*.dmg
+            dist/**/*.AppImage
