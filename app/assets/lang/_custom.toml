@@ -1,18 +1,18 @@
 # Custom Language File for Launcher Customizer
 
 [ejs.app]
-title = "Helios Launcher"
+title = "One Piece : Blue Sea"
 
 [ejs.landing]
-mediaGitHubURL = "https://github.com/dscalzi/HeliosLauncher"
+mediaGitHubURL = "https://github.com/Kakumi/OPBSLauncher"
 mediaXURL = "#"
 mediaInstagramURL = "#"
 mediaYouTubeURL = "#"
 mediaDiscordURL = "https://discord.gg/zNWUXdt"
 
 [ejs.settings]
-sourceGithubLink = "https://github.com/dscalZi/HeliosLauncher"
-supportLink = "https://github.com/dscalZi/HeliosLauncher/issues"
+sourceGithubLink = "https://github.com/Kakumi/OPBSLauncher"
+supportLink = "https://github.com/Kakumi/OPBSLauncher/issues"
 
 [ejs.welcome]
 welcomeHeader = "WELCOME TO WESTEROSCRAFT"
