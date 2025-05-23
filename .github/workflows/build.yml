@@ -53,16 +53,25 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20"
+      - name: Read version from package.json
+        id: get-version
+        run: |
+          VERSION=$(jq -r '.version' VOO.DBC.Frontend/package.json)
+          echo "✅ Version : $VERSION"
+          echo "TAG=$VERSION" >> $GITHUB_ENV
 
-      - name: Extract version from package.json
-        id: get_version
-        run: echo "VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
+      - name: Check if tag already exists
+        id: check-tag
+        run: |
+          if git ls-remote --tags origin | grep -q "refs/tags/${{ env.TAG }}"; then
+            echo "❌ La version existe"
+            echo "CREATE_RELEASE=false" >> $GITHUB_ENV
+          else
+            echo "✅ La version n'existe pas"
+            echo "CREATE_RELEASE=true" >> $GITHUB_ENV
+          fi
 
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -72,11 +81,12 @@ jobs:
       - name: List downloaded files
         run: find ./artifacts -type f
 
-      - name: Create GitHub Release using GitHub CLI
+      - name: Create GitHub Release
+        if: env.CREATE_RELEASE == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="v${VERSION}"
           gh release create "$TAG" ./artifacts/**/*.* \
-            --title "Release $TAG" \
-            --notes "Release of version $TAG"
+            --title "$TAG" \
+            --notes "🧪 Release created automatically at $(date +"%Y-%m-%d %H:%M:%S")."
