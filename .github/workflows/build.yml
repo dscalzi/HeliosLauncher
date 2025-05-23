@@ -58,7 +58,7 @@ jobs:
       - name: Read version from package.json
         id: get-version
         run: |
-          VERSION=$(jq -r '.version' VOO.DBC.Frontend/package.json)
+          VERSION=$(jq -r '.version' package.json)
           echo "✅ Version : $VERSION"
           echo "TAG=$VERSION" >> $GITHUB_ENV
 
