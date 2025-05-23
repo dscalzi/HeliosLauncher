@@ -141,13 +141,20 @@ function showFatalStartupError() {
   }, 750);
 }
 
+// Save distro
+let distro = null;
+// Is DiscordRPC enabled
+let hasRPC = false;
+
 /**
  * Common functions to perform after refreshing the distro index.
  *
  * @param {Object} data The distro index object.
  */
 function onDistroRefresh(data) {
+  distro = data;
   updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()));
+  updateDiscordRpc();
   refreshServerStatus();
   initNews();
   syncModConfigurations(data);
@@ -494,6 +501,7 @@ ipcRenderer.on("distributionIndexDone", async (event, res) => {
     const data = await DistroAPI.getDistribution();
     syncModConfigurations(data);
     ensureJavaSettings(data);
+    distro = data;
     if (
       document.readyState === "interactive" ||
       document.readyState === "complete"
@@ -626,4 +634,31 @@ async function devModeToggle() {
   ensureJavaSettings(data);
   updateSelectedServer(data.servers[0]);
   syncModConfigurations(data);
+}
+
+//Discord RPC
+function updateDiscordRpc() {
+  if (distro != null) {
+    const user = ConfigManager.getSelectedAccount();
+    const serverId = ConfigManager.getSelectedServer();
+    const serv = distro.servers.find((s) => s.rawServer.id === serverId);
+
+    if (
+      serv != null &&
+      serv.rawServer.discord != null &&
+      distro.rawDistribution.discord != null
+    ) {
+      if (!hasRPC) {
+        DiscordWrapper.initRPC(
+          distro.rawDistribution.discord,
+          serv.rawServer.discord
+        );
+        hasRPC = true;
+      }
+    } else if (hasRPC) {
+      loggerLaunchSuite.info("Shutting down Discord Rich Presence..");
+      DiscordWrapper.shutdownRPC();
+      hasRPC = false;
+    }
+  }
 }

@@ -133,8 +133,10 @@ continueButton = "CONTINUE"
 
 
 [js.discord]
-waiting = "Waiting for Client.."
-state = "Server: {shortId}"
+launcherDetails = "Dans le launcher 🌊"
+launcherState = "Serveur {server}"
+gameDetails = "En jeu ({name}) 🌊"
+gameState = "Serveur {server}"
 
 [js.index]
 microsoftLoginTitle = "Microsoft Login"
@@ -211,11 +213,6 @@ checkConsoleForDetails = "Please check the console (CTRL + Shift + i) for more d
 
 [js.landing.news]
 checking = "Checking for News"
-
-[js.landing.discord]
-loading = "Loading game.."
-joining = "Sailing to Westeros!"
-joined = "Exploring the Realm!"
 
 [js.overlay]
 dismiss = "Dismiss"

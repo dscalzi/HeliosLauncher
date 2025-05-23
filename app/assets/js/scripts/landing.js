@@ -3,6 +3,7 @@
  */
 // Requirements
 const { URL } = require("url");
+const fetch = require("node-fetch");
 const { MojangRestAPI } = require("helios-core/mojang");
 const {
   RestResponseStatus,
@@ -167,7 +168,10 @@ function updateSelectedAccount(authUser) {
       ).style.backgroundImage = `url('https://mc-heads.net/body/${authUser.uuid}/right')`;
     }
   }
+
   user_text.innerHTML = username;
+
+  updateDiscordRpc();
 }
 updateSelectedAccount(ConfigManager.getSelectedAccount());
 
@@ -185,6 +189,7 @@ function updateSelectedServer(serv) {
     animateSettingsTabRefresh();
   }
   setLaunchEnabled(serv != null);
+  updateDiscordRpc();
 }
 // Real text is set in uibinder.js on distributionIndexDone.
 server_selection_button.innerHTML =
@@ -474,8 +479,6 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
 // Keep reference to Minecraft Process
 let proc;
-// Is DiscordRPC enabled
-let hasRPC = false;
 // Joined server regex
 // Change this if your server uses something different.
 const GAME_JOINED_REGEX = /\[.+\]: Sound engine started/;
@@ -585,6 +588,8 @@ async function dlAsync(login = true) {
     loggerLaunchSuite.info("No invalid files, skipping download.");
   }
 
+  await downloadCustomMainMenuFiles();
+
   // Remove download bar.
   remote.getCurrentWindow().setProgressBar(-1);
 
@@ -628,7 +633,6 @@ async function dlAsync(login = true) {
     const onLoadComplete = () => {
       toggleLaunchArea(false);
       if (hasRPC) {
-        DiscordWrapper.updateDetails(Lang.queryJS("landing.discord.loading"));
         proc.stdout.on("data", gameStateChange);
       }
       proc.stdout.removeListener("data", tempListener);
@@ -655,9 +659,9 @@ async function dlAsync(login = true) {
     const gameStateChange = function (data) {
       data = data.trim();
       if (SERVER_JOINED_REGEX.test(data)) {
-        DiscordWrapper.updateDetails(Lang.queryJS("landing.discord.joined"));
+        //DiscordWrapper.updateDetails(Lang.queryJS("landing.discord.joined"));
       } else if (GAME_JOINED_REGEX.test(data)) {
-        DiscordWrapper.updateDetails(Lang.queryJS("landing.discord.joining"));
+        //DiscordWrapper.updateDetails(Lang.queryJS("landing.discord.joining"));
       }
     };
 
@@ -690,29 +694,37 @@ async function dlAsync(login = true) {
 
       setLaunchDetails(Lang.queryJS("landing.dlAsync.doneEnjoyServer"));
 
+      DiscordWrapper.updateDetails(
+        Lang.queryJS("discord.gameDetails", {
+          name: authUser.displayName,
+        })
+      );
+
+      DiscordWrapper.updateState(
+        Lang.queryJS("discord.gameState", {
+          server: serv.rawServer.name,
+        })
+      );
+
       // Init Discord Hook
-      console.log("distro", distro.rawDistribution.discord);
-      console.log("serv", serv.rawServer.discord);
-      if (
-        distro.rawDistribution.discord != null &&
-        serv.rawServer.discord != null
-      ) {
-        DiscordWrapper.initRPC(
-          distro.rawDistribution.discord,
-          serv.rawServer.discord
+      proc.on("close", (code, signal) => {
+        updateMusic(
+          ConfigManager.getAllowMusic(),
+          ConfigManager.getMusicVolume()
         );
-        hasRPC = true;
-        proc.on("close", (code, signal) => {
-          updateMusic(
-            ConfigManager.getAllowMusic(),
-            ConfigManager.getMusicVolume()
-          );
-          loggerLaunchSuite.info("Shutting down Discord Rich Presence..");
-          DiscordWrapper.shutdownRPC();
-          hasRPC = false;
-          proc = null;
-        });
-      }
+
+        DiscordWrapper.updateDetails(
+          Lang.queryJS("discord.launcherDetails", {
+            name: authUser.displayName,
+          })
+        );
+
+        DiscordWrapper.updateState(
+          Lang.queryJS("discord.launcherState", {
+            server: serv.rawServer.name,
+          })
+        );
+      });
     } catch (err) {
       loggerLaunchSuite.error("Error during launch", err);
       showLaunchFailure(
@@ -1148,4 +1160,40 @@ async function loadNews() {
   });
 
   return await promise;
+}
+
+async function downloadCustomMainMenuFiles() {
+  const user = ConfigManager.getSelectedAccount();
+  const serv = (await DistroAPI.getDistribution()).getServerById(
+    ConfigManager.getSelectedServer()
+  );
+  const resourceFolder = path.join(
+    ConfigManager.getInstanceDirectory(),
+    serv.rawServer.id,
+    "resources"
+  );
+  const folder = path.join(resourceFolder, "opbluesea", "textures");
+  const launcherFolder = path.join(resourceFolder, "launcher");
+  fs.mkdirSync(folder, { recursive: true });
+  const filePath = path.join(folder, "skin.png");
+  const url = `https://minotar.net/armor/bust/${user.uuid}/128.png`;
+
+  const response = await fetch(url);
+  const buffer = await response.buffer();
+  fs.writeFile(filePath, buffer, () => console.log("finished downloading!"));
+
+  const files = fs.readdirSync(launcherFolder);
+  const panoramaFiles = files.filter((f) => /^panorama_\d+\./.test(f));
+  if (panoramaFiles.length > 0) {
+    const idx = Math.floor(Math.random() * panoramaFiles.length);
+    let randomPanoramaFile = path.join(launcherFolder, panoramaFiles[idx]);
+    const newPanoramaFile = path.join(folder, "panorama.png");
+    fs.copyFile(randomPanoramaFile, newPanoramaFile, (err) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log("copied panorama file to resources folder");
+      }
+    });
+  }
 }
