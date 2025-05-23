@@ -63,7 +63,7 @@ if (!isDev) {
         if (process.platform === "darwin") {
           info.darwindownload = `https://github.com/Kakumi/OPBSLauncher/releases/download/v${
             info.version
-          }/Helios-Launcher-setup-${info.version}${
+          }/One.Piece.Blue.Sea-setup-${info.version}${
             process.arch === "arm64" ? "-arm64" : "-x64"
           }.dmg`;
           showUpdateUI(info);
