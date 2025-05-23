@@ -52,6 +52,18 @@ jobs:
     needs: build
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Extract version from package.json
+        id: get_version
+        run: echo "VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -60,9 +72,11 @@ jobs:
       - name: List downloaded files
         run: find ./artifacts -type f
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: ./artifacts/**/*.*
+      - name: Create GitHub Release using GitHub CLI
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="v${VERSION}"
+          gh release create "$TAG" ./artifacts/**/*.* \
+            --title "Release $TAG" \
+            --notes "Release of version $TAG"
