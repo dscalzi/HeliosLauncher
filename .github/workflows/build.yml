@@ -60,7 +60,7 @@ jobs:
         run: |
           VERSION=$(jq -r '.version' package.json)
           echo "✅ Version : $VERSION"
-          echo "TAG=$VERSION" >> $GITHUB_ENV
+          echo "TAG=v$VERSION" >> $GITHUB_ENV
 
       - name: Check if tag already exists
         id: check-tag
@@ -86,7 +86,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="v${VERSION}"
-          gh release create "$TAG" ./artifacts/**/*.* \
-            --title "$TAG" \
+          gh release create "{{ env.TAG }}" ./artifacts/**/*.* \
+            --title "{{ env.TAG }}" \
             --notes "🧪 Release created automatically at $(date +"%Y-%m-%d %H:%M:%S")."
