@@ -697,7 +697,9 @@ function populateAuthAccounts() {
             <div class="settingsAuthAccountLeft">
                 <img class="settingsAuthAccountImage" alt="${
                   acc.displayName
-                }" src="https://api.mineatar.io/body/full/${acc.uuid}?scale=16">
+                }" src="https://opbluesea.fr/api/skin-api/avatars/combo/${
+      acc.displayName
+    }">
             </div>
             <div class="settingsAuthAccountRight">
                 <div class="settingsAuthAccountDetails">
@@ -1053,8 +1055,17 @@ function bindDropinModsRemoveButton() {
  * Bind functionality to the file system button for the selected
  * server configuration.
  */
-function bindDropinModFileSystemButton() {
+async function bindDropinModFileSystemButton() {
   const fsBtn = document.getElementById("settingsDropinFileSystemButton");
+  const serv = (await DistroAPI.getDistribution()).getServerById(
+    ConfigManager.getSelectedServer()
+  );
+
+  if (serv.rawServer.customMods == false) {
+    fsBtn.innerHTML = Lang.queryJS("settings.dropinMods.addModsNotAllowed");
+    return;
+  }
+
   fsBtn.onclick = () => {
     DropinModUtil.validateDir(CACHE_SETTINGS_MODS_DIR);
     shell.openPath(CACHE_SETTINGS_MODS_DIR);

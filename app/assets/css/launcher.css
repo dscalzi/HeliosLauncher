@@ -1840,11 +1840,6 @@ input:checked + .toggleSwitchSlider:before {
   background: rgba(54, 54, 54, 0.25);
   text-shadow: 0px 0px 20px white;
 }
-/* Refresh instructions on the file system button. */
-#settingsDropinRefreshNote {
-  font-size: 10px;
-  pointer-events: none;
-}
 
 /* Button to remove drop-in mods. */
 .settingsDropinRemoveButton {

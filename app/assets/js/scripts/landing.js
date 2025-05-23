@@ -165,7 +165,7 @@ function updateSelectedAccount(authUser) {
     if (authUser.uuid != null) {
       document.getElementById(
         "avatarContainer"
-      ).style.backgroundImage = `url('https://mc-heads.net/body/${authUser.uuid}/right')`;
+      ).style.backgroundImage = `url('https://opbluesea.fr/api/skin-api/avatars/face/${authUser.displayName}')`;
     }
   }
 
@@ -589,6 +589,8 @@ async function dlAsync(login = true) {
   }
 
   await downloadCustomMainMenuFiles();
+
+  await deleteCustomMods();
 
   // Remove download bar.
   remote.getCurrentWindow().setProgressBar(-1);
@@ -1194,6 +1196,37 @@ async function downloadCustomMainMenuFiles() {
       } else {
         console.log("copied panorama file to resources folder");
       }
+    });
+  }
+}
+
+async function deleteCustomMods() {
+  const user = ConfigManager.getSelectedAccount();
+  const serv = (await DistroAPI.getDistribution()).getServerById(
+    ConfigManager.getSelectedServer()
+  );
+
+  if (serv.rawServer.customMods == false) {
+    const modsFolder = path.join(
+      ConfigManager.getInstanceDirectory(),
+      serv.rawServer.id,
+      "mods"
+    );
+
+    //delete all files in the mods folder
+    fs.readdir(modsFolder, (err, files) => {
+      if (err) {
+        loggerUICore.error("Error reading mods folder", err);
+        return;
+      }
+      files.forEach((file) => {
+        const filePath = path.join(modsFolder, file);
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            loggerUICore.error("Error deleting file", err);
+          }
+        });
+      });
     });
   }
 }
