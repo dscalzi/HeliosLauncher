@@ -85,7 +85,8 @@ jobs:
         if: env.CREATE_RELEASE == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ env.TAG }}
         run: |
-          gh release create "{{ env.TAG }}" ./artifacts/**/*.* \
-            --title "{{ env.TAG }}" \
-            --notes "🧪 Release created automatically at $(date +"%Y-%m-%d %H:%M:%S")."
+          gh release create "$TAG" ./artifacts/**/*.* \
+            --title "$TAG" \
+            --notes "🧪 Release created automatically at $(date '+%Y-%m-%d %H:%M:%S')."
