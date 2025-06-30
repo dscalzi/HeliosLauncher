@@ -1,6 +1,7 @@
 // Requirements
 const os = require("os");
 const semver = require("semver");
+const axios = require("axios");
 
 const DropinModUtil = require("./assets/js/dropinmodutil");
 const {
@@ -369,6 +370,7 @@ settingsNavDone.onclick = () => {
 
 const msftLoginLogger = LoggerUtil.getLogger("Microsoft Login");
 const msftLogoutLogger = LoggerUtil.getLogger("Microsoft Logout");
+const skinUploadLogger = LoggerUtil.getLogger("Skin Uploader");
 
 // Bind the add mojang account button.
 document.getElementById("settingsAddMojangAccount").onclick = (e) => {
@@ -699,7 +701,7 @@ function populateAuthAccounts() {
                   acc.displayName
                 }" src="https://opbluesea.fr/api/skin-api/avatars/combo/${
       acc.displayName
-    }">
+    }?v=${Date.now()}">
             </div>
             <div class="settingsAuthAccountRight">
                 <div class="settingsAuthAccountDetails">
@@ -1844,6 +1846,73 @@ function populateSettingsUpdateInformation(data) {
         }
       }
     );
+  }
+}
+
+const skinUploadInput = document.getElementById("settingsSkinUpload");
+skinUploadInput.onchange = async (e) => {
+  const file = e.target.files[0];
+  if (file != null) {
+    await uploadSkin(file);
+  }
+};
+
+const skinUploadBtn = document.getElementById("settingsSkinUploadBtn");
+skinUploadBtn.onclick = (e) => {
+  skinUploadInput.click();
+};
+
+const settingsSkinErrorMessage = document.getElementById(
+  "settingsSkinErrorMessage"
+);
+
+const originalFetch = window.fetch;
+window.fetch = async (...args) => {
+  console.log("FETCH CALLED", args);
+  return originalFetch(...args);
+};
+
+/**
+ * Upload a PNG image as a skin to a given URL with an access token.
+ * @param {string} url The endpoint to POST to.
+ * @param {string} accessToken The access token.
+ * @param {File|Blob} pngImage The PNG image file or blob.
+ * @returns {Promise<Response>} The fetch response.
+ */
+async function uploadSkin(pngImage) {
+  settingsSkinErrorMessage.style.color = "white";
+  settingsSkinErrorMessage.innerHTML = Lang.queryJS(
+    "settings.skins.uploadSkinLoading"
+  );
+  const user = ConfigManager.getSelectedAccount();
+  if (user == null) {
+    skinUploadLogger.log("No user selected for skin upload.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("uuid", user.uuid);
+  formData.append("skin", pngImage);
+
+  const response = await axios.post(
+    "https://opbluesea.fr/api/skin-api/skins-launcher",
+    formData
+  );
+
+  if (response.status == 200) {
+    settingsSkinErrorMessage.innerHTML = Lang.queryJS(
+      "settings.skins.uploadSkinSuccess"
+    );
+    updateSelectedAccount(user);
+    populateAuthAccounts();
+    populateAccountListings();
+  } else {
+    settingsSkinErrorMessage.style.color = "red";
+    settingsSkinErrorMessage.innerHTML = Lang.queryJS(
+      "settings.skins.uploadSkinError"
+    );
+    settingsSkinErrorMessage.style.display = "block";
+    skinUploadLogger.error(`Erreur lors de l'upload : ${response.statusText}`);
   }
 }
 

@@ -362,7 +362,7 @@ function populateAccountListings() {
     }>
             <img src="https://opbluesea.fr/api/skin-api/avatars/face/${
               accounts[i].displayName
-            }">
+            }?v=${Date.now()}">
             <div class="accountListingName">${accounts[i].displayName}</div>
         </button>`;
   }

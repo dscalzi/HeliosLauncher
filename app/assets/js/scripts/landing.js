@@ -165,7 +165,9 @@ function updateSelectedAccount(authUser) {
     if (authUser.uuid != null) {
       document.getElementById(
         "avatarContainer"
-      ).style.backgroundImage = `url('https://opbluesea.fr/api/skin-api/avatars/face/${authUser.displayName}')`;
+      ).style.backgroundImage = `url('https://opbluesea.fr/api/skin-api/avatars/face/${
+        authUser.displayName
+      }?v=${Date.now()}')`;
     }
   }
 
@@ -1109,7 +1111,7 @@ async function loadNews() {
 
           // Resolve date.
           const date = new Date(el.find("pubDate").text()).toLocaleDateString(
-            "en-US",
+            "fr-FR",
             {
               month: "short",
               day: "numeric",
