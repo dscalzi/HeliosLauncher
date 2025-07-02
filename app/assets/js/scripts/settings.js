@@ -1906,6 +1906,7 @@ async function uploadSkin(pngImage) {
     updateSelectedAccount(user);
     populateAuthAccounts();
     populateAccountListings();
+    populateUploadSkinPreview(user);
   } else {
     settingsSkinErrorMessage.style.color = "red";
     settingsSkinErrorMessage.innerHTML = Lang.queryJS(

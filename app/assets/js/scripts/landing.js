@@ -155,6 +155,14 @@ document.getElementById("avatarOverlay").onclick = async (e) => {
   });
 };
 
+function populateUploadSkinPreview(user) {
+  document.getElementById(
+    "uploadSkinCurrentPreview"
+  ).src = `https://opbluesea.fr/api/skin-api/avatars/combo/${
+    user.displayName
+  }?v=${Date.now()}`;
+}
+
 // Bind selected account
 function updateSelectedAccount(authUser) {
   let username = Lang.queryJS("landing.selectedAccount.noAccountSelected");
@@ -168,6 +176,7 @@ function updateSelectedAccount(authUser) {
       ).style.backgroundImage = `url('https://opbluesea.fr/api/skin-api/avatars/face/${
         authUser.displayName
       }?v=${Date.now()}')`;
+      populateUploadSkinPreview(authUser);
     }
   }
 

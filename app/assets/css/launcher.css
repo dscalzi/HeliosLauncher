@@ -3986,8 +3986,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Skins */
 #settingsSkinFileSelContainer {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  padding-bottom: 20px;
+  flex-grow: 1;
 }
 
 #settingsSkinFileSelActions {
@@ -4007,4 +4006,14 @@ input:checked + .toggleSwitchSlider:before {
   display: flex;
   flex-direction: column;
   justify-items: center;
+}
+
+.fileUploadSkinContainerPreview {
+  width: 75%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  padding-bottom: 20px;
 }
