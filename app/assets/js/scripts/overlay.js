@@ -310,9 +310,18 @@ function setAccountListingHandlers() {
 async function populateServerListings() {
   const distro = await DistroAPI.getDistribution();
   const giaSel = ConfigManager.getSelectedServer();
+  const user = ConfigManager.getSelectedAccount();
   const servers = distro.servers;
   let htmlString = "";
   for (const serv of servers) {
+    const restricted = serv.rawServer.restricted;
+    if (
+      restricted.length > 0 &&
+      (user == null || !restricted.includes(user.uuid))
+    ) {
+      continue;
+    }
+
     htmlString += `<button class="serverListing" servid="${
       serv.rawServer.id
     }" ${serv.rawServer.id === giaSel ? "selected" : ""}>
