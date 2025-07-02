@@ -144,12 +144,12 @@
           ><%- lang('settings.skinTabHeaderDesc') %></span
         >
       </div>
-      <div id="settingsFileSelContainer">
+      <div id="settingsSkinFileSelContainer">
         <span class="settingsFieldTitle"
           ><%- lang('settings.uploadSkin') %></span
         >
         <div class="settingsFileSelContent">
-          <div class="settingsFileSelActions">
+          <div id="settingsSkinFileSelActions" class="settingsFileSelActions">
             <div class="settingsFileSelIcon">
               <svg
                 class="settingsFileSelSVG"
@@ -187,8 +187,11 @@
           <div id="settingsSkinErrorMessage" class="settingsFieldDesc"></div>
         </div>
       </div>
-      <div class="settingsFieldContainer">
-        <p><%- lang('settings.chooseSkinFromList') %></p>
+      <div style="display: block" class="settingsFieldContainer">
+        <span class="settingsFieldTitle"
+          ><%- lang('settings.chooseSkinFromList') %></span
+        >
+        <div class="skin-container" id="skinsWrapper"></div>
       </div>
     </div>
     <div id="settingsTabMinecraft" class="settingsTab" style="display: none">

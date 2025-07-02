@@ -3983,3 +3983,28 @@ input:checked + .toggleSwitchSlider:before {
 .rotating {
   animation: rotating 10s linear infinite;
 }
+
+/* Skins */
+#settingsSkinFileSelContainer {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  padding-bottom: 20px;
+}
+
+#settingsSkinFileSelActions {
+  padding-top: 10px;
+}
+
+#skinsWrapper {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  gap: 5px;
+}
+
+.skinHead {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+}

@@ -134,6 +134,8 @@ updateReleaseNotes = "Update Release Notes"
 uploadSkinLoading = "Sending your skin..."
 uploadSkinError = "An error occurred while uploading your skin. Please, retry soon."
 uploadSkinSuccess = "Your skin has been sent to the server !"
+noSkinsFound = "No skins found."
+selectSkin = "Choisir"
 
 [ejs.waiting]
 waitingText = "Waiting for Microsoft.."

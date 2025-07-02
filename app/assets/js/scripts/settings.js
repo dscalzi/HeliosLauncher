@@ -1916,6 +1916,76 @@ async function uploadSkin(pngImage) {
   }
 }
 
+const skinFolder = path.join(__dirname, "assets", "images", "skins");
+const skinsWrapper = document.getElementById("skinsWrapper");
+
+function initSkins() {
+  skinsWrapper.innerHTML = "";
+  const skinPaths = fs.readdirSync(skinFolder).filter((file) => {
+    return file.endsWith(".png");
+  });
+
+  if (skinPaths.length === 0) {
+    skinsWrapper.innerHTML = Lang.queryJS("settings.skins.noSkinsFound");
+  } else {
+    skinPaths
+      .map((file) => path.join(skinFolder, file))
+      .forEach((skinPath) => {
+        skinsWrapper.appendChild(createSkinCanvas(skinPath));
+      });
+  }
+}
+
+initSkins();
+
+function createFileFromDisk(absolutePath, filename = "skin.png") {
+  const buffer = fs.readFileSync(absolutePath);
+
+  try {
+    return new File([buffer], filename, { type: "image/png" });
+  } catch (e) {
+    // Fallback : retourne un Blob si File n’existe pas
+    return new Blob([buffer], { type: "image/png" });
+  }
+}
+
+function createSkinCanvas(imageSrc, size = 64) {
+  const div = document.createElement("div");
+  div.className = "skinHead";
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+
+  const skin = new Image();
+  skin.src = imageSrc;
+
+  skin.onload = () => {
+    // Échelle (ex : 8x8 pixels → 64x64 rendus → scale x8)
+    const scale = size / 8;
+
+    // Dessiner la tête (face)
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(skin, 8, 8, 8, 8, 0, 0, 8 * scale, 8 * scale);
+
+    // Dessiner la couche "casque" si présente
+    ctx.drawImage(skin, 40, 8, 8, 8, 0, 0, 8 * scale, 8 * scale);
+  };
+
+  div.appendChild(canvas);
+
+  const button = document.createElement("button");
+  button.className = "settingsFileSelButton";
+  button.innerHTML = Lang.queryJS("settings.skins.selectSkin");
+  button.onclick = async () => {
+    const skin = await createFileFromDisk(imageSrc, "skin.png");
+    uploadSkin(skin);
+  };
+  div.appendChild(button);
+
+  return div;
+}
+
 /**
  * Prepare update tab for display.
  *
