@@ -1,13 +1,13 @@
 {
-  "name": "helioslauncher",
-  "version": "2.2.1",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
-  "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "name": "NewSMP_Launcher",
+  "version": "1.0.0",
+  "productName": "NewSMP",
+  "description": "A custom Minecraft launcher for NewSMP.",
+  "author": "Daniel Scalzi (https://github.com/dscalzi/), RedSavantMC",
+  "license": "MIT",
+  "homepage": "https://github.com/New-Teams/NewLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/New-Teams/NewLauncher/issues"
   },
   "private": true,
   "main": "index.js",
