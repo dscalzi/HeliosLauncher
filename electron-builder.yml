@@ -1,8 +1,8 @@
-appId: 'helioslauncher'
-productName: 'Helios Launcher'
+appId: 'newsmp'
+productName: 'NewSMP'
 artifactName: '${productName}-setup-${version}.${ext}'
 
-copyright: 'Copyright © 2018-2024 Daniel Scalzi'
+copyright: ''
 
 asar: true
 compression: 'maximum'
@@ -39,10 +39,10 @@ mac:
 # Linux Configuration
 linux: 
   target: 'AppImage'
-  maintainer: 'Daniel Scalzi'
-  vendor: 'Daniel Scalzi'
-  synopsis: 'Modded Minecraft Launcher'
-  description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.'
+  maintainer: 'RedSavant'
+  vendor: 'RedSavant'
+  synopsis: 'Launcher pour le NewSMP'
+  description: 'Launcher custom pour le serveur Minecraft NewSMP.'
   category: 'Game'
 
 
