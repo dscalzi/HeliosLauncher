@@ -1,4 +1,4 @@
-# NewSMP Studio Launcher Build Workflow
+# MultiGames Studio Launcher Build Workflow
 name: Build and Release
 
 on:
@@ -80,7 +80,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
-          name: NewSMP Launcher v${{ steps.get_version.outputs.version }}
+          name: MultiGames Studio Launcher v${{ steps.get_version.outputs.version }}
           draft: false
           prerelease: ${{ contains(steps.get_version.outputs.version, 'beta') || contains(steps.get_version.outputs.version, 'alpha') }}
           # Use the generated full changelog file instead of auto-generated release notes
