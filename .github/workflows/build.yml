@@ -1,40 +1,183 @@
-name: Build
+# NewSMP Studio Launcher Build Workflow
+name: Build and Release
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [ prod ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  release:
-    runs-on: ${{ matrix.os }}
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    permissions:
-      contents: write
+      - name: Auto-increment version if unchanged
+        id: auto_version
+        run: |
+          CURRENT_VERSION=$(jq -r .version package.json)
+          
+          # Récupérer la dernière version taguée
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LAST_VERSION=${LAST_TAG#v}
+          
+          # Comparer les versions
+          if [ "$CURRENT_VERSION" = "$LAST_VERSION" ]; then
+            echo "Version inchangée, incrémentation automatique..."
+            
+            # Séparer les composants de la version
+            IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+            
+            # Incrémenter le patch
+            NEW_PATCH=$((PATCH + 1))
+            NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+            
+            # Mettre à jour package.json
+            jq --arg version "$NEW_VERSION" '.version = $version' package.json > package.json.tmp
+            mv package.json.tmp package.json
+            
+            echo "Version incrémentée: $CURRENT_VERSION -> $NEW_VERSION"
+            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "Version déjà mise à jour manuellement: $CURRENT_VERSION"
+            echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get version
+        id: get_version
+        run: echo "version=${{ steps.auto_version.outputs.version }}" >> $GITHUB_OUTPUT
+      
+      - name: Generate full changelog
+        id: gen_changelog
+        run: |
+          # Récupérer le dernier tag (ou v0.0.0 si aucun)
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LAST_VERSION=${LAST_TAG#v}
+
+          echo "# Full Changelog: ${LAST_TAG}...HEAD" > release_body.md
+          echo "" >> release_body.md
+
+          # Générer le changelog entre le dernier tag et HEAD (format compact)
+          git --no-pager log --pretty=format:'- %s (%h) - %an' ${LAST_TAG}..HEAD >> release_body.md || true
+
+          echo "" >> release_body.md
+          echo "Changelog generated from ${LAST_TAG} to HEAD" >> release_body.md
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: NewSMP Launcher v${{ steps.get_version.outputs.version }}
+          draft: false
+          prerelease: ${{ contains(steps.get_version.outputs.version, 'beta') || contains(steps.get_version.outputs.version, 'alpha') }}
+          # Use the generated full changelog file instead of auto-generated release notes
+          body_path: release_body.md
+          generate_release_notes: false
+
+  build-launcher:
+    needs: create-release
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-14, ubuntu-latest, windows-latest]
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20.x'
+          cache: 'npm'
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.x
+          python-version: '3.x'
 
       - name: Install Dependencies
         run: npm ci
-        shell: bash
 
-      - name: Build
+
+      - name: Build Application
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run dist
-        shell: bash
+
+      - name: Upload Windows Artifacts
+        if: matrix.os == 'windows-latest'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.create-release.outputs.version }}
+          files: |
+            dist/*.exe
+            dist/latest.yml
+
+      - name: Upload macOS Artifacts
+        if: matrix.os == 'macos-14'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.create-release.outputs.version }}
+          files: |
+            dist/*.dmg
+            dist/latest-mac.yml
+
+      - name: Upload Linux Artifacts
+        if: matrix.os == 'ubuntu-latest'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.create-release.outputs.version }}
+          files: |
+            dist/*.AppImage
+            dist/*.deb
+            dist/latest-linux.yml
+
+  build-deb:
+    needs: create-release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install fpm and native build deps
+        run: |
+          sudo apt-get update
+          # remove libgconf-2-4 (not always available on ubuntu-latest); use --no-install-recommends to reduce extras
+          sudo apt-get install -y --no-install-recommends ruby-dev build-essential rpm dpkg-dev fakeroot xz-utils libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libuuid1 libsecret-1-0
+          sudo gem install --no-document fpm
+
+      - name: Build Debian package
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --linux deb --config electron-builder.yml --publish never
+
+      - name: Upload Debian Artifact
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.create-release.outputs.version }}
+          files: |
+            dist/*.deb

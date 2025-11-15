@@ -4,15 +4,15 @@
 title = "NewSMP Launcher"
 
 [ejs.landing]
-mediaGitHubURL = "https://github.com/dscalzi/HeliosLauncher"
+mediaGitHubURL = "https://newsmp.fr"
 mediaXURL = "#"
 mediaInstagramURL = "#"
-mediaYouTubeURL = "#"
-mediaDiscordURL = "https://discord.gg/zNWUXdt"
+mediaYouTubeURL = "https://www.youtube.com/@NewSMPV3"
+mediaDiscordURL = "http://discord.newsmp.fr"
 
 [ejs.settings]
-sourceGithubLink = "https://github.com/dscalZi/HeliosLauncher"
-supportLink = "https://github.com/dscalZi/HeliosLauncher/issues"
+sourceGithubLink = "https://github.com/New-Teams/NewLauncher/"
+supportLink = "https://github.com/New-Teams/NewLauncher/issues"
 
 [ejs.welcome]
 welcomeHeader = "Bienvenue sur le NewSMP"

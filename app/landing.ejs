@@ -123,32 +123,19 @@
         </div>
         <div id="center">
             <div class="bot_wrapper">
-                <div id="content">
-                    <button id="newsButton">
-                        <!--<img src="assets/images/icons/arrow.svg" id="newsButtonSVG"/>-->
-                        <div id="newsButtonAlert" style="display: none;"></div>
-                        <svg id="newsButtonSVG" viewBox="0 0 24.87 13.97">
-                            <defs>
-                                <style>.arrowLine{fill:none;stroke:#FFF;stroke-width:2px;}</style>
-                            </defs>
-                            <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"/>
-                        </svg>
-                        &#10;<span id="newsButtonText"><%- lang('landing.newsButton') %></span>
-                    </button>
-                </div>
             </div>
         </div>
         <div id="right">
             <div class="bot_wrapper">
                 <div id="launch_content">
                     <button id="launch_button"><%- lang('landing.launchButton') %></button>
-                    <div class="bot_divider"></div>
+                    
                     <button id="server_selection_button" class="bot_label"><%- lang('landing.launchButtonPlaceholder') %></button>
                 </div>
                 <div id="launch_details">
                     <div id="launch_details_left">
                         <span id="launch_progress_label">0%</span>
-                        <div class="bot_divider"></div>
+                        
                     </div>
                     <div id="launch_details_right">
                         <progress id="launch_progress" value="22" max="100"></progress>

@@ -31,6 +31,11 @@ const {
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
 
+// ===== WHITELIST MANAGER =====
+const { WhitelistManager } = require('./assets/js/whitelistmanager')
+const whitelistManager        = new WhitelistManager()
+
+
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
 const launch_details          = document.getElementById('launch_details')
@@ -98,11 +103,92 @@ function setLaunchEnabled(val){
     document.getElementById('launch_button').disabled = !val
 }
 
+/**
+ * Vérifie la whitelist avant le lancement
+ * @param {Object} server - Serveur sélectionné
+ * @param {Object} authUser - Utilisateur authentifié
+ * @returns {Promise<boolean>} True si autorisé, false sinon
+ */
+async function checkWhitelistBeforeLaunch(server, authUser) {
+    // Vérifier si la whitelist est activée pour ce serveur
+    if (!server.rawServer.whitelist || !server.rawServer.whitelist.enabled) {
+        loggerLanding.info('Whitelist disabled for this server, proceeding with launch.')
+        return true
+    }
+
+    loggerLanding.info(`Checking whitelist for ${authUser.displayName} on ${server.rawServer.name}...`)
+    setLaunchDetails('Vérification de la whitelist...')
+
+    try {
+        // Vérifier la whitelist
+        const result = await whitelistManager.checkWhitelist(authUser.displayName, server.rawServer)
+
+        if (!result.allowed) {
+            loggerLanding.warn(`Whitelist check failed: ${result.reason}`)
+            
+            // Afficher l'erreur à l'utilisateur
+            showLaunchFailure(
+    '🚫 Accès Refusé',
+    `
+    <div style="text-align: center; padding: 20px;">
+        <div style="font-size: 48px; margin-bottom: 15px;">🔒</div>
+        <div style="font-size: 18px; font-weight: bold; color: #ff6b6b; margin-bottom: 10px;">
+            Cette instance est réservée !
+        </div>
+        <img src="assets/images/minecraft-fox.gif" 
+             style="
+                 width: 200px;
+                 height: 142px;
+                 border-radius: 15px;
+                 margin-bottom: 20px;
+                 box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+             ">
+        <div style="font-size: 14px; color: #a0a0a0; margin-bottom: 20px;">
+            ${result.reason}
+        </div>
+    </div>
+    `
+)
+            
+            return false
+        }
+
+        loggerLanding.info(`✓ ${authUser.displayName} is whitelisted (${result.uuid || 'by username'})`)
+        return true
+
+    } catch (error) {
+        loggerLanding.error('Error during whitelist check:', error)
+        
+        // En cas d'erreur, vous pouvez choisir de:
+        // 1. Bloquer le lancement (recommandé si whitelist critique)
+        showLaunchFailure(
+            'Erreur de vérification',
+            `Impossible de vérifier la whitelist: ${error.message}<br><br>Veuillez réessayer.`
+        )
+        return false
+        
+        // 2. OU autoriser quand même (moins sécurisé)
+        // loggerLanding.warn('Whitelist check failed, allowing launch anyway.')
+        // return true
+    }
+}
+
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', async e => {
     loggerLanding.info('Launching game..')
     try {
         const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+        const authUser = ConfigManager.getSelectedAccount()
+        
+        // ===== VÉRIFICATION WHITELIST =====
+        // Vérifier la whitelist AVANT tout le reste
+        const isWhitelisted = await checkWhitelistBeforeLaunch(server, authUser)
+        if (!isWhitelisted) {
+            loggerLanding.warn('Launch cancelled - player not whitelisted')
+            return // Arrêter le lancement
+        }
+        // ===== FIN VÉRIFICATION WHITELIST =====
+
         const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
         if(jExe == null){
             await asyncSystemScan(server.effectiveJavaOptions)

@@ -1,23 +1,26 @@
-appId: 'newsmp'
-productName: 'NewSMP'
-artifactName: '${productName}-setup-${version}.${ext}'
+appId: "com.newsmp.launcher"
+productName: "NewSMPLauncher"
+artifactName: "${productName}-setup-${version}.${ext}"
 
-copyright: ''
+copyright: ""
 
 asar: true
-compression: 'maximum'
+compression: "maximum"
 
 files:
-  - '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.nvmrc,.eslintrc.json}'
+  - "!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.nvmrc,.eslintrc.json}"
 
 extraResources:
-  - 'libraries'
+  - "libraries"
 
 # Windows Configuration
-win: 
-  target: 
-    - target: 'nsis'
-      arch: 'x64'
+win:
+  icon: "build/icon.ico"
+  publisherName: "MultiGames Studio"
+  verifyUpdateCodeSignature: false
+  target:
+    - target: "nsis"
+      arch: "x64"
 
 # Windows Installer Configuration
 nsis:
@@ -25,27 +28,44 @@ nsis:
   perMachine: false
   allowElevation: true
   allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: "NewSMP"
+  displayLanguageSelector: false
+  installerIcon: "build/icon.ico"
+  uninstallerIcon: "build/icon.ico"
+  license: "LICENSE.txt"
+  warningsAsErrors: false
 
 # macOS Configuration
 mac:
+  icon: "build/icon.png"
   target:
-    - target: 'dmg'
+    - target: "dmg"
       arch:
-        - 'x64'
-        - 'arm64'
-  artifactName: '${productName}-setup-${version}-${arch}.${ext}'
-  category: 'public.app-category.games'
+        - "x64"
+        - "arm64"
+  artifactName: "${productName}-setup-${version}-${arch}.${ext}"
+  category: "public.app-category.games"
 
 # Linux Configuration
-linux: 
-  target: 'AppImage'
-  maintainer: 'RedSavant'
-  vendor: 'RedSavant'
-  synopsis: 'Launcher pour le NewSMP'
-  description: 'Launcher custom pour le serveur Minecraft NewSMP.'
-  category: 'Game'
+linux:
+  icon: "build/icon.png"
+  target:
+    - "AppImage"
+    - "deb"
+  maintainer: "RedSavant"
+  vendor: "NewSMP"
+  synopsis: "NewSMP Launcher"
+  description: "NewSMP game launcher for Minecraft and more."
+  category: "Game"
 
+# Debian package specific options
+deb:
+  priority: "optional"
+  depends:
+    - "libc6"
 
 directories:
-  buildResources: 'build'
-  output: 'dist'
+  buildResources: "build"
+  output: "dist"

@@ -202,7 +202,7 @@ downloadingFiles = "Téléchargement des fichiers.."
 errorDuringFileDownloadTitle = "Erreur de téléchargement"
 preparingToLaunch = "Préparation au lancement.."
 launchingGame = "Lancement du jeu.."
-launchWrapperNotDownloaded = "Le fichier principal LaunchWrapper n’a pas pu être téléchargé. Le jeu ne peut pas se lancer.<br><br>Désactivez temporairement votre antivirus et réessayez.<br><br>Si possible, <a href=\"https://github.com/dscalzi/HeliosLauncher/issues\">signalez ce problème</a>."
+launchWrapperNotDownloaded = "Le fichier principal LaunchWrapper n’a pas pu être téléchargé. Le jeu ne peut pas se lancer.<br><br>Désactivez temporairement votre antivirus et réessayez.<br><br>Si possible, <a href=\"https://github.com/New-Teams/NewLauncher/issues\">signalez ce problème</a>."
 doneEnjoyServer = "Terminé. Amusez-vous bien sur le serveur !"
 checkConsoleForDetails = "Consultez la console (CTRL + Shift + i) pour plus de détails."
 

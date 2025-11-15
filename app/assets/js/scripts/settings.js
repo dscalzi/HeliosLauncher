@@ -1129,7 +1129,7 @@ function animateSettingsTabRefresh(){
 /**
  * Prepare the Mods tab for display.
  */
-async function prepareModsTab(first){
+ async function prepareModsTab(first){
     await resolveModsForUI()
     await resolveDropinModsForUI()
     await resolveShaderpacksForUI()
@@ -1453,7 +1453,7 @@ function populateAboutVersionInformation(){
  */
 function populateReleaseNotes(){
     $.ajax({
-        url: 'https://github.com/dscalzi/HeliosLauncher/releases.atom',
+        url: 'https://github.com/New-Teams/NewLauncher//releases.atom',
         success: (data) => {
             const version = 'v' + remote.app.getVersion()
             const entries = $(data).find('entry')

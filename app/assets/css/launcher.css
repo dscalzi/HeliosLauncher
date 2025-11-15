@@ -1862,9 +1862,12 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Mod elements sub-containers. */
 #settingsReqModsContainer,
-#settingsOptModsContainer,
-#settingsDropinModsContainer {
+#settingsOptModsContainer {
   padding-bottom: 25px;
+}
+
+#settingsDropinModsContainer {
+  display: none !important;
 }
 
 /* Main content containers for mod elements. */
@@ -3211,17 +3214,22 @@ input:checked + .toggleSwitchSlider:before {
   justify-content: center;
   box-sizing: border-box;
   position: relative;
+  transition: transform 0.3s ease; /* ajoute la transition */
 }
+
+#user_content:hover {
+  transform: scale(1.2); /* utilise transform au lieu de scale */
+}
+
 
 /* User profile avatar container. */
 #avatarContainer {
-  border-radius: 50%;
-  border: 2px solid #cad7e1;
+  /* border-radius: 50%; */ /* supprime le cercle */
+  /* border: 2px solid #cad7e1; */ /* supprime la bordure blanche */
   box-sizing: border-box;
-  background: rgba(1, 2, 1, 0.5);
   height: 80px;
   width: 80px;
-  box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+  
   overflow: hidden;
   position: relative;
   background-position: center;
@@ -3249,10 +3257,6 @@ input:checked + .toggleSwitchSlider:before {
   border-radius: 50%;
 }
 
-#avatarOverlay:hover,
-#avatarOverlay:focus {
-  opacity: 1;
-}
 
 #avatarOverlay:active {
   background-color: rgba(0, 0, 0, 0.45);
@@ -3455,7 +3459,7 @@ input:checked + .toggleSwitchSlider:before {
 .bot_divider {
   height: 25px;
   width: 2px;
-  background: rgba(107, 105, 105, 0.7);
+  background: rgb(0, 226, 38);
   margin-left: 20px;
   margin-right: 20px;
 }
@@ -3642,6 +3646,7 @@ input:checked + .toggleSwitchSlider:before {
   height: 11px;
   margin-left: -2px;
   transition: 0.25s ease;
+  scale: 0;
 }
 
 /* Span which contains the news button text. */
@@ -3654,6 +3659,7 @@ input:checked + .toggleSwitchSlider:before {
   line-height: 30px;
   display: flex;
   transition: 0.25s ease;
+  scale: 0;
 }
 
 #newsButton {
@@ -3747,7 +3753,8 @@ input:checked + .toggleSwitchSlider:before {
 
 #launch_button:hover,
 #launch_button:focus {
-  text-shadow: 0px 0px 20px #F8BA59, 0px 0px 20px #F8BA59;
+  scale: 1.2;
+  color: rgb(237, 149, 255);
 }
 
 #launch_button:active {
@@ -3797,17 +3804,31 @@ input:checked + .toggleSwitchSlider:before {
 #server_selection_button {
   background: none;
   border: none;
-  outline: none;
+  color: white;
+  font-size: 20px;
+  font-weight: 900;
   cursor: pointer;
-  line-height: 24px;
-  padding: 0px;
-  transition: 0.25s ease;
+  transition: 0.3s ease;
+  letter-spacing: 2px;
 }
 
+/* Animation multicolore */
 #server_selection_button:hover,
 #server_selection_button:focus {
-  text-shadow: 0px 0px 20px #F8BA59, 0px 0px 20px #F8BA59, 0px 0px 20px #F8BA59;
+  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+  background-size: 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: rainbow 3s linear infinite;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
+
+@keyframes rainbow {
+  0% { background-position: 0% }
+  100% { background-position: 400% }
+}
+
 
 #server_selection_button:active {
   color: #451F21;
