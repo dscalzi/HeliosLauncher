@@ -16,7 +16,6 @@ const LangLoader                        = require('./app/assets/js/langloader')
 // Setup Lang
 LangLoader.setupLanguage()
 
-
 // Setup auto updater.
 function initAutoUpdater(event, data) {
 
