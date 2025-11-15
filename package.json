@@ -1,7 +1,6 @@
 {
-  "name": "newsmp-launcher",
-  "productName": "NewSMP Launcher",
-  "version": "1.1.2",
+  "name": "NewSMP",
+  "version": "1.0.0",
   "description": "NewSMP Launcher - Le lanceur tout-en-un pour NewSMP.fr",
   "author": "RedSavantMC",
   "license": "UNLICENSED",
@@ -62,26 +61,6 @@
     "url": "git+https://github.com/New-Teams/NewLauncher.git"
   },
   "build": {
-    "appId": "com.newsmp.launcher",
-    "productName": "NewSMP Launcher",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "**/*",
-      "!**/*.md",
-      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
-      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
-      "!**/node_modules/*.d.ts",
-      "!**/node_modules/.bin",
-      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
-      "!.editorconfig",
-      "!**/._*",
-      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
-      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
-      "!**/{appveyor.yml,.travis.yml,circle.yml}",
-      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
-    ],
     "publish": [
       {
         "provider": "github",
@@ -89,84 +68,14 @@
         "repo": "NewLauncher"
       }
     ],
+    "linux": {
+      "category": "Game"
+    },
     "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": ["x64"]
-        },
-        {
-          "target": "portable",
-          "arch": ["x64"]
-        }
-      ],
-      "artifactName": "${productName}-Setup-${version}.${ext}",
-      "icon": "build/icon.ico"
+      "artifactName": "${name}-Setup-${version}.${ext}"
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "allowElevation": true,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
-      "installerHeaderIcon": "build/icon.ico",
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "NewSMP Launcher",
-      "artifactName": "${productName}-Setup-${version}.${ext}"
-    },
-    "mac": {
-      "target": [
-        {
-          "target": "dmg",
-          "arch": ["x64", "arm64"]
-        },
-        {
-          "target": "zip",
-          "arch": ["x64", "arm64"]
-        }
-      ],
-      "category": "public.app-category.games",
-      "artifactName": "${productName}-${version}-${arch}.${ext}",
-      "icon": "build/icon.icns"
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ],
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
-    },
-    "linux": {
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": ["x64"]
-        },
-        {
-          "target": "deb",
-          "arch": ["x64"]
-        },
-        {
-          "target": "rpm",
-          "arch": ["x64"]
-        }
-      ],
-      "maintainer": "RedSavantMC",
-      "vendor": "NewSMP",
-      "synopsis": "Le lanceur tout-en-un pour NewSMP.fr",
-      "description": "NewSMP Launcher - Le lanceur tout-en-un pour NewSMP.fr",
-      "category": "Game",
-      "artifactName": "${productName}-${version}-${arch}.${ext}",
-      "icon": "build/icon.png"
+      "artifactName": "${name}-Setup-${version}.${ext}"
     }
   }
 }
