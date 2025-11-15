@@ -1868,6 +1868,7 @@ input:checked + .toggleSwitchSlider:before {
 
 #settingsDropinModsContainer {
   display: none !important;
+  
 }
 
 /* Main content containers for mod elements. */
