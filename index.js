@@ -84,6 +84,7 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
             break
     }
 })
+
 // Redirect distribution index event from preloader to renderer.
 ipcMain.on('distributionIndexDone', (event, res) => {
     event.sender.send('distributionIndexDone', res)
@@ -103,6 +104,61 @@ ipcMain.handle(SHELL_OPCODE.TRASH_ITEM, async (event, ...args) => {
         }
     }
 })
+
+// ========================================
+// GESTIONNAIRES POUR MINIMISER/RESTAURER LE LAUNCHER
+// ========================================
+
+// Gestionnaire pour minimiser le launcher au lancement du jeu
+ipcMain.on('game-launching', (event) => {
+    console.log('[Main] Received game-launching event - Minimizing launcher')
+    if (win && !win.isDestroyed()) {
+        win.minimize()
+        console.log('[Main] Launcher minimized')
+    } else {
+        console.log('[Main] ERROR: Window is destroyed or null')
+    }
+})
+
+// Gestionnaire pour restaurer le launcher à la fermeture du jeu
+ipcMain.on('game-closed', (event) => {
+    console.log('[Main] Received game-closed event - Restoring launcher')
+    if (win && !win.isDestroyed()) {
+        win.restore()
+        win.focus()
+        console.log('[Main] Launcher restored')
+    } else {
+        console.log('[Main] ERROR: Window is destroyed or null')
+    }
+})
+
+// Alternative: Gestionnaire pour masquer complètement la fenêtre
+ipcMain.on('game-launching-hide', (event) => {
+    console.log('[Main] Received game-launching-hide event - Hiding launcher')
+    if (win && !win.isDestroyed()) {
+        win.hide()
+        console.log('[Main] Launcher hidden successfully')
+    } else {
+        console.log('[Main] ERROR: Window is destroyed or null')
+    }
+})
+
+// Alternative: Gestionnaire pour afficher à nouveau la fenêtre
+ipcMain.on('game-closed-show', (event) => {
+    console.log('[Main] Received game-closed-show event - Relaunching application')
+    if (win && !win.isDestroyed()) {
+        console.log('[Main] Closing current window...')
+        win.close()
+    }
+    
+    console.log('[Main] Relaunching application...')
+    app.relaunch()
+    app.quit()
+})
+
+// ========================================
+// FIN DES GESTIONNAIRES LAUNCHER
+// ========================================
 
 // Disable hardware acceleration.
 // https://electronjs.org/docs/tutorial/offscreen-rendering

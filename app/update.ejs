@@ -1,0 +1,190 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mise à jour</title>
+  <style>
+    :root { --bg: #0f0f0f; --muted: #9b9b9b; --accent: #4f9dff; }
+    html,body{height:100%;margin:0;background:var(--bg);color:#fff;font-family:Inter, "Segoe UI", Helvetica, Arial;}
+    .center {
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:36px;
+      text-align:center;
+      padding:40px 20px;
+      box-sizing:border-box;
+    }
+
+    .logo {
+      width:520px;
+      max-width:76vw;
+      height:auto;
+      user-select:none;
+      -webkit-user-drag: none;
+      filter: brightness(1);
+    }
+
+    /* status panel under the logo (hidden by default, appears when update flow active) */
+    .status {
+      margin-top:12px;
+      min-width:320px;
+      max-width:80vw;
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.03);
+      padding:12px 14px;
+      border-radius:10px;
+      font-size:13px;
+      color:#dcdcdc;
+      display:none;
+      gap:8px;
+    }
+    .status .title { font-weight:700; font-size:14px; margin-bottom:6px; }
+    .progress { height:8px; background:rgba(255,255,255,0.03); border-radius:8px; overflow:hidden; }
+    .progress > .bar { height:100%; width:0%; background:var(--accent); transition: width 160ms linear; }
+    .percent { font-size:12px; color:var(--muted); margin-top:6px; text-align:right; }
+
+    .action { margin-top:8px; display:flex; gap:8px; justify-content:center; }
+    .btn {
+      padding:8px 12px; background:var(--accent); color:#fff; border-radius:8px; cursor:pointer; user-select:none;
+      box-shadow:0 4px 18px rgba(79,157,255,0.14); border:0; font-weight:600;
+    }
+    .btn.ghost { background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted); box-shadow:none; }
+
+    /* bottom copyright */
+    .copyright {
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:20px;
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:0.6px;
+    }
+/* From Uiverse.io by ZacharyCrespin */ 
+@keyframes square-animation {
+ 0% {
+  left: 0;
+  top: 0;
+ }
+
+ 10.5% {
+  left: 0;
+  top: 0;
+ }
+
+ 12.5% { left: 22px; top: 0; }
+ 23%   { left: 22px; top: 0; }
+ 25%   { left: 44px; top: 0; }
+ 35.5% { left: 44px; top: 0; }
+ 37.5% { left: 44px; top: 22px; }
+ 48%   { left: 44px; top: 22px; }
+ 50%   { left: 22px; top: 22px; }
+ 60.5% { left: 22px; top: 22px; }
+ 62.5% { left: 22px; top: 44px; }
+ 73%   { left: 22px; top: 44px; }
+ 75%   { left: 0;    top: 44px; }
+ 85.5% { left: 0;    top: 44px; }
+ 87.5% { left: 0;    top: 22px; }
+ 98%   { left: 0;    top: 22px; }
+ 100% {
+  left: 0;
+  top: 0;
+ }
+}
+
+.loader {
+ position: relative; /* placed inside .center so use flow positioning */
+ display: inline-block;
+ width: 64px;
+ height: 64px;
+ transform: rotate(45deg);
+ margin-top: 12px; /* small spacing under logo/status */
+}
+
+.loader-square {
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 20px;
+ height: 20px;
+ margin: 1px;
+ border-radius: 0px;
+ background: white;
+ background-size: cover;
+ background-position: center;
+ background-attachment: fixed;
+ animation: square-animation 10s ease-in-out infinite both;
+}
+
+.loader-square:nth-of-type(0) {
+ animation-delay: 0s;
+}
+
+.loader-square:nth-of-type(1) {
+ animation-delay: -1.4285714286s;
+}
+
+.loader-square:nth-of-type(2) {
+ animation-delay: -2.8571428571s;
+}
+
+.loader-square:nth-of-type(3) {
+ animation-delay: -4.2857142857s;
+}
+
+.loader-square:nth-of-type(4) {
+ animation-delay: -5.7142857143s;
+}
+
+.loader-square:nth-of-type(5) {
+ animation-delay: -7.1428571429s;
+}
+
+.loader-square:nth-of-type(6) {
+ animation-delay: -8.5714285714s;
+}
+
+.loader-square:nth-of-type(7) {
+ animation-delay: -10s;
+}
+    /* clickable body hint removed to avoid accidental closes while update in progress */
+  </style>
+</head>
+<body>
+  <div class="center">
+    <img class="logo" src="assets/images/icow.png" alt="logo"/>
+    <div id="status" class="status" aria-hidden="true">
+      <div id="statusTitle" class="title">Recherche des mises à jour...</div>
+      <div id="statusDesc" class="desc">Veuillez patienter pendant que le lanceur vérifie la disponibilité d'une nouvelle version.</div>
+      
+      <div id="actionRow" class="action" style="display:none">
+        <div id="installBtn" class="btn">Installer maintenant</div>
+        <div id="closeBtn" class="btn ghost">Fermer</div>
+      </div>
+    </div>
+    <!-- From Uiverse.io by ZacharyCrespin -->
+    <div class="loader">
+      <div class="loader-square"></div>
+      <div class="loader-square"></div>
+      <div class="loader-square"></div>
+      <div class="loader-square"></div>
+      <div class="loader-square"></div>
+      <div class="loader-square"></div>
+      <div class="loader-square"></div>
+    </div>
+
+    <div id="progressWrap" style="display:none; width: 320px; max-width:80vw;">
+      <div class="progress"><div id="progressBar" class="bar"></div></div>
+      <div id="percent" class="percent">0%</div>
+    </div>
+
+    <div class="copyright">Multigames Launcher 2025</div>
+
+  <script src="./assets/js/scripts/update-window.js"></script>
+</body>
+</html>

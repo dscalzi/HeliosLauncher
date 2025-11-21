@@ -16,8 +16,10 @@ extraResources:
 # Windows Configuration
 win:
   icon: "build/icon.ico"
-  publisherName: "MultiGames Studio"
-  verifyUpdateCodeSignature: false
+  publisherName: "RedSavant"
+  verifyUpdateCodeSignature: true
+  certificateFile: "build/newsmp.pfx"
+  certificatePassword: "NewSMP2025#!"
   target:
     - target: "nsis"
       arch: "x64"
