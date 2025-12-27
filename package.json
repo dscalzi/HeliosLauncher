@@ -1,7 +1,7 @@
 {
-  "name": "helioslauncher",
+  "name": "loyallauncher",
   "version": "2.2.1",
-  "productName": "Helios Launcher",
+  "productName": "Loyal Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
   "license": "UNLICENSED",
@@ -40,6 +40,7 @@
     "toml": "^3.0.0"
   },
   "devDependencies": {
+    "@types/node": "^22.15.21",
     "electron": "^33.2.1",
     "electron-builder": "^25.1.8",
     "eslint": "^8.57.1"

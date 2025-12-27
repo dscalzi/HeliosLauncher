@@ -38,6 +38,7 @@ loginPasswordDisclaimer2 = "{appName} is not affiliated with Mojang AB."
 loginOptionsTitle = "Login Options"
 loginWithMicrosoft = "Login with Microsoft"
 loginWithMojang = "Login with Mojang"
+loginOffline = "Join without an account"
 cancelButton = "Cancel"
 
 [ejs.overlay]

@@ -1,0 +1,31 @@
+<div id="loginOfflineContainer" style="display: none;">
+    <div id="loginOfflineCancelContainer" >
+        <button id="loginOfflineCancelButton">
+            <span id="loginCancelText">Voltar</span>
+        </button>
+    </div>
+    <div id="loginContent">
+        <form id="loginOfflineForm">
+            <img id="loginImageSeal" src="assets/images/SealCircle.png"/>
+            <span id="loginSubheader">Login Offline</span>
+            <div class="loginFieldContainer">
+                <input id="loginOfflineUsername" class="loginField" type="text" placeholder="Usuário"/>
+            </div>
+            <button id="loginOfflineButton" disabled>
+                <div id="loginButtonContent">
+                    ENTRAR
+                    <svg id="loginSVG" viewBox="0 0 24.87 13.97">
+                        <defs>
+                            <style>.arrowLine{fill:none;stroke:#FFF;stroke-width:2px;transition: 0.25s ease;}</style>
+                        </defs>
+                        <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"/>
+                    </svg>
+                    <div class="circle-loader">
+                        <div class="checkmark draw"></div>
+                    </div>
+                </div>
+            </button>
+        </form>
+    </div>
+    <script src="./assets/js/scripts/loginOffline.js"></script>
+</div>

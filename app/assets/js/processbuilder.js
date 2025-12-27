@@ -504,7 +504,11 @@ class ProcessBuilder {
                             val = this.vanillaManifest.assets
                             break
                         case 'auth_uuid':
-                            val = this.authUser.uuid.trim()
+                            if (this.authUser.type === 'offline') {
+                                val = 'N/A'
+                            } else {
+                                val = this.authUser.uuid.trim()
+                            }
                             break
                         case 'auth_access_token':
                             val = this.authUser.accessToken
@@ -525,7 +529,7 @@ class ProcessBuilder {
                             val = args[i].replace(argDiscovery, tempNativePath)
                             break
                         case 'launcher_name':
-                            val = args[i].replace(argDiscovery, 'Helios-Launcher')
+                            val = args[i].replace(argDiscovery, 'Loyal-Launcher')
                             break
                         case 'launcher_version':
                             val = args[i].replace(argDiscovery, this.launcherVersion)

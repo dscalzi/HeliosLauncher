@@ -2855,12 +2855,13 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Logo image. */
 #image_seal {
+    display: none;
     height: 70px;
     width: auto;
     position: relative;
-    border: 2px solid white;
+    /* border: 2px solid white;
     box-sizing: border-box;
-    border-radius: 50%;
+    border-radius: 50%;  */
 }
 
 /* Logo container styles. */
@@ -3405,7 +3406,20 @@ input:checked + .toggleSwitchSlider:before {
     padding: 0px;
     transition: 0.25s ease;
     outline: none;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
 }
+
+#launchButtonCube {
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+
+  width: 32px;
+  height: 32px;
+}
+
+
 #launch_button:hover,
 #launch_button:focus {
     text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
