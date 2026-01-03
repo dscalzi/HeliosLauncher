@@ -4,6 +4,8 @@ Authenticating with Microsoft is fully supported by Helios Launcher.
 
 ## Acquiring an Entra Client ID
 
+Prerequisite: You need an [Azure Account](https://signup.azure.com/signup)
+
 1. Navigate to https://portal.azure.com
 2. In the search bar, search for **Microsoft Entra ID**.
 3. In Microsoft Entra ID, go to **App Registrations** on the left pane (Under *Manage*).
