@@ -17,7 +17,7 @@
     "dist:win": "npm run dist -- -w",
     "dist:mac": "npm run dist -- -m",
     "dist:linux": "npm run dist -- -l",
-    "lint": "eslint --config .eslintrc.json ."
+    "lint": "eslint ."
   },
   "engines": {
     "node": "20.x.x"
@@ -40,9 +40,10 @@
     "toml": "^3.0.0"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin": "^5.6.1",
     "electron": "^33.2.1",
     "electron-builder": "^25.1.8",
-    "eslint": "^8.57.1"
+    "eslint": "^9.39.2"
   },
   "repository": {
     "type": "git",
