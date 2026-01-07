@@ -8,7 +8,7 @@ const { Type }              = require('helios-distribution-types')
 const os                    = require('os')
 const path                  = require('path')
 
-const ConfigManager            = require('./configmanager')
+const ConfigManager         = require('./configmanager')
 
 const logger = LoggerUtil.getLogger('ProcessBuilder')
 
@@ -98,6 +98,21 @@ class ProcessBuilder {
         })
         child.on('close', (code) => {
             logger.info('Exited with code', code)
+            if(code != 0){
+                setOverlayContent(
+                    Lang.queryJS('processbuilder.exit.exitErrorHeader'),
+                    Lang.queryJS('processbuilder.exit.message') + code,
+                    Lang.queryJS('processbuilder.exit.copyCode')
+                )
+                setOverlayHandler(() => {
+                    copy(Lang.queryJS('processbuilder.exit.copyCodeText') + code)
+                    toggleOverlay(false)
+                })
+                setDismissHandler(() => {
+                    toggleOverlay(false)
+                })
+                toggleOverlay(true, true)
+            }
             fs.remove(tempNativePath, (err) => {
                 if(err){
                     logger.warn('Error while deleting temp dir', err)

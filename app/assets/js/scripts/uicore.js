@@ -5,15 +5,19 @@
  * modules, excluding dependencies.
  */
 // Requirements
-const $                              = require('jquery')
-const {ipcRenderer, shell, webFrame} = require('electron')
-const remote                         = require('@electron/remote')
-const isDev                          = require('./assets/js/isdev')
-const { LoggerUtil }                 = require('helios-core')
-const Lang                           = require('./assets/js/langloader')
+const $                                         = require('jquery')
+const {ipcRenderer, shell, webFrame, clipboard} = require('electron')
+const remote                                    = require('@electron/remote')
+const isDev                                     = require('./assets/js/isdev')
+const { LoggerUtil }                            = require('helios-core')
+const Lang                                      = require('./assets/js/langloader')
 
 const loggerUICore             = LoggerUtil.getLogger('UICore')
 const loggerAutoUpdater        = LoggerUtil.getLogger('AutoUpdater')
+
+function copy(value) {
+    clipboard.writeText(value, 'selection')
+}
 
 // Log deprecation and process warnings.
 process.traceProcessWarnings = true
