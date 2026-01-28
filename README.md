@@ -185,6 +185,18 @@ For instructions on setting up Microsoft Authentication, see https://github.com/
 
 ---
 
+# Third Party Setup Services
+
+Everything above might seem scary, some people may not know how to setup [Nebula][nebula] or how to get a project up and running with automatic updates. You can use a third party setup service. 
+> [!CAUTION]
+> These services are not affiliated with us, and we cannot guarantee their quality. They may charge you a fee for creating a launcher for you, so please make sure you agree on the terms and conditions before hiring them. Also, be aware that using a third party service may expose you to risks such as unauthorized access, data loss, or malware. We are not responsible for any damages or losses that may result from using a third party service. Please do your own research and use these people at your own risk.
+
+| Setup Provider | Monthly Maintanance | One-Time Creation | Nebula Cloud Hosting |
+| :---: | :---: | :---: | :---: |
+| [Codixer](https://discord.gg/AE6ZsDe48s) | ✅💵 | ✅💵 | ✅💵 |
+
+---
+
 ## Resources
 
 * [Wiki][wiki]
