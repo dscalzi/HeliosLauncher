@@ -232,7 +232,7 @@ async function fullMicrosoftAuthFlow(entryCode, authMode) {
  * 
  * @param {number} nowMs Current time milliseconds.
  * @param {number} epiresInS Expires in (seconds)
- * @returns 
+ * @returns {number} Expiration time in milliseconds
  */
 function calculateExpiryDate(nowMs, epiresInS) {
     return nowMs + ((epiresInS-10)*1000)
