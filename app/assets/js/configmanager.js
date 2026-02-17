@@ -508,7 +508,9 @@ exports.setModConfiguration = function(serverid, configuration){
 // Java Settings
 
 function defaultJavaConfig(effectiveJavaOptions, ram) {
-    if(effectiveJavaOptions.suggestedMajor > 8) {
+    if(effectiveJavaOptions.suggestedMajor > 17) {
+        return defaultJavaConfig25(ram)
+    } else if(effectiveJavaOptions.suggestedMajor > 8) {
         return defaultJavaConfig17(ram)
     } else {
         return defaultJavaConfig8(ram)
@@ -541,6 +543,20 @@ function defaultJavaConfig17(ram) {
             '-XX:G1ReservePercent=20',
             '-XX:MaxGCPauseMillis=50',
             '-XX:G1HeapRegionSize=32M'
+        ],
+    }
+}
+
+function defaultJavaConfig25(ram) {
+    return {
+        minRAM: resolveSelectedRAM(ram),
+        maxRAM: resolveSelectedRAM(ram),
+        executable: null,
+        jvmOptions: [
+            '-XX:+UseCompactObjectHeaders',
+            '-XX:+AlwaysPreTouch',
+            '-XX:+UseStringDeduplication',
+            '-XX:+UseZGC'
         ],
     }
 }
