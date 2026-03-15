@@ -96,7 +96,7 @@ class ProcessBuilder {
         child.stderr.on('data', (data) => {
             data.trim().split('\n').forEach(x => console.log(`\x1b[31m[Minecraft]\x1b[0m ${x}`))
         })
-        child.on('close', (code, signal) => {
+        child.on('close', (code) => {
             logger.info('Exited with code', code)
             fs.remove(tempNativePath, (err) => {
                 if(err){
@@ -234,7 +234,7 @@ class ProcessBuilder {
                     return true
                 }
             }
-        } catch (err) {
+        } catch (_err) {
             // We know old forge versions follow this format.
             // Error must be caused by newer version.
         }
