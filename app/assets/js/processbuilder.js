@@ -866,7 +866,7 @@ class ProcessBuilder {
      * @returns {{[id: string]: string}} An object containing the paths of each library this module requires.
      */
     _resolveModuleLibraries(mdl){
-        if(!mdl.subModules.length > 0){
+        if(mdl.subModules.length === 0){
             return {}
         }
         let libs = {}
