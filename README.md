@@ -126,6 +126,17 @@ Builds for macOS may not work on Windows/Linux and vice-versa.
 
 ---
 
+**Generate browsable JSDoc**
+
+```console
+> npm run jsdoc:generate
+```
+
+Useful to navigate quickly available functions in the UI's JS scripts.
+The generated docs will be available in `./docs/js/`.
+
+---
+
 ### Visual Studio Code
 
 All development of the launcher should be done using [Visual Studio Code][vscode].

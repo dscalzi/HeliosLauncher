@@ -17,7 +17,8 @@
     "dist:win": "npm run dist -- -w",
     "dist:mac": "npm run dist -- -m",
     "dist:linux": "npm run dist -- -l",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "jsdoc:generate": "npx jsdoc -c jsdoc.json"
   },
   "engines": {
     "node": "22.x.x"
@@ -50,3 +51,4 @@
     "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
   }
 }
+
