@@ -26,7 +26,6 @@ class ForgePatcher {
      * @returns {boolean}
      */
     async needsPatching() {
-        console.log(join(getLibraryDir(ConfigManager.getCommonDirectory()), MavenUtil.mavenIdentifierToPath(this.serverModule.modules.filter(m => m.rawModule.type === "Forge")[0].rawModule.id)))
         return this.serverModule.modules.filter(m => m.rawModule.type === "Forge"
             && m.isForgeGradle3()).length > 0
             && !await exists(join(getLibraryDir(ConfigManager.getCommonDirectory()), MavenUtil.mavenIdentifierToPath(this.serverModule.modules.filter(m => m.rawModule.type === "Forge")[0].rawModule.id)))
@@ -90,7 +89,6 @@ class ForgePatcher {
             if (outputFile && !outputs[outputFile]) {
                 outputs[outputFile] = "";
             }
-            console.log(args)
 
             await new Promise((resolve, reject) => {
                 const child = child_process.spawn(ConfigManager.getJavaExecutable(this.serverModule.rawServer.id), args, {
@@ -135,8 +133,6 @@ class ForgePatcher {
             MINECRAFT_JAR: jarPath,
             BINPATCH: join(getLibraryDir(ConfigManager.getCommonDirectory()), MavenUtil.mavenIdentifierAsPath(forgeModule.rawModule.clientPatch.id, 'lzma'))
         }
-
-        console.log(values)
 
         if (argument.startsWith('[') && argument.endsWith(']')) return join(getLibraryDir(ConfigManager.getCommonDirectory(), MavenUtil.mavenIdentifierAsPath(argument.substring(1, argument.length - 1))))
 
