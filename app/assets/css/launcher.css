@@ -3204,6 +3204,7 @@ input:checked + .toggleSwitchSlider:before {
 #server_status_wrapper {
     display: inline-flex;
     width: 75px;
+    text-wrap: nowrap;
 }
 
 /* Span which displays the player count of the selected server. */
@@ -3295,6 +3296,7 @@ input:checked + .toggleSwitchSlider:before {
     padding: 0px 3px;
     text-align: center;
     letter-spacing: 1px;
+    text-wrap: nowrap;
 }
 
 /* Wrapper container for mojang service information. */

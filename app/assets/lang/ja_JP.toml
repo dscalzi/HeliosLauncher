@@ -1,0 +1,266 @@
+[ejs.landing]
+updateAvailableTooltip = "アップデートが利用可能です"
+usernamePlaceholder = "ユーザー名"
+usernameEditButton = "編集"
+settingsTooltip = "設定"
+mojangStatus = "MOJANG ステータス"
+mojangStatusTooltipTitle = "サービス"
+mojangStatusNETitle = "非必須"
+newsButton = "ニュース"
+launchButton = "プレイ"
+launchButtonPlaceholder = "&#8226; サーバーが選択されていません"
+launchDetails = "お待ちください..."
+newsErrorLoadSpan = "ニュースを確認中..."
+newsErrorFailedSpan = "ニュースの読み込みに失敗しました"
+newsErrorRetryButton = "再試行"
+newsErrorNoneSpan = "ニュースなし"
+
+[ejs.login]
+loginCancelText = "キャンセル"
+loginSubheader = "MINECRAFT ログイン"
+loginEmailError = "* 無効な値です"
+loginEmailPlaceholder = "メールアドレスまたはユーザー名"
+loginPasswordError = "* 必須項目です"
+loginPasswordPlaceholder = "パスワード"
+loginForgotPasswordText = "パスワードを忘れた場合"
+loginRememberMeText = "記憶する"
+loginButtonText = "ログイン"
+loginNeedAccountText = "アカウントが必要ですか？"
+loginPasswordDisclaimer1 = "あなたのパスワードは直接Mojangに送信され、保存されません。"
+loginPasswordDisclaimer2 = "{appName}はMojang ABと提携していません。"
+
+[ejs.loginOptions]
+loginOptionsTitle = "ログインオプション"
+loginWithMicrosoft = "Microsoftアカウントでログイン"
+loginWithMojang = "Mojangアカウントでログイン"
+cancelButton = "キャンセル"
+
+[ejs.overlay]
+serverSelectHeader = "利用可能なサーバー"
+serverSelectConfirm = "選択"
+serverSelectCancel = "キャンセル"
+accountSelectHeader = "アカウントを選択"
+accountSelectConfirm = "選択"
+accountSelectCancel = "キャンセル"
+
+[ejs.settings]
+navHeaderText = "設定"
+navAccount = "アカウント"
+navMods = "Mod"
+navLauncher = "ランチャー"
+navUpdates = "アップデート"
+navDone = "完了"
+tabAccountHeaderText = "アカウント設定"
+tabAccountHeaderDesc = "新しいアカウントを追加、又は使用するアカウントを管理します"
+addMicrosoftAccount = "+ Microsoft アカウントを追加"
+addMojangAccount = "+ Mojang アカウントを追加"
+minecraftTabHeaderText = "Minecraft 設定"
+minecraftTabHeaderDesc = "ゲーム起動に関連するオプション"
+gameResolutionTitle = "ゲーム解像度"
+launchFullscreenTitle = "フルスクリーンで起動"
+autoConnectTitle = "起動時にサーバーに自動的に接続する"
+launchDetachedTitle = "ランチャーとゲームを分離する"
+launchDetachedDesc = "オフにするとランチャーを閉じた際にゲームも終了します。"
+tabModsHeaderText = "Mod 設定"
+tabModsHeaderDesc = "ModをON/OFFしたり、追加したりできます"
+switchServerButton = "切り替え"
+requiredMods = "必須 Mod"
+optionalMods = "オプション Mod"
+dropinMods = "ドロップ・イン Mod"
+addMods = "+ Mod を追加"
+dropinRefreshNote = "(F5を押してリロードしてください)"
+shaderpacks = "シェーダーパック"
+shaderpackDesc = "シェーダーパックを追加・管理できます。<br>シェーダーを快適に動作させるにはハイスペックなマシンが必要です。"
+selectShaderpack = "シェーダーパックを選択"
+tabJavaHeaderText = "Java 設定"
+tabJavaHeaderDesc = "Java の詳細設定"
+memoryTitle = "メモリ"
+maxRAM = "最大メモリ"
+minRAM = "最小メモリ"
+memoryDesc = "推奨する最小メモリは 3 GBです。最小値と最大値を同じ値に設定すると、ラグが減少する場合があります。"
+memoryTotalTitle = "合計"
+memoryAvailableTitle = "利用可能"
+javaExecutableTitle = "Java 実行ファイル"
+javaExecSelDialogTitle = "Java 実行ファイルの選択"
+javaExecSelButtonText = "ファイルを選択"
+javaExecDesc = "実行可能なJavaファイルかゲーム起動前に検証されます。"
+javaPathDesc = "パスは <strong>{pathSuffix}</strong> で終わる必要があります。"
+jvmOptsTitle = "Java起動時引数"
+jvmOptsDesc = "実行時にJVMに提供されるオプション。<em>-Xms</em> および <em>-Xmx</em> は含めないでください。"
+launcherTabHeaderText = "ランチャー設定"
+launcherTabHeaderDesc = "ランチャー本体に関連するオプション"
+allowPrereleaseTitle = "プレリリースのアップデートを許可"
+allowPrereleaseDesc = "プレリリースには十分にテストされていない新機能が含まれる場合があります。<br>プレリリースバージョンを使用している場合、常に有効になります。"
+dataDirectoryTitle = "データディレクトリ"
+selectDataDirectory = "データディレクトリを選択"
+chooseFolder = "フォルダを選択"
+dataDirectoryDesc = "このランチャーのすべてのゲームデータとJavaランタイムが保存されます。<br>スクリーンショットとワールドデータは、対応するModパックのフォルダに保存されます。"
+aboutTabHeaderDesc = "現在のバージョンの情報とリリースノートを表示します"
+stableRelease = "安定版リリース"
+versionText = "バージョン "
+sourceGithub = "ソース（GitHub）"
+support = "サポート"
+devToolsConsole = "DevTools コンソール"
+releaseNotes = "リリースノート"
+changelog = "変更履歴"
+noReleaseNotes = "リリースノートはありません"
+viewReleaseNotes = "GitHub でリリースノートを表示"
+launcherUpdatesHeaderText = "ランチャーアップデート"
+launcherUpdatesHeaderDesc = "ランチャーのアップデートを確認します<br>アップデートがある場合をここからインストールが可能です"
+checkForUpdates = "アップデートを確認"
+whatsNew = "新機能"
+updateReleaseNotes = "アップデートのリリースノート"
+
+[ejs.waiting]
+waitingText = "Microsoft の応答を待っています..."
+
+[ejs.welcome]
+continueButton = "次へ"
+
+
+[js.login]
+login = "ログイン"
+loggingIn = "ログイン中"
+success = "成功"
+tryAgain = "再試行"
+
+[js.login.error]
+invalidValue = "* 無効な値"
+requiredValue = "* 必須項目"
+
+[js.login.error.unknown]
+title = "ログイン中に不明なエラーが発生"
+desc = "不明なエラーが発生しました。詳細はコンソールをご覧ください。"
+
+[js.landing.launch]
+pleaseWait = "お待ちください..."
+failureTitle = "起動中のエラー"
+failureText = "詳細はコンソール（CTRL + Shift + i）をご覧ください。"
+okay = "OK"
+
+[js.landing.selectedAccount]
+noAccountSelected = "アカウントが選択されていません"
+
+[js.landing.selectedServer]
+noSelection = "サーバーが選択されていません"
+loading = "読み込み中..."
+
+[js.landing.serverStatus]
+server = "サーバー"
+offline = "オフライン"
+players = "プレイヤー"
+
+[js.landing.systemScan]
+checking = "システム情報を確認中..."
+noCompatibleJava = "互換性のある<br>Javaインストールが見つかりません"
+installJavaMessage = "Minecraftを起動するには、Java {major} の64ビットインストールが必要です。Javaをインストールしますか？"
+installJava = "Javaをインストール"
+installJavaManually = "手動でインストール"
+javaDownloadPrepare = "Javaのダウンロードを準備中.."
+javaDownloadFailureTitle = "Javaのダウンロード中にエラーが発生しました"
+javaDownloadFailureText = "詳細はコンソール（CTRL + Shift + i）をご覧ください。"
+javaRequired = "起動にはJava {major}が必要です"
+javaRequiredMessage = '起動には有効なx64バージョンのJava {major} インストールが必要です。<br><br>手動でのインストール方法については、<a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a>をご覧ください。'
+javaRequiredDismiss = "OK"
+javaRequiredCancel = "戻る"
+
+[js.landing.downloadJava]
+findJdkFailure = "OpenJDKのディストリビューションが見つかりませんでした。"
+javaDownloadCorruptedError = "ダウンロードしたJDKのハッシュが不正です。ファイルが壊れている可能性があります。"
+extractingJava = "Javaを展開中"
+javaInstalled = "Javaがインストールされました!"
+
+[js.landing.dlAsync]
+loadingServerInfo = "サーバー情報を読み込み中.."
+fatalError = "致命的なエラー"
+unableToLoadDistributionIndex = "ディストリビューションインデックスを読み込めませんでした。詳細はコンソール（CTRL + Shift + i）をご覧ください。"
+pleaseWait = "お待ちください.."
+errorDuringLaunchTitle = "起動中のエラー"
+seeConsoleForDetails = "詳細はコンソール（CTRL + Shift + i）をご覧ください。"
+validatingFileIntegrity = "ファイル整合性を検証中.."
+errorDuringFileVerificationTitle = "ファイル検証中のエラー"
+downloadingFiles = "ファイルをダウンロード中.."
+errorDuringFileDownloadTitle = "ファイルダウンロード中のエラー"
+preparingToLaunch = "起動の準備中.."
+launchingGame = "ゲームを起動中.."
+launchWrapperNotDownloaded = "重要なファイルであるLaunchWrapperのダウンロードに失敗しました。そのため、ゲームを起動できません。<br><br>この問題を解決するには、一時的にウイルス対策ソフトを無効にしてゲームを再起動してみてください。<br><br>時間がある場合は、<a href=\"https://github.com/dscalzi/HeliosLauncher/issues\">問題を報告</a>して、使用しているウイルス対策ソフトを教えていただければ幸いです。ウィルス対策ソフトの会社に連絡を取って問題を解決できるよう努力します。"
+doneEnjoyServer = "完了。よいマイクラ生活を！"
+checkConsoleForDetails = "詳細はコンソール（CTRL + Shift + i）をご確認ください。"
+
+[js.landing.news]
+checking = "ニュースをチェック中"
+
+[js.settings.fileSelectors]
+executables = "実行ファイル"
+allFiles = "すべてのファイル"
+
+[js.settings.mstfLogin]
+errorTitle = "エラー発生"
+errorMessage = "Microsoftの認証に失敗しました。もう一度試してみてください。"
+
+[js.settings.mstfLogout]
+errorTitle = "エラー発生"
+errorMessage = "Microsoftのログアウトに失敗しました。もう一度試してみてください。"
+
+[js.settings.authAccountSelect]
+selectButton = "アカウントを選択"
+selectedButton = "選択中のアカウント &#10004;"
+
+[js.settings.authAccountLogout]
+lastAccountWarningTitle = "注意<br>これはログインしている最後のアカウントです"
+lastAccountWarningMessage = "ランチャーを使うためには、最低1個のアカウントにログインしている必要があります。ログアウトしたら、もう一度ログインしないといけなくなります。<br><br>本当にログアウトしますか？"
+confirmButton = "はい"
+cancelButton = "キャンセル"
+
+[js.settings.authAccountPopulate]
+username = "ユーザー名"
+selectAccount = "アカウントを選択"
+selectedAccount = "選択したアカウント ✓"
+logout = "ログアウト"
+
+[js.settings.dropinMods]
+removeButton = "削除"
+deleteFailedTitle = "ドロップ・イン Mod {fullName} の削除に失敗しました"
+deleteFailedMessage = "ファイルが使用中でないことを確認して、再試行してみてください。"
+failedToggleTitle = "1つまたは複数のドロップ・インModの切り替えに失敗しました"
+okButton = "OK"
+
+[js.settings.serverListing]
+mainServer = "メインサーバー"
+
+[js.settings.java]
+selectedJava = "選択済み: Java {version} ({vendor})"
+invalidSelection = "無効な選択"
+requiresJava = "64ビット版Java {major} が必要です。"
+availableOptions = "Java {major} (HotSpot VM) の利用可能なオプション"
+
+[js.settings.about]
+preReleaseTitle = "プレリリース"
+stableReleaseTitle = "安定版リリース"
+releaseNotesFailed = "リリースノートの読み込みに失敗しました。"
+
+[js.settings.updates]
+newReleaseTitle = "新しいバージョンが利用可能です"
+newPreReleaseTitle = "新しいプレリリースが利用可能です"
+downloadingButton = "ダウンロード中.."
+downloadButton = 'GitHubからダウンロード<span style="font-size: 10px;color: gray;text-shadow: none !important;">ランチャーを閉じてdmgを実行してアップデートします。</span>'
+latestVersionTitle = "最新バージョンをご利用中です"
+checkForUpdatesButton = "アップデートを確認"
+checkingForUpdatesButton = "アップデートを確認中..."
+
+[js.uibinder.startup]
+fatalErrorTitle = "致命的なエラー: ディストリビューションインデックスの読み込みに失敗"
+fatalErrorMessage = "サーバーへの接続に失敗したためディストリビューションインデックスをダウンロードできませんでした。ローカルのキャッシュもありません。<br><br>ディストリビューションインデックスは、最新のサーバー情報を提供する重要なファイルです。このファイルなしではランチャーを起動できません。インターネットに接続されていることを確認して、アプリケーションを再起動してください。"
+closeButton = "閉じる"
+
+[js.uibinder.validateAccount]
+failedMessageTitle = "ログインの更新に失敗"
+failedMessage = "<strong>{account}</strong> のログインの更新に失敗しました。別のアカウントを選択するか、もう一度ログインしてください。"
+failedMessageSelectAnotherAccount = "<strong>{account}</strong> のログインの更新に失敗しました。もう一度ログインしてください。"
+loginButton = "ログイン"
+selectAnotherAccountButton = "別のアカウントを選択"
+
+[js.uicore.autoUpdate]
+checkingForUpdateButton = "アップデートをチェック中..."
+installNowButton = "今すぐインストール"
+checkForUpdatesButton = "アップデートを確認"
