@@ -7,6 +7,7 @@ const { join } = require('path')
 const AdmZip = require('adm-zip')
 const { getClasspathSeparator } = require('./processbuilder')
 const { exists } = require('fs-extra')
+const { existsSync } = require('fs')
 
 /**
  * A class used to patch the Minecraft JAR for ForgeGradle3 modloader support, and possibly Neoforge in the future.
@@ -59,6 +60,10 @@ class ForgePatcher {
             if (javaBin.endsWith('javaw')) javaBin = javaBin.replace('/javaw', '/java')
             else if (javaBin.endsWith('javaw.exe')) javaBin = javaBin.replace('\\javaw.exe', '\\java.exe')
 
+            if (!existsSync(javaBin)) {
+                throw new Error(`Java executable not found: ${javaBin}`)
+            }
+
             const outputs = Object.entries(processor.outputs ?? {})
                 .map(([k, v]) => ({ [this.normalizeArg(k)]: this.normalizeArg(v) }))
                 .reduce((a, b) => Object.assign(a, b), {})
@@ -105,6 +110,9 @@ class ForgePatcher {
                 })
                 child.stderr.on('data', (data) => {
                     data.toString('utf-8').trim().split('\n').forEach(x => console.log(`\x1b[33m[Patcher]\x1b[0m ${x}`))
+                })
+                child.on('error', (err) => {
+                    reject(err)
                 })
                 child.on('close', (code) => {
                     if (code === 0) return resolve()
