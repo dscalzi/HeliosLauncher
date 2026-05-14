@@ -1,4 +1,3 @@
-
 const child_process = require('child_process')
 const { getLibraryDir, MavenUtil, getVersionJarPath } = require('helios-core/common')
 
@@ -95,7 +94,7 @@ class ForgePatcher {
             }
 
             await new Promise((resolve, reject) => {
-                const child = child_process.spawn(ConfigManager.getJavaExecutable(this.serverModule.rawServer.id), args, {
+                const child = child_process.spawn(javaBin, args, {
                     cwd: this.gameDir,
                     detached: false
                 })
