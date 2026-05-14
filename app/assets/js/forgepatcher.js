@@ -19,6 +19,7 @@ class ForgePatcher {
      */
     constructor(serverModule) {
         this.serverModule = serverModule
+        this.forgeModule = this.serverModule.modules.find(m => m.rawModule.type === 'Forge' && m.isForgeGradle3())
     }
 
     /**
@@ -27,9 +28,8 @@ class ForgePatcher {
      * @returns {boolean}
      */
     async needsPatching() {
-        return this.serverModule.modules.filter(m => m.rawModule.type === "Forge"
-            && m.isForgeGradle3()).length > 0
-            && !await exists(join(getLibraryDir(ConfigManager.getCommonDirectory()), MavenUtil.mavenIdentifierToPath(this.serverModule.modules.filter(m => m.rawModule.type === "Forge")[0].rawModule.id)))
+        return !!this.forgeModule
+            && !await exists(join(getLibraryDir(ConfigManager.getCommonDirectory()), MavenUtil.mavenIdentifierToPath(this.serverModule.modules.filter(m => m.rawModule.type === 'Forge')[0].rawModule.id)))
     }
 
     /**
@@ -52,8 +52,7 @@ class ForgePatcher {
      * Patch the JAR
      */
     async patch() {
-        const forgeModule = this.serverModule.modules.filter(m => m.rawModule.type === "Forge" && m.isForgeGradle3())[0]
-        const processors = forgeModule.processors
+        const processors = this.forgeModule.processors
         for (const processor of processors) {
             const libDir = getLibraryDir(ConfigManager.getCommonDirectory())
             let javaBin = ConfigManager.getJavaExecutable(this.serverModule.rawServer.id)
@@ -129,17 +128,16 @@ class ForgePatcher {
      * @returns {string}
      */
     normalizeArg(argument) {
-        const forgeModule = this.serverModule.modules.filter(m => m.rawModule.type === "Forge" && m.isForgeGradle3())[0]
         const version = this.serverModule.rawServer.minecraftVersion
         const jarPath = getVersionJarPath(ConfigManager.getCommonDirectory(), version)
-        const forgeVariables = Object.entries(forgeModule.rawModule.installerVariables).map(([key, value]) => ({ [key]: value.startsWith('[') ? join(getLibraryDir(ConfigManager.getCommonDirectory()), MavenUtil.mavenIdentifierAsPath(value.substring(1, value.length - 1))) : value.replace(/'/g, '') }))
+        const forgeVariables = Object.entries(this.forgeModule.rawModule.installerVariables).map(([key, value]) => ({ [key]: value.startsWith('[') ? join(getLibraryDir(ConfigManager.getCommonDirectory()), MavenUtil.mavenIdentifierAsPath(value.substring(1, value.length - 1))) : value.replace(/'/g, '') }))
             .reduce((key, value) => Object.assign(key, value), {})
 
         const values = {
             ...forgeVariables,
             SIDE: 'client',
             MINECRAFT_JAR: jarPath,
-            BINPATCH: join(getLibraryDir(ConfigManager.getCommonDirectory()), MavenUtil.mavenIdentifierAsPath(forgeModule.rawModule.clientPatch.id, 'lzma'))
+            BINPATCH: join(getLibraryDir(ConfigManager.getCommonDirectory()), MavenUtil.mavenIdentifierAsPath(this.forgeModule.rawModule.clientPatch.id, 'lzma'))
         }
 
         if (argument.startsWith('[') && argument.endsWith(']')) return join(getLibraryDir(ConfigManager.getCommonDirectory(), MavenUtil.mavenIdentifierAsPath(argument.substring(1, argument.length - 1))))
