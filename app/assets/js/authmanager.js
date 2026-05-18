@@ -167,7 +167,7 @@ exports.addMojangAccount = async function(username, password) {
     }
 }
 
-const AUTH_MODE = { FULL: 0, MS_REFRESH: 1, MC_REFRESH: 2 }
+const AUTH_MODE = { FULL: 0, MS_REFRESH: 1, MC_REFRESH: 2, OFFLINE: 3 }
 
 /**
  * Perform the full MS Auth flow in a given mode.
@@ -422,4 +422,24 @@ exports.validateSelected = async function(){
         return await validateSelectedMojangAccount()
     }
     
+}
+
+
+exports.addOfflineAccount = async function(username) {
+    try {
+        const uuid = require('crypto').randomUUID()
+
+        const account = ConfigManager.addMojangAuthAccount(
+            uuid,
+            'offline',
+            username,
+            username
+        )
+
+        ConfigManager.save()
+        return account
+    } catch (err) {
+        log.error(err)
+        return Promise.reject(err)
+    }
 }
