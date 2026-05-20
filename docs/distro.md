@@ -33,7 +33,15 @@ The distribution index is written in JSON. The general format of the index is as
             "autoconnect": true,
             "modules": [
                 "Module Objects Here"
-            ]
+            ],
+            "installerModules": [
+                "Array of Module Objects Here"
+            ],
+            "clientPatch": {},
+            "installerModules": {
+                "key": "value",
+                "foo": "bar"
+            }
         }
     ]
 }
@@ -95,7 +103,10 @@ A URL to a RSS feed. Used for loading news.
     },
     "mainServer": true,
     "autoconnect": true,
-    "modules": []
+    "modules": [],
+    "installerModules": [],
+    "clientPatch": {},
+    "installerVariables": {}
 }
 ```
 
@@ -288,7 +299,33 @@ A module is a generic representation of a file required to run the minecraft cli
                 "url": "http://files.site.com/examplefile.txt"
             }
         }
-    ]
+    ],
+    "clientPatch": {
+        "id": "com.example:exampleModule:1.0.0@lzma",
+        "name": "Example client patch file",
+        "type": "ForgeHosted",
+        "artifact": {
+            "size": 424242,
+            "MD5": "9aaec52757371abdba348300ce9ac20a",
+            "url": "http://files.site.com/com/example/exampleModule/1.0.0/exampleModule-1.0.0.lzma"
+        }
+    },
+    "installerModules": [
+        {
+            "id": "examplefile",
+            "name": "Example File",
+            "type": "File",
+            "artifact": {
+                "size": 23423,
+                "MD5": "169a5e6cf30c2cc8649755cdc5d7bad7",
+                "path": "examplefile.txt",
+                "url": "http://files.site.com/examplefile.txt"
+            }
+        }
+    ],
+    "installerVariables": {
+        "key": "value"
+    }
 }
 ```
 
@@ -347,6 +384,24 @@ The download artifact for the module.
 **OPTIONAL**
 
 An array of sub modules declared by this module. Typically, files which require other files are declared as submodules. A quick example would be a mod, and the configuration file for that mod. Submodules can also declare submodules of their own. The file is parsed recursively, so there is no limit.
+
+### `Module.installerModules: Module[]`
+
+**OPTIONAL** 
+
+An array of module objects used to patch the Minecraft JAR for modern Forge versions (or modloaders based off forge)
+
+### `Module.clientPatch: Module`
+
+**OPTIONAL**
+
+A module containing an archive of patches to apply to the Minecraft JAR
+
+### `Module.installerVariables: object`
+
+**OPTIONAL**
+
+An object with key/values pairs used when patching the Minecraft JAR
 
 
 ## Artifact Object

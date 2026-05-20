@@ -29,6 +29,7 @@ const {
 
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
+const ForgePatcher            = require('./assets/js/forgepatcher')
 const ProcessBuilder          = require('./assets/js/processbuilder')
 
 // Launch Elements
@@ -522,7 +523,6 @@ async function dlAsync(login = true) {
             await fullRepairModule.download(percent => {
                 setDownloadPercentage(percent)
             })
-            setDownloadPercentage(100)
         } catch(err) {
             loggerLaunchSuite.error('Error during file download.')
             showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringFileDownloadTitle'), err.displayable || Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
@@ -531,6 +531,15 @@ async function dlAsync(login = true) {
     } else {
         loggerLaunchSuite.info('No invalid files, skipping download.')
     }
+
+    const patcher = new ForgePatcher(distro.getServerById(ConfigManager.getSelectedServer()))
+    if (await patcher.needsPatching()){
+        setDownloadPercentage(90)
+        setLaunchDetails(Lang.queryJS('landing.dlAsync.patchingJar'))
+        await patcher.patch()
+    }
+
+    setDownloadPercentage(100)
 
     // Remove download bar.
     remote.getCurrentWindow().setProgressBar(-1)
