@@ -1,5 +1,5 @@
-appId: 'helioslauncher'
-productName: 'Helios Launcher'
+appId: 'nexusrp'
+productName: 'NexusRP'
 artifactName: '${productName}-setup-${version}.${ext}'
 
 copyright: 'Copyright © 2018-2026 Daniel Scalzi'
@@ -49,3 +49,9 @@ linux:
 directories:
   buildResources: 'build'
   output: 'dist'
+
+# Génère latest.yml / latest-mac.yml / latest-linux.yml (sans publier via electron-builder)
+publish:
+  provider: github
+  owner: Viazel
+  repo: NexusRP

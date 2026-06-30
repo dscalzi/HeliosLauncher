@@ -1,0 +1,137 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v6
+
+      - name: Read package version
+        id: version
+        shell: bash
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Skip if GitHub release already exists
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          if gh release view "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+            echo "Release v${{ steps.version.outputs.version }} already exists — skipping."
+          else
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+            echo "Will release v${{ steps.version.outputs.version }}."
+          fi
+
+  build:
+    needs: check-version
+    if: needs.check-version.outputs.should_release == 'true'
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: npm ci
+        shell: bash
+
+      - name: Build installers
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run dist -- --publish never
+        shell: bash
+
+      - name: Prepare release files
+        shell: bash
+        run: |
+          mkdir -p release-files
+          PRODUCT=$(node -p "require('./package.json').productName")
+          shopt -s nullglob
+
+          for f in dist/${PRODUCT}-setup-*.exe dist/${PRODUCT}-setup-*.dmg dist/${PRODUCT}-setup-*.AppImage; do
+            cp "$f" release-files/
+          done
+
+          for f in latest.yml latest-mac.yml latest-linux.yml; do
+            if [[ -f "dist/$f" ]]; then
+              cp "dist/$f" release-files/
+            fi
+          done
+
+          echo "Fichiers retenus pour la release :"
+          ls -la release-files/
+
+          if [[ -z "$(ls -A release-files)" ]]; then
+            echo "Aucun artefact de release trouvé dans dist/"
+            exit 1
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          path: release-files/*
+          if-no-files-found: error
+
+  publish:
+    needs: [check-version, build]
+    if: needs.check-version.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v6
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          path: release-assets
+          merge-multiple: true
+
+      - name: List release assets
+        shell: bash
+        run: |
+          echo "Assets publiés sur GitHub :"
+          find release-assets -type f | sort
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.check-version.outputs.version }}
+          name: NexusRP v${{ needs.check-version.outputs.version }}
+          generate_release_notes: true
+          files: release-assets/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
