@@ -110,10 +110,11 @@ body {
 }
 
 /* ---- Лендинг: нижняя панель и кнопка ИГРАТЬ ----------------------------- */
+/* ВАЖНО: без backdrop-filter — он создаёт стековый контекст, и кнопка
+   НОВОСТИ (z-index 500 внутри #lower) проваливается под шторку новостей. */
 #landingContainer > #lower {
     background: rgba(14, 13, 15, 0.55);
     border-top: 1px solid var(--border-bronze-faint);
-    backdrop-filter: blur(8px);
 }
 #launch_button {
     color: var(--play-text);
