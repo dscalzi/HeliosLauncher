@@ -195,7 +195,8 @@ exports.addPepelAccount = async function(nick, code){
     const normalizedCode = code.trim().toUpperCase()
     let response
     try {
-        response = await VerifyClient.verifyCode(normalizedCode, nick)
+        const hwid = await VerifyClient.getHwid()
+        response = await VerifyClient.verifyCode(normalizedCode, nick, hwid)
     } catch (err){
         log.error('Сервер проверки кода недоступен.', err)
         return Promise.reject({

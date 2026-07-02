@@ -21,6 +21,30 @@ const MOCK_VERIFY = true
 
 exports.CODE_REGEX = /^PEPEL-[A-Z0-9]{4}-[A-Z0-9]{4}$/
 
+let cachedHwid
+
+/**
+ * Собрать отпечаток железа (hw-fingerprint, 512 бит) в hex.
+ * Отпечаток стабилен между перезапусками, кэшируется на сессию.
+ * При сбое сбора возвращает null — гейтит доступ сервер, не клиент.
+ *
+ * @returns {Promise.<string|null>}
+ */
+exports.getHwid = async function(){
+    if(cachedHwid !== undefined){
+        return cachedHwid
+    }
+    try {
+        // hw-fingerprint — ESM-пакет, из CommonJS только через динамический import.
+        const { getFingerprint } = await import('hw-fingerprint')
+        cachedHwid = getFingerprint().toString('hex')
+    } catch (err){
+        log.error('Не удалось собрать отпечаток железа.', err)
+        cachedHwid = null
+    }
+    return cachedHwid
+}
+
 /**
  * Проверить код доступа на бэкенде.
  *
@@ -31,7 +55,7 @@ exports.CODE_REGEX = /^PEPEL-[A-Z0-9]{4}-[A-Z0-9]{4}$/
  */
 exports.verifyCode = async function(code, nick, hwid = null){
     if(MOCK_VERIFY){
-        log.warn(`МОК-режим /verify: код ${code} принят без проверки (бэкенд на паузе).`)
+        log.warn(`МОК-режим /verify: код ${code} принят без проверки (бэкенд на паузе). HWID ${hwid != null ? 'собран: ' + hwid.substring(0, 16) + '…' : 'НЕ собран'}.`)
         return { active: true, tier: 'iron' }
     }
 
