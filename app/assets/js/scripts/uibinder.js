@@ -413,7 +413,12 @@ document.addEventListener('readystatechange', async () => {
 }, false)
 
 // Actions that must be performed after the distribution index is downloaded.
-ipcRenderer.on('distributionIndexDone', async (event, res) => {
+let distroIndexHandled = false
+async function onDistroIndexDone(res){
+    if(distroIndexHandled){
+        return
+    }
+    distroIndexHandled = true
     if(res) {
         try {
             const data = await DistroAPI.getDistribution()
@@ -435,7 +440,17 @@ ipcRenderer.on('distributionIndexDone', async (event, res) => {
             rscShouldLoad = true
         }
     }
+}
+
+ipcRenderer.on('distributionIndexDone', (event, res) => {
+    onDistroIndexDone(res)
 })
+
+// Preloader мог финишировать до загрузки этого скрипта (см. preloader.js) —
+// тогда ipc-сообщение уже потеряно, забираем результат из глобальной переменной.
+if(global.__distroIndexDoneRes !== undefined){
+    onDistroIndexDone(global.__distroIndexDoneRes)
+}
 
 // Util for development
 async function devModeToggle() {

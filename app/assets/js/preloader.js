@@ -39,6 +39,11 @@ function onDistroLoad(data){
             ConfigManager.save()
         }
     }
+    // Страховка от гонки: ipc-сообщение может прийти раньше, чем страница
+    // повесит слушатель (локальный дистрибутив грузится мгновенно) — тогда
+    // оно теряется и лаунчер виснет на спиннере. Дублируем результат в
+    // глобальную переменную, uibinder проверяет её при загрузке.
+    global.__distroIndexDoneRes = data != null
     ipcRenderer.send('distributionIndexDone', data != null)
 }
 
