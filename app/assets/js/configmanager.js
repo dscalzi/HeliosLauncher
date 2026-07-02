@@ -402,6 +402,33 @@ exports.addMicrosoftAuthAccount = function(uuid, accessToken, name, mcExpires, m
 }
 
 /**
+ * Добавить pepel-аккаунт (ник + код доступа «Пепел Эдема») в базу.
+ * Оффлайн-аккаунт: accessToken фиктивный, наружу не уходит.
+ *
+ * @param {string} uuid Оффлайн-UUID, детерминированный от ника.
+ * @param {string} displayName Ник игрока.
+ * @param {string} code Код доступа (PEPEL-XXXX-XXXX).
+ * @param {string} tier Тир подписки от /verify.
+ *
+ * @returns {Object} The authenticated account object created by this action.
+ */
+exports.addPepelAuthAccount = function(uuid, displayName, code, tier){
+    config.selectedAccount = uuid
+    config.authenticationDatabase[uuid] = {
+        type: 'pepel',
+        accessToken: 'pepel-offline',
+        username: displayName.trim(),
+        uuid: uuid.trim(),
+        displayName: displayName.trim(),
+        pepel: {
+            code,
+            tier
+        }
+    }
+    return config.authenticationDatabase[uuid]
+}
+
+/**
  * Remove an authenticated account from the database. If the account
  * was also the selected account, a new one will be selected. If there
  * are no accounts, the selected account will be null.

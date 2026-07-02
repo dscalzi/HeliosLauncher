@@ -9,7 +9,9 @@
  * @module authmanager
  */
 // Requirements
+const crypto                 = require('crypto')
 const ConfigManager          = require('./configmanager')
+const VerifyClient           = require('./verifyclient')
 const { LoggerUtil }         = require('helios-core')
 const { RestResponseStatus } = require('helios-core/common')
 const { MojangRestAPI, MojangErrorCode } = require('helios-core/mojang')
@@ -167,6 +169,51 @@ exports.addMojangAccount = async function(username, password) {
     }
 }
 
+/**
+ * Оффлайн-UUID из ника — тот же алгоритм, что у оффлайн-серверов:
+ * UUID v3 от строки "OfflinePlayer:<ник>" (Java UUID.nameUUIDFromBytes).
+ *
+ * @param {string} nick Ник игрока.
+ * @returns {string} UUID без дефисов.
+ */
+function offlineUuid(nick){
+    const hash = crypto.createHash('md5').update(`OfflinePlayer:${nick}`).digest()
+    hash[6] = (hash[6] & 0x0f) | 0x30 // версия 3
+    hash[8] = (hash[8] & 0x3f) | 0x80 // вариант RFC 4122
+    return hash.toString('hex')
+}
+
+/**
+ * Добавить pepel-аккаунт: проверить код доступа через /verify
+ * и сохранить оффлайн-аккаунт в конфиге.
+ *
+ * @param {string} nick Ник игрока.
+ * @param {string} code Код доступа (PEPEL-XXXX-XXXX).
+ * @returns {Promise.<Object>} Promise which resolves the resolved authenticated account object.
+ */
+exports.addPepelAccount = async function(nick, code){
+    const normalizedCode = code.trim().toUpperCase()
+    let response
+    try {
+        response = await VerifyClient.verifyCode(normalizedCode, nick)
+    } catch (err){
+        log.error('Сервер проверки кода недоступен.', err)
+        return Promise.reject({
+            title: Lang.queryJS('auth.pepel.error.unreachableTitle'),
+            desc: Lang.queryJS('auth.pepel.error.unreachableDesc')
+        })
+    }
+    if(!response.active){
+        return Promise.reject({
+            title: Lang.queryJS('auth.pepel.error.inactiveTitle'),
+            desc: Lang.queryJS('auth.pepel.error.inactiveDesc')
+        })
+    }
+    const ret = ConfigManager.addPepelAuthAccount(offlineUuid(nick), nick, normalizedCode, response.tier)
+    ConfigManager.save()
+    return ret
+}
+
 const AUTH_MODE = { FULL: 0, MS_REFRESH: 1, MC_REFRESH: 2 }
 
 /**
@@ -287,6 +334,23 @@ exports.removeMojangAccount = async function(uuid){
         }
     } catch (err){
         log.error('Error while removing account', err)
+        return Promise.reject(err)
+    }
+}
+
+/**
+ * Удалить pepel-аккаунт. Токенов наружу нет — просто убираем из базы.
+ *
+ * @param {string} uuid The UUID of the account to be removed.
+ * @returns {Promise.<void>} Promise which resolves to void when the action is complete.
+ */
+exports.removePepelAccount = async function(uuid){
+    try {
+        ConfigManager.removeAuthAccount(uuid)
+        ConfigManager.save()
+        return Promise.resolve()
+    } catch (err){
+        log.error('Ошибка при удалении аккаунта', err)
         return Promise.reject(err)
     }
 }
@@ -416,10 +480,13 @@ async function validateSelectedMicrosoftAccount(){
 exports.validateSelected = async function(){
     const current = ConfigManager.getSelectedAccount()
 
-    if(current.type === 'microsoft') {
+    if(current.type === 'pepel') {
+        // TODO: повторная проверка кода через /verify при живом бэкенде.
+        return true
+    } else if(current.type === 'microsoft') {
         return await validateSelectedMicrosoftAccount()
     } else {
         return await validateSelectedMojangAccount()
     }
-    
+
 }
