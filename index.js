@@ -148,8 +148,8 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
             let queryMap = {}
             
             new URL(uri).searchParams.forEach((v, k) => {
-                queryMap[k] = v;
-            });
+                queryMap[k] = v
+            })
 
             ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.SUCCESS, queryMap, msftAuthViewSuccess)
 

@@ -1,0 +1,82 @@
+/* ===========================================================================
+   Пепел Эдема — дизайн-токены
+   Источник: дизайн-система прототипа (Claude Design) + PALETTE-EMBERS.md.
+   90% экрана — тёмный пепел и кремовый текст; тёплый уголёк — точечно.
+   =========================================================================== */
+:root {
+  /* ---- Backgrounds — холодный уголь ----------------------------------- */
+  --bg-base:        #0e0d0f;
+  --bg-window:      #0f1114;
+  --bg-deep:        #080809;
+
+  /* ---- Surfaces ------------------------------------------------------- */
+  --surface:        #171719;
+  --surface-hero:   #1a181d;
+  --surface-raised: #242226;
+  --surface-raised-hover: #302a31;
+
+  /* ---- Text — тёплый кремовый ----------------------------------------- */
+  --text:           #e8e1d8;
+  --text-strong:    #f3eadf;
+  --text-heading:   #f0dfd0;
+  --text-muted:     #9f9790;
+  --text-dim:       #b5a49b;
+  --text-disabled:  #6f6762;
+
+  /* ---- Wine — винный/бордовый акцент ---------------------------------- */
+  --wine:           #7c4653;
+  --wine-deep:      #5b3440;
+  --wine-shadow:    #49343d;
+  --wine-focus:     #7d4a58;
+
+  /* ---- Bronze / Gold -------------------------------------------------- */
+  --bronze:         #9d6f38;
+  --bronze-bright:  #b47a32;
+  --bronze-light:   #d3a45a;
+  --bronze-border:  #b9977e;
+
+  /* ---- Play CTA — песочный -------------------------------------------- */
+  --play:           #d5b9a0;
+  --play-hover:     #e0c5ae;
+  --play-press:     #c7a890;
+  --play-text:      #514037;
+
+  /* ---- Ember — тлеющий уголёк (точечно!) ------------------------------ */
+  --ember-bright:   #f19a4b;
+  --ember:          #c66c41;
+  --ember-deep:     #a83838;
+  --ember-spark:    #fecd21;
+
+  /* ---- Status --------------------------------------------------------- */
+  --ok:             #8ecb9a;
+  --warn:           #d0a766;
+  --error:          #d86f78;
+
+  /* ---- Borders -------------------------------------------------------- */
+  --border-panel:   #323038;
+  --border-input:   #3d3741;
+  --border-bronze-soft: rgba(185, 151, 126, .30);
+  --border-bronze-faint: rgba(185, 151, 126, .15);
+  --border-wine-soft:   rgba(124, 70, 83, .34);
+
+  /* ---- Glass (фирменный приём — панель поверх арта) ------------------- */
+  --glass:          rgba(22, 20, 24, .85);
+  --glass-nav:      rgba(22, 20, 24, .89);
+  --glass-mini:     rgba(13, 13, 16, .77);
+
+  /* ---- Shadows / glow ------------------------------------------------- */
+  --shadow-1: 0 2px 8px rgba(0, 0, 0, .4);
+  --shadow-2: 0 8px 24px rgba(0, 0, 0, .5);
+  --glow-cta:    0 0 40px rgba(241, 154, 75, .25);
+  --glow-cta-hi: 0 0 56px rgba(241, 154, 75, .38);
+  --focus-ring:  0 0 0 3px rgba(211, 164, 90, .55);
+
+  /* ---- Gradients ------------------------------------------------------ */
+  --grad-ember:    linear-gradient(135deg, #c66c41, #a83838);
+  --grad-progress: linear-gradient(90deg, #9d6f38, #f19a4b);
+  --grad-art-fade-strong: linear-gradient(180deg, rgba(14,13,15,.15) 0%, rgba(14,13,15,.55) 55%, rgba(14,13,15,.96) 100%);
+
+  /* ---- Fonts ----------------------------------------------------------- */
+  --font-ui:   'Segoe UI', 'Inter', Arial, sans-serif;
+  --font-mono: 'Consolas', 'JetBrains Mono', 'Courier New', monospace;
+}

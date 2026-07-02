@@ -1,0 +1,190 @@
+/* ===========================================================================
+   Пепел Эдема — тема поверх launcher.css
+   Подключается ПОСЛЕ launcher.css: точечные оверрайды под палитру
+   «пепел + вино + бронза + уголёк». Правило баланса: уголёк тлеет, не полыхает.
+   =========================================================================== */
+
+body {
+    font-family: var(--font-ui);
+    color: var(--text);
+    background-color: var(--bg-base);
+}
+
+/* Затемнение арта: пепельный градиент книзу + лёгкая винная дымка. */
+#main {
+    background: var(--grad-art-fade-strong) !important;
+}
+
+/* ---- Рамка окна ------------------------------------------------------- */
+#frameBar {
+    background-color: rgba(14, 13, 15, 0.85) !important;
+    border-bottom: 1px solid var(--border-bronze-faint);
+}
+
+/* ---- Экран загрузки ---------------------------------------------------- */
+#loadingContainer {
+    background: var(--bg-base);
+}
+#loadCenterImage {
+    filter: drop-shadow(0 0 28px rgba(241, 154, 75, .18));
+}
+
+/* ---- Вход: стеклянная карточка ----------------------------------------- */
+#loginForm {
+    background: var(--glass);
+    border: 1px solid var(--border-bronze-soft);
+    border-radius: 14px;
+    padding: 36px 42px;
+    box-shadow: var(--shadow-2);
+    backdrop-filter: blur(8px);
+}
+#loginSubheader {
+    color: var(--text-heading);
+    letter-spacing: 2px;
+}
+.loginField {
+    color: var(--text-strong) !important;
+    background: rgba(8, 8, 9, 0.6) !important;
+    border: 1px solid var(--border-input) !important;
+    border-radius: 8px;
+    transition: border-color 220ms ease, box-shadow 220ms ease;
+}
+.loginField:focus {
+    border-color: var(--wine-focus) !important;
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+.loginErrorSpan {
+    color: var(--error) !important;
+}
+#loginButton {
+    color: var(--play-text);
+    background: var(--play);
+    border-radius: 10px;
+    padding: 12px 26px;
+    right: 0;
+    transition: background 220ms ease, box-shadow 220ms ease;
+}
+#loginButton:hover,
+#loginButton:focus {
+    background: var(--play-hover);
+    box-shadow: var(--glow-cta);
+    text-shadow: none;
+}
+#loginButton:active {
+    background: var(--play-press);
+    color: var(--play-text);
+    text-shadow: none;
+}
+#loginButton:disabled {
+    background: var(--surface-raised);
+    color: var(--text-disabled);
+}
+#loginButton #loginSVG .arrowLine {
+    stroke: var(--play-text);
+}
+#loginButton:disabled #loginSVG .arrowLine {
+    stroke: var(--text-disabled);
+}
+#loginDisclaimer .loginDisclaimerText,
+#loginConsentText {
+    color: var(--text-muted);
+}
+
+/* ---- Welcome ------------------------------------------------------------ */
+#welcomeHeader, #welcomeDescription, #welcomeDescCTA {
+    color: var(--text-strong);
+}
+#welcomeButton {
+    border: 1px solid var(--border-bronze-soft);
+    border-radius: 10px;
+    padding: 12px 24px;
+    background: var(--glass-mini);
+    transition: box-shadow 220ms ease, border-color 220ms ease;
+}
+#welcomeButton:hover,
+#welcomeButton:focus {
+    border-color: var(--bronze-light);
+    box-shadow: var(--glow-cta);
+    text-shadow: none;
+}
+
+/* ---- Лендинг: нижняя панель и кнопка ИГРАТЬ ----------------------------- */
+#landingContainer > #lower {
+    background: rgba(14, 13, 15, 0.55);
+    border-top: 1px solid var(--border-bronze-faint);
+    backdrop-filter: blur(8px);
+}
+#launch_button {
+    color: var(--play-text);
+    background: var(--play);
+    border-radius: 12px;
+    padding: 12px 30px;
+    text-shadow: none;
+    transition: background 220ms ease, box-shadow 220ms ease;
+}
+#launch_button:hover,
+#launch_button:focus {
+    background: var(--play-hover);
+    box-shadow: var(--glow-cta-hi);
+    text-shadow: none;
+}
+#launch_button:active {
+    background: var(--play-press);
+    color: var(--play-text);
+    text-shadow: none;
+}
+#launch_button:disabled {
+    background: var(--surface-raised);
+    color: var(--text-disabled);
+}
+#launch_progress[value]::-webkit-progress-value {
+    background: var(--grad-progress);
+}
+#launch_progress_label {
+    color: var(--bronze-light);
+    text-shadow: none;
+}
+#launch_details_text {
+    color: var(--text-dim);
+}
+#server_selection_button:hover,
+#server_selection_button:focus {
+    text-shadow: 0 0 20px rgba(211, 164, 90, .8);
+}
+#user_text {
+    color: var(--text-strong);
+}
+
+/* ---- Настройки ----------------------------------------------------------- */
+#settingsContainer {
+    background: rgba(14, 13, 15, 0.75);
+    backdrop-filter: blur(8px);
+}
+.settingsNavItem[selected] {
+    color: var(--bronze-light);
+}
+.settingsTabHeaderText {
+    color: var(--text-heading);
+}
+
+/* ---- Оверлеи (диалоги, выбор сервера) ------------------------------------ */
+#overlayContainer {
+    backdrop-filter: blur(4px);
+}
+#overlayContent {
+    background: var(--glass);
+    border: 1px solid var(--border-bronze-soft);
+    border-radius: 14px;
+    box-shadow: var(--shadow-2);
+    padding: 28px;
+}
+
+/* ---- Скроллбары ----------------------------------------------------------- */
+::-webkit-scrollbar-thumb {
+    background: var(--wine-shadow);
+    border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--wine);
+}
