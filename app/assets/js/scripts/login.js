@@ -1,30 +1,30 @@
 /**
- * Script for login.ejs
+ * Script for login.ejs — вход по нику и коду доступа «Пепел Эдема».
  */
 // Validation Regexes.
-const validUsername         = /^[a-zA-Z0-9_]{1,16}$/
-const basicEmail            = /^\S+@\S+\.\S+$/
-//const validEmail          = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+const validUsername         = /^[a-zA-Z0-9_]{3,16}$/
+const validAccessCode       = /^PEPEL-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/
+
+const pepelLoginLogger      = LoggerUtil.getLogger('Вход Пепел')
 
 // Login Elements
 const loginCancelContainer  = document.getElementById('loginCancelContainer')
 const loginCancelButton     = document.getElementById('loginCancelButton')
-const loginEmailError       = document.getElementById('loginEmailError')
-const loginUsername         = document.getElementById('loginUsername')
-const loginPasswordError    = document.getElementById('loginPasswordError')
-const loginPassword         = document.getElementById('loginPassword')
+const loginNickError        = document.getElementById('loginNickError')
+const loginNick             = document.getElementById('loginNick')
+const loginCodeError        = document.getElementById('loginCodeError')
+const loginCode             = document.getElementById('loginCode')
 const checkmarkContainer    = document.getElementById('checkmarkContainer')
-const loginRememberOption   = document.getElementById('loginRememberOption')
+const loginConsentOption    = document.getElementById('loginConsentOption')
 const loginButton           = document.getElementById('loginButton')
 const loginForm             = document.getElementById('loginForm')
 
 // Control variables.
 let lu = false, lp = false
 
-
 /**
  * Show a login error.
- * 
+ *
  * @param {HTMLElement} element The element on which to display the error.
  * @param {string} value The error text.
  */
@@ -35,7 +35,7 @@ function showError(element, value){
 
 /**
  * Shake a login error to add emphasis.
- * 
+ *
  * @param {HTMLElement} element The element to shake.
  */
 function shakeError(element){
@@ -47,70 +47,82 @@ function shakeError(element){
 }
 
 /**
- * Validate that an email field is neither empty nor invalid.
- * 
- * @param {string} value The email value.
+ * Проверить поле ника: 3–16 символов, латиница/цифры/подчёркивание.
+ *
+ * @param {string} value The nick value.
  */
-function validateEmail(value){
+function validateNick(value){
     if(value){
-        if(!basicEmail.test(value) && !validUsername.test(value)){
-            showError(loginEmailError, Lang.queryJS('login.error.invalidValue'))
+        if(!validUsername.test(value)){
+            showError(loginNickError, Lang.queryJS('login.error.invalidNick'))
             loginDisabled(true)
             lu = false
         } else {
-            loginEmailError.style.opacity = 0
+            loginNickError.style.opacity = 0
             lu = true
-            if(lp){
-                loginDisabled(false)
-            }
+            updateLoginButton()
         }
     } else {
         lu = false
-        showError(loginEmailError, Lang.queryJS('login.error.requiredValue'))
+        showError(loginNickError, Lang.queryJS('login.error.requiredValue'))
         loginDisabled(true)
     }
 }
 
 /**
- * Validate that the password field is not empty.
- * 
- * @param {string} value The password value.
+ * Проверить поле кода доступа: формат PEPEL-XXXX-XXXX.
+ *
+ * @param {string} value The access code value.
  */
-function validatePassword(value){
+function validateCode(value){
     if(value){
-        loginPasswordError.style.opacity = 0
-        lp = true
-        if(lu){
-            loginDisabled(false)
+        if(!validAccessCode.test(value.trim().toUpperCase())){
+            showError(loginCodeError, Lang.queryJS('login.error.invalidCode'))
+            loginDisabled(true)
+            lp = false
+        } else {
+            loginCodeError.style.opacity = 0
+            lp = true
+            updateLoginButton()
         }
     } else {
         lp = false
-        showError(loginPasswordError, Lang.queryJS('login.error.invalidValue'))
+        showError(loginCodeError, Lang.queryJS('login.error.invalidValue'))
         loginDisabled(true)
     }
 }
 
+/**
+ * Кнопка входа активна, когда валидны оба поля и принято согласие.
+ */
+function updateLoginButton(){
+    loginDisabled(!(lu && lp && loginConsentOption.checked))
+}
+
 // Emphasize errors with shake when focus is lost.
-loginUsername.addEventListener('focusout', (e) => {
-    validateEmail(e.target.value)
-    shakeError(loginEmailError)
+loginNick.addEventListener('focusout', (e) => {
+    validateNick(e.target.value)
+    shakeError(loginNickError)
 })
-loginPassword.addEventListener('focusout', (e) => {
-    validatePassword(e.target.value)
-    shakeError(loginPasswordError)
+loginCode.addEventListener('focusout', (e) => {
+    validateCode(e.target.value)
+    shakeError(loginCodeError)
 })
 
 // Validate input for each field.
-loginUsername.addEventListener('input', (e) => {
-    validateEmail(e.target.value)
+loginNick.addEventListener('input', (e) => {
+    validateNick(e.target.value)
 })
-loginPassword.addEventListener('input', (e) => {
-    validatePassword(e.target.value)
+loginCode.addEventListener('input', (e) => {
+    validateCode(e.target.value)
+})
+loginConsentOption.addEventListener('change', () => {
+    updateLoginButton()
 })
 
 /**
  * Enable or disable the login button.
- * 
+ *
  * @param {boolean} v True to enable, false to disable.
  */
 function loginDisabled(v){
@@ -121,7 +133,7 @@ function loginDisabled(v){
 
 /**
  * Enable or disable loading elements.
- * 
+ *
  * @param {boolean} v True to enable, false to disable.
  */
 function loginLoading(v){
@@ -136,20 +148,20 @@ function loginLoading(v){
 
 /**
  * Enable or disable login form.
- * 
+ *
  * @param {boolean} v True to enable, false to disable.
  */
 function formDisabled(v){
     loginDisabled(v)
     loginCancelButton.disabled = v
-    loginUsername.disabled = v
-    loginPassword.disabled = v
+    loginNick.disabled = v
+    loginCode.disabled = v
     if(v){
         checkmarkContainer.setAttribute('disabled', v)
     } else {
         checkmarkContainer.removeAttribute('disabled')
     }
-    loginRememberOption.disabled = v
+    loginConsentOption.disabled = v
 }
 
 let loginViewOnSuccess = VIEWS.landing
@@ -166,8 +178,8 @@ function loginCancelEnabled(val){
 
 loginCancelButton.onclick = (e) => {
     switchView(getCurrentView(), loginViewOnCancel, 500, 500, () => {
-        loginUsername.value = ''
-        loginPassword.value = ''
+        loginNick.value = ''
+        loginCode.value = ''
         loginCancelEnabled(false)
         if(loginViewCancelHandler != null){
             loginViewCancelHandler()
@@ -187,7 +199,7 @@ loginButton.addEventListener('click', () => {
     // Show loading stuff.
     loginLoading(true)
 
-    AuthManager.addMojangAccount(loginUsername.value, loginPassword.value).then((value) => {
+    AuthManager.addPepelAccount(loginNick.value, loginCode.value).then((value) => {
         updateSelectedAccount(value)
         loginButton.innerHTML = loginButton.innerHTML.replace(Lang.queryJS('login.loggingIn'), Lang.queryJS('login.success'))
         $('.circle-loader').toggleClass('load-complete')
@@ -201,8 +213,8 @@ loginButton.addEventListener('click', () => {
                 loginViewOnSuccess = VIEWS.landing // Reset this for good measure.
                 loginCancelEnabled(false) // Reset this for good measure.
                 loginViewCancelHandler = null // Reset this for good measure.
-                loginUsername.value = ''
-                loginPassword.value = ''
+                loginNick.value = ''
+                loginCode.value = ''
                 $('.circle-loader').toggleClass('load-complete')
                 $('.checkmark').toggle()
                 loginLoading(false)
@@ -215,11 +227,11 @@ loginButton.addEventListener('click', () => {
 
         let actualDisplayableError
         if(isDisplayableError(displayableError)) {
-            msftLoginLogger.error('Error while logging in.', displayableError)
+            pepelLoginLogger.error('Ошибка входа.', displayableError)
             actualDisplayableError = displayableError
         } else {
             // Uh oh.
-            msftLoginLogger.error('Unhandled error during login.', displayableError)
+            pepelLoginLogger.error('Необработанная ошибка входа.', displayableError)
             actualDisplayableError = Lang.queryJS('login.error.unknown')
         }
 

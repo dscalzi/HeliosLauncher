@@ -16,7 +16,6 @@ let fatalStartupError = false
 // Mapping of each view to their container IDs.
 const VIEWS = {
     landing: '#landingContainer',
-    loginOptions: '#loginOptionsContainer',
     login: '#loginContainer',
     settings: '#settingsContainer',
     welcome: '#welcomeContainer',
@@ -88,11 +87,10 @@ async function showMainUI(data){
                 currentView = VIEWS.landing
                 $(VIEWS.landing).fadeIn(1000)
             } else {
-                loginOptionsCancelEnabled(false)
-                loginOptionsViewOnLoginSuccess = VIEWS.landing
-                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
-                currentView = VIEWS.loginOptions
-                $(VIEWS.loginOptions).fadeIn(1000)
+                loginCancelEnabled(false)
+                loginViewOnSuccess = VIEWS.landing
+                currentView = VIEWS.login
+                $(VIEWS.login).fadeIn(1000)
             }
         }
 
@@ -341,45 +339,24 @@ async function validateSelectedAccount(){
             )
             setOverlayHandler(() => {
 
-                const isMicrosoft = selectedAcc.type === 'microsoft'
+                // Заново войти можно только pepel-аккаунтом (ник+код).
+                // For convenience, pre-populate the nick of the account.
+                document.getElementById('loginNick').value = selectedAcc.displayName
+                validateNick(selectedAcc.displayName)
 
-                if(isMicrosoft) {
-                    // Empty for now
-                } else {
-                    // Mojang
-                    // For convenience, pre-populate the username of the account.
-                    document.getElementById('loginUsername').value = selectedAcc.username
-                    validateEmail(selectedAcc.username)
-                }
-                
-                loginOptionsViewOnLoginSuccess = getCurrentView()
-                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+                loginViewOnSuccess = getCurrentView()
 
                 if(accLen > 0) {
-                    loginOptionsViewOnCancel = getCurrentView()
-                    loginOptionsViewCancelHandler = () => {
-                        if(isMicrosoft) {
-                            ConfigManager.addMicrosoftAuthAccount(
-                                selectedAcc.uuid,
-                                selectedAcc.accessToken,
-                                selectedAcc.username,
-                                selectedAcc.expiresAt,
-                                selectedAcc.microsoft.access_token,
-                                selectedAcc.microsoft.refresh_token,
-                                selectedAcc.microsoft.expires_at
-                            )
-                        } else {
-                            ConfigManager.addMojangAuthAccount(selectedAcc.uuid, selectedAcc.accessToken, selectedAcc.username, selectedAcc.displayName)
-                        }
-                        ConfigManager.save()
+                    loginViewOnCancel = getCurrentView()
+                    loginViewCancelHandler = () => {
                         validateSelectedAccount()
                     }
-                    loginOptionsCancelEnabled(true)
+                    loginCancelEnabled(true)
                 } else {
-                    loginOptionsCancelEnabled(false)
+                    loginCancelEnabled(false)
                 }
                 toggleOverlay(false)
-                switchView(getCurrentView(), VIEWS.loginOptions)
+                switchView(getCurrentView(), VIEWS.login)
             })
             setDismissHandler(() => {
                 if(accLen > 1){
@@ -436,15 +413,24 @@ document.addEventListener('readystatechange', async () => {
 }, false)
 
 // Actions that must be performed after the distribution index is downloaded.
-ipcRenderer.on('distributionIndexDone', async (event, res) => {
+let distroIndexHandled = false
+async function onDistroIndexDone(res){
+    if(distroIndexHandled){
+        return
+    }
+    distroIndexHandled = true
     if(res) {
-        const data = await DistroAPI.getDistribution()
-        syncModConfigurations(data)
-        ensureJavaSettings(data)
-        if(document.readyState === 'interactive' || document.readyState === 'complete'){
-            await showMainUI(data)
-        } else {
-            rscShouldLoad = true
+        try {
+            const data = await DistroAPI.getDistribution()
+            syncModConfigurations(data)
+            ensureJavaSettings(data)
+            if(document.readyState === 'interactive' || document.readyState === 'complete'){
+                await showMainUI(data)
+            } else {
+                rscShouldLoad = true
+            }
+        } catch(err) {
+            console.error('STARTUP FAIL:', err)
         }
     } else {
         fatalStartupError = true
@@ -454,7 +440,17 @@ ipcRenderer.on('distributionIndexDone', async (event, res) => {
             rscShouldLoad = true
         }
     }
+}
+
+ipcRenderer.on('distributionIndexDone', (event, res) => {
+    onDistroIndexDone(res)
 })
+
+// Preloader мог финишировать до загрузки этого скрипта (см. preloader.js) —
+// тогда ipc-сообщение уже потеряно, забираем результат из глобальной переменной.
+if(global.__distroIndexDoneRes !== undefined){
+    onDistroIndexDone(global.__distroIndexDoneRes)
+}
 
 // Util for development
 async function devModeToggle() {
