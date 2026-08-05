@@ -1,6 +1,7 @@
 name: Build
 
-on: push
+on:
+  push:
 
 jobs:
   release:
@@ -11,7 +12,10 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
 
     steps:
       - name: Check out Git repository
@@ -25,14 +29,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: 3.x
+          python-version: "3.x"
 
       - name: Install Dependencies
         run: npm ci
-        shell: bash
 
-      - name: Build
+      - name: Build and Publish
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run dist
-        shell: bash
+        run: npx electron-builder --publish always
