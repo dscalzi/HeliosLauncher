@@ -704,24 +704,24 @@ function slide_(up){
 }
 
 // Bind news button.
-document.getElementById('newsButton').onclick = () => {
-    // Toggle tabbing.
-    if(newsActive){
-        $('#landingContainer *').removeAttr('tabindex')
-        $('#newsContainer *').attr('tabindex', '-1')
-    } else {
-        $('#landingContainer *').attr('tabindex', '-1')
-        $('#newsContainer, #newsContainer *, #lower, #lower #center *').removeAttr('tabindex')
-        if(newsAlertShown){
-            $('#newsButtonAlert').fadeOut(2000)
-            newsAlertShown = false
-            ConfigManager.setNewsCacheDismissed(true)
-            ConfigManager.save()
-        }
-    }
-    slide_(!newsActive)
-    newsActive = !newsActive
-}
+//document.getElementById('newsButton').onclick = () => {
+//    // Toggle tabbing.
+//    if(newsActive){
+//        $('#landingContainer *').removeAttr('tabindex')
+//        $('#newsContainer *').attr('tabindex', '-1')
+//    } else {
+//        $('#landingContainer *').attr('tabindex', '-1')
+//        $('#newsContainer, #newsContainer *, #lower, #lower #center *').removeAttr('tabindex')
+//        if(newsAlertShown){
+//            $('#newsButtonAlert').fadeOut(2000)
+//            newsAlertShown = false
+//            ConfigManager.setNewsCacheDismissed(true)
+//            ConfigManager.save()
+//        }
+//    }
+//    slide_(!newsActive)
+//    newsActive = !newsActive
+//}
 
 // Array to store article meta.
 let newsArr = null
@@ -734,42 +734,42 @@ let newsLoadingListener = null
  * 
  * @param {boolean} val True to set loading animation, otherwise false.
  */
-function setNewsLoading(val){
-    if(val){
-        const nLStr = Lang.queryJS('landing.news.checking')
-        let dotStr = '..'
-        nELoadSpan.innerHTML = nLStr + dotStr
-        newsLoadingListener = setInterval(() => {
-            if(dotStr.length >= 3){
-                dotStr = ''
-            } else {
-                dotStr += '.'
-            }
-            nELoadSpan.innerHTML = nLStr + dotStr
-        }, 750)
-    } else {
-        if(newsLoadingListener != null){
-            clearInterval(newsLoadingListener)
-            newsLoadingListener = null
-        }
-    }
-}
+//function setNewsLoading(val){
+//    if(val){
+//        const nLStr = Lang.queryJS('landing.news.checking')
+//        let dotStr = '..'
+//        nELoadSpan.innerHTML = nLStr + dotStr
+//        newsLoadingListener = setInterval(() => {
+//            if(dotStr.length >= 3){
+//                dotStr = ''
+//            } else {
+//                dotStr += '.'
+//            }
+//            nELoadSpan.innerHTML = nLStr + dotStr
+//        }, 750)
+//    } else {
+//        if(newsLoadingListener != null){
+//            clearInterval(newsLoadingListener)
+//            newsLoadingListener = null
+//        }
+//    }
+//}
 
 // Bind retry button.
-newsErrorRetry.onclick = () => {
-    $('#newsErrorFailed').fadeOut(250, () => {
-        initNews()
-        $('#newsErrorLoading').fadeIn(250)
-    })
-}
+//newsErrorRetry.onclick = () => {
+//    $('#newsErrorFailed').fadeOut(250, () => {
+//        initNews()
+//        $('#newsErrorLoading').fadeIn(250)
+//    })
+//}
 
-newsArticleContentScrollable.onscroll = (e) => {
-    if(e.target.scrollTop > Number.parseFloat($('.newsArticleSpacerTop').css('height'))){
-        newsContent.setAttribute('scrolled', '')
-    } else {
-        newsContent.removeAttribute('scrolled')
-    }
-}
+//newsArticleContentScrollable.onscroll = (e) => {
+//    if(e.target.scrollTop > Number.parseFloat($('.newsArticleSpacerTop').css('height'))){
+//        newsContent.setAttribute('scrolled', '')
+//    } else {
+//        newsContent.removeAttribute('scrolled')
+//    }
+//}
 
 /**
  * Reload the news without restarting.
@@ -777,26 +777,26 @@ newsArticleContentScrollable.onscroll = (e) => {
  * @returns {Promise.<void>} A promise which resolves when the news
  * content has finished loading and transitioning.
  */
-function reloadNews(){
-    return new Promise((resolve, reject) => {
-        $('#newsContent').fadeOut(250, () => {
-            $('#newsErrorLoading').fadeIn(250)
-            initNews().then(() => {
-                resolve()
-            })
-        })
-    })
-}
+//function reloadNews(){
+//    return new Promise((resolve, reject) => {
+//        $('#newsContent').fadeOut(250, () => {
+//            $('#newsErrorLoading').fadeIn(250)
+//            initNews().then(() => {
+//                resolve()
+//            })
+//        })
+//    })
+//}
 
 let newsAlertShown = false
 
 /**
  * Show the news alert indicating there is new news.
  */
-function showNewsAlert(){
-    newsAlertShown = true
-    $(newsButtonAlert).fadeIn(250)
-}
+//function showNewsAlert(){
+//    newsAlertShown = true
+//    $(newsButtonAlert).fadeIn(250)
+//}
 
 async function digestMessage(str) {
     const msgUint8 = new TextEncoder().encode(str)
@@ -815,50 +815,50 @@ async function digestMessage(str) {
  * @returns {Promise.<void>} A promise which resolves when the news
  * content has finished loading and transitioning.
  */
-async function initNews(){
-
-    setNewsLoading(true)
-
-    const news = await loadNews()
-
-    newsArr = news?.articles || null
-
-    if(newsArr == null){
+//async function initNews(){
+//
+//    setNewsLoading(true)
+//
+//    const news = await loadNews()
+//
+//    newsArr = news?.articles || null
+//
+//    if(newsArr == null){
         // News Loading Failed
-        setNewsLoading(false)
+//        setNewsLoading(false)
 
-        await $('#newsErrorLoading').fadeOut(250).promise()
-        await $('#newsErrorFailed').fadeIn(250).promise()
+//        await $('#newsErrorLoading').fadeOut(250).promise()
+//        await $('#newsErrorFailed').fadeIn(250).promise()
 
-    } else if(newsArr.length === 0) {
-        // No News Articles
-        setNewsLoading(false)
+//    } else if(newsArr.length === 0) {
+//        // No News Articles
+//        setNewsLoading(false)
 
-        ConfigManager.setNewsCache({
-            date: null,
-            content: null,
-            dismissed: false
-        })
-        ConfigManager.save()
+//        ConfigManager.setNewsCache({
+//            date: null,
+//            content: null,
+//            dismissed: false
+//        })
+//        ConfigManager.save()
 
-        await $('#newsErrorLoading').fadeOut(250).promise()
-        await $('#newsErrorNone').fadeIn(250).promise()
-    } else {
+//        await $('#newsErrorLoading').fadeOut(250).promise()
+//        await $('#newsErrorNone').fadeIn(250).promise()
+//    } else {
         // Success
-        setNewsLoading(false)
+//        setNewsLoading(false)
 
-        const lN = newsArr[0]
-        const cached = ConfigManager.getNewsCache()
-        let newHash = await digestMessage(lN.content)
-        let newDate = new Date(lN.date)
-        let isNew = false
+//        const lN = newsArr[0]
+//        const cached = ConfigManager.getNewsCache()
+//        let newHash = await digestMessage(lN.content)
+//        let newDate = new Date(lN.date)
+//        let isNew = false
 
-        if(cached.date != null && cached.content != null){
+//        if(cached.date != null && cached.content != null){
 
-            if(new Date(cached.date) >= newDate){
+//            if(new Date(cached.date) >= newDate){
 
                 // Compare Content
-                if(cached.content !== newHash){
+/*                 if(cached.content !== newHash){
                     isNew = true
                     showNewsAlert()
                 } else {
@@ -902,7 +902,7 @@ async function initNews(){
     }
 
 
-}
+} */
 
 /**
  * Add keyboard controls to the news UI. Left and right arrows toggle

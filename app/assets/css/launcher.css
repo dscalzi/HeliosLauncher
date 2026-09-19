@@ -46,10 +46,10 @@ body, button {
     color: white;
 }
 
-/*body {
+body {
     background: url('./../images/backgrounds/0.jpg') no-repeat center center fixed;
     background-size: cover;
-}*/
+}
 
 /*******************************************************************************
  *                                                                             *
@@ -65,7 +65,6 @@ body, button {
     flex-direction: column;
     transition: background-color 1s ease;
     /*background-color: rgba(0, 0, 0, 0.5);*/
-    -webkit-user-select: none;
 }
 
 /* Undraggable region on the top of the frame. */
@@ -347,12 +346,14 @@ body, button {
 #welcomeButton:hover #welcomeSVG,
 #welcomeButton:focus #welcomeSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0px 2px #fff);
 }
 #welcomeButton:active #welcomeSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #welcomeButton:active #welcomeSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 #welcomeButton:disabled #welcomeSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -649,12 +650,14 @@ body, button {
 #loginButton:hover #loginSVG,
 #loginButton:focus #loginSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0px 2px #fff);
 }
 #loginButton:active #loginSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #loginButton:active #loginSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 #loginButton:disabled #loginSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -805,6 +808,7 @@ body, button {
     cursor: pointer;
     font-size: 22px;
     -webkit-user-select: none;
+    user-select: none;
 }
 
 /* Hide the default checkbox. */
@@ -1547,7 +1551,6 @@ input:checked + .toggleSwitchSlider:before {
 .settingsCurrentAccounts > .settingsAuthAccount:not(:first-child) {
     margin-top: 10px;
 }
-
 /* Auth account shared styles. */
 .settingsAuthAccount {
     display: flex;
@@ -1598,6 +1601,7 @@ input:checked + .toggleSwitchSlider:before {
 .settingsAuthAccountDetailValue {
     font-size: 14px;
     -webkit-user-select: initial;
+    user-select: initial;
 }
 
 /* Account actions container. */
@@ -2548,6 +2552,7 @@ input:checked + .toggleSwitchSlider:before {
     width: 100%;
     display: flex;
     -webkit-user-select: initial;
+    user-select: initial;
     position: relative;
 }
 
@@ -2751,6 +2756,7 @@ input:checked + .toggleSwitchSlider:before {
     align-items: center;
     margin-bottom: 10px;
     -webkit-user-select: none;
+    user-select: none;
     position: absolute;
     bottom: 15px;
     right: 0px;
@@ -2776,6 +2782,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsNavigateRight:hover #newsNavigationRightSVG,
 #newsNavigateRight:focus #newsNavigationRightSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0px 2px #fff);
 }
 #newsNavigateLeft:active #newsNavigationLeftSVG .arrowLine,
 #newsNavigateRight:active #newsNavigationRightSVG .arrowLine {
@@ -2784,6 +2791,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsNavigateLeft:active #newsNavigationLeftSVG,
 #newsNavigateRight:active #newsNavigationRightSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 #newsNavigateLeft:disabled #newsNavigationLeftSVG .arrowLine,
 #newsNavigateRight:disabled #newsNavigationRightSVG .arrowLine {
@@ -2858,9 +2866,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 70px;
     width: auto;
     position: relative;
-    border: 2px solid white;
-    box-sizing: border-box;
-    border-radius: 50%;
+    border-radius: 0%;
 }
 
 /* Logo container styles. */
@@ -2868,7 +2874,7 @@ input:checked + .toggleSwitchSlider:before {
     position: relative;
     height: 70px;
     width: 70px;
-    border-radius: 50%;
+    border-radius: 0%;
     margin-top: 50px;
 }
 
@@ -2997,6 +3003,7 @@ input:checked + .toggleSwitchSlider:before {
     letter-spacing: 2px;
     background-color: rgba(0, 0, 0, 0.35);
     -webkit-user-select: none;
+    user-select: none;
     border: none;
     cursor: pointer;
     width: 100%;
@@ -3022,6 +3029,7 @@ input:checked + .toggleSwitchSlider:before {
     right: 95px;
     text-align: right;
     -webkit-user-select: initial;
+    user-select: initial;
 }
 
 /* Social media icon content container. */
@@ -3341,12 +3349,14 @@ input:checked + .toggleSwitchSlider:before {
 #newsButton:hover #newsButtonSVG,
 #newsButton:focus #newsButtonSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0px 2px #fff);
 }
 #newsButton:active #newsButtonSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #newsButton:active #newsButtonSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 #newsButton:disabled #newsButtonSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -3474,6 +3484,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 3px;
     width: 265px;
     -webkit-appearance: none;
+    appearance: none;
 }
 #launch_progress[value]::-webkit-progress-bar {
     background-color: transparent;
@@ -3562,6 +3573,7 @@ input:checked + .toggleSwitchSlider:before {
     font-weight: bold;
     letter-spacing: 1px;
     -webkit-user-select: initial;
+    user-select: initial;
 }
 
 /* Overlay description styles. */
@@ -3569,6 +3581,7 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 12px;
     font-weight: bold;
     -webkit-user-select: initial;
+    user-select: initial;
 }
 
 /* Div which contains action buttons. */
@@ -3965,4 +3978,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Class which is applied when the spinner image is spinning. */
 .rotating {
     animation: rotating 10s linear infinite;
+}
+.settingsTab#settingsTabAccount > *:last-child {
+    display: none;
 }
