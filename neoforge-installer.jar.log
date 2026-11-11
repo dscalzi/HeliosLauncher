@@ -1,0 +1,204 @@
+JVM info: Oracle Corporation - 24.0.1 - 24.0.1+9-30
+java.net.preferIPv4Stack=true
+Current Time: 11/11/2026 14:53:19
+Host: maven.neoforged.net [79.127.178.167, 185.93.2.12, 185.93.2.8, 79.127.178.57, 79.127.178.161, 79.127.178.53]
+Host: libraries.minecraft.net [150.171.110.120]
+Host: launchermeta.mojang.com [150.171.110.120]
+Host: piston-meta.mojang.com [150.171.110.120]
+Host: sessionserver.mojang.com [150.171.110.120]
+Found java version 24.0.1
+Target Directory: C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common
+Extracting json
+Considering minecraft client jar
+Downloading library from https://piston-meta.mojang.com/v1/packages/812ee7fdfdf648bb872f7a1dca33718de4e786b4/1.21.11.json
+	Download completed: Checksum validated.
+Downloading library from https://piston-data.mojang.com/v1/objects/ba2df812c2d12e0219c489c4cd9a5e1f0760f5bd/client.jar
+	Download completed: Checksum validated.
+Downloading libraries
+Found 0 additional library directories
+Considering library net.neoforged.fancymodloader:earlydisplay:10.0.36
+Downloading library from https://maven.neoforged.net/releases/net/neoforged/fancymodloader/earlydisplay/10.0.36/earlydisplay-10.0.36.jar
+	Download completed: Checksum validated.
+Considering library net.neoforged.fancymodloader:loader:10.0.36
+Downloading library from https://maven.neoforged.net/releases/net/neoforged/fancymodloader/loader/10.0.36/loader-10.0.36.jar
+	Download completed: Checksum validated.
+Considering library net.neoforged:accesstransformers:11.0.2
+Downloading library from https://maven.neoforged.net/releases/net/neoforged/accesstransformers/11.0.2/accesstransformers-11.0.2.jar
+	Download completed: Checksum validated.
+Considering library org.ow2.asm:asm-commons:9.8
+Downloading library from https://maven.neoforged.net/releases/org/ow2/asm/asm-commons/9.8/asm-commons-9.8.jar
+	Download completed: Checksum validated.
+Considering library net.neoforged:mergetool:2.0.0:api
+Downloading library from https://maven.neoforged.net/releases/net/neoforged/mergetool/2.0.0/mergetool-2.0.0-api.jar
+	Download completed: Checksum validated.
+Considering library org.ow2.asm:asm-util:9.8
+Downloading library from https://maven.neoforged.net/releases/org/ow2/asm/asm-util/9.8/asm-util-9.8.jar
+	Download completed: Checksum validated.
+Considering library org.ow2.asm:asm-analysis:9.8
+Downloading library from https://maven.neoforged.net/releases/org/ow2/asm/asm-analysis/9.8/asm-analysis-9.8.jar
+	Download completed: Checksum validated.
+Considering library org.ow2.asm:asm-tree:9.8
+Downloading library from https://maven.neoforged.net/releases/org/ow2/asm/asm-tree/9.8/asm-tree-9.8.jar
+	Download completed: Checksum validated.
+Considering library net.neoforged:bus:8.0.5
+Downloading library from https://maven.neoforged.net/releases/net/neoforged/bus/8.0.5/bus-8.0.5.jar
+	Download completed: Checksum validated.
+Considering library org.ow2.asm:asm:9.8
+Downloading library from https://maven.neoforged.net/releases/org/ow2/asm/asm/9.8/asm-9.8.jar
+	Download completed: Checksum validated.
+Considering library com.electronwill.night-config:toml:3.8.3
+Downloading library from https://maven.neoforged.net/releases/com/electronwill/night-config/toml/3.8.3/toml-3.8.3.jar
+	Download completed: Checksum validated.
+Considering library com.electronwill.night-config:core:3.8.3
+Downloading library from https://maven.neoforged.net/releases/com/electronwill/night-config/core/3.8.3/core-3.8.3.jar
+	Download completed: Checksum validated.
+Considering library net.neoforged:JarJarSelector:0.5.0
+Downloading library from https://maven.neoforged.net/releases/net/neoforged/JarJarSelector/0.5.0/JarJarSelector-0.5.0.jar
+	Download completed: Checksum validated.
+Considering library net.neoforged:JarJarMetadata:0.5.0
+Downloading library from https://maven.neoforged.net/releases/net/neoforged/JarJarMetadata/0.5.0/JarJarMetadata-0.5.0.jar
+	Download completed: Checksum validated.
+Considering library org.apache.maven:maven-artifact:3.9.9
+Downloading library from https://maven.neoforged.net/releases/org/apache/maven/maven-artifact/3.9.9/maven-artifact-3.9.9.jar
+	Download completed: Checksum validated.
+Considering library net.jodah:typetools:0.6.3
+Downloading library from https://maven.neoforged.net/releases/net/jodah/typetools/0.6.3/typetools-0.6.3.jar
+	Download completed: Checksum validated.
+Considering library net.minecrell:terminalconsoleappender:1.3.0
+Downloading library from https://maven.neoforged.net/releases/net/minecrell/terminalconsoleappender/1.3.0/terminalconsoleappender-1.3.0.jar
+	Download completed: Checksum validated.
+Considering library net.fabricmc:sponge-mixin:0.16.5+mixin.0.8.7
+Downloading library from https://maven.neoforged.net/releases/net/fabricmc/sponge-mixin/0.16.5+mixin.0.8.7/sponge-mixin-0.16.5+mixin.0.8.7.jar
+	Download completed: Checksum validated.
+Considering library net.neoforged.accesstransformers:at-parser:11.0.2
+Downloading library from https://maven.neoforged.net/releases/net/neoforged/accesstransformers/at-parser/11.0.2/at-parser-11.0.2.jar
+	Download completed: Checksum validated.
+Considering library org.jline:jline-reader:3.20.0
+Downloading library from https://maven.neoforged.net/releases/org/jline/jline-reader/3.20.0/jline-reader-3.20.0.jar
+	Download completed: Checksum validated.
+Considering library org.jline:jline-terminal:3.20.0
+Downloading library from https://maven.neoforged.net/releases/org/jline/jline-terminal/3.20.0/jline-terminal-3.20.0.jar
+	Download completed: Checksum validated.
+Considering library net.minecraftforge:srgutils:0.4.15
+Downloading library from https://maven.neoforged.net/releases/net/minecraftforge/srgutils/0.4.15/srgutils-0.4.15.jar
+	Download completed: Checksum validated.
+Considering library com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+Downloading library from https://libraries.minecraft.net/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar
+	Download completed: Checksum validated.
+Considering library com.google.errorprone:error_prone_annotations:2.41.0
+Downloading library from https://libraries.minecraft.net/com/google/errorprone/error_prone_annotations/2.41.0/error_prone_annotations-2.41.0.jar
+	Download completed: Checksum validated.
+Considering library com.google.j2objc:j2objc-annotations:3.1
+Downloading library from https://libraries.minecraft.net/com/google/j2objc/j2objc-annotations/3.1/j2objc-annotations-3.1.jar
+	Download completed: Checksum validated.
+Considering library org.codehaus.plexus:plexus-utils:3.5.1
+Downloading library from https://maven.neoforged.net/releases/org/codehaus/plexus/plexus-utils/3.5.1/plexus-utils-3.5.1.jar
+	Download completed: Checksum validated.
+Considering library net.neoforged.fancymodloader:earlydisplay:10.0.36
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\fancymodloader\earlydisplay\10.0.36\earlydisplay-10.0.36.jar exists. Checksum valid.
+Considering library net.neoforged.fancymodloader:loader:10.0.36
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\fancymodloader\loader\10.0.36\loader-10.0.36.jar exists. Checksum valid.
+Considering library net.neoforged:accesstransformers:11.0.2
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\accesstransformers\11.0.2\accesstransformers-11.0.2.jar exists. Checksum valid.
+Considering library org.ow2.asm:asm-commons:9.8
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\org\ow2\asm\asm-commons\9.8\asm-commons-9.8.jar exists. Checksum valid.
+Considering library net.neoforged:mergetool:2.0.0:api
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\mergetool\2.0.0\mergetool-2.0.0-api.jar exists. Checksum valid.
+Considering library org.ow2.asm:asm-util:9.8
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\org\ow2\asm\asm-util\9.8\asm-util-9.8.jar exists. Checksum valid.
+Considering library org.ow2.asm:asm-analysis:9.8
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\org\ow2\asm\asm-analysis\9.8\asm-analysis-9.8.jar exists. Checksum valid.
+Considering library org.ow2.asm:asm-tree:9.8
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\org\ow2\asm\asm-tree\9.8\asm-tree-9.8.jar exists. Checksum valid.
+Considering library net.neoforged:bus:8.0.5
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\bus\8.0.5\bus-8.0.5.jar exists. Checksum valid.
+Considering library org.ow2.asm:asm:9.8
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\org\ow2\asm\asm\9.8\asm-9.8.jar exists. Checksum valid.
+Considering library com.electronwill.night-config:toml:3.8.3
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\com\electronwill\night-config\toml\3.8.3\toml-3.8.3.jar exists. Checksum valid.
+Considering library com.electronwill.night-config:core:3.8.3
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\com\electronwill\night-config\core\3.8.3\core-3.8.3.jar exists. Checksum valid.
+Considering library net.neoforged:JarJarSelector:0.5.0
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\JarJarSelector\0.5.0\JarJarSelector-0.5.0.jar exists. Checksum valid.
+Considering library net.neoforged:JarJarMetadata:0.5.0
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\JarJarMetadata\0.5.0\JarJarMetadata-0.5.0.jar exists. Checksum valid.
+Considering library org.apache.maven:maven-artifact:3.9.9
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\org\apache\maven\maven-artifact\3.9.9\maven-artifact-3.9.9.jar exists. Checksum valid.
+Considering library net.jodah:typetools:0.6.3
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\jodah\typetools\0.6.3\typetools-0.6.3.jar exists. Checksum valid.
+Considering library net.minecrell:terminalconsoleappender:1.3.0
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\minecrell\terminalconsoleappender\1.3.0\terminalconsoleappender-1.3.0.jar exists. Checksum valid.
+Considering library net.fabricmc:sponge-mixin:0.16.5+mixin.0.8.7
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\fabricmc\sponge-mixin\0.16.5+mixin.0.8.7\sponge-mixin-0.16.5+mixin.0.8.7.jar exists. Checksum valid.
+Considering library net.neoforged.accesstransformers:at-parser:11.0.2
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\accesstransformers\at-parser\11.0.2\at-parser-11.0.2.jar exists. Checksum valid.
+Considering library org.jline:jline-reader:3.20.0
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\org\jline\jline-reader\3.20.0\jline-reader-3.20.0.jar exists. Checksum valid.
+Considering library org.jline:jline-terminal:3.20.0
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\org\jline\jline-terminal\3.20.0\jline-terminal-3.20.0.jar exists. Checksum valid.
+Considering library org.lwjgl:lwjgl-tinyfd:3.3.3
+Downloading library from https://libraries.minecraft.net/org/lwjgl/lwjgl-tinyfd/3.3.3/lwjgl-tinyfd-3.3.3.jar
+	Download completed: Checksum validated.
+Considering library org.lwjgl:lwjgl:3.3.3
+Downloading library from https://libraries.minecraft.net/org/lwjgl/lwjgl/3.3.3/lwjgl-3.3.3.jar
+	Download completed: Checksum validated.
+Considering library net.minecraftforge:srgutils:0.4.15
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\minecraftforge\srgutils\0.4.15\srgutils-0.4.15.jar exists. Checksum valid.
+Considering library com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\com\google\guava\listenablefuture\9999.0-empty-to-avoid-conflict-with-guava\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar exists. Checksum valid.
+Considering library com.google.errorprone:error_prone_annotations:2.41.0
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\com\google\errorprone\error_prone_annotations\2.41.0\error_prone_annotations-2.41.0.jar exists. Checksum valid.
+Considering library com.google.j2objc:j2objc-annotations:3.1
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\com\google\j2objc\j2objc-annotations\3.1\j2objc-annotations-3.1.jar exists. Checksum valid.
+Considering library org.codehaus.plexus:plexus-utils:3.5.1
+File C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\org\codehaus\plexus\plexus-utils\3.5.1\plexus-utils-3.5.1.jar exists. Checksum valid.
+Considering library net.neoforged:neoform:1.21.11-20251209.172050:mappings@tsrg.lzma
+Downloading library from https://maven.neoforged.net/releases/net/neoforged/neoform/1.21.11-20251209.172050/neoform-1.21.11-20251209.172050-mappings.tsrg.lzma
+	Download completed: Checksum validated.
+Considering library net.neoforged.installertools:installertools:4.0.6:fatjar
+Downloading library from https://maven.neoforged.net/releases/net/neoforged/installertools/installertools/4.0.6/installertools-4.0.6-fatjar.jar
+	Download completed: Checksum validated.
+Considering library net.neoforged:neoforge:21.11.45:universal
+Downloading library from https://maven.neoforged.net/releases/net/neoforged/neoforge/21.11.45/neoforge-21.11.45-universal.jar
+	Download completed: Checksum validated.
+Created Temporary Directory: C:\Users\kylan\AppData\Local\Temp\neoforge_installer6113077627373647860
+  Extracting: /data/client.lzma
+Building Processors
+===============================================================================
+Processor: net.neoforged.installertools:installertools -> DOWNLOAD_MOJMAPS
+  MainClass: net.neoforged.installertools.ConsoleTool
+  Classpath:
+    C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\installertools\installertools\4.0.6\installertools-4.0.6-fatjar.jar
+    C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\installertools\installertools\4.0.6\installertools-4.0.6-fatjar.jar
+  Args: --task, DOWNLOAD_MOJMAPS, --version, 1.21.11, --side, client, --output, C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\minecraft\client\1.21.11\client-1.21.11-mappings.txt
+Task: DOWNLOAD_MOJMAPS
+MC Version: 1.21.11
+Side:       client
+Output:     C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\minecraft\client\1.21.11\client-1.21.11-mappings.txt
+Downloaded Mojang mappings for 1.21.11
+===============================================================================
+Processor: net.neoforged.installertools:installertools -> PROCESS_MINECRAFT_JAR
+  MainClass: net.neoforged.installertools.ConsoleTool
+  Classpath:
+    C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\installertools\installertools\4.0.6\installertools-4.0.6-fatjar.jar
+    C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\installertools\installertools\4.0.6\installertools-4.0.6-fatjar.jar
+  Args: --task, PROCESS_MINECRAFT_JAR, --input, C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\versions\1.21.11\1.21.11.jar, --input-mappings, C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\minecraft\client\1.21.11\client-1.21.11-mappings.txt, --output, C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\minecraft-client-patched\21.11.45\minecraft-client-patched-21.11.45.jar, --extract-libraries-to, C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common/libraries/, --neoform-data, C:\Users\kylan\AppData\Local\Temp\BuildLauncher-NeoForge-2111-7095464e9ae74d679851d3eebbff945b\common\libraries\net\neoforged\neoform\1.21.11-20251209.172050\neoform-1.21.11-20251209.172050-mappings.tsrg.lzma, --apply-patches, C:\Users\kylan\AppData\Local\Temp\neoforge_installer6113077627373647860\data\client.lzma
+Task: PROCESS_MINECRAFT_JAR
+load parameter mappings [2802ms]
+load mappings [3815ms]
+load input zip [4066ms]
+load patch bundle [1339ms]
+merge mappings [374ms]
+Adding Libraries to Inheritance
+Processor: net.neoforged.installertools:installertools -> PROCESS_MINECRAFT_JAR: Processing entries
+Adding input to inheritance map
+Processing 28163 entries
+Adding extras
+Sorting
+deobfuscate jar [5209ms]
+applying patches [370ms]
+write output file [9733ms]
+overall work [19544ms]
+Injecting profile
+Successfully installed client into launcher.
+You can delete this installer file now if you wish

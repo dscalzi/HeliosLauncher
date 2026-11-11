@@ -32,11 +32,22 @@
           "name": "Minecraft NeoForge 21.11.45",
           "type": "ForgeHosted",
           "artifact": {
-            "size": 3831805,
-            "MD5": "5c7f6daaaf7ac63cf62f22a5647da923",
-            "url": "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.11.45/neoforge-21.11.45-universal.jar"
+            "size": 4236966,
+            "MD5": "a7efe248813a2f12f1aaf7b1c6ea0f76",
+            "url": "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.11.45/neoforge-21.11.45-installer.jar"
           },
           "subModules": [
+            {
+              "id": "net.neoforged:neoforge:21.11.45:universal",
+              "name": "NeoForge universal 21.11.45",
+              "type": "Library",
+              "classpath": false,
+              "artifact": {
+                "size": 3831805,
+                "MD5": "5c7f6daaaf7ac63cf62f22a5647da923",
+                "url": "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.11.45/neoforge-21.11.45-universal.jar"
+              }
+            },
             {
               "id": "1.21.11",
               "name": "Minecraft 1.21.11",
@@ -76,11 +87,21 @@
           "name": "Minecraft NeoForge 21.1.251",
           "type": "ForgeHosted",
           "artifact": {
-            "size": 3551265,
-            "MD5": "8d19e04a9cf498091e6811e74c952b00",
+            "size": 6972016,
+            "MD5": "71719bf6615fb4ef01c1d27463085b16",
             "url": "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.1.251/neoforge-21.1.251-installer.jar"
           },
           "subModules": [
+            {
+              "id": "net.neoforged:neoforge:21.1.251:universal",
+              "name": "NeoForge universal 21.1.251",
+              "type": "Library",
+              "artifact": {
+                "size": 3551265,
+                "MD5": "8d19e04a9cf498091e6811e74c952b00",
+                "url": "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.1.251/neoforge-21.1.251-universal.jar"
+              }
+            },
             {
               "id": "1.21.1",
               "name": "Minecraft 1.21.1",
@@ -120,11 +141,22 @@
           "name": "Minecraft NeoForge 21.11.45",
           "type": "ForgeHosted",
           "artifact": {
-            "size": 3831805,
-            "MD5": "5c7f6daaaf7ac63cf62f22a5647da923",
-            "url": "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.11.45/neoforge-21.11.45-universal.jar"
+            "size": 4236966,
+            "MD5": "a7efe248813a2f12f1aaf7b1c6ea0f76",
+            "url": "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.11.45/neoforge-21.11.45-installer.jar"
           },
           "subModules": [
+            {
+              "id": "net.neoforged:neoforge:21.11.45:universal",
+              "name": "NeoForge universal 21.11.45",
+              "type": "Library",
+              "classpath": false,
+              "artifact": {
+                "size": 3831805,
+                "MD5": "5c7f6daaaf7ac63cf62f22a5647da923",
+                "url": "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.11.45/neoforge-21.11.45-universal.jar"
+              }
+            },
             {
               "id": "1.21.11",
               "name": "Minecraft 1.21.11",

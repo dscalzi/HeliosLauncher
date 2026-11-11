@@ -11,6 +11,9 @@ for (const name of required) {
 }
 
 const port = Number(process.env.PORT || 8787)
+if (!Number.isInteger(port) || port < 1 || port > 65535) {
+  throw new Error('PORT must be a number between 1 and 65535')
+}
 const host = process.env.HOST || '127.0.0.1'
 const pepper = process.env.OTP_PEPPER
 const expirationMs = 5 * 60 * 1000

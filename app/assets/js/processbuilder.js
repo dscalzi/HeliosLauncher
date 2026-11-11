@@ -728,15 +728,26 @@ class ProcessBuilder {
         let cpArgs = []
 
         const isNeoForge = this.server.modules.some(module => module.rawModule.id.startsWith('net.neoforged:neoforge:'))
-        if(!mcVersionAtLeast('1.17', this.server.rawServer.minecraftVersion) || this.usingFabricLoader || isNeoForge) {
-            // NeoForge 21.x launches from the client jar and needs it on the classpath.
-            const version = this.vanillaManifest.id
-            const clientPath = path.join(this.commonDir, 'versions', version, version + '.jar')
+        if(isNeoForge) {
+            const clientPath = path.join(this.commonDir, 'versions', this.vanillaManifest.id, `${this.vanillaManifest.id}.jar`)
+            if(!fs.existsSync(clientPath)) {
+                throw new Error(`The Minecraft client JAR is missing for ${this.server.rawServer.id}.`)
+            }
+            cpArgs.push(clientPath)
+        } else if(!mcVersionAtLeast('1.17', this.server.rawServer.minecraftVersion) || this.usingFabricLoader) {
+            const clientPath = path.join(this.commonDir, 'versions', this.vanillaManifest.id, `${this.vanillaManifest.id}.jar`)
             if(fs.existsSync(clientPath)) {
                 cpArgs.push(clientPath)
             }
         }
-        
+
+        if(isNeoForge) {
+            for(const library of this.modManifest.libraries ?? []) {
+                if(isLibraryCompatible(library.rules, library.natives) && library.downloads?.artifact?.path) {
+                    cpArgs.push(path.join(this.libPath, library.downloads.artifact.path))
+                }
+            }
+        }
 
         if(this.usingLiteLoader){
             cpArgs.push(this.llPath)
@@ -894,6 +905,14 @@ class ProcessBuilder {
         // Locate Forge/Fabric/Libraries
         for(let mdl of mdls){
             const type = mdl.rawModule.type
+            if(type === Type.ForgeHosted && mdl.rawModule.id.startsWith('net.neoforged:neoforge:')) {
+                const isModernNeoForge = this.modManifest.mainClass === 'net.neoforged.fml.startup.Client'
+                const res = this._resolveModuleLibraries(mdl, isModernNeoForge)
+                if(res.length > 0) {
+                    libs = {...libs, ...res}
+                }
+                continue
+            }
             if(type === Type.ForgeHosted || type === Type.Fabric || type === Type.Library){
                 libs[mdl.getVersionlessMavenIdentifier()] = mdl.getPath()
                 if(mdl.subModules.length > 0){
@@ -924,7 +943,7 @@ class ProcessBuilder {
      * @param {Object} mdl A module object from the server distro index.
      * @returns {Array.<string>} An array containing the paths of each library this module requires.
      */
-    _resolveModuleLibraries(mdl){
+    _resolveModuleLibraries(mdl, excludeNeoForgeUniversal = false){
         if(!mdl.subModules.length > 0){
             return []
         }
@@ -932,14 +951,15 @@ class ProcessBuilder {
         for(let sm of mdl.subModules){
             if(sm.rawModule.type === Type.Library){
 
-                if(sm.rawModule.classpath ?? true) {
+                const isNeoForgeUniversal = sm.rawModule.id.startsWith('net.neoforged:neoforge:') && sm.rawModule.id.endsWith(':universal')
+                if((sm.rawModule.classpath ?? true) && (!excludeNeoForgeUniversal || !isNeoForgeUniversal)) {
                     libs.push(sm.getPath())
                 }
             }
             // If this module has submodules, we need to resolve the libraries for those.
             // To avoid unnecessary recursive calls, base case is checked here.
             if(mdl.subModules.length > 0){
-                const res = this._resolveModuleLibraries(sm)
+                const res = this._resolveModuleLibraries(sm, excludeNeoForgeUniversal)
                 if(res.length > 0){
                     libs = libs.concat(res)
                 }

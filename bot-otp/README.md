@@ -45,6 +45,8 @@ La saisie d'un pseudo reserve dans le login demande automatiquement un OTP au bo
 
 Dans l'application Windows compilee, le launcher copie `.env.example` vers `%APPDATA%\Build Launcher\bot-otp\.env` au premier demarrage. Renseigner les secrets dans ce fichier sur le PC administrateur, puis redemarrer le launcher. Ce fichier reste dans le profil Windows et n'est jamais inclus dans l'installateur; ne pas le partager.
 
+Si le panneau OTP affiche une erreur de connexion, verifier que ce fichier contient les quatre valeurs requises et que le launcher a ete redemarre. Le port `PORT` du fichier est utilise automatiquement par le launcher. Les secrets ne sont volontairement pas embarques dans l'installateur.
+
 Le pseudo `admin` ouvre discretement le panneau OTP dans le login. Le launcher appelle `POST /otp/verify` avec `{ "pseudo": "admin", "code": "123456" }`. L'URL locale est definie dans `app/assets/js/adminotp.js`; pour la production, la remplacer par une URL HTTPS.
 
 Reponse acceptee : `{ "ok": true, "role": "admin" }`.

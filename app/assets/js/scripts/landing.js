@@ -30,6 +30,7 @@ const {
 // Internal Requirements
 //const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
+const NeoForge                = require('./assets/js/neoforge')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -563,7 +564,29 @@ async function dlAsync(login = true) {
         serv.rawServer.id
     )
 
-    const modLoaderData = await distributionIndexProcessor.loadModLoaderVersionJson(serv)
+    let modLoaderData
+    try {
+        if(NeoForge.isNeoForgeServer(serv)) {
+            modLoaderData = NeoForge.readVersionManifest(serv)
+            await NeoForge.downloadLibraries(modLoaderData, ConfigManager.getCommonDirectory(), (received, total) => {
+                if(total > 0) {
+                    setDownloadPercentage(Math.min(100, Math.trunc((received / total) * 100)))
+                }
+            })
+            setLaunchDetails('Installation des fichiers NeoForge...')
+            await NeoForge.installClient(
+                serv,
+                ConfigManager.getCommonDirectory(),
+                ConfigManager.getJavaExecutable(serv.rawServer.id)
+            )
+        } else {
+            modLoaderData = await distributionIndexProcessor.loadModLoaderVersionJson(serv)
+        }
+    } catch (err) {
+        loggerLaunchSuite.error('Unable to prepare NeoForge.', err)
+        showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), err.message || Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
+        return
+    }
     const versionData = await mojangIndexProcessor.getVersionJson()
 
     if(login) {

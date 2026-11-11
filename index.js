@@ -254,6 +254,20 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 let otpProcess
+let otpPort = 8787
+
+function readOtpPort(envContent) {
+    const configuredPort = process.env.PORT || envContent.match(/^\s*PORT\s*=\s*["']?(\d+)["']?\s*(?:#.*)?$/m)?.[1]
+    if(configuredPort == null) {
+        return 8787
+    }
+
+    const port = Number(configuredPort)
+    if(!Number.isInteger(port) || port < 1 || port > 65535) {
+        throw new Error('Invalid OTP PORT. Use a number between 1 and 65535.')
+    }
+    return port
+}
 
 async function startOtpService() {
     if(otpProcess) return
@@ -279,6 +293,7 @@ async function startOtpService() {
     }
 
     const envContent = fs.readFileSync(envPath, 'utf8')
+    otpPort = readOtpPort(envContent)
     const requiredEnv = ['DISCORD_BOT_TOKEN', 'DISCORD_CLIENT_ID', 'ADMIN_DISCORD_IDS', 'OTP_PEPPER']
     const missingEnv = requiredEnv.filter(name => !new RegExp(`^${name}=\\s*[^\\s#]+`, 'm').test(envContent))
     if(missingEnv.length > 0) {
@@ -287,7 +302,7 @@ async function startOtpService() {
     }
 
     try {
-        const response = await fetch('http://127.0.0.1:8787/health', {
+        const response = await fetch(`http://127.0.0.1:${otpPort}/health`, {
             signal: AbortSignal.timeout(1000)
         })
         if(response.ok) {
@@ -313,6 +328,7 @@ async function startOtpService() {
         cwd: serviceDirectory,
         env: {
             ...process.env,
+            PORT: String(otpPort),
             DOTENV_CONFIG_PATH: envPath,
             ...(app.isPackaged ? { ELECTRON_RUN_AS_NODE: '1' } : {})
         },
@@ -354,6 +370,7 @@ function createWindow() {
 
     const data = {
         bkid: Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)),
+        otpPort,
         lang: (str, placeHolders) => LangLoader.queryEJS(str, placeHolders)
     }
     Object.entries(data).forEach(([key, val]) => ejse.data(key, val))
