@@ -46,10 +46,149 @@ body, button {
     color: white;
 }
 
-/*body {
-    background: url('./../images/backgrounds/0.jpg') no-repeat center center fixed;
+/* Applique le background au body */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
     background-size: cover;
-}*/
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Style des lucioles */
+.firefly {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 0.4vw; /* Augmenter la taille pour une meilleure visibilité */
+    height: 0.4vw;
+    margin: -0.3vw 0 0 9.8vw;
+    pointer-events: none;
+    animation: ease 120s alternate infinite;
+    z-index: 100; /* S'assurer que les lucioles apparaissent devant le contenu */
+  }
+  
+  .firefly::before,
+  .firefly::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transform-origin: -10vw;
+  }
+  
+  .firefly::before {
+    background: black;
+    opacity: 0.5; /* Augmenter légèrement l'opacité */
+    animation: drift ease alternate infinite;
+  }
+  
+  .firefly::after {
+    background: white;
+    opacity: 0;
+    box-shadow: 0 0 1vw 0.3vw yellow; /* Augmenter la taille de l'effet lumineux */
+    animation: drift ease alternate infinite, flash ease infinite;
+  }
+  
+  /* Animation de rotation et scintillement */
+  @keyframes drift {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes flash {
+    0%, 30%, 100% {
+      opacity: 0;
+      box-shadow: 0 0 1vw 0.3vw yellow; /* Augmenter l'intensité lumineuse */
+    }
+    5% {
+      opacity: 1;
+      box-shadow: 0 0 2vw 0.5vw yellow; /* Augmenter l'effet au maximum de la brillance */
+    }
+  }
+  
+  /* Générer plusieurs lucioles manuellement */
+  .firefly:nth-child(1) {
+    animation-name: move1;
+    animation-duration: 10s;
+  }
+  
+  .firefly:nth-child(2) {
+    animation-name: move2;
+    animation-duration: 12s;
+  }
+  
+  .firefly:nth-child(3) {
+    animation-name: move3;
+    animation-duration: 15s;
+  }
+  
+  .firefly:nth-child(4) {
+    animation-name: move4;
+    animation-duration: 18s;
+  }
+  
+  .firefly:nth-child(5) {
+    animation-name: move5;
+    animation-duration: 20s;
+  }
+  
+  /* Ajouter autant de lucioles que nécessaire */
+  
+  /* Déplacement aléatoire des lucioles */
+  @keyframes move1 {
+    0% {
+      transform: translateX(-50vw) translateY(-40vh) scale(0.8);
+    }
+    100% {
+      transform: translateX(50vw) translateY(50vh) scale(1);
+    }
+  }
+  
+  @keyframes move2 {
+    0% {
+      transform: translateX(-60vw) translateY(-30vh) scale(0.9);
+    }
+    100% {
+      transform: translateX(40vw) translateY(60vh) scale(1.1);
+    }
+  }
+  
+  @keyframes move3 {
+    0% {
+      transform: translateX(70vw) translateY(20vh) scale(0.7);
+    }
+    100% {
+      transform: translateX(-70vw) translateY(-20vh) scale(1.3);
+    }
+  }
+  
+  @keyframes move4 {
+    0% {
+      transform: translateX(40vw) translateY(-50vh) scale(0.6);
+    }
+    100% {
+      transform: translateX(-40vw) translateY(40vh) scale(1.2);
+    }
+  }
+  
+  @keyframes move5 {
+    0% {
+      transform: translateX(-80vw) translateY(10vh) scale(0.7);
+    }
+    100% {
+      transform: translateX(80vw) translateY(-10vh) scale(1);
+    }
+  }
 
 /*******************************************************************************
  *                                                                             *
@@ -66,6 +205,7 @@ body, button {
     transition: background-color 1s ease;
     /*background-color: rgba(0, 0, 0, 0.5);*/
     -webkit-user-select: none;
+    user-select: none;
 }
 
 /* Undraggable region on the top of the frame. */
@@ -347,12 +487,14 @@ body, button {
 #welcomeButton:hover #welcomeSVG,
 #welcomeButton:focus #welcomeSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0px 2px #fff);
 }
 #welcomeButton:active #welcomeSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #welcomeButton:active #welcomeSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 #welcomeButton:disabled #welcomeSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -649,12 +791,14 @@ body, button {
 #loginButton:hover #loginSVG,
 #loginButton:focus #loginSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0px 2px #fff);
 }
 #loginButton:active #loginSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #loginButton:active #loginSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 #loginButton:disabled #loginSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -672,6 +816,65 @@ body, button {
 #loginButton[loading] .circle-loader,
 #loginButton #loginSVG {
     display: initial;
+}
+
+#adminOtpToggle,
+#adminOtpVerify {
+    background: none;
+    border: 0;
+    color: #aeb8c2;
+    cursor: pointer;
+    font-family: 'Avenir Medium';
+    font-size: 9px;
+    padding: 5px;
+}
+
+#adminOtpToggle:hover,
+#adminOtpToggle:focus,
+#adminOtpVerify:hover,
+#adminOtpVerify:focus {
+    color: #fff;
+    outline: none;
+}
+
+#adminOtpPanel {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+#adminOtpPanel[hidden],
+#loginButton[hidden] {
+    display: none !important;
+}
+
+#adminOtpInput {
+    background: none;
+    border: 1px solid #fff;
+    box-sizing: border-box;
+    color: #fff;
+    font-family: 'Avenir Book';
+    font-size: 11px;
+    letter-spacing: 3px;
+    padding: 6px;
+    text-align: center;
+    width: 130px;
+}
+
+#adminOtpInput:focus {
+    outline: none;
+}
+
+#adminOtpStatus {
+    display: block;
+    color: #aeb8c2;
+    font-size: 10px;
+    line-height: 1.4;
+    margin-top: 4px;
+    min-height: 16px;
+    text-align: center;
+    width: 250px;
 }
 
 
@@ -805,6 +1008,7 @@ body, button {
     cursor: pointer;
     font-size: 22px;
     -webkit-user-select: none;
+    user-select: none;
 }
 
 /* Hide the default checkbox. */
@@ -898,6 +1102,20 @@ body, button {
     width: 50%;
     top: -10%;
     position: relative;
+}
+
+#waitingCancelButton {
+    margin-top: 24px;
+    padding: 8px 18px;
+    color: white;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    cursor: pointer;
+}
+
+#waitingCancelButton:hover,
+#waitingCancelButton:focus {
+    background: rgba(255, 255, 255, 0.16);
 }
 
 .waitingSpinner:before {
@@ -1284,6 +1502,7 @@ body, button {
 /* Remove spin button from number inputs. */
 #settingsContainer input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;
+    appearance: none;
 }
 
 /* Default styles for text/number inputs. */
@@ -1598,6 +1817,7 @@ input:checked + .toggleSwitchSlider:before {
 .settingsAuthAccountDetailValue {
     font-size: 14px;
     -webkit-user-select: initial;
+    user-select: initial;
 }
 
 /* Account actions container. */
@@ -1705,15 +1925,13 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Mod elements sub-containers. */
 #settingsReqModsContainer,
-#settingsOptModsContainer,
-#settingsDropinModsContainer {
+#settingsOptModsContainer {
     padding-bottom: 25px;
 }
 
 /* Main content containers for mod elements. */
 #settingsReqModsContent,
-#settingsOptModsContent,
-#settingsDropinModsContent {
+#settingsOptModsContent {
     font-size: 12px;
     background: rgba(0, 0, 0, 0.25);
     border-radius: 3px;
@@ -1721,8 +1939,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* Mod elements. */
-.settingsMod,
-.settingsDropinMod {
+.settingsMod {
     padding: 10px;
 }
 .settingsSubMod {
@@ -1798,54 +2015,6 @@ input:checked + .toggleSwitchSlider:before {
 /* Wrapper container for all submods. */
 .settingsSubModContainer {
     margin-top: 10px;
-}
-
-/* Button to open the mods folder for drop-in mods. */
-#settingsDropinFileSystemButton {
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(126, 126, 126, 0.57);
-    border-radius: 3px;
-    height: 50px;
-    width: 100%;
-    text-align: left;
-    padding: 0px 50px;
-    cursor: pointer;
-    outline: none;
-    transition: 0.25s ease;
-    margin-bottom: 10px;
-}
-#settingsDropinFileSystemButton:hover,
-#settingsDropinFileSystemButton:focus,
-#settingsDropinFileSystemButton[drag] {
-    background: rgba(54, 54, 54, 0.25);
-    text-shadow: 0px 0px 20px white;
-}
-/* Refresh instructions on the file system button. */
-#settingsDropinRefreshNote {
-    font-size: 10px;
-    pointer-events: none;
-}
-
-/* Button to remove drop-in mods. */
-.settingsDropinRemoveButton {
-    background: none;
-    border: none;
-    font-size: 10px;
-    text-align: left;
-    padding: 0px;
-    color: #c32625;
-    font-weight: bold;
-    cursor: pointer;
-    outline: none;
-    transition: 0.25s ease;
-}
-.settingsDropinRemoveButton:hover,
-.settingsDropinRemoveButton:focus {
-    text-shadow: 0px 0px 20px #c32625, 0px 0px 20px #c32625, 0px 0px 20px #c32625;
-}
-.settingsDropinRemoveButton:active {
-    color: #9b1f1f;
-    text-shadow: 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f;
 }
 
 /* Shaderpack settings description. */
@@ -2522,6 +2691,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 100%;
     width: 33%;
     display: inline-flex;
+    justify-content: center;
 }
 
 /*******************************************************************************
@@ -2548,6 +2718,7 @@ input:checked + .toggleSwitchSlider:before {
     width: 100%;
     display: flex;
     -webkit-user-select: initial;
+    user-select: initial;
     position: relative;
 }
 
@@ -2751,6 +2922,7 @@ input:checked + .toggleSwitchSlider:before {
     align-items: center;
     margin-bottom: 10px;
     -webkit-user-select: none;
+    user-select: none;
     position: absolute;
     bottom: 15px;
     right: 0px;
@@ -2776,6 +2948,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsNavigateRight:hover #newsNavigationRightSVG,
 #newsNavigateRight:focus #newsNavigationRightSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0px 2px #fff);
 }
 #newsNavigateLeft:active #newsNavigationLeftSVG .arrowLine,
 #newsNavigateRight:active #newsNavigationRightSVG .arrowLine {
@@ -2784,6 +2957,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsNavigateLeft:active #newsNavigationLeftSVG,
 #newsNavigateRight:active #newsNavigationRightSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 #newsNavigateLeft:disabled #newsNavigationLeftSVG .arrowLine,
 #newsNavigateRight:disabled #newsNavigationRightSVG .arrowLine {
@@ -2855,26 +3029,55 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Logo image. */
 #image_seal {
-    height: 70px;
+    height: 315px;
     width: auto;
     position: relative;
-    border: 2px solid white;
-    box-sizing: border-box;
-    border-radius: 50%;
+    animation: pulse 5s infinite;
+    top: -32px;
 }
 
 /* Logo container styles. */
 #image_seal_container {
     position: relative;
     height: 70px;
-    width: 70px;
+    width: 140px;
     border-radius: 50%;
-    margin-top: 50px;
+    
+}
+
+/* Animation de pulsation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#image_seal_container:hover #image_seal {
+    transform: scale(1.1) rotate(5deg);
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Agrandir le logo lorsque la fenêtre est en grand */
+@media screen and (min-width: 1200px) {
+    #image_seal {
+        height: 470px; /* Ajustez la taille comme vous le souhaitez */
+    }
+
+    #image_seal_container {
+        height: 50px; /* Ajustez la taille du container */
+        width: 50px;
+    }
 }
 
 /* Logo container styles w/ update. */
 #image_seal_container[update]{
-    cursor: pointer
+    cursor: normal;
 }
 #image_seal_container[update]:before,
 #image_seal_container[update]:after {
@@ -2997,6 +3200,7 @@ input:checked + .toggleSwitchSlider:before {
     letter-spacing: 2px;
     background-color: rgba(0, 0, 0, 0.35);
     -webkit-user-select: none;
+    user-select: none;
     border: none;
     cursor: pointer;
     width: 100%;
@@ -3022,6 +3226,95 @@ input:checked + .toggleSwitchSlider:before {
     right: 95px;
     text-align: right;
     -webkit-user-select: initial;
+    user-select: initial;
+}
+
+/* Texte supplémentaire sous le pseudo */
+#user_subtext {
+    font-size: 12px; /* Taille légèrement plus petite */
+    min-width: 135px;
+    font-weight: normal; /* Texte sans gras */
+    letter-spacing: 0.5px; /* Espacement des lettres */
+    text-shadow: 0px 0px 15px black;
+    position: absolute;
+    right: 95px; /* Aligner avec #user_text */
+    text-align: right;
+    margin-top: 33px; /* Espace entre le pseudo et le texte */
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.status-dot {
+    display: inline-block; /* Permet de créer une boîte de taille précise */
+    width: 8px; /* Largeur du point */
+    height: 8px; /* Hauteur du point */
+    background-color: rgb(124, 252, 0); /* Couleur du point (vert) */
+    border-radius: 50%; /* Rend le point circulaire */
+    margin-left: 5px; /* Espace entre le texte "Online" et le point */
+    box-shadow: 0px 0px 5px rgb(124, 252, 0); /* Effet lumineux pour le point */
+    vertical-align: text; /* Ajuster pour mieux aligner avec le texte */
+    position: relative; /* Position relative pour des ajustements fins */
+    top: -1px; /* Ajustement pour remonter légèrement le point */
+}
+
+/* Update icon next to username. */
+#updateIconContainer {
+    display: none;
+    cursor: pointer;
+    z-index: 10;
+    margin-right: 12px;
+    vertical-align: middle;
+    position: relative;
+}
+#updateIconSVG {
+    width: 22px;
+    height: 22px;
+    fill: #4ade80;
+    filter: drop-shadow(0px 0px 6px rgba(74, 222, 128, 0.6));
+    transition: 0.25s ease;
+    animation: updatePulse 2s ease-in-out infinite;
+}
+#updateIconSVG:hover {
+    fill: #86efac;
+    filter: drop-shadow(0px 0px 10px rgba(74, 222, 128, 0.9));
+    transform: scale(1.2);
+}
+#updateTooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: 100px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.75);
+    text-align: center;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 1;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    line-height: 20px;
+    white-space: nowrap;
+    transition: visibility 0s linear 0.25s, opacity 0.25s ease;
+}
+#updateTooltip::after {
+    content: " ";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.75) transparent transparent transparent;
+}
+#updateIconContainer:hover #updateTooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+@keyframes updatePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
 }
 
 /* Social media icon content container. */
@@ -3060,16 +3353,16 @@ input:checked + .toggleSwitchSlider:before {
 /* Social media icon shared styles. */
 .mediaSVG {
     fill: #ffffff;
-    height: 12px;
+    height: 16px;
     transition: 0.25s ease;
     cursor: pointer;
-    height: 12px;
-    width: 25px;
+    height: 16px;
+    width: 33px;
 }
 .mediaSVG:hover,
 .mediaURL:focus .mediaSVG,
 .mediaSVG:active {
-    height: 20px;
+    height: 26px;
 }
 
 /* Social media URL shared styles. */
@@ -3094,12 +3387,12 @@ input:checked + .toggleSwitchSlider:before {
 /* Settings icon colors. */
 #settingsSVG {
     stroke: #ffffff;
-    height: 15px;
+    height: 20px;
 }
 .mediaButton:hover #settingsSVG,
 .mediaButton:focus #settingsSVG,
 .mediaButton:active #settingsSVG {
-    height: 23px;
+    height: 30px;
 }
 
 /* Settings tooltip styles. */
@@ -3136,13 +3429,13 @@ input:checked + .toggleSwitchSlider:before {
     transition-delay:0s;
 }
 
-/* X icon colors. */
-#xSVG:hover,
-#xURL:focus #xSVG {
-    fill: #000000;
+/* Twitter icon colors. */
+#twitterSVG:hover,
+#twitterURL:focus #twitterSVG {
+    fill: #1da1f2;
 }
-#xSVG:active {
-    fill: #090909;
+#twitterSVG:active {
+    fill: #1b8dd4;
 }
 
 /* Instagram icon colors. */
@@ -3203,13 +3496,13 @@ input:checked + .toggleSwitchSlider:before {
 /* Maintains maximum width on the status bar. */
 #server_status_wrapper {
     display: inline-flex;
-    width: 75px;
+    width: 98px;
 }
 
 /* Span which displays the player count of the selected server. */
 #player_count {
     color: #949494;
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 900;
     text-shadow: 0px 0px 20px #949494;
     margin-left: 10px;
@@ -3341,12 +3634,14 @@ input:checked + .toggleSwitchSlider:before {
 #newsButton:hover #newsButtonSVG,
 #newsButton:focus #newsButtonSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #fff);
+    filter: drop-shadow(0px 0px 2px #fff);
 }
 #newsButton:active #newsButtonSVG .arrowLine {
     stroke: #c7c7c7;
 }
 #newsButton:active #newsButtonSVG {
     -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+    filter: drop-shadow(0px 0px 2px #c7c7c7);
 }
 #newsButton:disabled #newsButtonSVG .arrowLine {
     stroke: rgba(255, 255, 255, 0.75);
@@ -3365,7 +3660,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Arrow image which floats above the news button. */
 #newsButtonSVG {
-    height: 11px;
+    height: 14px;
     margin-left: -2px;
     transition: 0.25s ease;
 }
@@ -3376,8 +3671,8 @@ input:checked + .toggleSwitchSlider:before {
     font-weight: 900;
     letter-spacing: 2px;
     text-shadow: 0px 0px 0px #bebcbb;
-    font-size: 11px;
-    line-height: 30px;
+    font-size: 14px;
+    line-height: 39px;
     display: flex;
     transition: 0.25s ease;
 }
@@ -3391,33 +3686,45 @@ input:checked + .toggleSwitchSlider:before {
     position: relative;
     top: 25px;
     display: inline-flex;
+    align-items: center;
 }
 
 /* The launch button. */
 #launch_button {
-    background: none;
+    background: #fed045;
     border: none;
     cursor: pointer;
     font-weight: 900;
     letter-spacing: 2px;
-    text-shadow: 0px 0px 0px #bebcbb;
-    font-size: 20px;
-    padding: 0px;
-    transition: 0.25s ease;
+    color: #1a1a1a;
+    text-shadow: none;
+    font-size: 16px;
+    padding: 8px 30px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 15px rgba(254, 208, 69, 0.4);
+    transition: all 0.25s ease;
     outline: none;
 }
 #launch_button:hover,
 #launch_button:focus {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
+    background: #ffe066;
+    box-shadow: 0px 6px 25px rgba(254, 208, 69, 0.6);
+    transform: translateY(-2px);
+    text-shadow: none;
 }
 #launch_button:active {
-    color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    background: #d4a017;
+    color: #1a1a1a;
+    box-shadow: 0px 2px 8px rgba(254, 208, 69, 0.3);
+    transform: translateY(1px);
+    text-shadow: none;
 }
 #launch_button:disabled {
-    color: #c7c7c7;
+    background: #8a8a6a;
+    color: #555;
     cursor: default;
     pointer-events: none;
+    box-shadow: none;
 }
 
 /* Launch details main container, hidden until launch processing begins. */
@@ -3425,21 +3732,32 @@ input:checked + .toggleSwitchSlider:before {
     position: relative;
     top: 25px;
     display: none;
+    background: #fed045;
+    border-radius: 20px;
+    padding: 8px 20px;
+    box-shadow: 0px 4px 15px rgba(254, 208, 69, 0.4);
+    align-items: center;
+    gap: 10px;
 }
- 
+#launch_details .bot_divider {
+    display: none;
+}
+
 /* Left side of launch details container, displays percentage and a divider. */
 #launch_details_left {
     display: flex;
+    align-items: center;
 }
 
 /* Span which displays percentage complete. */
 #launch_progress_label {
     font-weight: 900;
     letter-spacing: 1px;
-    text-shadow: 0px 0px 0px #bebcbb;
-    font-size: 20px;
-    min-width: 53.21px;
-    max-width: 53.21px;
+    color: #1a1a1a;
+    text-shadow: none;
+    font-size: 14px;
+    min-width: 40px;
+    max-width: 40px;
     text-align: right;
 }
 
@@ -3456,9 +3774,11 @@ input:checked + .toggleSwitchSlider:before {
     border: none;
     outline: none;
     cursor: pointer;
-    line-height: 24px;
+    line-height: 20px;
     padding: 0px;
     transition: 0.25s ease;
+    font-size: 9px;
+    white-space: nowrap;
 }
 #server_selection_button:hover,
 #server_selection_button:focus {
@@ -3472,19 +3792,24 @@ input:checked + .toggleSwitchSlider:before {
 /* Progress bar styles. */
 #launch_progress[value] {
     height: 3px;
-    width: 265px;
+    width: 150px;
     -webkit-appearance: none;
+    appearance: none;
+    border-radius: 3px;
 }
 #launch_progress[value]::-webkit-progress-bar {
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
 }
 #launch_progress[value]::-webkit-progress-value {
-    background-color: #fff;
+    background-color: #1a1a1a;
+    border-radius: 3px;
 }
 
 /* Span which displays information about the status of the launch process. */
 #launch_details_text {
-    font-size: 11px;
+    font-size: 9px;
+    color: #1a1a1a;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -3562,6 +3887,7 @@ input:checked + .toggleSwitchSlider:before {
     font-weight: bold;
     letter-spacing: 1px;
     -webkit-user-select: initial;
+    user-select: initial;
 }
 
 /* Overlay description styles. */
@@ -3569,6 +3895,7 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 12px;
     font-weight: bold;
     -webkit-user-select: initial;
+    user-select: initial;
 }
 
 /* Div which contains action buttons. */

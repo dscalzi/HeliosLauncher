@@ -276,7 +276,7 @@ async function populateServerListings(){
         htmlString += `<button class="serverListing" servid="${serv.rawServer.id}" ${serv.rawServer.id === giaSel ? 'selected' : ''}>
             <img class="serverListingImg" src="${serv.rawServer.icon}"/>
             <div class="serverListingDetails">
-                <span class="serverListingName">${serv.rawServer.name}</span>
+                <span class="serverListingName">${window.ServerUtils.getServerDisplayName(serv)}${window.ServerUtils.isModdedServer(serv) ? ' (Moddé)' : ''}</span>
                 <span class="serverListingDescription">${serv.rawServer.description}</span>
                 <div class="serverListingInfo">
                     <div class="serverListingVersion">${serv.rawServer.minecraftVersion}</div>
@@ -305,7 +305,7 @@ function populateAccountListings(){
     let htmlString = ''
     for(let i=0; i<accounts.length; i++){
         htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${i===0 ? 'selected' : ''}>
-            <img src="https://mc-heads.net/head/${accounts[i].uuid}/40">
+            <img src="https://mc-heads.net/head/${acc.displayName}/40">
             <div class="accountListingName">${accounts[i].displayName}</div>
         </button>`
     }

@@ -1,18 +1,19 @@
 {
-  "name": "helioslauncher",
-  "version": "2.2.1",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "name": "buildlauncher",
+  "version": "1.3.1",
+  "productName": "BuildLauncher",
+  "description": "Minecraft launcher",
+  "author": "Build Game Launcher",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/Kylan-DevMc/BuildLauncher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/Kylan-DevMc/BuildLauncher/issues"
   },
   "private": true,
   "main": "index.js",
   "scripts": {
     "start": "electron .",
+    "predist": "npm ci --prefix bot-otp && node scripts/stage-otp.js",
     "dist": "electron-builder build",
     "dist:win": "npm run dist -- -w",
     "dist:mac": "npm run dist -- -m",
@@ -47,6 +48,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/Kylan-DevMc/BuildLauncher.git"
   }
 }

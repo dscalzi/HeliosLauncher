@@ -1,6 +1,8 @@
 /node_modules/
+/.electron-cache/
 /.vs/
 /.vscode/
 /target/
 /logs/
 /dist/
+/build/otp-runtime/

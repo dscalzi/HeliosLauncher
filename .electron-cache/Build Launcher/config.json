@@ -1,0 +1,26 @@
+{
+    "settings": {
+        "game": {
+            "resWidth": 1280,
+            "resHeight": 720,
+            "fullscreen": false,
+            "autoConnect": true,
+            "launchDetached": true
+        },
+        "launcher": {
+            "allowPrerelease": false,
+            "dataDirectory": "C:\\Users\\kylan\\AppData\\Roaming\\.builauncher"
+        }
+    },
+    "newsCache": {
+        "date": null,
+        "content": null,
+        "dismissed": false
+    },
+    "clientToken": null,
+    "selectedServer": "BuildLauncher-1.21.1",
+    "selectedAccount": null,
+    "authenticationDatabase": {},
+    "modConfigurations": [],
+    "javaConfig": {}
+}

@@ -3,7 +3,6 @@
         <div id="left">
             <div id="image_seal_container">
                 <img id="image_seal" src="assets/images/SealCircle.png"/>
-                <div id="updateAvailableTooltip"><%- lang('landing.updateAvailableTooltip') %></div>
             </div>
         </div>
         <div id="content">
@@ -11,7 +10,8 @@
         <div id="right">
             <div id="rightContainer">
                 <div id="user_content">
-                    <span id="user_text"><%- lang('landing.usernamePlaceholder') %></span>
+                    <span id="user_text"><span id="updateIconContainer" style="display: none;"><svg id="updateIconSVG" viewBox="0 0 512 512"><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></svg><div id="updateTooltip">Mettre à jour</div></span><%- lang('landing.usernamePlaceholder') %></span>
+                    <span id="user_subtext"><span class="status-dot"></span> Online</span> <!-- Texte ajouté -->
                     <div id="avatarContainer">
                         <button id="avatarOverlay"><%- lang('landing.usernameEditButton') %></button>
                     </div>
@@ -40,15 +40,6 @@
                             </a>
                         </div>
                         <div class="mediaContainer">
-                            <a href="<%- lang('landing.mediaXURL') %>" class="mediaURL" id="xURL">
-                                <svg id="xSVG" class="mediaSVG" viewBox="0 0 275 275">
-                                    <g>
-                                        <path d="m236 0h46l-101 115 118 156h-92.6l-72.5-94.8-83 94.8h-46l107-123-113-148h94.9l65.5 86.6zm-16.1 244h25.5l-165-218h-27.4z"/>
-                                    </g>
-                                </svg>
-                            </a>
-                        </div>
-                        <div class="mediaContainer">
                             <a href="<%- lang('landing.mediaInstagramURL') %>" class="mediaURL" id="instagramURL">
                                 <svg id="instagramSVG" class="mediaSVG" viewBox="0 0 5040 5040">
                                     <defs>
@@ -64,15 +55,6 @@
                                         <path d="M1390 5024 c-163 -9 -239 -19 -315 -38 -281 -70 -477 -177 -660 -361 -184 -184 -292 -380 -361 -660 -43 -171 -53 -456 -53 -1445 0 -989 10 -1274 53 -1445 69 -280 177 -476 361 -660 184 -184 380 -292 660 -361 171 -43 456 -53 1445 -53 989 0 1274 10 1445 53 280 69 476 177 660 361 184 184 292 380 361 660 43 171 53 456 53 1445 0 989 -10 1274 -53 1445 -69 280 -177 476 -361 660 -184 184 -380 292 -660 361 -174 44 -454 53 -1470 52 -599 0 -960 -5 -1105 -14z m2230 -473 c58 -6 141 -18 185 -27 397 -78 638 -318 719 -714 37 -183 41 -309 41 -1290 0 -981 -4 -1107 -41 -1290 -81 -395 -319 -633 -714 -714 -183 -37 -309 -41 -1290 -41 -981 0 -1107 4 -1290 41 -397 81 -636 322 -714 719 -33 166 -38 296 -43 1100 -5 796 3 1203 27 1380 67 489 338 758 830 825 47 7 162 15 255 20 250 12 1907 4 2035 -9z"/>
                                         <path d="M2355 3819 c-307 -42 -561 -172 -780 -400 -244 -253 -359 -543 -359 -899 0 -361 116 -648 367 -907 262 -269 563 -397 937 -397 374 0 675 128 937 397 251 259 367 546 367 907 0 361 -116 648 -367 907 -197 203 -422 326 -690 378 -101 20 -317 27 -412 14z m400 -509 c275 -88 470 -284 557 -560 20 -65 23 -95 23 -230 0 -135 -3 -165 -23 -230 -88 -278 -284 -474 -562 -562 -65 -20 -95 -23 -230 -23 -135 0 -165 3 -230 23 -278 88 -474 284 -562 562 -20 65 -23 95 -23 230 0 135 3 165 23 230 73 230 219 403 427 507 134 67 212 83 390 79 111 -3 155 -8 210 -26z"/>
                                         <path d="M3750 1473 c-29 -11 -66 -38 -106 -77 -70 -71 -94 -126 -94 -221 0 -95 24 -150 94 -221 72 -71 126 -94 225 -94 168 0 311 143 311 311 0 99 -23 154 -94 225 -43 42 -76 66 -110 77 -61 21 -166 21 -226 0z"/>
-                                    </g>
-                                </svg>
-                            </a>
-                        </div>
-                        <div class="mediaContainer">
-                            <a href="<%- lang('landing.mediaYouTubeURL') %>" class="mediaURL" id="youtubeURL">
-                                <svg id="youtubeSVG" class="mediaSVG" viewBox="35.34 34.3575 70.68 68.71500">
-                                    <g>
-                                        <path d="M84.8,69.52,65.88,79.76V59.27Zm23.65.59c0-5.14-.79-17.63-3.94-20.57S99,45.86,73.37,45.86s-28,.73-31.14,3.68S38.29,65,38.29,70.11s.79,17.63,3.94,20.57,5.52,3.68,31.14,3.68,28-.74,31.14-3.68,3.94-15.42,3.94-20.57"/>
                                     </g>
                                 </svg>
                             </a>
@@ -96,11 +78,10 @@
             <div class="bot_wrapper">
                 <div id="content">
                     <div id="server_status_wrapper">
-                        <span class="bot_label" id="landingPlayerLabel"><%- lang('landing.serverStatus') %></span>
+                        <span style="color: rgb(165, 195, 37);">•</span>&nbsp;<span class="bot_label" id="landingPlayerLabel"><%- lang('landing.serverStatus') %></span>
                         <span id="player_count"><%- lang('landing.serverStatusPlaceholder') %></span>
                     </div>
-                    <div class="bot_divider"></div>
-                    <div id="mojangStatusWrapper">
+                    <div id="mojangStatusWrapper" style="display: none;">
                         <span class="bot_label"><%- lang('landing.mojangStatus') %></span>
                         <span id="mojang_status_icon">&#8226;</span>
                         <div id="mojangStatusTooltip">

@@ -1,6 +1,11 @@
-appId: 'helioslauncher'
-productName: 'Helios Launcher'
-artifactName: '${productName}-setup-${version}.${ext}'
+appId: 'buildlauncher'
+productName: 'Build Launcher'
+artifactName: 'Build-Launcher-setup-${version}.${ext}'
+
+publish:
+  provider: github
+  owner: Kylan-DevMc
+  repo: BuildLauncher
 
 copyright: 'Copyright © 2018-2026 Daniel Scalzi'
 
@@ -9,9 +14,15 @@ compression: 'maximum'
 
 files:
   - '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.nvmrc,eslint.config.mjs}'
+  - '!bot-otp/**'
 
 extraResources:
   - 'libraries'
+  - from: 'build/otp-runtime'
+    to: 'bot-otp'
+    filter:
+      - '.env.example'
+      - 'bot-otp-runtime.zip'
 
 # Windows Configuration
 win: 
@@ -33,7 +44,7 @@ mac:
       arch:
         - 'x64'
         - 'arm64'
-  artifactName: '${productName}-setup-${version}-${arch}.${ext}'
+  artifactName: 'Build-Launcher-setup-${version}-${arch}.${ext}'
   category: 'public.app-category.games'
 
 # Linux Configuration

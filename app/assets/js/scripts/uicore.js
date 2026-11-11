@@ -20,6 +20,7 @@ process.traceProcessWarnings = true
 process.traceDeprecation = true
 
 // Disable eval function.
+// eslint-disable-next-line
 window.eval = global.eval = function () {
     throw new Error('Sorry, this app does not support window.eval().')
 }
@@ -42,13 +43,20 @@ if(!isDev){
         switch(arg){
             case 'checking-for-update':
                 loggerAutoUpdater.info('Checking for update..')
+                if (typeof settingsUpdateTitle !== 'undefined') {
+                    settingsUpdateTitle.innerHTML = Lang.queryJS('settings.updates.checkingForUpdatesButton')
+                }
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkingForUpdateButton'), true)
                 break
             case 'update-available':
                 loggerAutoUpdater.info('New update available', info.version)
                 
                 if(process.platform === 'darwin'){
-                    info.darwindownload = `https://github.com/dscalzi/HeliosLauncher/releases/download/v${info.version}/Helios-Launcher-setup-${info.version}${process.arch === 'arm64' ? '-arm64' : '-x64'}.dmg`
+                    const architecture = process.arch === 'arm64' ? 'arm64' : 'x64'
+                    const macInstaller = info.files?.find(file => file.url.endsWith(`-${architecture}.dmg`))
+                    info.darwindownload = macInstaller
+                        ? `https://github.com/Kylan-DevMc/BuildLauncher/releases/download/v${info.version}/${encodeURIComponent(macInstaller.url)}`
+                        : `https://github.com/Kylan-DevMc/BuildLauncher/releases/tag/v${info.version}`
                     showUpdateUI(info)
                 }
                 
@@ -65,24 +73,30 @@ if(!isDev){
                 break
             case 'update-not-available':
                 loggerAutoUpdater.info('No new update found.')
+                if (typeof settingsUpdateTitle !== 'undefined') {
+                    settingsUpdateTitle.innerHTML = Lang.queryJS('settings.updates.latestVersionTitle')
+                }
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'))
                 break
             case 'ready':
+                if(updateCheckListener) {
+                    clearInterval(updateCheckListener)
+                }
                 updateCheckListener = setInterval(() => {
                     ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                 }, 1800000)
                 ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                 break
             case 'realerror':
-                if(info != null && info.code != null){
-                    if(info.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
-                        loggerAutoUpdater.info('No suitable releases found.')
-                    } else if(info.code === 'ERR_XML_MISSED_ELEMENT'){
-                        loggerAutoUpdater.info('No releases found.')
-                    } else {
-                        loggerAutoUpdater.error('Error during update check..', info)
-                        loggerAutoUpdater.debug('Error Code:', info.code)
-                    }
+                loggerAutoUpdater.error('Error during update check..', info)
+                if(info?.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
+                    loggerAutoUpdater.info('No suitable releases found.')
+                } else if(info?.code === 'ERR_XML_MISSED_ELEMENT'){
+                    loggerAutoUpdater.info('No releases found.')
+                }
+                if(typeof settingsUpdateTitle !== 'undefined') {
+                    settingsUpdateTitle.innerHTML = Lang.queryJS('settings.updates.errorTitle')
+                    settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'))
                 }
                 break
             default:
@@ -106,21 +120,8 @@ function changeAllowPrerelease(val){
 
 function showUpdateUI(info){
     //TODO Make this message a bit more informative `${info.version}`
-    document.getElementById('image_seal_container').setAttribute('update', true)
-    document.getElementById('image_seal_container').onclick = () => {
-        /*setOverlayContent('Update Available', 'A new update for the launcher is available. Would you like to install now?', 'Install', 'Later')
-        setOverlayHandler(() => {
-            if(!isDev){
-                ipcRenderer.send('autoUpdateAction', 'installUpdateNow')
-            } else {
-                console.error('Cannot install updates in development environment.')
-                toggleOverlay(false)
-            }
-        })
-        setDismissHandler(() => {
-            toggleOverlay(false)
-        })
-        toggleOverlay(true, true)*/
+    document.getElementById('updateIconContainer').style.display = 'inline'
+    document.getElementById('updateIconContainer').onclick = () => {
         switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
             settingsNavItemListener(document.getElementById('settingsNavUpdate'), false)
         })

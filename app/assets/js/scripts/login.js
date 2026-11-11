@@ -4,6 +4,7 @@
 // Validation Regexes.
 const validUsername         = /^[a-zA-Z0-9_]{1,16}$/
 const basicEmail            = /^\S+@\S+\.\S+$/
+const { isDisplayableError: isLoginDisplayableError } = require('helios-core/common')
 //const validEmail          = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 
 // Login Elements
@@ -17,6 +18,7 @@ const checkmarkContainer    = document.getElementById('checkmarkContainer')
 const loginRememberOption   = document.getElementById('loginRememberOption')
 const loginButton           = document.getElementById('loginButton')
 const loginForm             = document.getElementById('loginForm')
+const restrictedAdminPseudos = new Set(['kylanmc0001', 'matteo'])
 
 // Control variables.
 let lu = false, lp = false
@@ -47,22 +49,20 @@ function shakeError(element){
 }
 
 /**
- * Validate that an email field is neither empty nor invalid.
- * 
- * @param {string} value The email value.
+ * Validate that an email or username field is neither empty nor invalid.
+ *
+ * @param {string} value The email or username value.
  */
 function validateEmail(value){
     if(value){
-        if(!basicEmail.test(value) && !validUsername.test(value)){
+        if(!validUsername.test(value)){
             showError(loginEmailError, Lang.queryJS('login.error.invalidValue'))
             loginDisabled(true)
             lu = false
         } else {
             loginEmailError.style.opacity = 0
             lu = true
-            if(lp){
-                loginDisabled(false)
-            }
+            loginDisabled(false)  // Activer directement le bouton Continuer
         }
     } else {
         lu = false
@@ -73,7 +73,7 @@ function validateEmail(value){
 
 /**
  * Validate that the password field is not empty.
- * 
+ *
  * @param {string} value The password value.
  */
 function validatePassword(value){
@@ -95,17 +95,10 @@ loginUsername.addEventListener('focusout', (e) => {
     validateEmail(e.target.value)
     shakeError(loginEmailError)
 })
-loginPassword.addEventListener('focusout', (e) => {
-    validatePassword(e.target.value)
-    shakeError(loginPasswordError)
-})
 
 // Validate input for each field.
 loginUsername.addEventListener('input', (e) => {
     validateEmail(e.target.value)
-})
-loginPassword.addEventListener('input', (e) => {
-    validatePassword(e.target.value)
 })
 
 /**
@@ -143,7 +136,7 @@ function formDisabled(v){
     loginDisabled(v)
     loginCancelButton.disabled = v
     loginUsername.disabled = v
-    loginPassword.disabled = v
+    loginPassword.style.display = 'none';
     if(v){
         checkmarkContainer.setAttribute('disabled', v)
     } else {
@@ -176,11 +169,25 @@ loginCancelButton.onclick = (e) => {
     })
 }
 
+function isRestrictedAdminPseudo(value) {
+    return restrictedAdminPseudos.has(value.trim().toLowerCase())
+}
+
 // Disable default form behavior.
-loginForm.onsubmit = () => { return false }
+loginForm.onsubmit = () => {
+    if(isRestrictedAdminPseudo(loginUsername.value) && window.adminSession?.role !== 'admin') {
+        window.dispatchEvent(new CustomEvent('adminOtpRequired'))
+    }
+    return false
+}
 
 // Bind login button behavior.
 loginButton.addEventListener('click', () => {
+    if(isRestrictedAdminPseudo(loginUsername.value) && window.adminSession?.role !== 'admin') {
+        window.dispatchEvent(new CustomEvent('adminOtpRequired'))
+        return
+    }
+
     // Disable form.
     formDisabled(true)
 
@@ -214,7 +221,7 @@ loginButton.addEventListener('click', () => {
         loginLoading(false)
 
         let actualDisplayableError
-        if(isDisplayableError(displayableError)) {
+        if(isLoginDisplayableError(displayableError)) {
             msftLoginLogger.error('Error while logging in.', displayableError)
             actualDisplayableError = displayableError
         } else {

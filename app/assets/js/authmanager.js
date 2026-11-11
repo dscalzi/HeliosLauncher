@@ -139,31 +139,42 @@ function mojangErrorDisplayable(errorCode) {
  * @param {string} password The account password.
  * @returns {Promise.<Object>} Promise which resolves the resolved authenticated account object.
  */
+
+function generateHexUUID() {
+    const characters = 'abcdef0123456789';
+    let result = '';
+    for (let i = 0; i < 32; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+
 exports.addMojangAccount = async function(username, password) {
     try {
-        const response = await MojangRestAPI.authenticate(username, password, ConfigManager.getClientToken())
-        console.log(response)
-        if(response.responseStatus === RestResponseStatus.SUCCESS) {
+        const normalizedUsername = username.trim().toLowerCase()
+        const existingAccount = Object.values(ConfigManager.getAuthAccounts()).find(account =>
+            account.type === 'mojang' && account.displayName.toLowerCase() === normalizedUsername
+        )
+        if(existingAccount != null) {
+            ConfigManager.setSelectedAccount(existingAccount.uuid)
+            ConfigManager.save()
+            return existingAccount
+        }
 
-            const session = response.data
-            if(session.selectedProfile != null){
-                const ret = ConfigManager.addMojangAuthAccount(session.selectedProfile.id, session.accessToken, username, session.selectedProfile.name)
-                if(ConfigManager.getClientToken() == null){
-                    ConfigManager.setClientToken(session.clientToken)
-                }
-                ConfigManager.save()
-                return ret
-            } else {
-                return Promise.reject(mojangErrorDisplayable(MojangErrorCode.ERROR_NOT_PAID))
-            }
+        const uuid = generateHexUUID(); // Générer un UUID personnalisé
 
-        } else {
-            return Promise.reject(mojangErrorDisplayable(response.mojangErrorCode))
+        const ret = ConfigManager.addMojangAuthAccount(uuid, 'sry', username, username);
+        
+        if (ConfigManager.getClientToken() == null) {
+            ConfigManager.setClientToken('sry');
         }
         
-    } catch (err){
-        log.error(err)
-        return Promise.reject(mojangErrorDisplayable(MojangErrorCode.UNKNOWN))
+        ConfigManager.save();
+        return ret;
+        
+    } catch (err) {
+        log.error(err);
+        return Promise.reject(mojangErrorDisplayable(MojangErrorCode.UNKNOWN));
     }
 }
 
@@ -273,23 +284,20 @@ exports.addMicrosoftAccount = async function(authCode) {
  * @param {string} uuid The UUID of the account to be removed.
  * @returns {Promise.<void>} Promise which resolves to void when the action is complete.
  */
-exports.removeMojangAccount = async function(uuid){
+exports.removeMojangAccount = async function(uuid, callback){
     try {
-        const authAcc = ConfigManager.getAuthAccount(uuid)
-        const response = await MojangRestAPI.invalidate(authAcc.accessToken, ConfigManager.getClientToken())
-        if(response.responseStatus === RestResponseStatus.SUCCESS) {
-            ConfigManager.removeAuthAccount(uuid)
-            ConfigManager.save()
-            return Promise.resolve()
-        } else {
-            log.error('Error while removing account', response.error)
-            return Promise.reject(response.error)
+        ConfigManager.removeAuthAccount(uuid);
+        ConfigManager.save();
+        if (callback) {
+            callback();  // Appeler le callback après la suppression
         }
+        return Promise.resolve();
     } catch (err){
-        log.error('Error while removing account', err)
-        return Promise.reject(err)
+        log.error('Error while removing account', err);
+        return Promise.reject(err);
     }
 }
+
 
 /**
  * Remove a Microsoft account. It is expected that the caller will invoke the OAuth logout
@@ -317,31 +325,25 @@ exports.removeMicrosoftAccount = async function(uuid){
  * @returns {Promise.<boolean>} Promise which resolves to true if the access token is valid,
  * otherwise false.
  */
-async function validateSelectedMojangAccount(){
+async function validateSelectedMojangAccount() {
     const current = ConfigManager.getSelectedAccount()
-    const response = await MojangRestAPI.validate(current.accessToken, ConfigManager.getClientToken())
 
-    if(response.responseStatus === RestResponseStatus.SUCCESS) {
-        const isValid = response.data
-        if(!isValid){
-            const refreshResponse = await MojangRestAPI.refresh(current.accessToken, ConfigManager.getClientToken())
-            if(refreshResponse.responseStatus === RestResponseStatus.SUCCESS) {
-                const session = refreshResponse.data
-                ConfigManager.updateMojangAuthAccount(current.uuid, session.accessToken)
-                ConfigManager.save()
-            } else {
-                log.error('Error while validating selected profile:', refreshResponse.error)
-                log.info('Account access token is invalid.')
-                return false
-            }
+    try {
+        // Essai de validation du token
+        const response = await MojangRestAPI.validate(current.accessToken, ConfigManager.getClientToken())
+
+        if (response.responseStatus === RestResponseStatus.SUCCESS && response.data) {
             log.info('Account access token validated.')
             return true
         } else {
-            log.info('Account access token validated.')
-            return true
+            log.warn('Access token invalid or validation failed. Skipping...')
+            return true // Toujours considérer le compte comme valide
         }
+    } catch (error) {
+        log.error('Error while validating selected profile:', error)
+        log.warn('Forcing account as valid.')
+        return true // Toujours forcer comme valide en cas d'erreur
     }
-    
 }
 
 /**
@@ -382,7 +384,7 @@ async function validateSelectedMicrosoftAccount(){
             )
             ConfigManager.save()
             return true
-        } catch(_err) {
+        } catch(err) {
             return false
         }
     } else {
@@ -401,7 +403,7 @@ async function validateSelectedMicrosoftAccount(){
             ConfigManager.save()
             return true
         }
-        catch(_err) {
+        catch(err) {
             return false
         }
     }

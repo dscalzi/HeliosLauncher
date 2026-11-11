@@ -1,21 +1,40 @@
 name: Build
 
-on: push
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Tag a publier, par exemple v1.2.4
+        required: true
+        type: string
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
 
 jobs:
-  release:
+  build:
     runs-on: ${{ matrix.os }}
 
-    permissions:
-      contents: write
-
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.release_tag || github.ref }}
+
+      - name: Verify release tag version
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+        run: |
+          node -e "const version = require('./package.json').version; if (process.env.RELEASE_TAG !== 'v' + version) throw new Error('Release tag must match package.json version: v' + version)"
+        shell: bash
 
       - name: Set up Node
         uses: actions/setup-node@v6
@@ -31,8 +50,42 @@ jobs:
         run: npm ci
         shell: bash
 
-      - name: Build
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run dist
+      - name: Build platform artifacts and update metadata
+        run: npm run dist -- --publish=never
         shell: bash
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}
+          path: |
+            dist/Build-Launcher-setup-*.exe
+            dist/Build-Launcher-setup-*.AppImage
+            dist/Build-Launcher-setup-*.dmg
+            dist/latest*.yml
+            dist/Build-Launcher-setup-*.blockmap
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.release_tag || github.ref_name }}
+          generate_release_notes: true
+          files: |
+            release-assets/**/Build-Launcher-setup-*.exe
+            release-assets/**/Build-Launcher-setup-*.AppImage
+            release-assets/**/Build-Launcher-setup-*.dmg
+            release-assets/**/latest*.yml
+            release-assets/**/Build-Launcher-setup-*.blockmap

@@ -126,6 +126,18 @@ Builds for macOS may not work on Windows/Linux and vice-versa.
 
 ---
 
+### Publish a Launcher Update
+
+1. Update the `version` in `package.json` and push the change to GitHub.
+2. Create and push a matching version tag. For version `1.2.1`, run:
+
+```console
+> git tag v1.2.1
+> git push origin v1.2.1
+```
+
+The GitHub Actions workflow builds the installers and publishes a GitHub Release. Installed launchers check for updates automatically and offer the downloaded update for installation. The release tag must match the version in `package.json`.
+
 ### Visual Studio Code
 
 All development of the launcher should be done using [Visual Studio Code][vscode].

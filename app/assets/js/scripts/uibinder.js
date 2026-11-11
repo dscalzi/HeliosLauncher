@@ -9,6 +9,7 @@ const { Type }      = require('helios-distribution-types')
 const AuthManager   = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
 const { DistroAPI } = require('./assets/js/distromanager')
+window.ServerUtils = require('./assets/js/serverutils')
 
 let rscShouldLoad = false
 let fatalStartupError = false
@@ -58,55 +59,69 @@ function getCurrentView(){
 }
 
 async function showMainUI(data){
-
-    if(!isDev){
-        loggerAutoUpdater.info('Initializing..')
-        ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
-    }
-
-    await prepareSettings(true)
-    updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
-    refreshServerStatus()
-    setTimeout(() => {
-        document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-        document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
-        $('#main').show()
-
-        const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
-
-        // If this is enabled in a development environment we'll get ratelimited.
-        // The relaunch frequency is usually far too high.
-        if(!isDev && isLoggedIn){
-            validateSelectedAccount()
+    try {
+        if(!isDev){
+            loggerAutoUpdater.info('Initializing..')
+            ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
         }
 
-        if(ConfigManager.isFirstLaunch()){
-            currentView = VIEWS.welcome
-            $(VIEWS.welcome).fadeIn(1000)
-        } else {
-            if(isLoggedIn){
-                currentView = VIEWS.landing
-                $(VIEWS.landing).fadeIn(1000)
-            } else {
-                loginOptionsCancelEnabled(false)
-                loginOptionsViewOnLoginSuccess = VIEWS.landing
-                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
-                currentView = VIEWS.loginOptions
-                $(VIEWS.loginOptions).fadeIn(1000)
-            }
-        }
-
+        await prepareSettings(true)
+        updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
+        refreshServerStatus()
         setTimeout(() => {
-            $('#loadingContainer').fadeOut(500, () => {
-                $('#loadSpinnerImage').removeClass('rotating')
-            })
-        }, 250)
-        
-    }, 750)
-    // Disable tabbing to the news container.
-    initNews().then(() => {
-        $('#newsContainer *').attr('tabindex', '-1')
-    })
+            const frameBar = document.getElementById('frameBar')
+            if(frameBar){
+                frameBar.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
+            }
+            const backgroundId = document.body.getAttribute('bkid') ?? '0'
+            document.body.style.backgroundImage = `url('assets/images/backgrounds/${backgroundId}.jpg')`
+            $('#main').show()
+
+            const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
+
+            if(!isDev && isLoggedIn){
+                validateSelectedAccount()
+            }
+
+            if(ConfigManager.isFirstLaunch()){
+                currentView = VIEWS.welcome
+                $(VIEWS.welcome).fadeIn(1000)
+            } else {
+                if(isLoggedIn){
+                    currentView = VIEWS.landing
+                    $(VIEWS.landing).fadeIn(1000)
+                } else {
+                    loginOptionsCancelEnabled(false)
+                    loginOptionsViewOnLoginSuccess = VIEWS.landing
+                    loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+                    currentView = VIEWS.loginOptions
+                    $(VIEWS.loginOptions).fadeIn(1000)
+                }
+            }
+
+            setTimeout(() => {
+                $('#loadingContainer').fadeOut(500, () => {
+                    const spinner = document.getElementById('loadSpinnerImage')
+                    if(spinner){
+                        $('#loadSpinnerImage').removeClass('rotating')
+                    }
+                })
+            }, 250)
+        }, 750)
+
+        initNews().then(() => {
+            const newsContainer = document.getElementById('newsContainer')
+            if(newsContainer){
+                $('#newsContainer *').attr('tabindex', '-1')
+            }
+        })
+    } catch (error) {
+        console.error('Startup UI failed:', error)
+        $('#loadingContainer').fadeOut(250)
+        $('#main').show()
+        currentView = VIEWS.loginOptions
+        $(VIEWS.loginOptions).show()
+    }
 }
 
 function showFatalStartupError(){

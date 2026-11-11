@@ -24,9 +24,82 @@
         #main[overlay] {
             filter: blur(3px) contrast(0.9) brightness(1.0);
         }
+        
+        /* Spinner */
+        #loadSpinnerContainer {
+            display: flex;
+            flex-direction: column; /* Disposition des éléments en colonne */
+            align-items: center; /* Centrer les éléments horizontalement */
+            justify-content: center; /* Centrer les éléments verticalement */
+            text-align: center; /* Centrer le texte */
+        }
+
+        #loadingText {
+            font-size: 14px;
+            color: #fff;
+            margin-top: 10px; /* Ajouter un espace entre l'élément e-albania et le texte */
+        }
+
+        #dots::after {
+            content: "";
+            display: inline-block;
+            width: 1ch;
+            animation: dots 1.5s steps(3, end) infinite;
+        }
+
+        @keyframes dots {
+            0% {
+                content: "";
+            }
+            33% {
+                content: ".";
+            }
+            66% {
+                content: "..";
+            }
+            100% {
+                content: "...";
+            }
+        }
+
+        svg {
+            max-width: 100%;
+        }
+
+        /* Animation de rotation */
+        @keyframes logo_kinetics {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Configuration de l'atome */
+        .e-albania {
+            height: 100px; /* Remplace la variable $atom-size */
+            width: 100px;
+            position: relative;
+        }
+
+        .e-albania svg:not(#orbit) {
+            animation: logo_kinetics 2.5s linear infinite forwards; /* Remplace sh-setup($logo_config) */
+            position: absolute;
+            top: -50%;
+            left: 0;
+            transform-origin: bottom center;
+        }
+
+        /* Style du titre du logo */
+        .logo-title {
+            font-family: 'Helvetica Neue', Helvetica, sans-serif;
+            font-weight: normal;
+            color: #fff;
+            font-size: 22px;
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
     </style>
 </head>
-<body bkid="<%=bkid%>">
+<body bkid="<%=bkid%>" style="background-image: url('./assets/images/backgrounds/<%=bkid%>.jpg')">
     <%- include('frame') %>
     <div id="main">
         <%- include('welcome') %>
@@ -40,8 +113,17 @@
     <div id="loadingContainer">
         <div id="loadingContent">
             <div id="loadSpinnerContainer">
-                <img id="loadCenterImage" src="assets/images/LoadingSeal.png">
-                <img id="loadSpinnerImage" class="rotating" src="assets/images/LoadingText.png">
+                <div class="e-albania">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" id="orbit">
+                        <circle fill="none" stroke="#fff" stroke-width="5" cx="50" cy="50" r="40"/>
+                        <circle fill="#1985a9" cx="50" cy="50" r="24"/>
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#fff" style="font-size:300%"></text>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" id="electron">
+                        <circle fill="#eeb014" cx="10" cy="90" r="10"/>
+                    </svg>
+                </div>
+                <div id="loadingText">Chargement<span id="dots"></span></div>
             </div>
         </div>
     </div>
