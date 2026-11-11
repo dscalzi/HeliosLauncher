@@ -59,13 +59,11 @@ jobs:
         with:
           name: build-${{ matrix.os }}
           path: |
-            dist/**/*.exe
-            dist/**/*.AppImage
-            dist/**/*.dmg
+            dist/Build-Launcher-setup-*.exe
+            dist/Build-Launcher-setup-*.AppImage
+            dist/Build-Launcher-setup-*.dmg
             dist/latest*.yml
-            dist/**/*.blockmap
-            dist/**/*.zip
-            dist/**/*.tar.gz
+            dist/Build-Launcher-setup-*.blockmap
           if-no-files-found: error
 
   release:
@@ -86,10 +84,8 @@ jobs:
           tag_name: ${{ inputs.release_tag || github.ref_name }}
           generate_release_notes: true
           files: |
-            release-assets/**/*.exe
-            release-assets/**/*.AppImage
-            release-assets/**/*.dmg
+            release-assets/**/Build-Launcher-setup-*.exe
+            release-assets/**/Build-Launcher-setup-*.AppImage
+            release-assets/**/Build-Launcher-setup-*.dmg
             release-assets/**/latest*.yml
-            release-assets/**/*.blockmap
-            release-assets/**/*.zip
-            release-assets/**/*.tar.gz
+            release-assets/**/Build-Launcher-setup-*.blockmap
