@@ -43,7 +43,7 @@ npm start
 
 La saisie d'un pseudo reserve dans le login demande automatiquement un OTP au bot; il envoie le code par DM aux comptes listes dans `ADMIN_DISCORD_IDS`. Le code expire apres 5 minutes, n'est utilisable qu'une fois et les demandes sont limitees a une par minute. Un admin peut aussi demander manuellement un code avec `/otp` dans Discord.
 
-Dans l'application Windows compilee, le launcher copie `.env.example` vers `%APPDATA%\Build Launcher\bot-otp\.env` au premier demarrage. Renseigner les secrets dans ce fichier sur le PC administrateur, puis redemarrer le launcher. Ce fichier reste dans le profil Windows et n'est jamais inclus dans l'installateur; ne pas le partager.
+Dans l'application Windows compilee, le launcher copie `.env.example` vers `%APPDATA%\Build Launcher\bot-otp\.env` au premier demarrage et propose d'ouvrir ce fichier. Renseigner les quatre valeurs requises sur le PC administrateur, puis redemarrer le launcher. Ce fichier reste dans le profil Windows et n'est jamais inclus dans l'installateur; ne pas le partager ni le committer.
 
 Si le panneau OTP affiche une erreur de connexion, verifier que ce fichier contient les quatre valeurs requises et que le launcher a ete redemarre. Le port `PORT` du fichier est utilise automatiquement par le launcher. Les secrets ne sont volontairement pas embarques dans l'installateur.
 

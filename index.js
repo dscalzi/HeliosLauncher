@@ -2,7 +2,7 @@ const remoteMain = require('@electron/remote/main')
 remoteMain.initialize()
 
 // Requirements
-const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
+const { app, BrowserWindow, dialog, ipcMain, Menu, shell } = require('electron')
 const autoUpdater                       = require('electron-updater').autoUpdater
 const AdmZip                            = require('adm-zip')
 const child_process                     = require('child_process')
@@ -256,6 +256,26 @@ let win
 let otpProcess
 let otpPort = 8787
 
+async function showOtpConfigurationDialog(envPath, missingEnv = []) {
+    const requiredFields = missingEnv.length > 0
+        ? missingEnv.join(', ')
+        : 'DISCORD_BOT_TOKEN, DISCORD_CLIENT_ID, ADMIN_DISCORD_IDS, OTP_PEPPER'
+    const { response } = await dialog.showMessageBox({
+        type: 'warning',
+        title: 'Configuration OTP requise',
+        message: 'Le service OTP Discord n’est pas configuré.',
+        detail: `Renseigne ${requiredFields} dans ce fichier, puis redémarre BuildLauncher :\n${envPath}`,
+        buttons: ['Ouvrir le fichier', 'Plus tard'],
+        defaultId: 0,
+        cancelId: 1
+    })
+
+    if(response === 0) {
+        const error = await shell.openPath(envPath)
+        if(error) console.error(`Unable to open OTP configuration file: ${error}`)
+    }
+}
+
 function readOtpPort(envContent) {
     const configuredPort = process.env.PORT || envContent.match(/^\s*PORT\s*=\s*["']?(\d+)["']?\s*(?:#.*)?$/m)?.[1]
     if(configuredPort == null) {
@@ -284,6 +304,7 @@ async function startOtpService() {
         fs.mkdirSync(configDirectory, { recursive: true })
         fs.copyFileSync(path.join(serviceResourceDirectory, '.env.example'), envPath)
         console.warn(`[OTP] Configure Discord credentials in ${envPath}, then restart the launcher.`)
+        await showOtpConfigurationDialog(envPath)
         return
     }
 
@@ -298,6 +319,7 @@ async function startOtpService() {
     const missingEnv = requiredEnv.filter(name => !new RegExp(`^${name}=\\s*[^\\s#]+`, 'm').test(envContent))
     if(missingEnv.length > 0) {
         console.warn(`[OTP] Complete ${missingEnv.join(', ')} in ${envPath}; the service was not started.`)
+        if(app.isPackaged) await showOtpConfigurationDialog(envPath, missingEnv)
         return
     }
 
