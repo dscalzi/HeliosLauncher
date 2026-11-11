@@ -25,14 +25,25 @@ app.commandLine.appendSwitch('disable-gpu-shader-disk-cache')
 LangLoader.setupLanguage()
 
 // Setup auto updater.
-function initAutoUpdater(event, data) {
+let autoUpdaterInitialized = false
+let autoUpdaterWebContents
 
-    if(data){
-        autoUpdater.allowPrerelease = true
-    } else {
-        // Defaults to true if application version contains prerelease components (e.g. 0.12.1-alpha.1)
-        // autoUpdater.allowPrerelease = true
+function sendAutoUpdateNotification(...args) {
+    if(autoUpdaterWebContents && !autoUpdaterWebContents.isDestroyed()) {
+        autoUpdaterWebContents.send('autoUpdateNotification', ...args)
     }
+}
+
+function initAutoUpdater(event, data) {
+    autoUpdaterWebContents = event.sender
+
+    if(autoUpdaterInitialized) {
+        return
+    }
+
+    const isPrereleaseVersion = semver.prerelease(app.getVersion()) != null
+    autoUpdater.allowPrerelease = Boolean(data) || isPrereleaseVersion
+    autoUpdaterInitialized = true
     
     if(isDev){
         autoUpdater.autoInstallOnAppQuit = false
@@ -42,19 +53,19 @@ function initAutoUpdater(event, data) {
         autoUpdater.autoDownload = false
     }
     autoUpdater.on('update-available', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-available', info)
+        sendAutoUpdateNotification('update-available', info)
     })
     autoUpdater.on('update-downloaded', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-downloaded', info)
+        sendAutoUpdateNotification('update-downloaded', info)
     })
     autoUpdater.on('update-not-available', (info) => {
-        event.sender.send('autoUpdateNotification', 'update-not-available', info)
+        sendAutoUpdateNotification('update-not-available', info)
     })
     autoUpdater.on('checking-for-update', () => {
-        event.sender.send('autoUpdateNotification', 'checking-for-update')
+        sendAutoUpdateNotification('checking-for-update')
     })
     autoUpdater.on('error', (err) => {
-        event.sender.send('autoUpdateNotification', 'realerror', err)
+        sendAutoUpdateNotification('realerror', err)
     }) 
 }
 
@@ -69,7 +80,7 @@ ipcMain.on('autoUpdateAction', (event, arg, data) => {
         case 'checkForUpdate':
             autoUpdater.checkForUpdates()
                 .catch(err => {
-                    event.sender.send('autoUpdateNotification', 'realerror', err)
+                    console.error('Failed to check for launcher updates.', err)
                 })
             break
         case 'allowPrereleaseChange':

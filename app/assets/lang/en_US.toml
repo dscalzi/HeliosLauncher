@@ -264,6 +264,7 @@ releaseNotesFailed = "Failed to load release notes."
 [js.settings.updates]
 newReleaseTitle = "Nouvelle mise à jour disponible"
 newPreReleaseTitle = "Nouvelle mise à jour disponible"
+errorTitle = "Impossible de vérifier les mises à jour"
 downloadingButton = "Téléchargement en cours ..."
 downloadButton = 'Vous devez télécharger la mise à jour depuis GitHub<span style="font-size: 10px;color: gray;text-shadow: none !important;">Fermer le launcher et lancer le .dmg pour mettre à jour.</span>'
 latestVersionTitle = "Vous utilisez la dernière version"

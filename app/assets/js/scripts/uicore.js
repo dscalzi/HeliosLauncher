@@ -52,7 +52,11 @@ if(!isDev){
                 loggerAutoUpdater.info('New update available', info.version)
                 
                 if(process.platform === 'darwin'){
-                    info.darwindownload = `https://github.com/Kylan-DevMc/BuildLauncher/releases/download/v${info.version}/BuildLauncher-setup-${info.version}${process.arch === 'arm64' ? '-arm64' : '-x64'}.dmg`
+                    const architecture = process.arch === 'arm64' ? 'arm64' : 'x64'
+                    const macInstaller = info.files?.find(file => file.url.endsWith(`-${architecture}.dmg`))
+                    info.darwindownload = macInstaller
+                        ? `https://github.com/Kylan-DevMc/BuildLauncher/releases/download/v${info.version}/${encodeURIComponent(macInstaller.url)}`
+                        : `https://github.com/Kylan-DevMc/BuildLauncher/releases/tag/v${info.version}`
                     showUpdateUI(info)
                 }
                 
@@ -75,21 +79,24 @@ if(!isDev){
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'))
                 break
             case 'ready':
+                if(updateCheckListener) {
+                    clearInterval(updateCheckListener)
+                }
                 updateCheckListener = setInterval(() => {
                     ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                 }, 1800000)
                 ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                 break
             case 'realerror':
-                if(info != null && info.code != null){
-                    if(info.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
-                        loggerAutoUpdater.info('No suitable releases found.')
-                    } else if(info.code === 'ERR_XML_MISSED_ELEMENT'){
-                        loggerAutoUpdater.info('No releases found.')
-                    } else {
-                        loggerAutoUpdater.error('Error during update check..', info)
-                        loggerAutoUpdater.debug('Error Code:', info.code)
-                    }
+                loggerAutoUpdater.error('Error during update check..', info)
+                if(info?.code === 'ERR_UPDATER_INVALID_RELEASE_FEED'){
+                    loggerAutoUpdater.info('No suitable releases found.')
+                } else if(info?.code === 'ERR_XML_MISSED_ELEMENT'){
+                    loggerAutoUpdater.info('No releases found.')
+                }
+                if(typeof settingsUpdateTitle !== 'undefined') {
+                    settingsUpdateTitle.innerHTML = Lang.queryJS('settings.updates.errorTitle')
+                    settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'))
                 }
                 break
             default:

@@ -50,10 +50,8 @@ jobs:
         run: npm ci
         shell: bash
 
-      - name: Build and publish
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run dist -- --publish always
+      - name: Build platform artifacts and update metadata
+        run: npm run dist -- --publish=never
         shell: bash
 
       - name: Upload build artifacts
@@ -64,7 +62,7 @@ jobs:
             dist/**/*.exe
             dist/**/*.AppImage
             dist/**/*.dmg
-            dist/**/*.yml
+            dist/latest*.yml
             dist/**/*.blockmap
             dist/**/*.zip
             dist/**/*.tar.gz
@@ -91,7 +89,7 @@ jobs:
             release-assets/**/*.exe
             release-assets/**/*.AppImage
             release-assets/**/*.dmg
-            release-assets/**/*.yml
+            release-assets/**/latest*.yml
             release-assets/**/*.blockmap
             release-assets/**/*.zip
             release-assets/**/*.tar.gz
